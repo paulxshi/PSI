@@ -2,9 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
-/* =====================
-   GLOBAL RESET
-===================== */
+
 * {
 	margin: 0;
 	padding: 0;
@@ -82,7 +80,7 @@ body {
 	width: 70px;
 }
 
-/* Brand */
+
 #sidebar .brand {
 	height: 56px;
 	display: flex;
@@ -118,7 +116,6 @@ body {
 	transition: 0.2s ease;
 }
 
-/* Icons */
 #sidebar .side-menu li a .bx {
 	min-width: 48px;
 	display: flex;
@@ -126,25 +123,19 @@ body {
 	font-size: 18px;
 }
 
-/* Hover */
 #sidebar .side-menu li a:hover {
 	background: rgba(255, 255, 255, 0.08);
 }
 
-/* Active */
 #sidebar .side-menu.top li.active a {
 	background: rgba(255, 255, 255, 0.15);
 	font-weight: 600;
 }
 
-/* Collapse */
 #sidebar.hide .text {
 	display: none;
 }
 
-/* =====================
-   CONTENT AREA (FLOATING)
-===================== */
 #content {
 	position: relative;
 	margin-left: 280px;
@@ -161,15 +152,11 @@ body {
 	overflow: hidden;
 }
 
-/* Sidebar collapsed */
 #sidebar.hide ~ #content {
 	margin-left: 70px;
 	border-radius: 28px 0 0 0;
 }
 
-/* =====================
-   TOP NAVIGATION
-===================== */
 #content nav {
 	height: 56px;
 	background: var(--light);
@@ -191,7 +178,6 @@ body {
 	color: var(--dark);
 }
 
-/* Search */
 #content nav form {
 	max-width: 400px;
 	width: 100%;
@@ -221,7 +207,6 @@ body {
 	cursor: pointer;
 }
 
-/* Notification */
 #content nav .notification {
 	position: relative;
 	font-size: 20px;
@@ -251,9 +236,6 @@ body {
 	object-fit: cover;
 }
 
-/* =====================
-   RESPONSIVE
-===================== */
 @media screen and (max-width: 768px) {
 	#sidebar {
 		width: 200px;
