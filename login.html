@@ -9,47 +9,28 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="imgs/PSI.png">
 
+
   <style>
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f7e52d, #ec7a05);
-    }
-
-    .overflow-auto::-webkit-scrollbar {
-      display: none;
-    }
-
-    h3 {
-      font-weight: 700; 
-    }
-
-    label {
-      font-weight: 600; 
-    }
-
-    .form-control:focus {
-      border-color: #ced4da;       
-      box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.25); 
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 530px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .login-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 28px 55px rgba(0, 0, 0, 0.18);
-    }
+    .overflow-auto::-webkit-scrollbar { display: none; }
   </style>
+
 </head>
+
+<body
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="
+    background: url('imgs/bg.jpg') center center / cover no-repeat fixed;
+  "
+>
+
+<div
+  class="position-fixed top-0 start-0 w-100 h-100"
+  style="
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 0;
+  ">
+</div>
 
 <body class="d-flex justify-content-center align-items-center">
 
@@ -121,13 +102,6 @@
 
             </form>
           </div>
-
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
