@@ -14,7 +14,6 @@
       min-height: 100vh;
       background: linear-gradient(135deg, #f7e52d, #ec7a05);
     }
-<<<<<<< HEAD
 
     .overflow-auto::-webkit-scrollbar {
       display: none;
@@ -28,16 +27,12 @@
       font-weight: 600; 
     }
 
-    #registerForm {
-      display: none;
-    }
-
     .form-control:focus {
       border-color: #ced4da;       
       box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.25); 
     }
-    
-        .login-card {
+
+    .login-card {
       width: 100%;
       max-width: 530px;
       border-radius: 20px;
@@ -53,9 +48,6 @@
       transform: translateY(-3px);
       box-shadow: 0 28px 55px rgba(0, 0, 0, 0.18);
     }
-=======
-    .overflow-auto::-webkit-scrollbar { display: none; }
->>>>>>> 855e1eb83a0d055ac50f05bf6f1fd5be4003cbf6
   </style>
 </head>
 
@@ -124,73 +116,7 @@
 
               <div class="text-center">
                 <span class="text-muted">Don't have an account?</span>
-                <a href="#" id="showRegister" class="fw-semibold text-decoration-none ms-1">Register</a>
-              </div>
-
-            </form>
-          </div>
-
-          <!-- REGISTER FORM -->
-          <div id="registerForm" class="d-none">
-            <form class="overflow-auto" style="max-height:55vh">
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">First Name</label>
-                <input type="text" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Middle Name</label>
-                <input type="text" class="form-control">
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Last Name</label>
-                <input type="text" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">PMMA Student ID</label>
-                <input type="text" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Test Permit</label>
-                <input type="text" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Age</label>
-                <input type="number" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Contact Number</label>
-                <input type="tel" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Email Address</label>
-                <input type="email" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Password</label>
-                <input type="password" class="form-control" required>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label fw-semibold">Confirm Password</label>
-                <input type="password" class="form-control" required>
-              </div>
-
-              <div class="d-grid mb-3">
-                <button class="btn btn-dark">REGISTER</button>
-              </div>
-
-              <div class="text-center">
-                <span class="text-muted">Already have an account?</span>
-                <a href="#" id="showLogin" class="fw-semibold text-decoration-none ms-1">Login</a>
+                <a href="registration.html" class="fw-semibold text-decoration-none ms-1">Register</a>
               </div>
 
             </form>
@@ -202,24 +128,6 @@
     </div>
   </div>
 </div>
-
-<!-- Toggle Script -->
-<script>
-  const loginForm = document.getElementById("loginForm");
-  const registerForm = document.getElementById("registerForm");
-
-  document.getElementById("showRegister").onclick = e => {
-    e.preventDefault();
-    loginForm.classList.add("d-none");
-    registerForm.classList.remove("d-none");
-  };
-
-  document.getElementById("showLogin").onclick = e => {
-    e.preventDefault();
-    registerForm.classList.add("d-none");
-    loginForm.classList.remove("d-none");
-  };
-</script>
 
 </body>
 </html>
