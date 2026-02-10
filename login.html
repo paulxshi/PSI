@@ -26,24 +26,36 @@
       font-weight: 600; 
     }
 
-    .btn-primary {
-      background-color: #3b66f6;
-      border: none;
-    }
-
-    .btn-primary:hover {
-      background-color: #2f55d4;
-    }
-
     #registerForm {
       display: none;
+    }
+
+    .form-control:focus {
+      border-color: #ced4da;       
+      box-shadow: 0 0 0 0.2rem rgba(206, 212, 218, 0.25); 
+    }
+        .login-card {
+      width: 100%;
+      max-width: 530px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 28px 55px rgba(0, 0, 0, 0.18);
     }
   </style>
 </head>
 <body>
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="card shadow-lg p-4" style="width: 100%; max-width: 500px;">
+  <div class="card login-card p-4">
 
     <!-- Logo -->
     <div class="text-center mb-3">
@@ -61,7 +73,7 @@
             <span class="input-group-text">
               <i class="bi bi-card-text"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Test Permit" required>
+            <input type="text" class="form-control" placeholder="123-456" required>
           </div>
         </div>
 
@@ -71,7 +83,7 @@
             <span class="input-group-text">
               <i class="bi bi-person-fill"></i>
             </span>
-            <input type="text" class="form-control" placeholder="Full Name" required>
+            <input type="text" class="form-control" placeholder="Enter Your Name" required>
           </div>
         </div>
 
@@ -81,7 +93,7 @@
             <span class="input-group-text">
               <i class="bi bi-envelope-fill"></i>
             </span>
-            <input type="email" class="form-control" placeholder="Enter email" required>
+            <input type="email" class="form-control" placeholder="name@example.com" required>
           </div>
         </div>
 
@@ -91,7 +103,7 @@
             <span class="input-group-text">
               <i class="bi bi-lock-fill"></i>
             </span>
-            <input type="password" class="form-control" placeholder="Enter password" required>
+            <input type="password" class="form-control" placeholder="Enter your password" required>
           </div>
         </div>
 
