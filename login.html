@@ -52,20 +52,34 @@
 
     <h3 class="text-center mb-4">PMMA Portal</h3>
 
-    <!-- LOGIN FORM -->
-    <div id="loginForm">
-      <form>
-        <div class="mb-3">
-          <label class="form-label">Test Permit</label>
-          <input type="testpermit" class="form-control" placeholder="Enter email" required>
-        </div>
+      <ul class="nav nav-pills nav-justified mb-3 bg-dark rounded p-1" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active text-white"
+            data-bs-toggle="pill"
+            data-bs-target="#login"
+            type="button">
+            Login
+          </button>
+        </li>
 
-        <div class="mb-3">
-          <label class="form-label">Email Address</label>
-          <div class="input-group">
-            <span class="input-group-text">
-              <i class="bi bi-envelope-fill"></i>
-            </span>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link text-white"
+            data-bs-toggle="pill"
+            data-bs-target="#register"
+            type="button">
+            Register
+          </button>
+        </li>
+      </ul>
+
+    <div class="tab-content">
+      <!-- LOGIN FORM -->
+      <div class="tab-pane fade show active" id="login">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
             <input type="email" class="form-control" placeholder="Enter email" required>
           </div>
         </div>
@@ -97,14 +111,14 @@
       </form>
     </div>
 
-    <!-- REGISTER FORM -->
-    <div id="registerForm">
-      <form class="overflow-auto" style="max-height: 55vh;">
+      <!-- REGISTRATION FORM -->
+<div class="tab-pane fade" id="register">
+  <form class="overflow-auto" style="max-height: 55vh;">
 
-        <div class="mb-3">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-control" required>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" placeholder="Enter full name" required>
+          </div>
 
         <div class="mb-3">
           <label class="form-label">PMMA Student ID</label>
@@ -116,20 +130,20 @@
           <input type="number" class="form-control" required>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Contact Number</label>
-          <input type="tel" class="form-control" required>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Contact Number</label>
+            <input type="tel" class="form-control" placeholder="Enter contact number" required>
+          </div>
 
-        <div class="mb-3">
-          <label class="form-label">Email Address</label>
-          <input type="email" class="form-control" required>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" placeholder="Enter email" required>
+          </div>
 
-        <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-control" required>
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" placeholder="Create password" required>
+          </div>
 
         <div class="mb-3">
           <label class="form-label">Confirm Password</label>
