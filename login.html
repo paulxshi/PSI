@@ -9,7 +9,7 @@
 
   <style>
     body {
-      background: linear-gradient(135deg, #0d6efd, #198754);
+      background: linear-gradient(135deg,#f7e52d, #ec7a05);
       min-height: 100vh;
     }
   </style>
@@ -20,7 +20,7 @@
   <div class="card shadow-lg p-4" style="width: 100%; max-width: 450px;">
     
     <!-- Title -->
-    <h3 class="text-center mb-4">PMMA Portalsss</h3>
+    <h3 class="text-center mb-4">PMMA Portal</h3>
 
     <!-- Tabs -->
     <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
@@ -36,7 +36,7 @@
       </li>
     </ul>
 
-    <!-- Tab Content -->
+  
     <div class="tab-content">
 
       <!-- LOGIN FORM -->
@@ -53,14 +53,21 @@
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-dark text-white">
+              Login
+            </button>
           </div>
+
         </form>
       </div>
 
+
+
+
       <!-- REGISTRATION FORM -->
-      <div class="tab-pane fade" id="register">
-        <form>
+<div class="tab-pane fade" id="register">
+  <form class="overflow-auto" style="max-height: 55vh;">
+
           <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input type="text" class="form-control" placeholder="Enter full name" required>
@@ -73,14 +80,14 @@
 
           <div class="mb-3">
             <label class="form-label">Age</label>
-            <input type="age" class="form-control" placeholder="Enter email" required>
+            <input type="number" class="form-control" placeholder="Enter age" required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Contact Number</label>
-            <input type="contact number" class="form-control" placeholder="Enter email" required>
+            <input type="tel" class="form-control" placeholder="Enter contact number" required>
           </div>
-          
+
           <div class="mb-3">
             <label class="form-label">Email Address</label>
             <input type="email" class="form-control" placeholder="Enter email" required>
@@ -97,8 +104,11 @@
           </div>
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-success">Register</button>
+            <button type="submit" class="btn btn-dark text-white">
+              Register
+            </button>
           </div>
+
         </form>
       </div>
 
