@@ -40,7 +40,7 @@
         </div>
 
           <!-- REGISTER FORM -->
-          <form class="overflow-auto" style="max-height: 60vh;" action="register.php" method="POST" novalidate>
+          <form class="overflow-auto" style="max-height: 60vh;" action="phpregister.php" method="POST" novalidate>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">First Name</label>
@@ -178,7 +178,7 @@
     lockResendButton();
     startCooldown();
 
-    fetch("send_otp.php", {
+    fetch("php/send_otp.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: emailInput.value })
