@@ -12,24 +12,43 @@
 </head>
 
 <style>
+.photo-box {
+  cursor: pointer;
+}
 
-.exam-info {
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 12px;
+.upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
-.exam-info small {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+
+.photo-box:hover .upload-overlay {
+  opacity: 1;
 }
-.exam-value {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-	font-size: 1.1rem;
-    letter-spacing: 0.5px;
-  	color: #111827;
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+}
+
+#permitPDF {
+  font-size: 14px;
+  color: #000;
+}
+
+#permitPDF .text-muted {
+  color: #555 !important;
+}
+
+#permitPDF img {
+  max-width: 100%;
 }
 
 </style>
+
 
 <body>
 
@@ -72,166 +91,267 @@
             </div>
 		</nav>
 
-<main class="container-fluid p-4">
+      <main class="container-fluid p-4">
+      <div id="permitPDF" class="bg-white p-4 rounded shadow-sm">
 
-  <!-- Test Permit Card -->
-  <div class="row justify-content-center">
-    <div class="col-xl-10 col-lg-11">
+        <div class="row justify-content-center">
+          <div class="col-xl-10 col-lg-11">
 
-      <div class="card shadow-sm border-0">
+              <!-- Header -->
+            <div class="card-header bg-white border-bottom py-4">
+              <div class="row justify-content-center text-center">
 
-        <!-- Header -->
-        <div class="card-header bg-white border-bottom">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-0 fw-bold text-uppercase">
-                Philippine Merchant Marine Academy
-              </h5>
-              <small class="text-muted">
-                Psychological Evaluation – Test Permit
-              </small>
-            </div>
+                <div class="col-12">
+                  <div class="d-flex justify-content-center align-items-center gap-5 mb-2">
 
-            <span class="badge bg-success px-3 py-2">
-              Status: Detected
-            </span>
-          </div>
-        </div>
+                    <!-- LEFT LOGO -->
+                    <img src="imgs/PSI.png"
+                        alt="PSI Logo"
+                        class="img-fluid"
+                        style="max-height: 80px;">
 
-        <!-- Body -->
-        <div class="card-body">
+                    <!-- CENTER TEXT -->
+                    <div>
+                      <h6 class="fw-bold text-uppercase mb-1">
+                        PSY Systems and Innovation, OPC
+                      </h6>
 
-          <!-- Personal Information -->
-          <div class="mb-4">
-            <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
-              Personal Information
-            </h6>
+                      <div class="small text-muted text-uppercase">
+                        Philippine Merchant Marine Academy
+                      </div>
 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <small class="text-muted">Test Permit No.</small>
-                <div class="fw-semibold">050-2018</div>
-              </div>
+                      <div class="small text-muted text-uppercase">
+                        Psychological Evaluation
+                      </div>
+                    </div>
 
-              <div class="col-md-6 text-md-end">
-                <div class="border p-2 d-inline-block text-center">
-                  <small class="text-muted d-block">2 × 2 Picture</small>
-                  <small class="text-muted">(white background)</small>
+                    <!-- RIGHT LOGO -->
+                    <img src="imgs/PMMA.png"
+                        alt="PMMA Logo"
+                        class="img-fluid"
+                        style="max-height: 80px;">
+                  </div>
+
+                  <!-- TEST PERMIT TITLE -->
+                  <div class="fw-semibold text-uppercase mt-4">
+                    Test Permit
+                  </div>
+
                 </div>
-              </div>
 
-              <div class="col-md-6">
-                <small class="text-muted">Name of Examinee</small>
-                <div class="fw-semibold">User</div>
-              </div>
-
-              <div class="col-md-6">
-                <small class="text-muted">Date of Birth</small>
-                <div class="fw-semibold">02/11/2026</div>
-              </div>
-
-              <div class="col-md-4">
-                <small class="text-muted">Age</small>
-                <div class="fw-semibold">10</div>
-              </div>
-
-              <div class="col-md-4">
-                <small class="text-muted">Gender</small>
-                <div class="fw-semibold">Male</div>
-              </div>
-
-              <div class="col-md-4">
-                <small class="text-muted">Nationality</small>
-                <div class="fw-semibold">Filipino</div>
-              </div>
-
-              <div class="col-md-6">
-                <small class="text-muted">Contact No.</small>
-                <div class="fw-semibold">09123456789</div>
-              </div>
-
-              <div class="col-md-6">
-                <small class="text-muted">Email Address</small>
-                <div class="fw-semibold">juan.delacruz@pmma.edu.ph</div>
               </div>
             </div>
+
+
+              <!-- Body -->
+            <div class="card shadow-sm border-0 position-relative">
+              <div class="card-body position-relative">
+
+                <div class="col-lg-3 d-flex justify-content-center">
+                  <div class="position-absolute top-0 end-0 mt-3 me-3 text-center photo-wrapper"
+                      style="width:160px">
+
+                  <div class="border rounded bg-white overflow-hidden ratio ratio-1x1 position-relative photo-box"
+                  style="margin-top: 50px;">
+
+                      <!-- IMAGE PREVIEW -->
+                      <img id="photoPreview"
+                          class="img-fluid d-none w-100 h-100 object-fit-cover"
+                          alt="Uploaded photo">
+
+                      <!-- PLACEHOLDER -->
+
+                      <div id="photoPlaceholder"
+                          class="d-flex flex-column justify-content-center align-items-center small text-muted text-center h-100">
+                        <strong class="mb-1">2 × 2 Picture</strong>
+                        <span>
+                          with name tag<br>
+                          white shirt<br>
+                          white background
+                        </span>
+                      </div>
+
+                      <!-- HOVER UPLOAD OVERLAY -->
+                      <div class="upload-overlay d-flex justify-content-center align-items-center">
+                        <label for="photoInput" class="btn btn-sm btn-outline-light">
+                          Upload Photo
+                        </label>
+                      </div>
+
+                    </div>
+
+                    <input type="file" id="photoInput" accept="image/*" hidden>
+                  </div>
+                </div>
+
+                <div class="row g-4 align-items-start">
+
+                  <!-- LEFT CONTENT -->
+                  <div class="col-lg-12">
+
+                    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
+                      Personal Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Test Permit No.</small>
+                        <div class="fw-semibold">050-2018</div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Status</small>
+                        <div class="fw-semibold text-success">Detected</div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Name of Examinee</small>
+                        <div class="fw-semibold">User</div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Date of Birth</small>
+                        <div class="fw-semibold">02/11/2026</div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <small class="text-muted text-uppercase">Age</small>
+                        <div class="fw-semibold">10</div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <small class="text-muted text-uppercase">Gender</small>
+                        <div class="fw-semibold">Male</div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <small class="text-muted text-uppercase">Nationality</small>
+                        <div class="fw-semibold">Filipino</div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Contact No.</small>
+                        <div class="fw-semibold">09123456789</div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <small class="text-muted text-uppercase">Email Address</small>
+                        <div class="fw-semibold">juan.delacruz@pmma.edu.ph</div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                                <!-- SCHEDULE -->
+                  <div class="mb-4">
+                      <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
+                                    Schedule of Examination
+                      </h6>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                      <small class="text-muted">Date of Testing</small>
+                                      <div class="fw-semibold">05/27/2025</div>
+                            </div>
+                            <div class="col-md-6">
+                                      <small class="text-muted">Venue</small>
+                                      <div class="fw-semibold">Manila</div>
+                            </div>
+                        </div>
+                  </div>
+
+                                <!-- PAYMENT -->
+                  <div class="mb-4">
+                      <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
+                                    Payment Details
+                      </h6>
+
+                      <div class="row g-3">
+                                    <div class="col-md-4">
+                                      <small class="text-muted">Bank Transaction No.</small>
+                                      <div class="fw-semibold">123456789</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <small class="text-muted">Payment Date</small>
+                                      <div class="fw-semibold">02/11/2026</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                      <small class="text-muted">Payment Amount</small>
+                                      <div class="fw-semibold">₱100.00</div>
+                                    </div>
+                      </div>
+                  </div>
+
+                                <!-- GUIDELINES -->
+                                <div>
+                                  <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
+                                    Guidelines
+                                  </h6>
+
+                                  <ol class="small text-muted">
+                                    <li>Please bring this test permit on the day of your examination.</li>
+                                    <li>Attach 2×2 ID picture with name tag in white background.</li>
+                                    <li>Wear white t-shirt/polo shirt, maong pants, and rubber shoes.</li>
+                                    <li>Bring a valid ID.</li>
+                                    <li>Bring 2 pencils (No. 2), eraser, and sharpener.</li>
+                                    <li>Snacks must be consumed outside the testing room.</li>
+                                    <li>No cellphone is allowed upon entry in the testing room.</li>
+                                  </ol>
+                                </div>
+
+                </div>
+
+                  <!-- Footer -->
+                  <div class="card-footer bg-white text-end">
+                    <button class="btn btn-outline-primary">
+                      <i class="bx bx-download"></i> Generate PDF
+                    </button>
+                  </div>
+
+              </div>
           </div>
-
-          <!-- Schedule of Examination -->
-          <div class="mb-4">
-            <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
-              Schedule of Examination
-            </h6>
-
-            <div class="row g-3">
-              <div class="col-md-6">
-                <small class="text-muted">Date of Testing</small>
-                <div class="fw-semibold">05/27/2025</div>
-              </div>
-
-              <div class="col-md-6">
-                <small class="text-muted">Venue</small>
-                <div class="fw-semibold">Manila</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Payment Details -->
-          <div class="mb-4">
-            <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
-              Payment Details
-            </h6>
-
-            <div class="row g-3">
-              <div class="col-md-4">
-                <small class="text-muted">Bank Transaction No.</small>
-                <div class="fw-semibold">123456789</div>
-              </div>
-
-              <div class="col-md-4">
-                <small class="text-muted">Payment Date</small>
-                <div class="fw-semibold">02/11/2026</div>
-              </div>
-
-              <div class="col-md-4">
-                <small class="text-muted">Payment Amount</small>
-                <div class="fw-semibold">₱100.00</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Guidelines -->
-          <div>
-            <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">
-              Guidelines
-            </h6>
-
-            <ol class="small text-muted">
-              <li>Please bring this test permit on the day of your examination.</li>
-              <li>Attach 2×2 ID picture with name tag in white background.</li>
-              <li>Wear white t-shirt/polo shirt, maong pants, and rubber shoes.</li>
-              <li>Bring a valid ID.</li>
-              <li>Bring 2 pencils (No. 2), eraser, and sharpener.</li>
-              <li>Snacks must be consumed outside the testing room.</li>
-              <li>No cellphone is allowed upon entry in the testing room.</li>
-            </ol>
-          </div>
-
         </div>
-
-        <!-- Footer -->
-        <div class="card-footer bg-white text-end">
-          <button class="btn btn-outline-primary">
-            <i class="bx bx-printer"></i> Print Test Permit
-          </button>
-        </div>
-
       </div>
+      </main>
 
-    </div>
-  </div>
 
-</main>
+<script>
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+
+  photoInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoPreview.src = e.target.result;
+      photoPreview.classList.remove('d-none');
+      photoPlaceholder.classList.add('d-none');
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+
+    document.getElementById('generatePDF').addEventListener('click', () => {
+    const element = document.getElementById('permitPDF');
+
+    const opt = {
+      margin:       0.5,
+      filename:     'Test_Permit.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 
 
