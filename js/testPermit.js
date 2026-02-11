@@ -21,14 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ? new Date(data.payment_date).toLocaleDateString('en-US')
         : "N/A";
 
-      // Status mapping (assuming 1 = active, 0 = inactive)
-      let statusText = "Pending";
-      if (data.status == 1) statusText = "Approved";
-      if (data.status == 2) statusText = "Completed";
+
 
       // Fill values
       document.getElementById("testPermit").textContent = data.test_permit ?? "-";
-      document.getElementById("status").textContent = statusText;
+      document.getElementById("status").textContent = data.status;
       document.getElementById("fullName").textContent =
         `${data.first_name} ${data.middle_name}. ${data.last_name}`;
       document.getElementById("dob").textContent = dob;
