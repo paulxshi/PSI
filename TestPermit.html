@@ -32,26 +32,24 @@
   body {
     background: #fff !important;
   }
-}
 
-#permitPDF {
-  font-size: 14px;
-  color: #000;
-}
+  main {
+    padding: 0 !important;
+  }
 
-#permitPDF .text-muted {
-  color: #555 !important;
-}
+  .btn {
+    display: none !important;
+  }
 
-#permitPDF img {
-  max-width: 100%;
+  #sidebar, nav {
+    display: none !important;
+  }
 }
 
 </style>
 
 
 <body>
-
 	<!-- Sidebar Section -->
 		<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
@@ -92,7 +90,7 @@
 		</nav>
 
       <main class="container-fluid p-4">
-      <div id="permitPDF" class="bg-white p-4 rounded shadow-sm">
+  <div id="permitPDF" class="bg-white p-4 rounded shadow-sm">
 
         <div class="row justify-content-center">
           <div class="col-xl-10 col-lg-11">
@@ -301,21 +299,19 @@
                                 </div>
 
                 </div>
-
                   <!-- Footer -->
-                  <div class="card-footer bg-white text-end">
-                    <button class="btn btn-outline-primary">
+                    <button id="generatePDF" class="btn btn-outline-primary">
                       <i class="bx bx-download"></i> Generate PDF
                     </button>
-                  </div>
 
               </div>
           </div>
         </div>
       </div>
+  </div>
       </main>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
   const photoInput = document.getElementById('photoInput');
   const photoPreview = document.getElementById('photoPreview');
@@ -336,22 +332,30 @@
   });
 
 
-    document.getElementById('generatePDF').addEventListener('click', () => {
-    const element = document.getElementById('permitPDF');
+  document.getElementById('generatePDF').addEventListener('click', function () {
+
+    const element = document.querySelector('main');
 
     const opt = {
-      margin:       0.5,
-      filename:     'Test_Permit.pdf',
+      margin:       [0.5, 0.5, 0.5, 0.5],
+      filename:     'PMMA_Test_Permit.pdf',
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true },
-      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      html2canvas:  {
+        scale: 2,
+        useCORS: true,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(element).save();
   });
 </script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 
 
