@@ -13,7 +13,16 @@
 </head>
 
 <style>
-  
+.permit-note {
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #ef0707;
+  line-height: 1.4;
+  margin-top: 50px;
+  font-style: italic;
+}
+
 .photo-box {
   cursor: pointer;
 }
@@ -31,7 +40,6 @@
 }
 
 #permitPDF {
-  font-family: "Times New Roman", Georgia, serif;
   color: #000;
   padding: 30px;
   max-width: 800px;
@@ -49,23 +57,24 @@
 }
 
 @media print {
+    .permit-note {
+    font-size: 17px;
+    font-weight: 900;
+  }
+
   main {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
 }
 
-
 @media print {
-
-  /* Reset entire page */
   html, body {
     margin: 0 !important;
     padding: 0 !important;
     height: auto !important;
   }
 
-  /* Completely remove non-PDF layout */
   #sidebar,
   nav,
   main > *:not(#permitPDF),
@@ -75,13 +84,11 @@
     overflow: hidden !important;
   }
 
-  /* Remove Bootstrap container spacing */
   main {
     margin: 0 !important;
     padding: 0 !important;
   }
 
-  /* Force permit to be FIRST printable content */
   #permitPDF {
     position: relative;
     top: 0;
@@ -97,12 +104,10 @@
     page-break-before: avoid !important;
   }
 
-  /* Prevent phantom page */
   body {
     overflow: hidden !important;
   }
 }
-
 
 @media print {
   .print-signature {
@@ -110,7 +115,6 @@
   }
 }
 
-/* Also show during html2pdf */
 body.print-mode .print-signature {
   display: block !important;
 }
@@ -159,7 +163,6 @@ body.print-mode #permitPDF .photo-box {
     line-height: 1.3;
   }
 
-  /* Compact header */
   #permitPDF .text-center {
     margin-bottom: 8px !important;
   }
@@ -168,24 +171,20 @@ body.print-mode #permitPDF .photo-box {
     margin: 6px 0;
   }
 
-  /* Section titles */
   #permitPDF h6 {
     margin-bottom: 5px !important;
     padding-bottom: 3px !important;
     font-size: 13px;
   }
 
-  /* Reduce spacing between rows */
   #permitPDF .row {
     margin-bottom: 6px !important;
   }
 
-  /* Photo size for print */
   #permitPDF .photo-box {
     width: 130px !important;
   }
 
-  /* Lists */
   #permitPDF ol {
     padding-left: 16px;
     margin-bottom: 0;
@@ -195,13 +194,12 @@ body.print-mode #permitPDF .photo-box {
     margin-bottom: 2px;
   }
 
-  /* Prevent page breaks */
   #permitPDF,
   #permitPDF * {
     page-break-inside: avoid !important;
   }
 
-  /* Hide UI elements */
+
   .btn,
   #sidebar,
   nav {
@@ -328,29 +326,42 @@ body.print-mode #permitPDF {
 
     <hr>
 
-    <!-- PHOTO -->
-    <div class="d-flex justify-content-end mb-3">
-      <div style="width:160px">
-        <div class="border rounded ratio ratio-1x1 position-relative photo-box">
+<!-- NOTE + PHOTO ROW -->
+<div class="row align-items-start mb-3">
 
-          <img id="photoPreview" class="img-fluid d-none w-100 h-100 object-fit-cover">
+  <!-- NOTE (LEFT) -->
+  <div class="col-8">
+    <div class="permit-note">
+      PLEASE BRING THIS TEST PERMIT ON EXAMINATION DAY.
+    </div>
+  </div>
 
-          <div id="photoPlaceholder"
-               class="d-flex flex-column justify-content-center align-items-center small text-muted text-center h-100">
-            <strong>2 × 2 Picture</strong>
-            <span>white background</span>
-          </div>
+  <!-- PHOTO (RIGHT) -->
+  <div class="col-4 d-flex justify-content-end">
+    <div style="width:160px">
+      <div class="border rounded ratio ratio-1x1 position-relative photo-box">
 
-          <div class="upload-overlay d-flex justify-content-center align-items-center">
-            <label for="photoInput" class="btn btn-sm btn-outline-light">
-              Upload Photo
-            </label>
-          </div>
+        <img id="photoPreview" class="img-fluid d-none w-100 h-100 object-fit-cover">
+
+        <div id="photoPlaceholder"
+             class="d-flex flex-column justify-content-center align-items-center small text-muted text-center h-100">
+          <strong>2 × 2 Picture</strong>
+          <span>white background</span>
         </div>
 
-        <input type="file" id="photoInput" accept="image/*" hidden>
+        <div class="upload-overlay d-flex justify-content-center align-items-center">
+          <label for="photoInput" class="btn btn-sm btn-outline-light">
+            Upload Photo
+          </label>
+        </div>
       </div>
+
+      <input type="file" id="photoInput" accept="image/*" hidden>
     </div>
+  </div>
+
+</div>
+
 
     <!-- PERSONAL INFORMATION -->
 
@@ -431,7 +442,6 @@ body.print-mode #permitPDF {
     <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Guidelines</h6>
 
     <ol class="small text-muted">
-      <li> Please bring this test permit on examination day.</li>
       <li>Attach 2×2 ID picture with name tag in white background.</li>
       <li>Wear white shirt, maong pants, and rubber shoes on examination day.</li>
       <li>Bring a valid ID for verification purposes.</li>
