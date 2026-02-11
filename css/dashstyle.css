@@ -1,0 +1,262 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+li {
+	list-style: none;
+}
+
+
+:root {
+	--poppins: 'Poppins', sans-serif;
+	--lato: 'Lato', sans-serif;
+
+	--light: #ffffff;
+	--dark: #0f0f0f;
+	--grey: #f2f2f2;
+	--dark-grey: #9e9e9e;
+}
+
+
+html {
+	overflow-x: hidden;
+}
+
+body {
+	background: var(--dark);
+	color: var(--dark);
+	font-family: var(--poppins);
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+/* Brand */
+#sidebar .brand {
+	height: 56px;
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--dark);
+	padding: 0 10px;
+	background: var(--dark);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.logo {
+	width: 40px;
+	height: 40px;
+	margin-right: 10px;
+}
+
+#sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 280px;
+	height: 100%;
+	background: #151515;
+	font-family: var(--lato);
+	transition: 0.35s ease;
+	z-index: 2000;
+	border-right: 1px solid #1f1f1f;
+}
+
+#sidebar.hide {
+	width: 70px;
+}
+
+
+#sidebar .brand {
+	height: 56px;
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--light);
+	padding: 0 20px;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+/* Menu */
+#sidebar .side-menu {
+	margin-top: 48px;
+}
+
+#sidebar .side-menu li {
+	height: 48px;
+	margin: 8px 12px;
+	border-radius: 12px;
+}
+
+#sidebar .side-menu li a {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	padding-left: 12px;
+	font-size: 15px;
+	color: var(--light);
+	border-radius: 12px;
+	transition: 0.2s ease;
+}
+
+#sidebar .side-menu li a .bx {
+	min-width: 48px;
+	display: flex;
+	justify-content: center;
+	font-size: 18px;
+}
+
+#sidebar .side-menu li a:hover {
+	background: rgba(255, 255, 255, 0.08);
+}
+
+#sidebar .side-menu.top li.active a {
+	background: rgba(255, 255, 255, 0.15);
+	font-weight: 600;
+}
+
+#sidebar.hide .text {
+	display: none;
+}
+
+#content {
+	position: relative;
+	margin-left: 280px;
+	margin-top: 16px;
+	margin-right: 16px;
+
+	background: var(--light);
+	min-height: calc(100vh - 16px);
+
+	border-radius: 28px 0 0 0;
+	box-shadow: -12px 0 35px rgba(0, 0, 0, 0.25);
+
+	transition: 0.35s ease;
+	overflow: hidden;
+}
+
+#sidebar.hide ~ #content {
+	margin-left: 70px;
+	border-radius: 28px 0 0 0;
+}
+
+#content nav {
+	height: 56px;
+	background: var(--light);
+	display: flex;
+	align-items: center;
+	padding: 0 24px;
+	gap: 24px;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+
+	border-radius: 28px 0 0 0;
+	border-bottom: 1px solid var(--grey);
+}
+
+#content nav .bx-menu {
+	cursor: pointer;
+	font-size: 22px;
+	color: var(--dark);
+}
+
+#content nav form {
+	max-width: 400px;
+	width: 100%;
+	margin-right: auto;
+}
+
+#content nav form .form-input {
+	display: flex;
+	height: 36px;
+}
+
+#content nav form .form-input input {
+	flex-grow: 1;
+	padding: 0 16px;
+	border: none;
+	background: var(--grey);
+	border-radius: 18px 0 0 18px;
+	outline: none;
+}
+
+#content nav form .form-input button {
+	width: 36px;
+	border: none;
+	background: var(--dark);
+	color: var(--light);
+	border-radius: 0 18px 18px 0;
+	cursor: pointer;
+}
+
+#content nav .notification {
+	position: relative;
+	font-size: 20px;
+	color: var(--dark);
+}
+
+#content nav .notification .num {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: var(--dark);
+	color: var(--light);
+	font-size: 11px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Profile */
+#content nav .profile img {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+@media screen and (max-width: 768px) {
+	#sidebar {
+		width: 200px;
+	}
+
+	#content {
+		margin-left: 200px;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	#sidebar {
+		width: 70px;
+	}
+
+	#content {
+		margin-left: 70px;
+		border-radius: 24px 0 0 0;
+	}
+
+	#sidebar .text {
+		display: none;
+	}
+}

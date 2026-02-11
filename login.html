@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMMA Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" href="imgs/PSI.png">
+
+
+  <style>
+    .overflow-auto::-webkit-scrollbar { display: none; }
+  </style>
+
+</head>
+
+<body
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="
+    background: url('imgs/bg.jpg') center center / cover no-repeat fixed;
+  "
+>
+
+<div
+  class="position-fixed top-0 start-0 w-100 h-100"
+  style="
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 0;
+  ">
+</div>
+
+<body class="d-flex justify-content-center align-items-center">
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+      <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75">
+
+        <div class="card-body p-4">
+
+        <div class="d-flex justify-content-center align-items-center mb-4">
+          <img src="imgs/PSI.png" class="img-fluid" style="max-width:80px;">
+          <div class="mx-3" style="width:1px; height:40px; background-color:#8f8f8f;"></div>
+          <img src="imgs/PMMA.png" class="img-fluid" style="max-width:80px;">
+        </div>
+
+          <!-- LOGIN FORM -->
+          <div id="loginForm">
+            <form action="login.php" method="POST" novalidate>
+
+                            <div class="mb-3">
+                <label class="form-label fw-semibold">Test Permit</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-card-text"></i>
+                  </span>
+                  <input type="text" class="form-control" placeholder="123-456" required>
+                </div>
+              </div>
+
+
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-envelope-fill"></i>
+                  </span>
+                  <input type="email" class="form-control" name="email" placeholder="name@example.com" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Password</label>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-lock-fill"></i>
+                  </span>
+                  <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+                </div>
+              </div>
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-dark">LOG IN</button>
+              </div>
+
+              <div class="text-center mb-3">
+                <a href="#" class="text-decoration-none small fw-semibold"
+                  data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                  Forgot your password?
+                </a>
+              </div>
+
+              <div class="text-center">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="registration.html" class="fw-semibold text-decoration-none ms-1">Register</a>
+              </div>
+
+            </form>
+          </div>
+
+
+          <!-- FORGOT PASSWORD MODAL -->
+        <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+
+              <div class="modal-header border-0">
+                <h5 class="modal-title fw-semibold">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+
+              <form action="forgot_password.php" method="POST">
+                <div class="modal-body">
+
+                  <p class="text-muted small mb-3">
+                    Enter your email address and we’ll send you a password reset link.
+                  </p>
+
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold">Email Address</label>
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="bi bi-envelope-fill"></i>
+                      </span>
+                      <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="name@example.com"
+                        required
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal-footer border-0">
+                  <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    Cancel
+                  </button>
+                  <button type="submit" class="btn btn-dark">
+                    Send Reset Link
+                  </button>
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

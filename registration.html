@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PMMA Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" href="imgs/PSI.png">
+
+  <style>
+    .overflow-auto::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+
+<body
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="background: url('imgs/bg.jpg') center center / cover no-repeat fixed;"
+>
+
+<div
+  class="position-fixed top-0 start-0 w-100 h-100"
+  style="backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 0;">
+</div>
+
+<div class="container position-relative" style="z-index: 1;">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+
+      <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75">
+        <div class="card-body p-4">
+
+        <div class="d-flex justify-content-center align-items-center mb-4">
+          <img src="imgs/PSI.png" class="img-fluid" style="max-width:80px;">
+          <div class="mx-3" style="width:1px; height:40px; background-color:#8f8f8f;"></div>
+          <img src="imgs/PMMA.png" class="img-fluid" style="max-width:80px;">
+        </div>
+
+          <!-- REGISTER FORM -->
+          <form class="overflow-auto" style="max-height: 60vh;" action="register.php" method="POST" novalidate>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">First Name</label>
+              <input type="text" class="form-control" name="first_name" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Middle Name</label>
+              <input type="text" class="form-control" name="middle_name">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Last Name</label>
+              <input type="text" class="form-control" name="last_name" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Date of Birth</label>
+              <input type="date" class="form-control" name="date_of_birth" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Address</label>
+              <input type="text" class="form-control" name="address">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Contact Number</label>
+              <input type="tel" class="form-control" name="contact_number" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email Address</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">PMMA Student ID</label>
+              <input type="text" class="form-control" name="pmma_student_id">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Test PermitS</label>
+              <input type="text" class="form-control" name="test_permit">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Password</label>
+              <input type="password" class="form-control" name="password" minlength="8" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Confirm Password</label>
+              <input type="password" class="form-control" name="confirm_password" required>
+            </div>
+
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-dark">
+                REGISTER
+              </button>
+            </div>
+
+            <div class="text-center">
+              <span class="text-muted">Already have an account?</span>
+              <a href="login.html" class="fw-semibold text-decoration-none ms-1">Login</a>
+            </div>
+            
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
