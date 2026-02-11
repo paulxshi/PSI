@@ -13,6 +13,7 @@
 </head>
 
 <style>
+  
 .photo-box {
   cursor: pointer;
 }
@@ -29,10 +30,111 @@
   opacity: 1;
 }
 
+#permitPDF {
+  font-family: "Times New Roman", Georgia, serif;
+  color: #000;
+  padding: 30px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.permit-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  display: inline-block;
+  padding: 6px 18px;
+  margin-top: 15px;
+}
+
 @media print {
-  body {
-    background: #fff !important;
+  main {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
+}
+
+
+@media print {
+
+  /* Reset entire page */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
+
+  /* Completely remove non-PDF layout */
+  #sidebar,
+  nav,
+  main > *:not(#permitPDF),
+  .btn {
+    display: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Remove Bootstrap container spacing */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Force permit to be FIRST printable content */
+  #permitPDF {
+    position: relative;
+    top: 0;
+    left: 0;
+
+    margin: 0 auto !important;
+    padding: 15mm 14mm !important;
+
+    width: 210mm;
+    min-height: 297mm;
+
+    box-shadow: none !important;
+    page-break-before: avoid !important;
+  }
+
+  /* Prevent phantom page */
+  body {
+    overflow: hidden !important;
+  }
+}
+
+
+@media print {
+  .print-signature {
+    display: block !important;
+  }
+}
+
+/* Also show during html2pdf */
+body.print-mode .print-signature {
+  display: block !important;
+}
+
+@media print {
+body.print-mode #permitPDF {
+  max-width: 210mm;
+  min-height: 297mm;
+  padding: 15mm 14mm;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+body.print-mode #permitPDF h6 {
+  margin-bottom: 5px !important;
+}
+
+body.print-mode #permitPDF .row {
+  margin-bottom: 6px !important;
+}
+
+body.print-mode #permitPDF .photo-box {
+  width: 130px !important;
+}
 
   main {
     padding: 0 !important;
@@ -45,7 +147,119 @@
   #sidebar, nav {
     display: none !important;
   }
+  
+  #permitPDF {
+    box-shadow: none !important;
+  }
+  #permitPDF {
+    max-width: 210mm;
+    min-height: 297mm;
+    padding: 15mm 14mm;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  /* Compact header */
+  #permitPDF .text-center {
+    margin-bottom: 8px !important;
+  }
+
+  #permitPDF hr {
+    margin: 6px 0;
+  }
+
+  /* Section titles */
+  #permitPDF h6 {
+    margin-bottom: 5px !important;
+    padding-bottom: 3px !important;
+    font-size: 13px;
+  }
+
+  /* Reduce spacing between rows */
+  #permitPDF .row {
+    margin-bottom: 6px !important;
+  }
+
+  /* Photo size for print */
+  #permitPDF .photo-box {
+    width: 130px !important;
+  }
+
+  /* Lists */
+  #permitPDF ol {
+    padding-left: 16px;
+    margin-bottom: 0;
+  }
+
+  #permitPDF li {
+    margin-bottom: 2px;
+  }
+
+  /* Prevent page breaks */
+  #permitPDF,
+  #permitPDF * {
+    page-break-inside: avoid !important;
+  }
+
+  /* Hide UI elements */
+  .btn,
+  #sidebar,
+  nav {
+    display: none !important;
+  }
+
+    body {
+    background: #fff !important;
+  }
+
+  #permitPDF {
+    max-width: 210mm;
+    min-height: 297mm;
+    padding: 15mm 14mm;
+    font-size: 12px;
+    line-height: 1.3;
+    transform-origin: top center;
+  }
+
+  /* Compact spacing */
+  #permitPDF h6 {
+    font-size: 13px;
+    margin-bottom: 5px !important;
+    padding-bottom: 3px !important;
+  }
+
+  #permitPDF .row {
+    margin-bottom: 6px !important;
+  }
+
+  #permitPDF hr {
+    margin: 6px 0;
+  }
+
+  /* Prevent page breaks */
+  #permitPDF,
+  #permitPDF * {
+    page-break-inside: avoid !important;
+  }
+
+  /* Hide UI */
+  .btn,
+  #sidebar,
+  nav {
+    display: none !important;
+  }
 }
+
+/* Activate print layout during PDF generation */
+body.print-mode #permitPDF {
+  max-width: 210mm;
+  min-height: 297mm;
+  padding: 15mm 14mm;
+  font-size: 12px;
+  line-height: 1.3;
+
+}
+
 
 </style>
 
@@ -92,7 +306,7 @@
 		</nav>
 
 <!-- MAIN CONTENT -->
-<main class="container my-5">
+<main class="container py-3">
 
   <!-- PERMIT PDF AREA -->
   <div id="permitPDF" class="bg-white p-4 shadow-sm">
@@ -225,14 +439,29 @@
       <li>No cellphone inside the testing room.</li>
     </ol>
 
+    <!-- PRINT-ONLY SIGNATURE -->
+<div class="print-signature mt-4 d-none">
+  <p class="fst-italic mb-4">Verified by:</p>
+
+  <div style="margin-top:40px; width:260px;">
+    <div style="border-bottom:1px solid #000; height:30px;"></div>
+    <div class="small text-center mt-1">
+      Signature over Printed Name
+    </div>
+    <div class="small fst-italic text-center mt-1">
+      (to be filled by the official representative of PSI)
+    </div>
+  </div>
+</div>
+
   </div>
 
-  <!-- PDF BUTTON (OUTSIDE permitPDF) -->
-  <div class="text-end mt-4">
-    <button id="generatePDF" class="btn btn-outline-primary">
-      <i class="bx bx-download"></i> Generate PDF
-    </button>
-  </div>
+<div class="d-flex justify-content-center mt-4">
+  <button id="generatePDF" class="btn btn-danger px-4 py-2">
+    <i class="bx bx-download me-2"></i>
+    Generate PDF
+  </button>
+</div>
 
 </main>
 
@@ -258,20 +487,31 @@
     reader.readAsDataURL(file);
   });
 
-  // GENERATE PDF
-  document.getElementById('generatePDF').addEventListener('click', () => {
+document.getElementById('generatePDF').addEventListener('click', async () => {
+  const permit = document.getElementById('permitPDF');
 
-    const element = document.getElementById('permitPDF');
+  document.body.classList.add('print-mode');
 
-    html2pdf().from(element).set({
-      margin: 0.5,
-      filename: 'PMMA_Test_Permit.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    }).save();
+  await html2pdf().set({
+    margin: 0,
+    filename: 'PMMA_Test_Permit.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: 'mm',
+      format: 'a4',
+      orientation: 'portrait'
+    },
+    pagebreak: { mode: ['avoid-all'] }
+  }).from(permit).save();
 
-  });
+  document.body.classList.remove('print-mode');
+});
+
 </script>
 
 </body>
