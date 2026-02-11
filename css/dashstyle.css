@@ -161,13 +161,13 @@ body {
 	height: 56px;
 	background: var(--light);
 	display: flex;
+	justify-content: flex-end;
 	align-items: center;
 	padding: 0 24px;
 	gap: 24px;
 	position: sticky;
 	top: 0;
 	z-index: 1000;
-
 	border-radius: 28px 0 0 0;
 	border-bottom: 1px solid var(--grey);
 }
