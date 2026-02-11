@@ -6,12 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="imgs/PSI.png">
+  <!-- Flatpickr CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
   <style>
     .overflow-auto::-webkit-scrollbar {
       display: none;
+    }
+    .otp-verified-badge {
+      background-color: #198754;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 8px;
+    }
+    /* Flatpickr custom styling */
+    .flatpickr-calendar {
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
   </style>
 </head>
@@ -40,94 +55,112 @@
         </div>
 
           <!-- REGISTER FORM -->
-          <form class="overflow-auto" style="max-height: 60vh;" action="phpregister.php" method="POST" novalidate>
+          <form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
 
             <div class="mb-3">
-              <label class="form-label fw-semibold">First Name</label>
-              <input type="text" class="form-control" name="first_name" required>
+              <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="first_name" id="firstName" required>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">Middle Name</label>
-              <input type="text" class="form-control" name="middle_name">
+              <input type="text" class="form-control" name="middle_name" id="middleName">
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-semibold">Last Name</label>
-              <input type="text" class="form-control" name="last_name" required>
+              <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="last_name" id="lastName" required>
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-semibold">Date of Birth</label>
-              <input type="date" class="form-control" name="date_of_birth" required>
+              <label class="form-label fw-semibold">Date of Birth <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="date_of_birth" id="dateOfBirth" required placeholder="Select date">
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">Gender</label>
-              <input type="text" class="form-control" name="gender">
+              <select class="form-select" name="gender" id="gender">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
             </div>
 
             <div class="mb-3">
               <label class="form-label fw-semibold">Nationality</label>
-              <input type="text" class="form-control" name="nationality">
+              <input type="text" class="form-control" name="nationality" id="nationality" placeholder="e.g., Filipino">
             </div>
             
             <div class="mb-3">
-              <label class="form-label fw-semibold">Contact Number</label>
-              <input type="tel" class="form-control" name="contact_number" required>
+              <label class="form-label fw-semibold">Contact Number <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control" name="contact_number" id="contactNumber" required placeholder="e.g., 09123456789">
             </div>
 
-            
-              <div class="mb-2">
-                <label class="form-label fw-semibold">Email Address</label>
-                <input type="email" class="form-control" name="email" id="email" required>
+            <!-- EMAIL SECTION -->
+            <div class="mb-2">
+              <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com">
+                <button type="button" id="sendOtpBtn" class="btn btn-outline-primary" style="display:none;">
+                  Send OTP
+                </button>
+                <span id="otpVerifiedBadge" class="otp-verified-badge" style="display:none;">
+                  <i class="bi bi-check-circle"></i> Verified
+                </span>
+              </div>
+              <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
+            </div>
+
+            <!-- RESEND OTP BUTTON -->
+            <div class="mb-3">
+              <small
+                id="resendOtpBtn"
+                class="text-primary fw-semibold"
+                style="cursor:pointer; display:none;"
+              >
+                Resend OTP
+              </small>
+            </div>
+
+            <!-- OTP INPUT SECTION -->
+            <div id="otpContainer" class="mb-3" style="display:none;">
+              <label class="form-label fw-semibold">OTP Code <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control text-center"
+                  id="otpInput"
+                  maxlength="6"
+                  placeholder="000000"
+                  style="letter-spacing: 0.5rem; font-size: 1.1rem;"
+                >
+                <button type="button" id="verifyOtpBtn" class="btn btn-success">
+                  Verify OTP
+                </button>
+              </div>
+              <small class="text-muted">Enter the 6-digit code sent to your email</small>
+            </div>
+
+            <!-- PASSWORD SECTION (shown after OTP verification) -->
+            <div id="passwordSection" style="display:none;">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" name="password" id="password" minlength="8" required placeholder="At least 8 characters">
+                <div id="passwordStrength" class="mt-1"></div>
+                <small class="text-muted">Must contain uppercase, lowercase, and number</small>
               </div>
 
-                    <!-- SEND OTP -->
-                    <div class="mb-3">
-                      <small
-                        id="sendOtpBtn"
-                        class="text-primary fw-semibold"
-                        style="cursor:pointer; display:none;"
-                      >
-                        Send OTP
-                      </small>
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required placeholder="Re-enter password">
+              </div>
 
-                      <small
-                        id="resendOtpBtn"
-                        class="text-muted fw-semibold ms-2"
-                        style="cursor:pointer; display:none;"
-                      >
-                        Resend OTP (05:00)
-                      </small>
-                    </div>
-
-                    <!-- OTP INPUT -->
-                    <div class="mb-3" id="otpContainer" style="display:none;">
-                      <label class="form-label fw-semibold">OTP Code</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="otp"
-                        maxlength="6"
-                        placeholder="Enter 6-digit OTP"
-                      >
-                    </div>
-
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Password</label>
-              <input type="password" class="form-control" name="password" minlength="8" required>
-            </div>
-
-            <div class="mb-4">
-              <label class="form-label fw-semibold">Confirm Password</label>
-              <input type="password" class="form-control" name="confirm_password" required>
-            </div>
-
-            <div class="d-grid mb-3">
-              <button type="submit" class="btn btn-dark">
-                REGISTER
-              </button>
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-dark" id="registerBtn" disabled>
+                  REGISTER
+                </button>
+              </div>
             </div>
 
             <div class="text-center">
@@ -143,87 +176,9 @@
   </div>
 </div>
 
-
-<script>
-  const emailInput = document.getElementById("email");
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
-  const resendOtpBtn = document.getElementById("resendOtpBtn");
-  const otpContainer = document.getElementById("otpContainer");
-
-  let cooldown = 300; // 5 minutes
-  let timer = null;
-  let isCooldownActive = false;
-
-  emailInput.addEventListener("input", () => {
-    if (emailInput.validity.valid) {
-      sendOtpBtn.style.display = "inline";
-    } else {
-      sendOtpBtn.style.display = "none";
-    }
-  });
-
-  sendOtpBtn.addEventListener("click", () => sendOtp(true));
-  resendOtpBtn.addEventListener("click", () => {
-    if (!isCooldownActive) sendOtp(false);
-  });
-
-  function sendOtp(isFirstSend) {
-    if (isCooldownActive) return; // 🔒 HARD BLOCK
-
-    isCooldownActive = true;
-
-    sendOtpBtn.style.display = "none";
-    otpContainer.style.display = "block";
-
-    lockResendButton();
-    startCooldown();
-
-    fetch("php/send_otp.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: emailInput.value })
-    });
-  }
-
-  function startCooldown() {
-    let remaining = cooldown;
-    updateText(remaining);
-
-    timer = setInterval(() => {
-      remaining--;
-      updateText(remaining);
-
-      if (remaining <= 0) {
-        clearInterval(timer);
-        unlockResendButton();
-      }
-    }, 1000);
-  }
-
-  function lockResendButton() {
-    resendOtpBtn.style.display = "inline";
-    resendOtpBtn.style.pointerEvents = "none";
-    resendOtpBtn.style.cursor = "not-allowed";
-    resendOtpBtn.classList.remove("text-primary");
-    resendOtpBtn.classList.add("text-muted");
-  }
-
-  function unlockResendButton() {
-    isCooldownActive = false;
-    resendOtpBtn.style.pointerEvents = "auto";
-    resendOtpBtn.style.cursor = "pointer";
-    resendOtpBtn.textContent = "Resend OTP";
-    resendOtpBtn.classList.remove("text-muted");
-    resendOtpBtn.classList.add("text-primary");
-  }
-
-  function updateText(seconds) {
-    const min = String(Math.floor(seconds / 60)).padStart(2, "0");
-    const sec = String(seconds % 60).padStart(2, "0");
-    resendOtpBtn.textContent = `Resend OTP (${min}:${sec})`;
-  }
-</script>
-
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+<script src="js/registration.js"></script>
 
 </body>
 </html>

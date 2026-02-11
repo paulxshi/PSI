@@ -1,14 +1,17 @@
 <?php
-require __DIR__ . '/db.php';
+require_once __DIR__ . '/../config/db.php';
+
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    exit('Method not allowed');
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    exit;
 }
 
-function respond($message, $code = 400) {
+function respond($success, $message, $code = 400) {
     http_response_code($code);
-    echo $message;
+    echo json_encode(['success' => $success, 'message' => $message]);
     exit;
 }
 
@@ -20,31 +23,55 @@ $date_of_birth = trim($_POST['date_of_birth'] ?? '');
 $age = trim($_POST['age'] ?? '');
 $address = trim($_POST['address'] ?? '');
 $contact_number = trim($_POST['contact_number'] ?? '');
-$pmma_student_id = trim($_POST['pmma_student_id'] ?? '');
-$test_permit = trim($_POST['test_permit'] ?? '');
+$gender = trim($_POST['gender'] ?? '');
+$nationality = trim($_POST['nationality'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
+$otp_verified = $_POST['otp_verified'] ?? '';
+
+// Check if OTP was verified
+if ($otp_verified !== 'true') {
+    respond(false, 'Email verification is required. Please verify your email with OTP first.', 400);
+}
 
 $errors = [];
 
+// Required field validation
 if ($last_name === '' || $first_name === '' || $email === '' || $date_of_birth === '' || $contact_number === '' || $password === '' || $confirm_password === '') {
     $errors[] = 'Please fill in all required fields.';
 }
+
+// Email validation
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'Invalid email address.';
 }
+
+// Password match validation
 if ($password !== $confirm_password) {
     $errors[] = 'Passwords do not match.';
 }
+
+// Password strength validation
 if (strlen($password) < 8) {
     $errors[] = 'Password must be at least 8 characters.';
 }
+if (!preg_match('/[A-Z]/', $password)) {
+    $errors[] = 'Password must contain at least one uppercase letter.';
+}
+if (!preg_match('/[a-z]/', $password)) {
+    $errors[] = 'Password must contain at least one lowercase letter.';
+}
+if (!preg_match('/[0-9]/', $password)) {
+    $errors[] = 'Password must contain at least one number.';
+}
 
+// Date of birth validation
 $dobDate = DateTime::createFromFormat('Y-m-d', $date_of_birth);
 if (!$dobDate || $dobDate->format('Y-m-d') !== $date_of_birth) {
     $errors[] = 'Invalid date of birth.';
 }
 
+// Calculate age
 $ageVal = null;
 if ($dobDate) {
     $today = new DateTime('today');
@@ -52,39 +79,39 @@ if ($dobDate) {
 }
 
 if ($errors) {
-    respond(implode("<br>", $errors), 422);
+    respond(false, implode('<br>', $errors), 422);
 }
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, address, contact_number, password, pmma_student_id, test_permit)
-            VALUES (:last_name, :first_name, :middle_name, :email, :dob, :age, :address, :contact, :password, :pmma, :permit)';
+    // Use empty string for NOT NULL columns instead of null
+    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, address, contact_number, password, gender, nationality)
+            VALUES (:last_name, :first_name, :middle_name, :email, :dob, :age, :address, :contact, :password, :gender, :nationality)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':last_name' => $last_name,
         ':first_name' => $first_name,
-        ':middle_name' => $middle_name !== '' ? $middle_name : null,
+        ':middle_name' => $middle_name !== '' ? $middle_name : '',
         ':email' => $email,
         ':dob' => $date_of_birth,
-        ':age' => $ageVal,
-        ':address' => $address !== '' ? $address : null,
+        ':age' => $ageVal !== null ? $ageVal : 0,
+        ':address' => $address !== '' ? $address : '',
         ':contact' => $contact_number,
         ':password' => $hash,
-        ':pmma' => $pmma_student_id !== '' ? $pmma_student_id : null,
-        ':permit' => $test_permit !== '' ? $test_permit : null,
+        ':gender' => $gender !== '' ? $gender : '',
+        ':nationality' => $nationality !== '' ? $nationality : '',
     ]);
 
-    header('Location: login.html?registered=1');
-    exit;
+    respond(true, 'Registration successful!', 200);
 } catch (PDOException $e) {
+    error_log('Registration error: ' . $e->getMessage());
     if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
         $msg = 'Duplicate entry';
         $text = $e->getMessage();
         if (stripos($text, 'email') !== false) $msg = 'Email already registered.';
-        elseif (stripos($text, 'pmma_student_id') !== false) $msg = 'PMMA Student ID already registered.';
-        elseif (stripos($text, 'test_permit') !== false) $msg = 'Test Permit already registered.';
-        respond($msg, 409);
+        elseif (stripos($text, 'contact_number') !== false) $msg = 'Contact number already registered.';
+        respond(false, $msg, 409);
     }
-    respond('Registration failed. Please try again later.', 500);
+    respond(false, 'Registration failed. Please try again later.', 500);
 }
