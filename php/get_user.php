@@ -7,7 +7,7 @@ require_once "../config/db.php"; // PDO connection
 $defaultUser = [
     "first_name" => "Juan",
     "middle_name" => "D",
-    "last_name" => "Dela Cruz",
+    "last_name" => "Delos Reyes",
     "email" => "juan.delacruz@pmma.edu.ph",
     "contact_number" => "9123456789",
     "date_of_birth" => "2004-03-15",
@@ -26,7 +26,7 @@ try {
 
     $stmt = $pdo->prepare("
         SELECT u.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.contact_number, 
-               u.date_of_birth, u.age, t.test_permit
+               u.date_of_birth, u.age, t.test_permit, t.date_of_registration, t.purpose
         FROM users u
         LEFT JOIN test t ON u.user_id = t.user_id
         WHERE u.user_id = ?
@@ -46,3 +46,4 @@ try {
     // If DB connection fails → fallback
     echo json_encode(["success" => true, "user" => $defaultUser]);
 }
+

@@ -5,12 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        container.innerHTML = `<p class="text-danger">${data.message}</p>`;
+        container.innerHTML = `<p class="text-danger">${data.message || "Failed to load user data."}</p>`;
         return;
       }
 
       const user = data.user;
 
+      // Format date of birth
       const dob = new Date(user.date_of_birth);
       const dobFormatted = dob.toLocaleDateString('en-US', {
         month: 'long',
@@ -18,6 +19,22 @@ document.addEventListener("DOMContentLoaded", () => {
         year: 'numeric'
       });
 
+      // Format date of registration
+      const regDate = user.date_of_registration 
+        ? new Date(user.date_of_registration).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })
+        : "N/A";
+
+      // Populate exam-info section if exists
+      const regDateEl = document.getElementById("registration-date");
+      const purposeEl = document.getElementById("purpose");
+      if (regDateEl) regDateEl.textContent = regDate;
+      if (purposeEl) purposeEl.textContent = user.purpose || "N/A";
+
+      // Build user card
       const card = `
         <div class="col-12 col-lg-6 col-xl-4">
           <div class="card border-1 rounded-3 h-100">
