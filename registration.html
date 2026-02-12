@@ -400,148 +400,81 @@
       </div>
     </div>
 
-    <!-- EXAM SCHEDULE SECTION -->
-    <div id="examScheduleCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-      <div class="card-body p-4">
+            <div id="examScheduleCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+  <div class="card-body p-4">
 
-        <h6 class="fw-semibold mb-4">
-          <i class="bi bi-calendar-check me-2 text-primary"></i>
-          Examination Schedule
-        </h6>
+    <h6 class="fw-semibold mb-4">
+      <i class="bi bi-calendar-check me-2 text-primary"></i>
+      Examination Schedule
+    </h6>
 
-        <!-- ROW 1: REGION -->
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Region <span class="text-danger">*</span>
-            </label>
-            <select class="form-select" name="region" id="region" required>
-              <option value="">Select Region</option>
-              <option value="luzon">Luzon</option>
-              <option value="visayas">Visayas</option>
-              <option value="mindanao">Mindanao</option>
-            </select>
-          </div>
+    <!-- ROW 1: REGION -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">
+          Region <span class="text-danger">*</span>
+        </label>
+        <select class="form-select" disabled>
+          <option selected>
+            Select Region (assigned by administration)
+          </option>
+          <option>Luzon</option>
+          <option>Visayas</option>
+          <option>Mindanao</option>
+        </select>
+      </div>
 
-          <!-- EXAM VENUE -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Examination Venue <span class="text-danger">*</span>
-            </label>
-            <select class="form-select" name="exam_venue" id="examVenue" required>
-              <option value="">Select Examination Venue</option>
-              <option value="pmma">PMMA Main Campus</option>
-              <option value="regional">Regional Testing Center</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- ROW 2: EXAM DATE -->
-        <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Examination Date <span class="text-danger">*</span>
-            </label>
-            <select class="form-select" name="exam_date" id="examDate" required>
-              <option value="">Select Examination Date</option>
-              <option value="2024-03-15">March 15, 2024</option>
-              <option value="2024-03-22">March 22, 2024</option>
-              <option value="2024-03-29">March 29, 2024</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- ACTION BUTTON -->
-        <div class="d-flex justify-content-end">
-          <button
-            type="button"
-            class="btn btn-primary px-4 rounded-pill"
-            onclick="goToPayment()"
-          >
-            Proceed to Payment
-            <i class="bi bi-arrow-right ms-1"></i>
-          </button>
-        </div>
-
+      <!-- EXAM VENUE -->
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">
+          Examination Venue <span class="text-danger">*</span>
+        </label>
+        <select class="form-select" disabled>
+          <option selected>
+            Select Examination Venue
+          </option>
+          <option>Venue options will be provided by administration</option>
+        </select>
       </div>
     </div>
 
-    <!-- PAYMENT SECTION -->
-    <div id="paymentCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-      <div class="card-body p-4">
-
-        <h6 class="fw-semibold mb-4">
-          <i class="bi bi-credit-card me-2 text-primary"></i>
-          Payment
-        </h6>
-
-        <div class="alert alert-info mb-4">
-          <i class="bi bi-info-circle me-2"></i>
-          Registration Fee: <strong>₱500.00</strong>
-        </div>
-
-        <!-- Payment Method -->
-        <div class="row g-3 mb-4">
-          <div class="col-12">
-            <label class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></label>
-            <select class="form-select" name="payment_method" id="paymentMethod" required>
-              <option value="">Select Payment Method</option>
-              <option value="gcash">GCash</option>
-              <option value="paymaya">PayMaya</option>
-              <option value="bank">Bank Transfer</option>
-              <option value="overcounter">Over the Counter</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Reference Number -->
-        <div class="row g-3 mb-4">
-          <div class="col-12">
-            <label class="form-label fw-semibold">Reference Number <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="payment_reference" id="paymentReference" placeholder="Enter payment reference number">
-          </div>
-        </div>
-
-        <!-- Payment Date -->
-        <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
-            <input type="date" class="form-control" name="payment_date" id="paymentDate" required>
-          </div>
-        </div>
-
-        <!-- ACTION BUTTON -->
-        <div class="d-flex justify-content-end">
-          <button
-            type="button"
-            class="btn btn-primary px-4 rounded-pill"
-            onclick="finishRegistration()"
-          >
-            Complete Registration
-            <i class="bi bi-check-circle ms-1"></i>
-          </button>
-        </div>
-
+    <!-- ROW 2: EXAM DATE -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label class="form-label fw-semibold">
+          Examination Date <span class="text-danger">*</span>
+        </label>
+        <select class="form-select" disabled>
+          <option selected>
+            Select Examination Date
+          </option>
+          <option>Date options will be scheduled by administration</option>
+        </select>
       </div>
     </div>
 
-    <!-- REGISTRATION COMPLETE -->
-    <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-      <div class="card-body p-4 text-center">
-        <div class="mb-4">
-          <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-        </div>
-        <h5 class="fw-semibold mb-3">Registration Complete!</h5>
-        <p class="text-muted mb-4">
-          Your registration has been successfully submitted.
-          Please log in to view your examination schedule and payment status.
-        </p>
-        <a href="login.html" class="btn btn-primary px-4 rounded-pill">
-          Go to Login
-          <i class="bi bi-arrow-right ms-1"></i>
-        </a>
-      </div>
+    <!-- INFORMATION NOTE -->
+    <div class="alert alert-light border rounded-3 small text-muted mb-4">
+      <i class="bi bi-info-circle me-1"></i>
+      Examination schedules, including region, venue, and date, are created
+      and assigned by the Philippine Maritime Maritime Academy (PMMA).
+      Available options will appear once officially released by the administration.
     </div>
+
+    <!-- ACTION BUTTON -->
+    <div class="d-flex justify-content-end">
+      <button
+        type="button"
+        class="btn btn-primary px-4 rounded-pill"
+        onclick="goToStep(4)"
+      >
+        Proceed
+        <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
 
           </form>
 

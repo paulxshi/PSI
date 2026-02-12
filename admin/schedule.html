@@ -121,7 +121,7 @@
 
                 <h6 class="fw-semibold mb-3">Schedule Details</h6>
 
-                <form>
+                <form method="POST" action="php/save_schedule.php">
 
                     <!-- Area -->
                     <div class="mb-4">
@@ -214,9 +214,9 @@
                     <button type="reset" class="btn btn-light">
                         Clear
                     </button>
-                    <button type="submit" class="btn btn-dark">
-                        Create Schedule
-                    </button>
+                  <button type="button" class="btn btn-dark" id="createSchedBtn">
+                           Create Schedule
+                  </button>
 
                     </div>
 
@@ -273,6 +273,36 @@
 
         </main>
 
+
+
+        <!-- Confirmation Modal -->
+<div class="modal fade" id="confirmScheduleModal" tabindex="-1" aria-labelledby="confirmScheduleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmScheduleLabel">Confirm Schedule Creation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body">
+        Are you sure you want to create this schedule?
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-dark" id="confirmCreateBtn">
+          Yes, Create
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
         <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -290,42 +320,11 @@
                 </div>
             </div>
         </div>
-        <script>
-        document.querySelector("form").addEventListener("submit", function (e) {
-            e.preventDefault();
 
-            // Get values
-            const region = document.querySelector("[name='exam_region']").value;
-            const venue = document.querySelector("[name='exam_area']").value;
-            const month = document.querySelector("[name='exam_month']").value;
-            const day = document.querySelector("[name='exam_day']").value;
-            const year = document.querySelector("[name='exam_year']").value;
-            const limit = document.querySelector("[name='exam_limit']").value;
 
-            if (!region || !venue || !month || !day || !year || !limit) {
-                alert("Please complete all fields.");
-                return;
-            }
 
-            // Format exam date
-            const examDate = `${month} ${day}, ${year}`;
 
-            // Inject preview values
-            document.getElementById("previewRegion").textContent = region;
-            document.getElementById("previewVenue").textContent = venue;
-            document.getElementById("previewDate").textContent = examDate;
-            document.getElementById("previewLimit").textContent = `${limit} Examinees`;
-
-            // Enable publish button
-            document.getElementById("publishBtn").disabled = false;
-        });
-
-        // Publish placeholder
-        document.getElementById("publishBtn").addEventListener("click", function () {
-            alert("Schedule published successfully!");
-        });
-        </script>
-
+<script src="js/schedule.js"></script>
 
     </body>
     </html>
