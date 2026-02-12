@@ -123,27 +123,27 @@
 
                 <form method="POST" action="php/save_schedule.php">
 
-                    <!-- Area -->
-                    <div class="mb-4">
-                        <label class="form-label fw-medium mb-2">Exam Location</label>
+<div class="mb-4">
+    <label class="form-label fw-medium mb-2">Exam Location</label>
 
-                        <!-- Region -->
-                        <select class="form-select mb-3" name="exam_region" required>
-                            <option value="">Select Region</option>
-                            <option value="Luzon">Luzon</option>
-                            <option value="Visayas">Visayas</option>
-                            <option value="Mindanao">Mindanao</option>
-                        </select>
+    <!-- Region Dropdown -->
+    <select class="form-select mb-3" name="exam_region" id="exam_region" required>
+        <option value="">Select Region</option>
+        <option value="Luzon">Luzon</option>
+        <option value="Visayas">Visayas</option>
+        <option value="Mindanao">Mindanao</option>
+    </select>
 
-                        <!-- Manual Venue Input -->
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Please enter Examination venue"
-                            name="exam_area"
-                            required
-                        >
-                    </div>
+    <!-- Venue Input -->
+    <input
+        type="text"
+        class="form-control"
+        placeholder="Please enter Examination venue"
+        name="exam_area"
+        id="exam_area"
+        required
+    >
+</div>
 
 
                     <!-- Date Row -->
@@ -322,6 +322,51 @@
         </div>
 
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const regionSelect = document.getElementById("exam_region");
+    const venueInput = document.getElementById("exam_area");
+
+    fetch("php/get_venues.php")
+        .then(res => res.json())
+        .then(data => {
+
+            data.forEach(venue => {
+
+                const option = document.createElement("option");
+
+                // Display format
+                option.textContent = `${venue.region}, ${venue.venue_name}`;
+
+                // Store both values internally
+                option.value = `${venue.region}|${venue.venue_name}`;
+
+                regionSelect.appendChild(option);
+            });
+
+        });
+
+    // When user selects something
+    regionSelect.addEventListener("change", function () {
+
+        if (this.value.includes("|")) {
+
+            const [region, venue] = this.value.split("|");
+
+            // Set region dropdown to only region
+            this.value = region;
+
+            // Autofill venue
+            venueInput.value = venue;
+        }
+
+    });
+
+});
+
+</script>
 
 
 <script src="js/schedule.js"></script>
