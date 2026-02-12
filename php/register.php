@@ -82,6 +82,29 @@ if ($errors) {
     respond(false, implode('<br>', $errors), 422);
 }
 
+
+// Check if user already exists (same name, DOB, gender)
+$checkSql = "SELECT user_id FROM users 
+             WHERE first_name = :first_name 
+             AND last_name = :last_name 
+             AND date_of_birth = :dob 
+             AND gender = :gender 
+             LIMIT 1";
+
+$checkStmt = $pdo->prepare($checkSql);
+$checkStmt->execute([
+    ':first_name' => $first_name,
+    ':last_name'  => $last_name,
+    ':dob'        => $date_of_birth,
+    ':gender'     => $gender !== '' ? $gender : ''
+]);
+
+if ($checkStmt->fetch()) {
+    respond(false, 'User already registered.', 409);
+}
+
+
+
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
@@ -107,7 +130,7 @@ try {
 } catch (PDOException $e) {
     error_log('Registration error: ' . $e->getMessage());
     if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
-        $msg = 'Duplicate entry';
+        $msg = 'User already registered.';
         $text = $e->getMessage();
         if (stripos($text, 'email') !== false) $msg = 'Email already registered.';
         elseif (stripos($text, 'contact_number') !== false) $msg = 'Contact number already registered.';
