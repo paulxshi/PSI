@@ -93,8 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const otp = Array.from(otpInputs).map(input => input.value).join('');
         
-        if (otp.length !== 6) {
-            showMessage('Please enter the complete 6-digit OTP', 'error');
+        const storedOtp = sessionStorage.getItem('reset_otp');
+        if (otp !== storedOtp) {
+            showMessage('Invalid OTP', 'error');
+            verifyBtn.disabled = false;
+            btnText.style.display = 'inline-block';
+            loading.style.display = 'none';
             return;
         }
         
@@ -104,13 +108,15 @@ document.addEventListener('DOMContentLoaded', function() {
         loading.style.display = 'inline-block';
         hideMessage();
         
+        const otp_verified = true;
+        
         try {
             const response = await fetch('php/verify_otp.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, otp })
+                body: JSON.stringify({ email, otp, otp_verified })
             });
             
             const data = await response.json();

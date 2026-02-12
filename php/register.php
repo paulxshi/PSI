@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . '/../config/db.php';
 
 header('Content-Type: application/json');
@@ -23,13 +24,21 @@ $first_name = trim($_POST['first_name'] ?? '');
 $middle_name = trim($_POST['middle_name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $date_of_birth = trim($_POST['date_of_birth'] ?? '');
-$age = trim($_POST['age'] ?? '');
-$address = trim($_POST['address'] ?? '');
 $contact_number = trim($_POST['contact_number'] ?? '');
 $gender = trim($_POST['gender'] ?? '');
-$nationality = trim($_POST['nationality'] ?? '');
+$school = trim($_POST['school'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
+
+// Exam schedule fields
+$region = trim($_POST['region'] ?? '');
+$exam_venue = trim($_POST['exam_venue'] ?? '');
+$exam_date = trim($_POST['exam_date'] ?? '');
+
+// Payment fields
+$payment_method = trim($_POST['payment_method'] ?? '');
+$payment_reference = trim($_POST['payment_reference'] ?? '');
+$payment_date = trim($_POST['payment_date'] ?? '');
 
 error_log("Email to verify: $email");
 
@@ -51,18 +60,6 @@ $stmt->execute([$email]);
 $verifyRecord = $stmt->fetch();
 
 error_log("OTP verification record found: " . ($verifyRecord ? 'yes' : 'no'));
-if ($verifyRecord) {
-    error_log("Record ID: " . $verifyRecord['id']);
-    error_log("Record email: " . $verifyRecord['email']);
-    error_log("Record expires_at: " . $verifyRecord['expires_at']);
-    error_log("Record verified_at: " . $verifyRecord['verified_at']);
-} else {
-    // Debug: Check if there are any records for this email
-    $debugStmt = $pdo->prepare("SELECT id, verified_at, expires_at FROM otp_verifications WHERE email = ? ORDER BY created_at DESC LIMIT 5");
-    $debugStmt->execute([$email]);
-    $allRecords = $debugStmt->fetchAll();
-    error_log("All records for email: " . print_r($allRecords, true));
-}
 
 if (!$verifyRecord) {
     respond(false, 'Email verification is required. Please verify your email with OTP first.', 400);
@@ -117,33 +114,22 @@ if ($errors) {
 }
 
 
-// Check if user already exists (same name, DOB, gender)
-$checkSql = "SELECT user_id FROM users 
-             WHERE first_name = :first_name 
-             AND last_name = :last_name 
-             AND date_of_birth = :dob 
-             AND gender = :gender 
-             LIMIT 1";
-
+// Check if user already exists (same email)
+$checkSql = "SELECT user_id FROM users WHERE email = ? LIMIT 1";
 $checkStmt = $pdo->prepare($checkSql);
-$checkStmt->execute([
-    ':first_name' => $first_name,
-    ':last_name'  => $last_name,
-    ':dob'        => $date_of_birth,
-    ':gender'     => $gender !== '' ? $gender : ''
-]);
+$checkStmt->execute([$email]);
 
 if ($checkStmt->fetch()) {
-    respond(false, 'User already registered.', 409);
+    respond(false, 'Email already registered.', 409);
 }
-
 
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, address, contact_number, password, gender, nationality, email_verified)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)';
+    // Insert user data
+    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, region, exam_venue, exam_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $last_name,
@@ -152,16 +138,41 @@ try {
         $email,
         $date_of_birth,
         $ageVal !== null ? $ageVal : 0,
-        $address !== '' ? $address : '',
         $contact_number,
         $hash,
         $gender !== '' ? $gender : '',
-        $nationality !== '' ? $nationality : ''
+        $school,
+        $region,
+        $exam_venue,
+        $exam_date !== '' ? $exam_date : null
     ]);
+
+    // Get the newly created user ID
+    $userId = $pdo->lastInsertId();
+
+    // Insert payment data if provided
+    if ($payment_method !== '' && $payment_reference !== '') {
+        $paymentSql = 'INSERT INTO payments (user_id, payment_method, payment_reference, payment_date, payment_status, created_at)
+                       VALUES (?, ?, ?, ?, 'pending', NOW())';
+        $paymentStmt = $pdo->prepare($paymentSql);
+        $paymentStmt->execute([
+            $userId,
+            $payment_method,
+            $payment_reference,
+            $payment_date !== '' ? $payment_date : date('Y-m-d')
+        ]);
+    }
 
     // Clean up used OTP verification record
     $stmt = $pdo->prepare('DELETE FROM otp_verifications WHERE id = ?');
     $stmt->execute([$verifyRecord['id']]);
+
+    // Create session
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = $userId;
+    $_SESSION['email'] = $email;
+    $_SESSION['first_name'] = $first_name;
+    $_SESSION['last_name'] = $last_name;
 
     respond(true, 'Registration successful!', 200);
 } catch (PDOException $e) {

@@ -93,16 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', validateForm);
     });
 
-    // Form submission
+    // Form submission - handled by submitRegistration() in HTML
     registrationForm.addEventListener('submit', function(e) {
         e.preventDefault();
-
-        if (!isOtpVerified) {
-            showOtpStatus('Please verify your email with OTP first.', 'danger');
-            return;
-        }
-
-        submitRegistration();
+        // Form is submitted via submitRegistration() button onclick
     });
 
     // Send OTP function - calls backend to generate and send OTP
@@ -384,29 +378,5 @@ document.addEventListener('DOMContentLoaded', function() {
         registerBtn.disabled = !(isValid && passwordValid && passwordsMatch);
     }
 
-    // Submit registration
-    function submitRegistration() {
-        const formData = new FormData(registrationForm);
 
-        fetch('php/register.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success and redirect
-                showOtpStatus('Registration successful! Redirecting to login...', 'success');
-                setTimeout(function() {
-                    window.location.href = 'login.html?registered=1';
-                }, 1500);
-            } else {
-                showOtpStatus(data.message || 'Registration failed. Please try again.', 'danger');
-            }
-        })
-        .catch(error => {
-            console.error('Registration error:', error);
-            showOtpStatus('Network error. Please try again.', 'danger');
-        });
-    }
 });
