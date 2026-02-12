@@ -1,8 +1,9 @@
 <?php
+// Set JSON header immediately - BEFORE anything else
+header('Content-Type: application/json');
+
 session_start();
 require_once __DIR__ . '/../config/db.php';
-
-header('Content-Type: application/json');
 
 error_log("=== REGISTER DEBUG ===");
 error_log("POST data: " . print_r($_POST, true));
@@ -130,22 +131,8 @@ try {
     // Get the newly created user ID
     $userId = $pdo->lastInsertId();
 
-    // Insert payment data if provided
-    if ($payment_method !== '' && $payment_reference !== '') {
-        $paymentSql = 'INSERT INTO payments (user_id, payment_method, payment_reference, payment_date, payment_status, created_at)
-                       VALUES (?, ?, ?, ?, 'pending', NOW())';
-        $paymentStmt = $pdo->prepare($paymentSql);
-        $paymentStmt->execute([
-            $userId,
-            $payment_method,
-            $payment_reference,
-            $payment_date !== '' ? $payment_date : date('Y-m-d')
-        ]);
-    }
-
-    // Clean up used OTP verification record
-    $stmt = $pdo->prepare('DELETE FROM otp_verifications WHERE id = ?');
-    $stmt->execute([$verifyRecord['id']]);
+    // Payment insertion is optional - can be skipped or handled separately
+    // For now, we just register the user and their exam info
 
     // Create session
     session_regenerate_id(true);
