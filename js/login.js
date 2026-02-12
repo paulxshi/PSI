@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (data.success) {
         setTimeout(() => {
-          window.location.href = "../examiner/dashboard.html";
+          window.location.href = "examiner/dashboard.html";
         }, 800); // small delay so user sees success
       }
 
