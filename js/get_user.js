@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("userCard");
 
-  fetch("php/get_user.php")
+  fetch("../php/get_user.php")
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
