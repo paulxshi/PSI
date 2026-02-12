@@ -8,133 +8,132 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="imgs/PSI.png">
-  <!-- Flatpickr CSS -->
   <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
   <style>
   :root {
   --primary: #ef8809;
-}
+ }
 
-.form-control:disabled,
-.form-select:disabled {
-  background-color: #f8f9fa;
-  opacity: 1;
-  cursor: not-allowed;
-}
+ .form-control:disabled,
+ .form-select:disabled {
+   background-color: #f8f9fa;
+   opacity: 1;
+   cursor: not-allowed;
+ }
 
-.step {
-  cursor: pointer;
-}
-.stepper {
-  gap: 0.5rem;
-}
+ .step {
+   cursor: pointer;
+ }
+ .stepper {
+   gap: 0.5rem;
+ }
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #000;
-  box-shadow: none;
-}
+ .form-control:focus,
+ .form-select:focus {
+   border-color: #000;
+   box-shadow: none;
+ }
 
-.input-group .form-control:focus {
-  border-color: #000;
-  box-shadow: none;
-}
+ .input-group .form-control:focus {
+   border-color: #000;
+   box-shadow: none;
+ }
 
-.form-control,
-.form-select {
-  transition: border-color 0.2s ease;
-}
+ .form-control,
+ .form-select {
+   transition: border-color 0.2s ease;
+ }
 
-.step {
-  text-align: center;
-  flex: 1;
-  color: #6c757d;
-  font-weight: 600;
-  font-size: 0.8rem;
-  transition: all 0.3s ease;
-}
+ .step {
+   text-align: center;
+   flex: 1;
+   color: #6c757d;
+   font-weight: 600;
+   font-size: 0.8rem;
+   transition: all 0.3s ease;
+ }
 
-.step-circle {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid #ced4da;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 6px;
-  font-size: 1.2rem;
-  background: #fff;
-  transition: all 0.3s ease;
-}
+ .step-circle {
+   width: 42px;
+   height: 42px;
+   border-radius: 50%;
+   border: 2px solid #ced4da;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto 6px;
+   font-size: 1.2rem;
+   background: #fff;
+   transition: all 0.3s ease;
+ }
 
-.step-line {
-  flex: 1;
-  height: 2px;
-  background: #dee2e6;
-  margin-top: 20px;
-}
+ .step-line {
+   flex: 1;
+   height: 2px;
+   background: #dee2e6;
+   margin-top: 20px;
+ }
 
-.step.active {
-  color: #000;
-}
+ .step.active {
+   color: #000;
+ }
 
-.step.active .step-circle {
-  border-color: var(--primary);
-  background: var(--primary);
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgba(247, 222, 34, 0.45);
-}
+ .step.active .step-circle {
+   border-color: var(--primary);
+   background: var(--primary);
+   color: #ffffff;
+   box-shadow: 0 6px 18px rgba(247, 222, 34, 0.45);
+ }
 
-.step.completed {
-  color: #198754;
-}
+ .step.completed {
+   color: #198754;
+ }
 
-.step.completed .step-circle {
-  background: #198754;
-  border-color: #198754;
-  color: #fff;
-}
+ .step.completed .step-circle {
+   background: #198754;
+   border-color: #198754;
+   color: #fff;
+ }
 
-.btn-primary {
-  background-color: var(--primary);
-  border-color: var(--primary);
-  color: #000;
-  font-weight: 600;
-}
+ .btn-primary {
+   background-color: var(--primary);
+   border-color: var(--primary);
+   color: #000;
+   font-weight: 600;
+ }
 
-.btn-primary:hover {
-  background-color:#b56401;
-  border-color: #b56401;
-  color: #ffffff;
-}
+ .btn-primary:hover {
+   background-color:#b56401;
+   border-color: #b56401;
+   color: #ffffff;
+ }
 
-.overflow-auto::-webkit-scrollbar {
-    display: none;
- } 
+ .overflow-auto::-webkit-scrollbar {
+     display: none;
+  } 
 
-.otp-verified-badge {
-      background-color: #198754;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-left: 8px;
-    }
+ .otp-verified-badge {
+       background-color: #198754;
+       color: white;
+       padding: 2px 8px;
+       border-radius: 4px;
+       font-size: 0.75rem;
+       margin-left: 8px;
+     }
 
-    .flatpickr-calendar {
-      background: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
+     .flatpickr-calendar {
+       background: white;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+ }
   </style>
 
-</head>
+ </head>
 
 <body
   class="min-vh-100 d-flex align-items-center justify-content-center"
   style="background: url('imgs/bg.jpg') center center / cover no-repeat fixed;"
->
+ >
 
 <div
   class="position-fixed top-0 start-0 w-100 h-100"
@@ -182,17 +181,17 @@
                     <div class="step-line"></div>
 
                     <!-- Step 3 -->
-                    <div class="step" id="step-reminders" onclick="goToStep(3)">
+                    <div class="step" id="step-exam-schedule" onclick="goToStep(3)">
                       <div class="step-circle">
                         <i class="bi bi-calendar-check"></i>
                       </div>
-                      <span>Examination Schedule</span>
+                      <span>Exam Schedule</span>
                     </div>
 
                     <div class="step-line"></div>
 
                     <!-- Step 4 -->
-                    <div class="step" id="step-reminders" onclick="goToStep(4)">
+                    <div class="step" id="step-payment" onclick="goToStep(4)">
                       <div class="step-circle">
                         <i class="bi bi-credit-card"></i>
                       </div>
@@ -224,7 +223,7 @@
 
                 <p class="text-muted small mb-3" style="line-height:1.7;">
                   In compliance with <strong>Republic Act No. 10173</strong>, also known as the
-                  <strong>Data Privacy Act of 2012</strong>, the Philippine Maritime Maritime Academy
+                  <strong>Data Privacy Act of 2012</strong>, the Philippine Maritime Academy
                   (PMMA), in partnership with PSI Systems and Innovation, OPC, is committed to protecting
                   your personal data.
                 </p>
@@ -390,10 +389,10 @@
             class="btn btn-primary px-4 rounded-pill"
             id="registerBtn"
             disabled
-            onclick="proceedToExamSchedule()"
+            onclick="submitRegistration()"
           >
-            Proceed
-            <i class="bi bi-arrow-right ms-1"></i>
+            Submit Registration
+            <i class="bi bi-check ms-1"></i>
           </button>
         </div>
 
@@ -496,35 +495,134 @@
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.querySelectorAll('.step')[1].classList.add('active');
   }
-    function goToStep(step) {
+
+  function goToStep(step) {
     const reminderCard = document.getElementById('reminderCard');
     const personalInfoCard = document.getElementById('personalInfoCard');
+    const examScheduleCard = document.getElementById('examScheduleCard');
+    const paymentCard = document.getElementById('paymentCard');
+    const registrationComplete = document.getElementById('registrationComplete');
     const loginPrompt = document.getElementById('loginPrompt');
     const steps = document.querySelectorAll('.step');
 
     // reset step states
-    steps.forEach(s => s.classList.remove('active'));
+    steps.forEach(s => s.classList.remove('active', 'completed'));
 
     if (step === 1) {
       reminderCard.classList.remove('d-none');
       personalInfoCard.classList.add('d-none');
+      examScheduleCard.classList.add('d-none');
+      paymentCard.classList.add('d-none');
+      registrationComplete.classList.add('d-none');
       loginPrompt.classList.remove('d-none');
       steps[0].classList.add('active');
-    }
-
-    if (step === 2) {
+    } else if (step === 2) {
       reminderCard.classList.add('d-none');
       personalInfoCard.classList.remove('d-none');
+      examScheduleCard.classList.add('d-none');
+      paymentCard.classList.add('d-none');
+      registrationComplete.classList.add('d-none');
       loginPrompt.classList.add('d-none');
       steps[1].classList.add('active');
+    } else if (step === 3) {
+      reminderCard.classList.add('d-none');
+      personalInfoCard.classList.add('d-none');
+      examScheduleCard.classList.remove('d-none');
+      paymentCard.classList.add('d-none');
+      registrationComplete.classList.add('d-none');
+      loginPrompt.classList.add('d-none');
+      steps[2].classList.add('active');
+    } else if (step === 4) {
+      reminderCard.classList.add('d-none');
+      personalInfoCard.classList.add('d-none');
+      examScheduleCard.classList.add('d-none');
+      paymentCard.classList.remove('d-none');
+      registrationComplete.classList.add('d-none');
+      loginPrompt.classList.add('d-none');
+      steps[3].classList.add('active');
+    } else if (step === 5) {
+      reminderCard.classList.add('d-none');
+      personalInfoCard.classList.add('d-none');
+      examScheduleCard.classList.add('d-none');
+      paymentCard.classList.add('d-none');
+      registrationComplete.classList.remove('d-none');
+      loginPrompt.classList.add('d-none');
+      steps[4].classList.add('active');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-</script>
 
-<script>
-  function proceedToExamSchedule() {
+  function goToPayment() {
+    // Validate exam schedule fields
+    const region = document.getElementById('region').value;
+    const examVenue = document.getElementById('examVenue').value;
+    const examDate = document.getElementById('examDate').value;
+    
+    if (!region || !examVenue || !examDate) {
+      alert('Please select all examination schedule fields.');
+      return;
+    }
+
+    // Hide exam schedule card
+    document.getElementById('examScheduleCard').classList.add('d-none');
+
+    // Show payment card
+    document.getElementById('paymentCard').classList.remove('d-none');
+
+    // Set payment date to today
+    document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+
+    // Stepper update
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => step.classList.remove('active', 'completed'));
+
+    // Mark previous steps completed
+    steps[0].classList.add('completed'); // Reminders
+    steps[1].classList.add('completed'); // Personal Info
+    steps[2].classList.add('completed'); // Exam Schedule
+
+    // Activate Payment step
+    steps[3].classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function submitRegistration() {
+    // Submit the registration form
+    const form = document.getElementById('registrationForm');
+    
+    // Create FormData from the form
+    const formData = new FormData(form);
+    
+    // Submit registration via fetch
+    fetch('php/register.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Registration successful - proceed to exam schedule
+        goToExamSchedule();
+      } else {
+        // Show error message
+        const otpStatus = document.getElementById('otpStatus');
+        otpStatus.textContent = data.message || 'Registration failed. Please try again.';
+        otpStatus.className = 'mb-2 mt-1 small fw-semibold text-danger';
+        otpStatus.style.display = 'block';
+      }
+    })
+    .catch(error => {
+      console.error('Registration error:', error);
+      const otpStatus = document.getElementById('otpStatus');
+      otpStatus.textContent = 'Network error. Please try again.';
+      otpStatus.className = 'mb-2 mt-1 small fw-semibold text-danger';
+      otpStatus.style.display = 'block';
+    });
+  }
+
+  function goToExamSchedule() {
     // Hide personal info card
     document.getElementById('personalInfoCard').classList.add('d-none');
 
@@ -541,6 +639,35 @@
 
     // Activate Examination Schedule step
     steps[2].classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function finishRegistration() {
+    // Validate payment fields
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const paymentReference = document.getElementById('paymentReference').value;
+    const paymentDate = document.getElementById('paymentDate').value;
+    
+    if (!paymentMethod || !paymentReference || !paymentDate) {
+      alert('Please fill in all payment fields.');
+      return;
+    }
+
+    // Hide payment card
+    document.getElementById('paymentCard').classList.add('d-none');
+
+    // Show registration complete card
+    document.getElementById('registrationComplete').classList.remove('d-none');
+
+    // Update stepper
+    const steps = document.querySelectorAll('.step');
+    steps.forEach(step => step.classList.remove('active', 'completed'));
+    steps[0].classList.add('completed');
+    steps[1].classList.add('completed');
+    steps[2].classList.add('completed');
+    steps[3].classList.add('completed');
+    steps[4].classList.add('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

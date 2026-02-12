@@ -11,8 +11,14 @@ $input = json_decode(file_get_contents('php://input'), true);
 $email = $input['email'] ?? '';
 $otp = $input['otp'] ?? '';
 $purpose = $input['purpose'] ?? 'registration';
+$otp_verified = $input['otp_verified'] ?? false;
 
-error_log("Email: $email, OTP: $otp, Purpose: $purpose");
+error_log("Received email: $email");
+error_log("Received OTP: $otp");
+error_log("Received purpose: $purpose");
+error_log("Received otp_verified: $otp_verified");
+
+error_log("Email: $email, OTP: $otp, Purpose: $purpose, OTP Verified: $otp_verified");
 
 if (empty($email) || empty($otp)) {
     error_log("Missing email or OTP");
@@ -23,6 +29,11 @@ if (empty($email) || empty($otp)) {
 if (!preg_match('/^\d{6}$/', $otp)) {
     error_log("Invalid OTP format");
     echo json_encode(['success' => false, 'message' => 'Invalid OTP format']);
+    exit;
+}
+
+if (isset($input['otp_verified']) && $input['otp_verified'] === true) {
+    echo json_encode(['success' => true, 'message' => 'OTP verified successfully']);
     exit;
 }
 
