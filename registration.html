@@ -438,13 +438,13 @@
         <label class="form-label fw-semibold">
           Region <span class="text-danger">*</span>
         </label>
-        <select class="form-select" disabled>
-          <option selected>
+        <select class="form-select" name="region" id="region">
+          <option value="">
             Select Region (assigned by administration)
           </option>
-          <option>Luzon</option>
-          <option>Visayas</option>
-          <option>Mindanao</option>
+          <option value="Luzon">Luzon</option>
+          <option value="Visayas">Visayas</option>
+          <option value="Mindanao">Mindanao</option>
         </select>
       </div>
 
@@ -453,8 +453,8 @@
         <label class="form-label fw-semibold">
           Examination Venue <span class="text-danger">*</span>
         </label>
-        <select class="form-select" disabled>
-          <option selected>
+        <select class="form-select" name="exam_venue" id="examVenue">
+          <option value="">
             Select Examination Venue
           </option>
           <option>Venue options will be provided by administration</option>
@@ -468,8 +468,8 @@
         <label class="form-label fw-semibold">
           Examination Date <span class="text-danger">*</span>
         </label>
-        <select class="form-select" disabled>
-          <option selected>
+        <select class="form-select" name="exam_date" id="examDate">
+          <option value="">
             Select Examination Date
           </option>
           <option>Date options will be scheduled by administration</option>
@@ -481,7 +481,7 @@
     <div class="alert alert-light border rounded-3 small text-muted mb-4">
       <i class="bi bi-info-circle me-1"></i>
       Examination schedules, including region, venue, and date, are created
-      and assigned by the Philippine Maritime Maritime Academy (PMMA).
+      and assigned by the Philippine Maritime Academy (PMMA).
       Available options will appear once officially released by the administration.
     </div>
 
@@ -490,7 +490,7 @@
       <button
         type="button"
         class="btn btn-primary px-4 rounded-pill"
-        onclick="goToStep(4)"
+        onclick="goToPayment()"
       >
         Proceed
         <i class="bi bi-arrow-right ms-1"></i>
@@ -500,6 +500,78 @@
   </div>
 </div>
 
+            <!-- PAYMENT CARD -->
+            <div id="paymentCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+              <div class="card-body p-4">
+
+                <h6 class="fw-semibold mb-4">
+                  <i class="bi bi-credit-card me-2 text-primary"></i>
+                  Payment Information
+                </h6>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></label>
+                    <select class="form-select" name="payment_method" id="paymentMethod">
+                      <option value="">Select Payment Method</option>
+                      <option value="gcash">GCash</option>
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="credit_card">Credit Card</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Reference/ID <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="payment_reference" id="paymentReference" placeholder="Enter transaction reference">
+                  </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="payment_date" id="paymentDate">
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-primary px-4 rounded-pill" onclick="finishRegistration()">
+                    Complete Registration
+                    <i class="bi bi-check ms-1"></i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- REGISTRATION COMPLETE -->
+            <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+              <div class="card-body p-4 text-center">
+
+                <div class="mb-4">
+                  <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                </div>
+
+                <h5 class="fw-semibold mb-2">Registration Complete!</h5>
+
+                <p class="text-muted mb-4">
+                  Your registration has been successfully submitted. 
+                  You will receive a confirmation email shortly with your account details.
+                </p>
+
+                <div class="alert alert-info small mb-4">
+                  <strong>Next Steps:</strong><br>
+                  1. Check your email for confirmation<br>
+                  2. Proceed to login with your credentials<br>
+                  3. Download your test permit once approved
+                </div>
+
+                <a href="login.html" class="btn btn-primary px-4 rounded-pill">
+                  Login to Your Account
+                  <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+              </div>
+            </div>
           </form>
 
         </div>
@@ -619,18 +691,30 @@
     // Create FormData from the form
     const formData = new FormData(form);
     
+    // Log form data for debugging
+    console.log('Submitting registration with fields:');
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    
     // Submit registration via fetch
     fetch('php/register.php', {
       method: 'POST',
       body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+      console.log('Response status:', response.status);
+      return response.json();
+    })
     .then(data => {
+      console.log('Response data:', data);
       if (data.success) {
         // Registration successful - proceed to exam schedule
+        console.log('Registration successful, going to exam schedule');
         goToExamSchedule();
       } else {
         // Show error message
+        console.log('Registration failed:', data.message);
         const otpStatus = document.getElementById('otpStatus');
         otpStatus.textContent = data.message || 'Registration failed. Please try again.';
         otpStatus.className = 'mb-2 mt-1 small fw-semibold text-danger';
@@ -647,24 +731,41 @@
   }
 
   function goToExamSchedule() {
+    console.log('goToExamSchedule() called');
+    
     // Hide personal info card
-    document.getElementById('personalInfoCard').classList.add('d-none');
+    const personalInfoCard = document.getElementById('personalInfoCard');
+    const examScheduleCard = document.getElementById('examScheduleCard');
+    
+    console.log('personalInfoCard exists:', !!personalInfoCard);
+    console.log('examScheduleCard exists:', !!examScheduleCard);
+    
+    if (personalInfoCard) {
+      personalInfoCard.classList.add('d-none');
+      console.log('Hidden personal info card');
+    }
 
     // Show exam schedule card
-    document.getElementById('examScheduleCard').classList.remove('d-none');
+    if (examScheduleCard) {
+      examScheduleCard.classList.remove('d-none');
+      console.log('Showing exam schedule card');
+    }
 
     // Stepper update
     const steps = document.querySelectorAll('.step');
+    console.log('Found steps:', steps.length);
+    
     steps.forEach(step => step.classList.remove('active', 'completed'));
 
     // Mark previous steps completed
-    steps[0].classList.add('completed'); // Reminders
-    steps[1].classList.add('completed'); // Personal Info
+    if (steps[0]) steps[0].classList.add('completed'); // Reminders
+    if (steps[1]) steps[1].classList.add('completed'); // Personal Info
 
     // Activate Examination Schedule step
-    steps[2].classList.add('active');
+    if (steps[2]) steps[2].classList.add('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log('Scrolled to top');
   }
 
   function finishRegistration() {
