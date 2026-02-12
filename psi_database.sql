@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2026 at 08:21 AM
+-- Generation Time: Feb 12, 2026 at 06:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -17,11 +17,15 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
 -- Database: `psi_database`
+--
 
 -- --------------------------------------------------------
 
+--
 -- Table structure for table `payments`
+--
 
 CREATE TABLE `payments` (
   `payment_id` int(11) NOT NULL,
@@ -32,10 +36,47 @@ CREATE TABLE `payments` (
   `test_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
 -- Dumping data for table `payments`
+--
 
 INSERT INTO `payments` (`payment_id`, `transaction_no`, `payment_date`, `payment_amount`, `user_id`, `test_id`) VALUES
 (1, 123456789, '2026-02-11', 1600, 3, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `schedules`
+--
+
+CREATE TABLE `schedules` (
+  `schedule_id` int(11) NOT NULL,
+  `venue_id` int(11) NOT NULL,
+  `schedule_datetime` datetime NOT NULL,
+  `num_of_examinees` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schedules`
+--
+
+INSERT INTO `schedules` (`schedule_id`, `venue_id`, `schedule_datetime`, `num_of_examinees`) VALUES
+(1, 1, '2026-02-17 00:00:00', 200),
+(2, 2, '2026-02-19 00:00:00', 100),
+(3, 3, '2026-02-23 00:00:00', 300),
+(4, 3, '2026-02-23 00:00:00', 300),
+(5, 4, '0000-00-00 00:00:00', 0),
+(6, 4, '0000-00-00 00:00:00', 0),
+(7, 2, '2026-02-16 00:00:00', 1000),
+(8, 2, '2026-10-23 00:00:00', 200),
+(9, 5, '2026-02-26 00:00:00', 250),
+(10, 1, '2026-03-04 00:00:00', 200),
+(11, 1, '2026-02-23 00:00:00', 300),
+(12, 1, '0000-00-00 00:00:00', 200),
+(13, 1, '0000-00-00 00:00:00', 500),
+(14, 1, '0000-00-00 00:00:00', 500),
+(15, 1, '2026-03-12 00:00:00', 400),
+(16, 1, '2026-04-04 00:00:00', 250);
 
 -- --------------------------------------------------------
 
@@ -82,9 +123,7 @@ CREATE TABLE `users` (
   `contact_number` int(11) NOT NULL,
   `password` varchar(255) NOT NULL,
   `pmma_student_id` varchar(32) DEFAULT NULL,
-  `test_permit` varchar(32) DEFAULT NULL,
-  `otp` varchar(6) DEFAULT NULL,
-  `otp_expiry` datetime DEFAULT NULL
+  `test_permit` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -94,7 +133,35 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `last_name`, `first_name`, `middle_name`, `email`, `date_of_birth`, `age`, `gender`, `address`, `nationality`, `contact_number`, `password`, `pmma_student_id`, `test_permit`) VALUES
 (1, 'Bernandino', 'Cezar', 'I', 'bernandinocezar@gmail.com', '2003-02-12', 22, '', 'P-3 Lugui LCN', '', 963288424, 'cezar1212', NULL, NULL),
 (2, 'Almadrones', 'Lee Ivan', 'O', 'leeivanalmadrones6@gmail.com', '2004-09-10', 21, '', 'Purok 3 Lugui Labo Camarines Norte', '', 2147483647, '$2y$10$S.dQ1huZ/X25vFuRwsC8qOaGN1ISJ//t/lVRNxH8Zl5E0OuEGWdi6', NULL, NULL),
-(3, 'Bernandino', 'Cezar', 'I', 'cezarbernandino12@gmail.com', '2026-02-03', 0, 'Male', 'Labo CN', 'FIlipino', 90908777, '$2y$10$aVHzKHAZFsXnhg/Qbu6FfO1p9zLwoyJ1Y7NlXbSSK9xnXK7/Dftj2', '22-1512', '09-0909-09');
+(3, 'Bernandino', 'Cezar', 'I', 'cezarbernandino12@gmail.com', '2026-02-03', 18, 'Male', 'Labo CN', 'FIlipino', 90908777, '$2y$10$aVHzKHAZFsXnhg/Qbu6FfO1p9zLwoyJ1Y7NlXbSSK9xnXK7/Dftj2', '22-1512', '09-0909-09'),
+(6, 'Bernandino', 'Cezar', 's', 'bernandinoceza@gmail.com', '2026-02-11', 0, 'male', '', '', 963234542, '$2y$10$hJJf7rVeavqbaEENsKOMEeZNQdE/buYQhXT5Rn6EUePaZUBy9hKOe', NULL, NULL),
+(15, 'Bernandino', 'Ceza', 's', 'bernandinocear@gmail.com', '2026-02-11', 0, '', '', '', 963234542, '$2y$10$3/VyMuYldB8.vWPq1CCjd.1wL57Tj2GLUAPfth1WU9nIHJGT9SUXu', NULL, NULL),
+(18, 'Bernando', 'Cezar', 'I', 'bernandocezar@gmail.com', '2026-02-11', 0, '', '', '', 963234542, '$2y$10$VP4STuI94nNvGvhUNuOFDu.I//pUPZDktMSVIgBa99OpaPsBlpU2.', NULL, NULL),
+(20, 'onidnanreb', 'Cezarrrr', 's', 'bernandinicezar@gmail.com', '2026-02-11', 0, 'male', '', '', 963234542, '$2y$10$EMlfA8JAk.hKfo3PSWxwqeEmNJ8PHB0pKPSWqv7tE5Ik.g6P/hVNq', NULL, NULL),
+(21, 'onidnanreb', 'Cezarrrr', 's', 'nandinocezar@gmail.com', '2026-02-12', 0, 'male', '', '', 963234542, '$2y$10$piPzS1RXw58S7Yep5ObS9.yPRveFNJ9sTKESPl.4eh/kuzyrQztt2', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `venue`
+--
+
+CREATE TABLE `venue` (
+  `venue_id` int(11) NOT NULL,
+  `venue_name` varchar(255) NOT NULL,
+  `region` varchar(50) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `venue`
+--
+
+INSERT INTO `venue` (`venue_id`, `venue_name`, `region`) VALUES
+(1, 'Manila', 'Luzon'),
+(2, 'Cebu', 'Visayas'),
+(3, 'Bicol', 'Luzon'),
+(4, '', ''),
+(5, '300', 'Luzon');
 
 --
 -- Indexes for dumped tables
@@ -105,6 +172,13 @@ INSERT INTO `users` (`user_id`, `last_name`, `first_name`, `middle_name`, `email
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`payment_id`);
+
+--
+-- Indexes for table `schedules`
+--
+ALTER TABLE `schedules`
+  ADD PRIMARY KEY (`schedule_id`),
+  ADD KEY `fk_schedules_venue` (`venue_id`);
 
 --
 -- Indexes for table `test`
@@ -119,8 +193,16 @@ ALTER TABLE `test`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
   ADD UNIQUE KEY `uq_users_email` (`email`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `unique_person` (`first_name`,`last_name`,`middle_name`,`date_of_birth`),
   ADD UNIQUE KEY `pmma_student_id` (`pmma_student_id`),
   ADD UNIQUE KEY `test_permit` (`test_permit`);
+
+--
+-- Indexes for table `venue`
+--
+ALTER TABLE `venue`
+  ADD PRIMARY KEY (`venue_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -133,6 +215,12 @@ ALTER TABLE `payments`
   MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `schedules`
+--
+ALTER TABLE `schedules`
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
 -- AUTO_INCREMENT for table `test`
 --
 ALTER TABLE `test`
@@ -142,11 +230,23 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `venue`
+--
+ALTER TABLE `venue`
+  MODIFY `venue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `schedules`
+--
+ALTER TABLE `schedules`
+  ADD CONSTRAINT `fk_schedules_venue` FOREIGN KEY (`venue_id`) REFERENCES `venue` (`venue_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `test`
