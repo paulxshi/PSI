@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  fetch("php/testPermit.php")
+  fetch("../php/testPermit.php")
     .then(res => res.json())
     .then(response => {
 

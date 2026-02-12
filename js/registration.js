@@ -1,4 +1,4 @@
-// OTP Email Verification System
+// OTP Email Verification System - Secure Backend Version
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Flatpickr for date of birth
     flatpickr('#dateOfBirth', {
@@ -30,15 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const allInputs = registrationForm.querySelectorAll('input:not(#otpInput)');
 
     // Constants
-    const COOLDOWN_SECONDS = 300; // 5 minutes
-    const N8N_WEBHOOK_URL = 'https://n8n.srv1069938.hstgr.cloud/webhook/otp-email';
+    const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
+    const SEND_OTP_URL = 'php/send_otp.php';
+    const VERIFY_OTP_URL = 'php/verify_otp.php';
 
     // State
     let cooldownTimer = null;
     let isCooldownActive = false;
     let isOtpVerified = false;
     let currentEmail = '';
-    let currentOtp = '';
 
     // Show/hide Send OTP button based on email validation
     emailInput.addEventListener('input', function() {
@@ -105,39 +105,28 @@ document.addEventListener('DOMContentLoaded', function() {
         submitRegistration();
     });
 
-    // Send OTP function
+    // Send OTP function - calls backend to generate and send OTP
     function sendOtp(email) {
-        // Generate 6-digit OTP
-        currentOtp = generateOTP();
-
-        // Debug logging - check browser console (F12)
-        console.log('=== OTP DEBUG ===');
-        console.log('Email:', email);
-        console.log('Generated OTP:', currentOtp);
-        console.log('=================');
-
         showOtpStatus('Sending OTP...', 'info');
+        sendOtpBtn.disabled = true;
 
-        fetch(N8N_WEBHOOK_URL, {
+        fetch(SEND_OTP_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 email: email,
-                otp_code: currentOtp
+                purpose: 'registration'
             })
         })
         .then(response => response.json())
         .then(data => {
-            console.log('N8N Response:', data);
+            sendOtpBtn.disabled = false;
+            
             if (data.success) {
-                // Store OTP in sessionStorage for verification
-                const storageKey = 'otp_' + email.toLowerCase().replace(/[^a-z0-9]/g, '');
-                sessionStorage.setItem(storageKey, currentOtp);
-                sessionStorage.setItem('otp_email', email.toLowerCase());
-
-                showOtpStatus(data.message, 'success');
+                // OTP sent successfully - backend handles generation and storage
+                showOtpStatus('OTP sent! Check your email. Check spam folder too.', 'success');
                 
                 // Show OTP input and verify button
                 otpContainer.style.display = 'block';
@@ -148,46 +137,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Focus on OTP input
                 otpInput.focus();
+                
+                // Clear any previous OTP input
+                otpInput.value = '';
             } else {
                 showOtpStatus(data.message || 'Failed to send OTP. Please try again.', 'danger');
                 resetOtpState();
             }
         })
         .catch(error => {
+            sendOtpBtn.disabled = false;
             console.error('Error sending OTP:', error);
             showOtpStatus('Network error. Please try again.', 'danger');
             resetOtpState();
         });
     }
 
-    // Verify OTP function
+    // Verify OTP function - calls backend for verification
     function verifyOtp(email, otp) {
         if (!otp || otp.length !== 6) {
             showOtpStatus('Please enter a valid 6-digit OTP.', 'danger');
             return;
         }
 
-        console.log('=== VERIFY DEBUG ===');
-        console.log('Email:', email);
-        console.log('User entered:', otp);
-        console.log('===================');
-
         showOtpStatus('Verifying OTP...', 'info');
         verifyOtpBtn.disabled = true;
 
-        // Get stored OTP using normalized email key
-        const storageKey = 'otp_' + email.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const storedOtp = sessionStorage.getItem(storageKey);
-
-        console.log('Storage key:', storageKey);
-        console.log('Stored OTP:', storedOtp);
-        console.log('Match:', storedOtp === otp);
-
-        // Verify OTP
-        setTimeout(function() {
-            if (storedOtp === otp) {
-                // Success
+        fetch(VERIFY_OTP_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                otp: otp,
+                purpose: 'registration'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            verifyOtpBtn.disabled = false;
+            
+            if (data.success) {
+                // OTP verified successfully
                 isOtpVerified = true;
+                
                 showOtpStatus('OTP verified successfully!', 'success');
                 
                 // Hide OTP section and show success
@@ -201,6 +195,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     clearInterval(cooldownTimer);
                 }
                 
+                // Lock email field after verification to prevent changes
+                emailInput.readOnly = true;
+                emailInput.classList.add('bg-light');
+                emailInput.title = 'Email locked after verification';
+
                 // Show password section
                 passwordSection.style.display = 'block';
                 
@@ -210,13 +209,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Validate form
                 validateForm();
             } else {
-                showOtpStatus('Invalid OTP. Please try again.', 'danger');
-                console.log('Verification failed - OTPs do not match');
+                showOtpStatus(data.message || 'Invalid OTP. Please try again.', 'danger');
                 otpInput.value = '';
                 otpInput.focus();
             }
+        })
+        .catch(error => {
             verifyOtpBtn.disabled = false;
-        }, 500);
+            console.error('Error verifying OTP:', error);
+            showOtpStatus('Network error. Please try again.', 'danger');
+        });
     }
 
     // Start cooldown timer
@@ -268,15 +270,6 @@ document.addEventListener('DOMContentLoaded', function() {
         otpStatus.textContent = message;
         otpStatus.className = 'mb-2 mt-1 small fw-semibold text-' + type;
         otpStatus.style.display = 'block';
-    }
-
-    // Generate random 6-digit OTP
-    function generateOTP() {
-        let otp = '';
-        for (let i = 0; i < 6; i++) {
-            otp += Math.floor(Math.random() * 10);
-        }
-        return otp;
     }
 
     // Validate password strength
@@ -394,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Submit registration
     function submitRegistration() {
         const formData = new FormData(registrationForm);
-        formData.append('otp_verified', 'true');
 
         fetch('php/register.php', {
             method: 'POST',
@@ -403,10 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Clear session storage
-                sessionStorage.removeItem('otp_' + currentEmail.toLowerCase().replace(/[^a-z0-9]/g, ''));
-                sessionStorage.removeItem('otp_email');
-                
                 // Show success and redirect
                 showOtpStatus('Registration successful! Redirecting to login...', 'success');
                 setTimeout(function() {
