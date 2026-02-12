@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (data.success) {
         setTimeout(() => {
-          window.location.href = "examiner/dashboard.html";
-        }, 800); // small delay so user sees success
+          window.location.href = "../examiner/dashboard.html";
+        }, 800); 
       }
 
     })
@@ -35,6 +35,68 @@ document.addEventListener("DOMContentLoaded", () => {
       msg.textContent = "Something went wrong. Please try again.";
       msg.className = "mt-3 text-center text-danger";
       console.error(err);
+    });
+  });
+
+  // FORGOT PASSWORD MODAL HANDLER
+  const forgotForm = document.getElementById("forgotPasswordForm");
+  const forgotMsg = document.getElementById("forgotPasswordMessage");
+  const sendResetBtn = document.getElementById("sendResetBtn");
+
+  forgotForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    forgotMsg.style.display = "none";
+    forgotMsg.textContent = "";
+
+    const email = document.getElementById("forgotEmail").value.trim();
+
+    if (!email) {
+      forgotMsg.style.display = "block";
+      forgotMsg.textContent = "Please enter your email address.";
+      forgotMsg.className = "mb-3 text-danger small";
+      return;
+    }
+
+    sendResetBtn.disabled = true;
+    sendResetBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
+
+    fetch("php/forgot_password.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      forgotMsg.style.display = "block";
+      forgotMsg.textContent = data.message;
+      forgotMsg.className = "mb-3 " + (data.success ? "text-success small" : "text-danger small");
+
+      if (data.success) {
+        // Store email in sessionStorage for OTP verification
+        sessionStorage.setItem("reset_email", email);
+
+        // Close modal after short delay and redirect to OTP verification
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById("forgotPasswordModal"));
+          if (modal) {
+            modal.hide();
+          }
+          window.location.href = "verify_otp.html";
+        }, 1500);
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      forgotMsg.style.display = "block";
+      forgotMsg.textContent = "Something went wrong. Please try again.";
+      forgotMsg.className = "mb-3 text-danger small";
+    })
+    .finally(() => {
+      sendResetBtn.disabled = false;
+      sendResetBtn.textContent = "Send Reset Code";
     });
   });
 

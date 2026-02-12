@@ -17,15 +17,11 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Database: `psi_database`
---
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `payments`
---
 
 CREATE TABLE `payments` (
   `payment_id` int(11) NOT NULL,
@@ -36,9 +32,7 @@ CREATE TABLE `payments` (
   `test_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
 -- Dumping data for table `payments`
---
 
 INSERT INTO `payments` (`payment_id`, `transaction_no`, `payment_date`, `payment_amount`, `user_id`, `test_id`) VALUES
 (1, 123456789, '2026-02-11', 1600, 3, 2);
@@ -88,7 +82,9 @@ CREATE TABLE `users` (
   `contact_number` int(11) NOT NULL,
   `password` varchar(255) NOT NULL,
   `pmma_student_id` varchar(32) DEFAULT NULL,
-  `test_permit` varchar(32) DEFAULT NULL
+  `test_permit` varchar(32) DEFAULT NULL,
+  `otp` varchar(6) DEFAULT NULL,
+  `otp_expiry` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

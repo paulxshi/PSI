@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/db.php';
 
 header('Content-Type: application/json');
 
+error_log("=== REGISTER DEBUG ===");
+error_log("POST data: " . print_r($_POST, true));
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
@@ -27,10 +30,41 @@ $gender = trim($_POST['gender'] ?? '');
 $nationality = trim($_POST['nationality'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
-$otp_verified = $_POST['otp_verified'] ?? '';
 
-// Check if OTP was verified
-if ($otp_verified !== 'true') {
+error_log("Email to verify: $email");
+
+// Verify OTP was verified in database
+$stmt = $pdo->prepare("
+    SELECT id, email, expires_at, verified_at 
+    FROM otp_verifications 
+    WHERE email = ? 
+    AND purpose = 'registration' 
+    AND verified_at IS NOT NULL 
+    AND expires_at > NOW() 
+    ORDER BY verified_at DESC 
+    LIMIT 1
+");
+
+error_log("OTP Check SQL: " . $stmt->queryString);
+
+$stmt->execute([$email]);
+$verifyRecord = $stmt->fetch();
+
+error_log("OTP verification record found: " . ($verifyRecord ? 'yes' : 'no'));
+if ($verifyRecord) {
+    error_log("Record ID: " . $verifyRecord['id']);
+    error_log("Record email: " . $verifyRecord['email']);
+    error_log("Record expires_at: " . $verifyRecord['expires_at']);
+    error_log("Record verified_at: " . $verifyRecord['verified_at']);
+} else {
+    // Debug: Check if there are any records for this email
+    $debugStmt = $pdo->prepare("SELECT id, verified_at, expires_at FROM otp_verifications WHERE email = ? ORDER BY created_at DESC LIMIT 5");
+    $debugStmt->execute([$email]);
+    $allRecords = $debugStmt->fetchAll();
+    error_log("All records for email: " . print_r($allRecords, true));
+}
+
+if (!$verifyRecord) {
     respond(false, 'Email verification is required. Please verify your email with OTP first.', 400);
 }
 
@@ -108,23 +142,26 @@ if ($checkStmt->fetch()) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    // Use empty string for NOT NULL columns instead of null
-    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, address, contact_number, password, gender, nationality)
-            VALUES (:last_name, :first_name, :middle_name, :email, :dob, :age, :address, :contact, :password, :gender, :nationality)';
+    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, address, contact_number, password, gender, nationality, email_verified)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        ':last_name' => $last_name,
-        ':first_name' => $first_name,
-        ':middle_name' => $middle_name !== '' ? $middle_name : '',
-        ':email' => $email,
-        ':dob' => $date_of_birth,
-        ':age' => $ageVal !== null ? $ageVal : 0,
-        ':address' => $address !== '' ? $address : '',
-        ':contact' => $contact_number,
-        ':password' => $hash,
-        ':gender' => $gender !== '' ? $gender : '',
-        ':nationality' => $nationality !== '' ? $nationality : '',
+        $last_name,
+        $first_name,
+        $middle_name !== '' ? $middle_name : '',
+        $email,
+        $date_of_birth,
+        $ageVal !== null ? $ageVal : 0,
+        $address !== '' ? $address : '',
+        $contact_number,
+        $hash,
+        $gender !== '' ? $gender : '',
+        $nationality !== '' ? $nationality : ''
     ]);
+
+    // Clean up used OTP verification record
+    $stmt = $pdo->prepare('DELETE FROM otp_verifications WHERE id = ?');
+    $stmt->execute([$verifyRecord['id']]);
 
     respond(true, 'Registration successful!', 200);
 } catch (PDOException $e) {
