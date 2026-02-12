@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Send request to backend to generate and send OTP
         fetch(SEND_OTP_URL, {
             method: 'POST',
-            headers: {
+            headers:  {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
