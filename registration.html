@@ -401,81 +401,81 @@
       </div>
     </div>
 
-            <div id="examScheduleCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-  <div class="card-body p-4">
+      <div id="examScheduleCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+        <div class="card-body p-4">
 
-    <h6 class="fw-semibold mb-4">
-      <i class="bi bi-calendar-check me-2 text-primary"></i>
-      Examination Schedule
-    </h6>
+          <h6 class="fw-semibold mb-4">
+            <i class="bi bi-calendar-check me-2 text-primary"></i>
+            Examination Schedule
+          </h6>
 
-    <!-- ROW 1: REGION -->
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Region <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" disabled>
-          <option selected>
-            Select Region (assigned by administration)
-          </option>
-          <option>Luzon</option>
-          <option>Visayas</option>
-          <option>Mindanao</option>
-        </select>
+          <!-- ROW 1: REGION -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">
+                Region <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" disabled>
+                <option selected>
+                  Select Region (assigned by administration)
+                </option>
+                <option>Luzon</option>
+                <option>Visayas</option>
+                <option>Mindanao</option>
+              </select>
+            </div>
+
+            <!-- EXAM VENUE -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">
+                Examination Venue <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" disabled>
+                <option selected>
+                  Select Examination Venue
+                </option>
+                <option>Venue options will be provided by administration</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ROW 2: EXAM DATE -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">
+                Examination Date <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" disabled>
+                <option selected>
+                  Select Examination Date
+                </option>
+                <option>Date options will be scheduled by administration</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- INFORMATION NOTE -->
+          <div class="alert alert-light border rounded-3 small text-muted mb-4">
+            <i class="bi bi-info-circle me-1"></i>
+            Examination schedules, including region, venue, and date, are created
+            and assigned by the Philippine Maritime Maritime Academy (PMMA).
+            Available options will appear once officially released by the administration.
+          </div>
+
+          <!-- ACTION BUTTON -->
+          <div class="d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-primary px-4 rounded-pill"
+              onclick="goToStep(4)"
+            >
+              Proceed
+              <i class="bi bi-arrow-right ms-1"></i>
+            </button>
+          </div>
+
+        </div>
       </div>
-
-      <!-- EXAM VENUE -->
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Examination Venue <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" disabled>
-          <option selected>
-            Select Examination Venue
-          </option>
-          <option>Venue options will be provided by administration</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- ROW 2: EXAM DATE -->
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Examination Date <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" disabled>
-          <option selected>
-            Select Examination Date
-          </option>
-          <option>Date options will be scheduled by administration</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- INFORMATION NOTE -->
-    <div class="alert alert-light border rounded-3 small text-muted mb-4">
-      <i class="bi bi-info-circle me-1"></i>
-      Examination schedules, including region, venue, and date, are created
-      and assigned by the Philippine Maritime Maritime Academy (PMMA).
-      Available options will appear once officially released by the administration.
-    </div>
-
-    <!-- ACTION BUTTON -->
-    <div class="d-flex justify-content-end">
-      <button
-        type="button"
-        class="btn btn-primary px-4 rounded-pill"
-        onclick="goToStep(4)"
-      >
-        Proceed
-        <i class="bi bi-arrow-right ms-1"></i>
-      </button>
-    </div>
-
-  </div>
-</div>
 
           </form>
 
