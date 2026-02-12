@@ -5,20 +5,19 @@ header('Content-Type: application/json');
 error_log("=== VERIFY OTP DEBUG ===");
 error_log("Input: " . file_get_contents('php://input'));
 
-require_once __DIR__ . '/../config/db.php';
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $input = json_decode(file_get_contents('php://input'), true);
 $email = $input['email'] ?? '';
 $otp = $input['otp'] ?? '';
 $purpose = $input['purpose'] ?? 'registration';
-$otp_verified = $input['otp_verified'] ?? false;
-
+ 
 error_log("Received email: $email");
 error_log("Received OTP: $otp");
 error_log("Received purpose: $purpose");
-error_log("Received otp_verified: $otp_verified");
-
-error_log("Email: $email, OTP: $otp, Purpose: $purpose, OTP Verified: $otp_verified");
 
 if (empty($email) || empty($otp)) {
     error_log("Missing email or OTP");
@@ -32,59 +31,36 @@ if (!preg_match('/^\d{6}$/', $otp)) {
     exit;
 }
 
-if (isset($input['otp_verified']) && $input['otp_verified'] === true) {
-    echo json_encode(['success' => true, 'message' => 'OTP verified successfully']);
+// Check session for OTP data
+if (!isset($_SESSION['otp_data'][$purpose][$email])) {
+    error_log("No OTP found in session for email: $email, purpose: $purpose");
+    error_log("Session data: " . print_r($_SESSION['otp_data'] ?? [], true));
+    echo json_encode(['success' => false, 'message' => 'OTP session expired. Please request a new OTP']);
     exit;
 }
 
-$stmt = $pdo->prepare("
-    SELECT id, otp, expires_at, verified_at 
-    FROM otp_verifications 
-    WHERE email = ? 
-    AND purpose = ? 
-    AND verified_at IS NULL
-    ORDER BY created_at DESC 
-    LIMIT 1
-");
+$sessionData = $_SESSION['otp_data'][$purpose][$email];
+error_log("Session data: " . print_r($sessionData, true));
 
-error_log("SQL: " . $stmt->queryString);
-error_log("Params: email=$email, purpose=$purpose");
-
-$stmt->execute([$email, $purpose]);
-$record = $stmt->fetch(PDO::FETCH_ASSOC);
-
-error_log("Record found: " . ($record ? 'yes' : 'no'));
-if ($record) {
-    error_log("Record ID: " . $record['id']);
-    error_log("Record OTP: " . $record['otp']);
-    error_log("Record expires_at: " . $record['expires_at']);
-    error_log("Record verified_at: " . $record['verified_at']);
-    error_log("Current time: " . date('Y-m-d H:i:s'));
-    error_log("strtotime(expires_at): " . strtotime($record['expires_at']));
-    error_log("time(): " . time());
-    error_log("Is expired: " . (strtotime($record['expires_at']) < time() ? 'yes' : 'no'));
-}
-
-if (!$record) {
-    echo json_encode(['success' => false, 'message' => 'No pending OTP found for this email']);
-    exit;
-}
-
-if (strtotime($record['expires_at']) < time()) {
+// Check if OTP is expired
+if (strtotime($sessionData['expires_at']) < time()) {
     error_log("OTP is expired");
+    unset($_SESSION['otp_data'][$purpose][$email]);
     echo json_encode(['success' => false, 'message' => 'OTP has expired. Please request a new one']);
     exit;
 }
 
-if ($otp !== $record['otp']) {
-    error_log("OTP mismatch");
+// Verify OTP matches
+if ($otp !== $sessionData['otp']) {
+    error_log("OTP mismatch - expected: " . $sessionData['otp'] . ", received: $otp");
     echo json_encode(['success' => false, 'message' => 'Invalid OTP']);
     exit;
 }
 
-$updateStmt = $pdo->prepare("UPDATE otp_verifications SET verified_at = NOW() WHERE id = ?");
-$updateResult = $updateStmt->execute([$record['id']]);
-error_log("Update result: " . ($updateResult ? 'success' : 'failed'));
+// Clear OTP from session after successful verification
+unset($_SESSION['otp_data'][$purpose][$email]);
+
+error_log("OTP verified successfully");
 
 echo json_encode([
     'success' => true,

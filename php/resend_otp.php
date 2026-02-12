@@ -40,8 +40,8 @@ $stmt->execute([
     ':email' => $email
 ]);
 
-// N8n Webhook URL
-$N8N_WEBHOOK_URL = 'https://n8n.srv1069938.hstgr.cloud/webhook-test/otp-email';
+// N8n Webhook URL - using the same as send_otp.php
+$N8N_WEBHOOK_URL = 'https://n8n.srv1069938.hstgr.cloud/webhook/otp-email';
 
 // Forward request to N8n webhook
 $ch = curl_init($N8N_WEBHOOK_URL);

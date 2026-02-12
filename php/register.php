@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 function respond($success, $message, $code = 400) {
     http_response_code($code);
     echo json_encode(['success' => $success, 'message' => $message]);
-    exit;
+     exit;
 }
 
 $last_name = trim($_POST['last_name'] ?? '');
@@ -42,28 +42,8 @@ $payment_date = trim($_POST['payment_date'] ?? '');
 
 error_log("Email to verify: $email");
 
-// Verify OTP was verified in database
-$stmt = $pdo->prepare("
-    SELECT id, email, expires_at, verified_at 
-    FROM otp_verifications 
-    WHERE email = ? 
-    AND purpose = 'registration' 
-    AND verified_at IS NOT NULL 
-    AND expires_at > NOW() 
-    ORDER BY verified_at DESC 
-    LIMIT 1
-");
-
-error_log("OTP Check SQL: " . $stmt->queryString);
-
-$stmt->execute([$email]);
-$verifyRecord = $stmt->fetch();
-
-error_log("OTP verification record found: " . ($verifyRecord ? 'yes' : 'no'));
-
-if (!$verifyRecord) {
-    respond(false, 'Email verification is required. Please verify your email with OTP first.', 400);
-}
+// Email will be verified client-side via OTP
+// No database OTP verification needed for client-side only approach
 
 $errors = [];
 

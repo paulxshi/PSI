@@ -93,22 +93,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const otp = Array.from(otpInputs).map(input => input.value).join('');
         
-        const storedOtp = sessionStorage.getItem('reset_otp');
-        if (otp !== storedOtp) {
-            showMessage('Invalid OTP', 'error');
-            verifyBtn.disabled = false;
-            btnText.style.display = 'inline-block';
-            loading.style.display = 'none';
-            return;
-        }
-        
         // Show loading state
         verifyBtn.disabled = true;
         btnText.style.display = 'none';
         loading.style.display = 'inline-block';
         hideMessage();
-        
-        const otp_verified = true;
         
         try {
             const response = await fetch('php/verify_otp.php', {
@@ -116,14 +105,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, otp, otp_verified })
+                body: JSON.stringify({ email, otp, purpose: 'registration' })
             });
             
             const data = await response.json();
             
             if (data.success) {
-                // Store OTP in sessionStorage
-                sessionStorage.setItem('reset_otp', otp);
                 showMessage(data.message, 'success');
                 
                 // Redirect to new password page after short delay
