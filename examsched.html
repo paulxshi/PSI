@@ -300,13 +300,9 @@ venueSelect.addEventListener("change", function () {
                     day: 'numeric'
                 });
 
-                const formattedTime = date.toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true
-                });
+              
 
-                option.textContent = formattedDate + " – " + formattedTime;
+                option.textContent = formattedDate;
 
                 scheduleSelect.appendChild(option);
             });
