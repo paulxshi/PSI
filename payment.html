@@ -109,7 +109,7 @@
 
                 <div class="step-line"></div>
 
-                <div class="step active">
+                <div class="step completed">
                   <div class="step-circle">
                     <i class="bi bi-calendar-check"></i>
                   </div>
@@ -118,7 +118,7 @@
 
                 <div class="step-line"></div>
 
-                <div class="step">
+                <div class="step active">
                   <div class="step-circle">
                     <i class="bi bi-credit-card"></i>
                   </div>
@@ -138,66 +138,49 @@
             </div>
           </div>
 
-<!-- EXAMINATION SCHEDULE CARD -->
-<div class="card border-0 shadow-sm rounded-4">
-  <div class="card-body p-4">
+          <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
 
-    <h6 class="fw-semibold mb-4">
-      <i class="bi bi-calendar-check text-primary me-2"></i>
-      Examination Schedule
-    </h6>
+                <h6 class="fw-semibold mb-4">
+                  <i class="bi bi-credit-card me-2 text-primary"></i>
+                  Payment Information
+                </h6>
 
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Region</label>
-        <select class="form-select" disabled>
-          <option selected>Assigned by PSI Officials</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>NCR</option>
-          <option>Region IV-A</option>
-          <option>Region VII</option>
-        </select>
-      </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></label>
+                    <select class="form-select" name="payment_method" id="paymentMethod">
+                      <option value="">Select Payment Method</option>
+                      <option value="gcash">GCash</option>
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="credit_card">Credit Card</option>
+                    </select>
+                  </div>
 
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Examination Venue</label>
-        <select class="form-select" disabled>
-          <option selected>To be announced</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>PMMA Main Campus</option>
-          <option>PMMA Satellite Office</option>
-        </select>
-      </div>
-    </div>
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Reference/ID <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="payment_reference" id="paymentReference" placeholder="Enter transaction reference">
+                  </div>
+                </div>
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Examination Date</label>
-        <select class="form-select" disabled>
-          <option selected>To be scheduled</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>March 15, 2026</option>
-          <option>April 20, 2026</option>
-        </select>
-      </div>
-    </div>
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="payment_date" id="paymentDate">
+                  </div>
+                </div>
 
-    <div class="alert alert-light border small text-muted mb-4">
-      <i class="bi bi-info-circle me-1"></i>
-      Examination schedules, venues, and regions are uploaded and assigned
-      by PSI officials. Please wait for official announcements.
-    </div>
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn btn-primary px-4 rounded-pill">
+                    Complete Registration
+                    <i class="bi bi-check ms-1"></i>
+                  </button>
+                </div>
 
-    <div class="d-flex justify-content-end">
-      <a href="payment.html" class="btn btn-primary px-4 rounded-pill">
-        Proceed
-        <i class="bi bi-arrow-right ms-1"></i>
-      </a>
-    </div>
-
-  </div>
-</div>
-
+              </div>
+            </div>
+            </div>
+          </div>
 
         </div>
       </div>

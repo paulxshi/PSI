@@ -171,7 +171,7 @@
                     <div class="step-line"></div>
 
                     <!-- Step 2 -->
-                    <div class="step" id="step-personal-info" onclick="goToStep(2)">
+                    <div class="step" id="step-personal-info">
                       <div class="step-circle">
                         <i class="bi bi-person-lines-fill"></i>
                       </div>
@@ -181,7 +181,7 @@
                     <div class="step-line"></div>
 
                     <!-- Step 3 -->
-                    <div class="step" id="step-exam-schedule" onclick="goToStep(3)">
+                    <div class="step" id="step-exam-schedule">
                       <div class="step-circle">
                         <i class="bi bi-calendar-check"></i>
                       </div>
@@ -191,7 +191,7 @@
                     <div class="step-line"></div>
 
                     <!-- Step 4 -->
-                    <div class="step" id="step-payment" onclick="goToStep(4)">
+                    <div class="step" id="step-payment">
                       <div class="step-circle">
                         <i class="bi bi-credit-card"></i>
                       </div>
@@ -201,7 +201,7 @@
                     <div class="step-line"></div>
 
                     <!-- Step 5 -->
-                    <div class="step" id="step-finish" onclick="goToStep(5)">
+                    <div class="step" id="step-finish">
                       <div class="step-circle">
                         <i class="bi bi-check-circle"></i>
                       </div>
@@ -408,140 +408,21 @@
         </div>
 
         <div class="d-flex justify-content-end mb-3">
-          <button
-            type="button"
-            class="btn btn-primary px-4 rounded-pill"
-            id="registerBtn"
-            disabled
-            onclick="submitRegistration()"
-          >
-            Submit Registration
-            <i class="bi bi-check ms-1"></i>
-          </button>
+<button
+  type="button"
+  class="btn btn-primary px-4 rounded-pill"
+  id="proceedBtn"
+  disabled
+>
+  Proceed to Examination Schedule
+  <i class="bi bi-arrow-right ms-1"></i>
+</button>
+
         </div>
-
-
       </div>
     </div>
-
-            <div id="examScheduleCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-  <div class="card-body p-4">
-
-    <h6 class="fw-semibold mb-4">
-      <i class="bi bi-calendar-check me-2 text-primary"></i>
-      Examination Schedule
-    </h6>
-
-    <!-- ROW 1: REGION -->
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Region <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" name="region" id="region">
-          <option value="">
-            Select Region (assigned by administration)
-          </option>
-          <option value="Luzon">Luzon</option>
-          <option value="Visayas">Visayas</option>
-          <option value="Mindanao">Mindanao</option>
-        </select>
-      </div>
-
-      <!-- EXAM VENUE -->
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Examination Venue <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" name="exam_venue" id="examVenue">
-          <option value="">
-            Select Examination Venue
-          </option>
-          <option>Venue options will be provided by administration</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- ROW 2: EXAM DATE -->
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">
-          Examination Date <span class="text-danger">*</span>
-        </label>
-        <select class="form-select" name="exam_date" id="examDate">
-          <option value="">
-            Select Examination Date
-          </option>
-          <option>Date options will be scheduled by administration</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- INFORMATION NOTE -->
-    <div class="alert alert-light border rounded-3 small text-muted mb-4">
-      <i class="bi bi-info-circle me-1"></i>
-      Examination schedules, including region, venue, and date, are created
-      and assigned by the Philippine Maritime Academy (PMMA).
-      Available options will appear once officially released by the administration.
-    </div>
-
-    <!-- ACTION BUTTON -->
-    <div class="d-flex justify-content-end">
-      <button
-        type="button"
-        class="btn btn-primary px-4 rounded-pill"
-        onclick="goToPayment()"
-      >
-        Proceed
-        <i class="bi bi-arrow-right ms-1"></i>
-      </button>
-    </div>
-
-  </div>
 </div>
 
-            <!-- PAYMENT CARD -->
-            <div id="paymentCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-              <div class="card-body p-4">
-
-                <h6 class="fw-semibold mb-4">
-                  <i class="bi bi-credit-card me-2 text-primary"></i>
-                  Payment Information
-                </h6>
-
-                <div class="row g-3 mb-3">
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></label>
-                    <select class="form-select" name="payment_method" id="paymentMethod">
-                      <option value="">Select Payment Method</option>
-                      <option value="gcash">GCash</option>
-                      <option value="bank_transfer">Bank Transfer</option>
-                      <option value="credit_card">Credit Card</option>
-                    </select>
-                  </div>
-
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Payment Reference/ID <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="payment_reference" id="paymentReference" placeholder="Enter transaction reference">
-                  </div>
-                </div>
-
-                <div class="row g-3 mb-4">
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" name="payment_date" id="paymentDate">
-                  </div>
-                </div>
-
-                <div class="d-flex justify-content-end">
-                  <button type="button" class="btn btn-primary px-4 rounded-pill" onclick="finishRegistration()">
-                    Complete Registration
-                    <i class="bi bi-check ms-1"></i>
-                  </button>
-                </div>
-
-              </div>
-            </div>
 
             <!-- REGISTRATION COMPLETE -->
             <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
@@ -595,11 +476,6 @@
   function goToStep(step) {
     const reminderCard = document.getElementById('reminderCard');
     const personalInfoCard = document.getElementById('personalInfoCard');
-    const examScheduleCard = document.getElementById('examScheduleCard');
-    const paymentCard = document.getElementById('paymentCard');
-    const registrationComplete = document.getElementById('registrationComplete');
-    const loginPrompt = document.getElementById('loginPrompt');
-    const steps = document.querySelectorAll('.step');
 
     // reset step states
     steps.forEach(s => s.classList.remove('active', 'completed'));
@@ -607,7 +483,6 @@
     if (step === 1) {
       reminderCard.classList.remove('d-none');
       personalInfoCard.classList.add('d-none');
-      examScheduleCard.classList.add('d-none');
       paymentCard.classList.add('d-none');
       registrationComplete.classList.add('d-none');
       loginPrompt.classList.remove('d-none');
@@ -615,7 +490,6 @@
     } else if (step === 2) {
       reminderCard.classList.add('d-none');
       personalInfoCard.classList.remove('d-none');
-      examScheduleCard.classList.add('d-none');
       paymentCard.classList.add('d-none');
       registrationComplete.classList.add('d-none');
       loginPrompt.classList.add('d-none');
@@ -623,7 +497,6 @@
     } else if (step === 3) {
       reminderCard.classList.add('d-none');
       personalInfoCard.classList.add('d-none');
-      examScheduleCard.classList.remove('d-none');
       paymentCard.classList.add('d-none');
       registrationComplete.classList.add('d-none');
       loginPrompt.classList.add('d-none');
@@ -631,7 +504,6 @@
     } else if (step === 4) {
       reminderCard.classList.add('d-none');
       personalInfoCard.classList.add('d-none');
-      examScheduleCard.classList.add('d-none');
       paymentCard.classList.remove('d-none');
       registrationComplete.classList.add('d-none');
       loginPrompt.classList.add('d-none');
@@ -639,7 +511,6 @@
     } else if (step === 5) {
       reminderCard.classList.add('d-none');
       personalInfoCard.classList.add('d-none');
-      examScheduleCard.classList.add('d-none');
       paymentCard.classList.add('d-none');
       registrationComplete.classList.remove('d-none');
       loginPrompt.classList.add('d-none');
@@ -649,106 +520,15 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function goToPayment() {
-    // Validate exam schedule fields
-    const region = document.getElementById('region').value;
-    const examVenue = document.getElementById('examVenue').value;
-    const examDate = document.getElementById('examDate').value;
-    
-    if (!region || !examVenue || !examDate) {
-      alert('Please select all examination schedule fields.');
-      return;
-    }
-
-    // Hide exam schedule card
-    document.getElementById('examScheduleCard').classList.add('d-none');
-
-    // Show payment card
-    document.getElementById('paymentCard').classList.remove('d-none');
-
-    // Set payment date to today
-    document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
-
-    // Stepper update
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(step => step.classList.remove('active', 'completed'));
-
-    // Mark previous steps completed
-    steps[0].classList.add('completed'); // Reminders
-    steps[1].classList.add('completed'); // Personal Info
-    steps[2].classList.add('completed'); // Exam Schedule
-
-    // Activate Payment step
-    steps[3].classList.add('active');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function submitRegistration() {
-    // Submit the registration form
-    const form = document.getElementById('registrationForm');
-    
-    // Create FormData from the form
-    const formData = new FormData(form);
-    
-    // Log form data for debugging
-    console.log('Submitting registration with fields:');
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
-    
-    // Submit registration via fetch
-    fetch('php/register.php', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      console.log('Response status:', response.status);
-      return response.json();
-    })
-    .then(data => {
-      console.log('Response data:', data);
-      if (data.success) {
-        // Registration successful - proceed to exam schedule
-        console.log('Registration successful, going to exam schedule');
-        goToExamSchedule();
-      } else {
-        // Show error message
-        console.log('Registration failed:', data.message);
-        const otpStatus = document.getElementById('otpStatus');
-        otpStatus.textContent = data.message || 'Registration failed. Please try again.';
-        otpStatus.className = 'mb-2 mt-1 small fw-semibold text-danger';
-        otpStatus.style.display = 'block';
-      }
-    })
-    .catch(error => {
-      console.error('Registration error:', error);
-      const otpStatus = document.getElementById('otpStatus');
-      otpStatus.textContent = 'Network error. Please try again.';
-      otpStatus.className = 'mb-2 mt-1 small fw-semibold text-danger';
-      otpStatus.style.display = 'block';
-    });
-  }
-
   function goToExamSchedule() {
     console.log('goToExamSchedule() called');
-    
-    // Hide personal info card
     const personalInfoCard = document.getElementById('personalInfoCard');
-    const examScheduleCard = document.getElementById('examScheduleCard');
     
     console.log('personalInfoCard exists:', !!personalInfoCard);
-    console.log('examScheduleCard exists:', !!examScheduleCard);
     
     if (personalInfoCard) {
       personalInfoCard.classList.add('d-none');
       console.log('Hidden personal info card');
-    }
-
-    // Show exam schedule card
-    if (examScheduleCard) {
-      examScheduleCard.classList.remove('d-none');
-      console.log('Showing exam schedule card');
     }
 
     // Stepper update
@@ -767,36 +547,48 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     console.log('Scrolled to top');
   }
-
-  function finishRegistration() {
-    // Validate payment fields
-    const paymentMethod = document.getElementById('paymentMethod').value;
-    const paymentReference = document.getElementById('paymentReference').value;
-    const paymentDate = document.getElementById('paymentDate').value;
-    
-    if (!paymentMethod || !paymentReference || !paymentDate) {
-      alert('Please fill in all payment fields.');
-      return;
-    }
-
-    // Hide payment card
-    document.getElementById('paymentCard').classList.add('d-none');
-
-    // Show registration complete card
-    document.getElementById('registrationComplete').classList.remove('d-none');
-
-    // Update stepper
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(step => step.classList.remove('active', 'completed'));
-    steps[0].classList.add('completed');
-    steps[1].classList.add('completed');
-    steps[2].classList.add('completed');
-    steps[3].classList.add('completed');
-    steps[4].classList.add('active');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 </script>
+
+<script>
+  const requiredFields = [
+    'lastName',
+    'firstName',
+    'dateOfBirth',
+    'contactNumber',
+    'testPermitNo',
+    'school',
+    'email',
+    'password',
+    'confirmPassword'
+  ];
+
+  const proceedBtn = document.getElementById('proceedBtn');
+
+  function checkPersonalInfoCompletion() {
+    let isComplete = true;
+
+    requiredFields.forEach(id => {
+      const field = document.getElementById(id);
+      if (!field || field.value.trim() === '') {
+        isComplete = false;
+      }
+    });
+
+    proceedBtn.disabled = !isComplete;
+  }
+
+  requiredFields.forEach(id => {
+    const field = document.getElementById(id);
+    if (field) {
+      field.addEventListener('input', checkPersonalInfoCompletion);
+    }
+  });
+
+  proceedBtn.addEventListener('click', () => {
+    window.location.href = 'examsched.html';
+  });
+</script>
+
 
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
