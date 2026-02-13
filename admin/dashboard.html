@@ -13,34 +13,54 @@
 
 <style>
 .region-card {
-  border-radius: 18px;
-  padding: 18px;
+  border-radius: 22px;
+  padding: 20px;
+  width: 100%;
   height: 100%;
-background: linear-gradient(
-  160deg,
-  #FFEE91,
-  #F8E47C
-);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-  transition: all 0.35s ease;
+  background: linear-gradient(
+    145deg,
+    #ffffff 0%,
+    #f9fafb 45%,
+    #eef2f7 100%
+  );
+  border: 1px solid rgba(0, 0, 0, 0.035);
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.06),
+    0 4px 10px rgba(0, 0, 0, 0.04);
+
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.region-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(20, 184, 166, 0.08),
+    rgba(99, 102, 241, 0.05),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
 }
 
 .region-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 50px rgba(0, 0, 0, 0.1),
+    0 10px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* Region Themes */
-.region-card.visayas {
-  background: linear-gradient(160deg, #facc15, #f59e0b);
-  color: #1f2937;
-}
-
-.region-card.mindanao {
-  background: linear-gradient(160deg, #fff7ad, #fde047);
-  color: #1f2937;
+.region-card:hover::before {
+  opacity: 1;
 }
 
 .region-header {
@@ -51,10 +71,11 @@ background: linear-gradient(
 }
 
 .region-title {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: #111827;
 }
 
 /* Table */
@@ -72,7 +93,9 @@ background: linear-gradient(
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   align-items: center;
-
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   margin: 0 -18px;        
   padding: 12px 18px;
 
@@ -88,8 +111,8 @@ background: linear-gradient(
 .region-row:hover {
   background: linear-gradient(
     90deg,
-    rgba(255,255,255,0.25),
-    rgba(255,255,255,0.08)
+    rgba(20, 184, 166, 0.12),
+    rgba(99, 102, 241, 0.08)
   );
 }
 
@@ -222,9 +245,9 @@ background: linear-gradient(
 
 	<section id="content">
 		<nav>
-      			<div class="greeting">
-                <span>Admin</span>
-            </div>
+      	<div class="greeting">
+            <span>Admin</span>
+        </div>
 		</nav>
 
 
@@ -260,53 +283,115 @@ background: linear-gradient(
    <div class="row g-3 justify-content-start">
 
     <!-- Luzon Card -->
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="region-card">
-        <div class="region-header">
-          <span class="region-title">Luzon</span>
-        </div>
+   <div class="col-xl-4 col-lg-4 col-md-6">
+<div class="region-card">
+  <div class="region-header">
+    <span class="region-title">Luzon</span>
+  </div>
 
-        <div class="region-table">
-          <div class="region-table-header">
-            <span>Venue</span>
-            <span>Registered</span>
-            <span>Limit</span>
-          </div>
+  <div class="region-table">
+    <!-- Header -->
+    <div class="region-table-header" style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+      <span>Venue</span>
+      <span>Registered</span>
+      <span>Limit</span>
+      <span>Available</span>
+    </div>
 
-          <div class="region-table-row region-row"
-              data-venue="Manila">
-            <span>
-              <strong>Manila</strong>
-            </span>
-            <span>50</span>
-            <span>100</span>
-          </div>  
+    <!-- Manila -->
+    <div class="mb-2">
+      <strong class="d-block mb-1">Manila</strong>
 
-          <div class="region-table-row region-row"
-              data-venue="Cavite">
-            <span>
-              <strong>Cavite</strong>
-            </span>
-            <span>50</span>
-            <span>100</span>
-          </div>
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
 
-          <div class="region-table-row region-row"
-              data-venue="Pasig">
-            <span>
-              <strong>Pasig</strong>
-            </span>
-            <span>50</span>
-            <span>100</span>
-          </div>
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
 
-        </div>
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
     </div>
 
+    <!-- Cavite -->
+    <div class="mb-2 mt-3">
+      <strong class="d-block mb-1">Cavite</strong>
+          <div class="region-table-row region-row"
+              style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+            <span>February 1, 2026</span>
+            <span>20</span>
+            <span>20</span>
+            <span>20</span>
+          </div>
+
+    <div class="region-table-row region-row"
+     style="grid-template-columns: 2.6fr 0.9fr 0.9fr 0.9fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>20</span>
+        <span>20</span>
+    </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>20</span>
+        <span>20</span>
+      </div>
+    </div>
+
+    <!-- Pasig -->
+    <div class="mt-3">
+      <strong class="d-block mb-1">Pasig</strong>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>20</span>
+        <span>20</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>20</span>
+        <span>20</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>20</span>
+        <span>20</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    </div>
+
     <!-- Visayas Card -->
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="region-card visayas">
+  <div class="col-xl-4 col-lg-4 col-md-6">
+      <div class="region-card">
         <div class="region-header">
           <span class="region-title">Visayas</span>
         </div>
@@ -350,8 +435,8 @@ background: linear-gradient(
     </div>
 
     <!-- Mindanao Card -->
-    <div class="col-xl-3 col-lg-4 col-md-6">
-      <div class="region-card mindanao">
+   <div class="col-xl-4 col-lg-4 col-md-6">
+      <div class="region-card">
         <div class="region-header">
           <span class="region-title">Mindanao</span>  
         </div>
