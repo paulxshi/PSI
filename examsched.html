@@ -147,40 +147,31 @@
       Examination Schedule
     </h6>
 
-    <div class="row g-3 mb-3">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Region</label>
-        <select class="form-select" disabled>
-          <option selected>Assigned by PSI Officials</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>NCR</option>
-          <option>Region IV-A</option>
-          <option>Region VII</option>
-        </select>
-      </div>
+<div class="row g-3 mb-3">
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Region</label>
+    <select id="region" class="form-select">
+      <option value="">Select Region</option>
+    </select>
+  </div>
 
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Examination Venue</label>
-        <select class="form-select" disabled>
-          <option selected>To be announced</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>PMMA Main Campus</option>
-          <option>PMMA Satellite Office</option>
-        </select>
-      </div>
-    </div>
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Examination Venue</label>
+    <select id="venue" class="form-select">
+      <option value="">Select Venue</option>
+    </select>
+  </div>
+</div>
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <label class="form-label fw-semibold">Examination Date</label>
-        <select class="form-select" disabled>
-          <option selected>To be scheduled</option>
-          <!-- Uploaded by PSI Officials -->
-          <option>March 15, 2026</option>
-          <option>April 20, 2026</option>
-        </select>
-      </div>
-    </div>
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <label class="form-label fw-semibold">Examination Date</label>
+    <select id="schedule" class="form-select">
+      <option value="">Select Date</option>
+    </select>
+  </div>
+</div>
+
 
     <div class="alert alert-light border small text-muted mb-4">
       <i class="bi bi-info-circle me-1"></i>
@@ -205,6 +196,116 @@
     </div>
   </div>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const regionSelect = document.getElementById("region");
+    const venueSelect = document.getElementById("venue");
+    const scheduleSelect = document.getElementById("schedule");
+
+    // 🔹 Load Regions on Page Load
+    fetch("php/get_schedules.php?type=regions")
+        .then(response => response.json())
+        .then(data => {
+            regionSelect.innerHTML = '<option value="">Select Region</option>';
+
+            data.forEach(region => {
+                const option = document.createElement("option");
+                option.value = region.region;
+                option.textContent = region.region;
+                regionSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error loading regions:", error));
+
+
+    // 🔹 When Region Changes → Load Venues
+    regionSelect.addEventListener("change", function () {
+
+        const region = this.value;
+
+        // Reset lower dropdowns
+        venueSelect.innerHTML = '<option value="">Select Venue</option>';
+        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        venueSelect.disabled = true;
+        scheduleSelect.disabled = true;
+
+        if (region === "") return;
+
+        fetch("php/get_schedules.php?type=venues&region=" + encodeURIComponent(region))
+            .then(response => response.json())
+            .then(data => {
+
+                if (data.length === 0) {
+                    venueSelect.innerHTML = '<option value="">No venues available</option>';
+                    return;
+                }
+
+                data.forEach(venue => {
+                    const option = document.createElement("option");
+                    option.value = venue.venue_id;
+                    option.textContent = venue.venue_name;
+                    venueSelect.appendChild(option);
+                });
+
+                venueSelect.disabled = false;
+            })
+            .catch(error => console.error("Error loading venues:", error));
+    });
+
+
+// 🔹 When Venue Changes → Load Schedules 
+venueSelect.addEventListener("change", function () {
+
+    const venueId = this.value;
+
+    scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+    scheduleSelect.disabled = true;
+
+    if (venueId === "") return;
+
+    fetch("php/get_schedules.php?type=schedules&venue_id=" + venueId)
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.length === 0) {
+                scheduleSelect.innerHTML = '<option value="">No schedules available</option>';
+                return;
+            }
+
+            data.forEach(schedule => {
+                const option = document.createElement("option");
+                option.value = schedule.schedule_id;
+
+                const date = new Date(schedule.schedule_datetime);
+
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const formattedTime = date.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+
+                option.textContent = formattedDate + " – " + formattedTime;
+
+                scheduleSelect.appendChild(option);
+            });
+
+            scheduleSelect.disabled = false;
+        })
+        .catch(error => console.error("Error loading schedules:", error));
+});
+
+});
+</script>
+
 
 </body>
 </html>
