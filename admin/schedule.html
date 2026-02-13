@@ -71,7 +71,14 @@
                 <li class="active">
                     <a href="schedule.html">
                         <i class="bx bx-calendar-check" /></i>
-                        <span class="text">Schedule</span>
+                        <span class="text">Create Schedule</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="managesched.html">
+                    <i class="bx bx-edit"></i>
+                    <span class="text">Manage Schedule</span>
                     </a>
                 </li>
             </ul>
@@ -123,27 +130,27 @@
 
                 <form method="POST" action="php/save_schedule.php">
 
-<div class="mb-4">
-    <label class="form-label fw-medium mb-2">Exam Location</label>
+                <div class="mb-4">
+                    <label class="form-label fw-medium mb-2">Exam Location</label>
 
-    <!-- Region Dropdown -->
-    <select class="form-select mb-3" name="exam_region" id="exam_region" required>
-        <option value="">Select Region</option>
-        <option value="Luzon">Luzon</option>
-        <option value="Visayas">Visayas</option>
-        <option value="Mindanao">Mindanao</option>
-    </select>
+                    <!-- Region Dropdown -->
+                    <select class="form-select mb-3" name="exam_region" id="exam_region" required>
+                        <option value="">Select Region</option>
+                        <option value="Luzon">Luzon</option>
+                        <option value="Visayas">Visayas</option>
+                        <option value="Mindanao">Mindanao</option>
+                    </select>
 
-    <!-- Venue Input -->
-    <input
-        type="text"
-        class="form-control"
-        placeholder="Please enter Examination venue"
-        name="exam_area"
-        id="exam_area"
-        required
-    >
-</div>
+                    <!-- Venue Input -->
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Please enter Examination venue"
+                        name="exam_area"
+                        id="exam_area"
+                        required
+                    >
+                </div>
 
 
                     <!-- Date Row -->
@@ -215,7 +222,7 @@
                         Clear
                     </button>
                   <button type="button" class="btn btn-dark" id="createSchedBtn">
-                           Create Schedule
+                           Preview
                   </button>
 
                     </div>
