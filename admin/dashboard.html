@@ -6,209 +6,12 @@
 	<link rel="icon" href="../imgs/PSI.png">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="../css/dashstyle.css">
+  <link rel="stylesheet" href="../css/style.css">
 	<title>Dashboard</title>
 </head>
 
-<style>
-.region-card {
-  border-radius: 22px;
-  padding: 20px;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    145deg,
-    #ffffff 0%,
-    #f9fafb 45%,
-    #eef2f7 100%
-  );
-  border: 1px solid rgba(0, 0, 0, 0.035);
-
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.06),
-    0 4px 10px rgba(0, 0, 0, 0.04);
-
-  transition:
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-
-  position: relative;
-  overflow: hidden;
-}
-
-.region-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    rgba(20, 184, 166, 0.08),
-    rgba(99, 102, 241, 0.05),
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-
-.region-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 24px 50px rgba(0, 0, 0, 0.1),
-    0 10px 20px rgba(0, 0, 0, 0.06);
-}
-
-.region-card:hover::before {
-  opacity: 1;
-}
-
-.region-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.region-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #111827;
-}
-
-/* Table */
-.region-table-header {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  opacity: 0.7;
-  margin-bottom: 8px;
-}
-
-.region-table-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  margin: 0 -18px;        
-  padding: 12px 18px;
-
-  font-size: 0.85rem;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-.region-table-row:last-child {
-  border-bottom: none;
-}
-
-.region-row:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(20, 184, 166, 0.12),
-    rgba(99, 102, 241, 0.08)
-  );
-}
-
-.region-row:active {
-  transform: scale(0.99);
-}
-
-.region-table-row span:nth-child(2),
-.region-table-row span:nth-child(3),
-.region-table-header span:nth-child(2),
-.region-table-header span:nth-child(3) {
-  text-align: center;
-}
-
-.region-row {
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-
-/* ===== TABLE CARD ===== */
-.table-card {
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.04),
-    0 2px 8px rgba(0, 0, 0, 0.03);
-  overflow: hidden;
-}
-
-/* ===== TABLE HEADER ===== */
-.table-card-header {
-  background: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.table-card-header h6 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #474849;
-}
-
-.table-card-header .form-control {
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  font-size: 0.8rem;
-  padding: 6px 10px;
-  transition: all 0.2s ease;
-}
-
-.table-card-header .form-control:focus {
-  border-color: #14b8a6;
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
-}
-
-.table {
-  margin-bottom: 0;
-}
-
-.table thead th {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #6b7280;
-  background: #fafafa;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 20px;
-}
-
-.table tbody tr {
-  transition: background 0.25s ease, transform 0.15s ease;
-}
-
-.table tbody tr:hover {
-  background: #f9fafb;
-}
-
-.table td {
-  padding: 16px 20px;
-  font-size: 0.85rem;
-  color: #374151;
-}
-
-.table td.fw-semibold {
-  color: #111827;
-}
-
-@media (max-width: 768px) {
-  .table td,
-  .table th {
-    padding: 12px 14px;
-  }
-}
-
-</style>
 
 <body>
 
@@ -280,7 +83,7 @@
 
 
   <div class="container-fluid mt-4">
-   <div class="row g-3 justify-content-start">
+   <div class="row g-3 justify-content-start region-row-wrapper">
 
     <!-- Luzon Card -->
    <div class="col-xl-4 col-lg-4 col-md-6">
@@ -298,9 +101,15 @@
       <span>Available</span>
     </div>
 
-    <!-- Manila -->
-    <div class="mb-2">
-      <strong class="d-block mb-1">Manila</strong>
+    <div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="manila">
+      <strong>Manila</strong>
+      <button class="venue-toggle" aria-label="Toggle Manila schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="manila">
 
       <div class="region-table-row region-row"
            style="grid-template-columns: 2fr 1fr 1fr 1fr;">
@@ -328,155 +137,339 @@
     </div>
 
     <!-- Cavite -->
-    <div class="mb-2 mt-3">
-      <strong class="d-block mb-1">Cavite</strong>
-          <div class="region-table-row region-row"
-              style="grid-template-columns: 2fr 1fr 1fr 1fr;">
-            <span>February 1, 2026</span>
-            <span>20</span>
-            <span>20</span>
-            <span>20</span>
-          </div>
-
-    <div class="region-table-row region-row"
-     style="grid-template-columns: 2.6fr 0.9fr 0.9fr 0.9fr;">
-        <span>February 2, 2026</span>
-        <span>20</span>
-        <span>20</span>
-        <span>20</span>
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="cavite">
+      <strong>Cavite</strong>
+      <button class="venue-toggle" aria-label="Toggle Cavite schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
     </div>
 
-      <div class="region-table-row region-row"
-           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
-        <span>February 3, 2026</span>
-        <span>20</span>
-        <span>20</span>
-        <span>20</span>
-      </div>
-    </div>
-
-    <!-- Pasig -->
-    <div class="mt-3">
-      <strong class="d-block mb-1">Pasig</strong>
+    <div class="venue-schedule" id="cavite">
 
       <div class="region-table-row region-row"
            style="grid-template-columns: 2fr 1fr 1fr 1fr;">
         <span>February 1, 2026</span>
         <span>20</span>
-        <span>20</span>
-        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
 
       <div class="region-table-row region-row"
            style="grid-template-columns: 2fr 1fr 1fr 1fr;">
         <span>February 2, 2026</span>
         <span>20</span>
-        <span>20</span>
-        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
 
       <div class="region-table-row region-row"
            style="grid-template-columns: 2fr 1fr 1fr 1fr;">
         <span>February 3, 2026</span>
         <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+    <!-- Pasig -->
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="pasig">
+      <strong>Pasig</strong>
+      <button class="venue-toggle" aria-label="Toggle Pasig schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="pasig">
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
         <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
         <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
     </div>
 
   </div>
 </div>
 
-    </div>
+</div>
 
     <!-- Visayas Card -->
   <div class="col-xl-4 col-lg-4 col-md-6">
-      <div class="region-card">
-        <div class="region-header">
-          <span class="region-title">Visayas</span>
-        </div>
+<div class="region-card">
+  <div class="region-header">
+    <span class="region-title">Visayas</span>
+  </div>
 
-          <div class="region-table">
-            <div class="region-table-header">
-              <span>Venue</span>
-              <span>Registered</span>
-              <span>Limit</span>
-            </div>
+  <div class="region-table">
 
-          <div class="region-table-row region-row"
-              data-venue="Cebu">
-            <span>
-              <strong>Cebu</strong>
-            </span>
-            <span>50</span>
-            <span>100</span>
-          </div>
+    <div class="region-table-header"
+         style="grid-template-columns: 2.6fr 0.9fr 0.9fr 0.9fr;">
+      <span>Venue</span>
+      <span>Registered</span>
+      <span>Limit</span>
+      <span>Available</span>
+    </div>
 
-            <div class="region-table-row region-row"
-                data-venue="Iloilo">
-              <span>
-                <strong>Iloilo</strong>
-              </span>
-              <span>50</span>
-              <span>100</span>
-            </div>
+    <!-- Cebu -->
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="cebu">
+      <strong>Cebu</strong>
+      <button class="venue-toggle" aria-label="Toggle Cebu schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
 
-            <div class="region-table-row region-row"
-                data-venue="Bacolod">
-              <span>
-                <strong>Bacolod</strong>
-              </span>
-              <span>50</span>
-              <span>100</span>
-            </div>
-          </div>
+    <div class="venue-schedule" id="cebu">
 
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
     </div>
 
+    <!-- Iloilo -->
+ <div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="iloilo">
+      <strong>Iloilo</strong>
+      <button class="venue-toggle" aria-label="Toggle Iloilo schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="iloilo">
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+    <!-- Bacolod -->
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="bacolod">
+      <strong>Bacolod</strong>
+      <button class="venue-toggle" aria-label="Toggle Bacolod schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="bacolod">
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
     <!-- Mindanao Card -->
    <div class="col-xl-4 col-lg-4 col-md-6">
-      <div class="region-card">
-        <div class="region-header">
-          <span class="region-title">Mindanao</span>  
-        </div>
+        <div class="region-card">
+          <div class="region-header">
+            <span class="region-title">Mindanao</span>
+          </div>
 
           <div class="region-table">
-            <div class="region-table-header">
+
+            <div class="region-table-header"
+                style="grid-template-columns: 2.6fr 0.9fr 0.9fr 0.9fr;">
               <span>Venue</span>
               <span>Registered</span>
               <span>Limit</span>
+              <span>Available</span>
             </div>
 
-          <div class="region-table-row region-row"
-              data-venue="Davao">
-            <span>
-              <strong>Davao</strong>
-            </span>
-            <span>50</span>
-            <span>100</span>
-          </div>
+            <!-- Davao -->
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="davao">
+      <strong>Davao</strong>
+      <button class="venue-toggle" aria-label="Toggle Davao schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
 
-            <div class="region-table-row region-row"
-                data-venue="Cagayan">
-              <span>
-                <strong>Cagayan</strong>
-              </span>
-              <span>40</span>
-              <span>100</span>
-            </div>
+    <div class="venue-schedule" id="davao">
 
-            <div class="region-table-row region-row"
-                data-venue="General Santos">
-              <span>
-                <strong>General Santos</strong>
-              </span>
-              <span>30</span>
-              <span>100</span>
-            </div>
-          </div>
-
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
       </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+            <!-- Cagayan -->
+            <div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="cagayan">
+      <strong>Cagayan</strong>
+      <button class="venue-toggle" aria-label="Toggle Cagayan schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="cagayan">
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+            <!-- General Santos -->
+<div class="venue-header d-flex justify-content-between align-items-center mb-1"
+        data-target="general-santos">
+      <strong>General Santos</strong>
+      <button class="venue-toggle" aria-label="Toggle General Santos schedule">
+        <i class="bx bx-chevron-down"></i>
+      </button>
+    </div>
+
+    <div class="venue-schedule" id="general-santos">
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 1, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 2, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+
+      <div class="region-table-row region-row"
+           style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+        <span>February 3, 2026</span>
+        <span>20</span>
+        <span>100</span>
+        <span>80</span>
+      </div>
+    </div>
+
+          </div>
+        </div>
+
     </div>
 
   </div>
@@ -569,6 +562,22 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.querySelectorAll('.venue-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const targetId = header.getAttribute('data-target');
+      const schedule = document.getElementById(targetId);
+      const icon = header.querySelector('.venue-toggle');
+
+      if (!schedule) return;
+
+      schedule.classList.toggle('show');
+      icon.classList.toggle('open');
+    });
+  });
+</script>
+
 
 </body>
 </html>
