@@ -1,49 +1,55 @@
 <?php
 session_start();
 header("Content-Type: application/json");
-require_once "../config/db.php"; // PDO connection
 
-// Hard-coded fallback user
-$defaultUser = [
-    "first_name" => "Juan",
-    "middle_name" => "D",
-    "last_name" => "Delos Reyes",
-    "email" => "juan.delacruz@pmma.edu.ph",
-    "contact_number" => "9123456789",
-    "date_of_birth" => "2004-03-15",
-    "age" => 20,
-    "test_permit" => "1234-5678"
-];
+error_log("get_user.php called - Session ID: " . session_id());
+error_log("Session user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
+
+require_once "../config/db.php";
 
 try {
+    // Check if user is logged in
     if (!isset($_SESSION['user_id'])) {
-        // Not logged in → return default data
-        echo json_encode(["success" => true, "user" => $defaultUser]);
+        error_log("No user_id in session");
+        echo json_encode(["success" => false, "message" => "Not logged in"]);
         exit;
     }
 
     $user_id = $_SESSION['user_id'];
+    error_log("Fetching user data for user_id: $user_id");
 
+    // Get user data directly from users table
     $stmt = $pdo->prepare("
-        SELECT u.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.contact_number, 
-               u.date_of_birth, u.age, t.test_permit, t.date_of_registration, t.purpose
-        FROM users u
-        LEFT JOIN test t ON u.user_id = t.user_id
-        WHERE u.user_id = ?
+        SELECT user_id, first_name, middle_name, last_name, email, contact_number, 
+               date_of_birth, age, test_permit, role, status, school, region, 
+               gender, address, nationality, exam_venue, exam_date, pmma_student_id,
+               date_of_registration
+        FROM users
+        WHERE user_id = ?
         LIMIT 1
     ");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // If no DB data found, use fallback
     if (!$user) {
-        $user = $defaultUser;
+        error_log("User not found in database for user_id: $user_id");
+        echo json_encode(["success" => false, "message" => "User not found"]);
+        exit;
     }
+
+    error_log("User found: " . json_encode($user));
+
+    // Set default values for fields that don't exist in this table
+    $user['purpose'] = null;
+    $user['date_of_test'] = $user['exam_date'] ?? null;
 
     echo json_encode(["success" => true, "user" => $user]);
 
+} catch (PDOException $e) {
+    error_log("PDO Error in get_user.php: " . $e->getMessage());
+    echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
 } catch (Exception $e) {
-    // If DB connection fails → fallback
-    echo json_encode(["success" => true, "user" => $defaultUser]);
+    error_log("Error in get_user.php: " . $e->getMessage());
+    echo json_encode(["success" => false, "message" => "Error loading user data: " . $e->getMessage()]);
 }
 

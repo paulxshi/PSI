@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success) {
         // Store email in sessionStorage for OTP verification
         sessionStorage.setItem("reset_email", email);
+        sessionStorage.setItem("reset_flow", "true");
 
         // Close modal after short delay and redirect to OTP verification
         setTimeout(() => {
@@ -84,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (modal) {
             modal.hide();
           }
-          window.location.href = "verify_otp.html";
+          window.location.href = "forgot_password_otp.html";
         }, 1500);
       }
     })
