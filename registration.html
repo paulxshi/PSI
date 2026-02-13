@@ -22,6 +22,68 @@
    cursor: not-allowed;
  }
 
+.btn-send-otp {
+  background: linear-gradient(135deg, #ffb347, #ef8809);
+  border: none;
+  color: #000;
+  font-weight: 600;
+  padding: 0.45rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 14px rgba(239, 136, 9, 0.25);
+}
+
+.btn-send-otp:hover {
+  background: linear-gradient(135deg, #ef8809, #d97706);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(239, 136, 9, 0.35);
+}
+
+.btn-send-otp:active {
+  transform: scale(0.97);
+}
+
+/* VERIFY OTP BUTTON */
+.btn-verify-otp {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1.4rem;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.25);
+}
+
+.btn-verify-otp:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.35);
+}
+
+.btn-verify-otp:active {
+  transform: scale(0.97);
+}
+
+/* OTP INPUT GROUP POLISH */
+#otpContainer .form-control {
+  border-radius: 999px 0 0 999px;
+  font-weight: 600;
+}
+
+#otpContainer .btn {
+  border-radius: 0 999px 999px 0;
+}
+
+/* OTP STATUS TEXT */
+#otpStatus {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
  .step {
    cursor: pointer;
  } 
@@ -350,9 +412,17 @@
           <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
           <div class="input-group">
             <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com">
-            <button type="button" id="sendOtpBtn" class="btn" style="display:none;">
-              Send OTP
-            </button>
+
+              <button
+                type="button"
+                id="sendOtpBtn"
+                class="btn btn-send-otp ms-2"
+                style="display:none;"
+              >
+                <i class="bi bi-shield-lock me-1"></i>
+                Send OTP
+              </button>
+
             <span id="otpVerifiedBadge" class="otp-verified-badge" style="display:none;">
               <i class="bi bi-check-circle"></i> Verified
             </span>
@@ -384,9 +454,16 @@
             placeholder="000000"
             style="letter-spacing: 0.5rem; font-size: 1.1rem;"
           >
-          <button type="button" id="verifyOtpBtn" class="btn btn-success">
-            Verify OTP
-          </button>
+          
+        <button
+          type="button"
+          id="verifyOtpBtn"
+          class="btn btn-verify-otp"
+        >
+          <i class="bi bi-check-circle me-1"></i>
+          Verify
+        </button>
+
         </div>
         <small class="text-muted">Enter the 6-digit code sent to your email</small>
       </div>
