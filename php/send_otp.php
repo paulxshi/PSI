@@ -19,6 +19,18 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
+// Check if email already exists in users table for registration
+if ($purpose === 'registration') {
+    $checkStmt = $pdo->prepare('SELECT user_id FROM users WHERE email = ? LIMIT 1');
+    $checkStmt->execute([$email]);
+    
+    if ($checkStmt->fetch()) {
+        error_log("Email already exists: $email");
+        echo json_encode(['success' => false, 'message' => 'This email is already registered. Please use a different email or login to your account.']);
+        exit;
+    }
+}
+
 try {
     // Generate secure 6-digit OTP
     $otp = sprintf('%06d', random_int(100000, 999999));
