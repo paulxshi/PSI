@@ -37,7 +37,7 @@ try {
             p.payment_amount
 
         FROM users u
-        LEFT JOIN test t ON u.user_id = t.user_id
+        LEFT JOIN examinees t ON u.user_id = t.user_id
         LEFT JOIN payments p ON t.test_id = p.test_id
         WHERE u.user_id = ?
         ORDER BY p.payment_date DESC
