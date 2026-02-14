@@ -56,206 +56,183 @@
   margin-top: 15px;
 }
 
-@media print {
-    .permit-note {
-    font-size: 17px;
-    font-weight: 900;
-  }
-
-  main {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-  }
-}
-
-@media print {
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto !important;
-  }
-
-  #sidebar,
-  nav,
-  main > *:not(#permitPDF),
-  .btn {
-    display: none !important;
-    height: 0 !important;
-    overflow: hidden !important;
-  }
-
-  main {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  #permitPDF {
-    position: relative;
-    top: 0;
-    left: 0;
-
-    margin: 0 auto !important;
-    padding: 15mm 14mm !important;
-
-    width: 210mm;
-    min-height: 297mm;
-
-    box-shadow: none !important;
-    page-break-before: avoid !important;
-  }
-
-  body {
-    overflow: hidden !important;
-  }
-}
-
-@media print {
-  .print-signature {
-    display: block !important;
-  }
-}
-
 body.print-mode .print-signature {
   display: block !important;
 }
 
-@media print {
 body.print-mode #permitPDF {
   max-width: 210mm;
   min-height: 297mm;
   padding: 15mm 14mm;
   font-size: 12px;
   line-height: 1.3;
+
 }
 
-body.print-mode #permitPDF h6 {
-  margin-bottom: 5px !important;
-}
-
-body.print-mode #permitPDF .row {
-  margin-bottom: 6px !important;
-}
-
-body.print-mode #permitPDF .photo-box {
-  width: 130px !important;
-}
-
-  main {
-    padding: 0 !important;
+@media print {
+  .photo-box {
+    width: 80px !important;
   }
+}
 
+body.print-mode .photo-box {
+  width: 85px !important;
+}
+
+@media print {
+
+  #sidebar,
+  nav,
   .btn {
     display: none !important;
   }
 
-  #sidebar, nav {
-    display: none !important;
-  }
-  
-  #permitPDF {
-    box-shadow: none !important;
-  }
-  #permitPDF {
-    max-width: 210mm;
-    min-height: 297mm;
-    padding: 15mm 14mm;
-    font-size: 12px;
-    line-height: 1.3;
-  }
-
-  #permitPDF .text-center {
-    margin-bottom: 8px !important;
-  }
-
-  #permitPDF hr {
-    margin: 6px 0;
-  }
-
-  #permitPDF h6 {
-    margin-bottom: 5px !important;
-    padding-bottom: 3px !important;
-    font-size: 13px;
-  }
-
-  #permitPDF .row {
-    margin-bottom: 6px !important;
-  }
-
-  #permitPDF .photo-box {
-    width: 130px !important;
-  }
-
-  #permitPDF ol {
-    padding-left: 16px;
-    margin-bottom: 0;
-  }
-
-  #permitPDF li {
-    margin-bottom: 2px;
-  }
-
-  #permitPDF,
-  #permitPDF * {
-    page-break-inside: avoid !important;
-  }
-
-
-  .btn,
-  #sidebar,
-  nav {
-    display: none !important;
-  }
-
-    body {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: #fff !important;
   }
 
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    size: Letter landscape;
+    margin: 8mm;
+  }
+
   #permitPDF {
-    max-width: 210mm;
-    min-height: 297mm;
-    padding: 15mm 14mm;
-    font-size: 12px;
-    line-height: 1.3;
-    transform-origin: top center;
+    width: 100%;
+    padding: 8mm;
+    font-size: 10px;
+    line-height: 1.15;
+    box-shadow: none !important;
   }
 
-  /* Compact spacing */
-  #permitPDF h6 {
-    font-size: 13px;
-    margin-bottom: 5px !important;
-    padding-bottom: 3px !important;
+  hr {
+    margin: 4px 0 !important;
   }
 
-  #permitPDF .row {
+  .row {
+    margin-bottom: 2px !important;
+  }
+
+  .mb-4 {
     margin-bottom: 6px !important;
   }
 
-  #permitPDF hr {
-    margin: 6px 0;
+  h6 {
+    font-size: 11px;
+    margin-bottom: 3px !important;
   }
 
-  /* Prevent page breaks */
-  #permitPDF,
-  #permitPDF * {
-    page-break-inside: avoid !important;
+  small {
+    font-size: 8.5px;
   }
 
-  /* Hide UI */
-  .btn,
-  #sidebar,
-  nav {
-    display: none !important;
+  .fw-semibold {
+    font-size: 9.8px;
+  }
+
+  .col-md-6 {
+    width: 33.333% !important;
+  }
+
+  .col-md-4 {
+    width: 25% !important;
+  }
+
+  #permitPDF img {
+    max-height: 50px !important;
+  }
+
+  .photo-box {
+    width: 85px !important;
+  }
+
+  .permit-note {
+    font-size: 9px;
+    margin-top: 8px;
+  }
+
+  ol {
+    font-size: 8.5px;
+    padding-left: 10px;
+  }
+
+  li {
+    margin-bottom: 1px;
+  }
+
+  .print-signature {
+    display: block !important;
+    margin-top: 6px;
   }
 }
 
-/* Activate print layout during PDF generation */
-body.print-mode #permitPDF {
-  max-width: 210mm;
-  min-height: 297mm;
-  padding: 15mm 14mm;
-  font-size: 12px;
-  line-height: 1.3;
+#permitPDF ol {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
 
+#permitPDF li {
+  margin-bottom: 1px;
+  line-height: 1.2;
+}
+
+
+#permitPDF h6 {
+  margin-bottom: 6px !important;
+  padding-bottom: 3px;
+  letter-spacing: 0.3px;
+}
+
+#permitPDF .row {
+  margin-bottom: 2px !important;
+}
+
+#permitPDF .fw-semibold {
+  line-height: 1.15;
+}
+
+#permitPDF .mb-4 {
+  margin-bottom: 6px !important;
+}
+
+body.print-mode #permitPDF {
+  width: 100% !important;
+  padding: 0.35in !important;
+
+  font-size: 9.5px !important;
+  line-height: 1.1 !important;
+
+  box-shadow: none !important;
+}
+body.print-mode h6 {
+  font-size: 10px !important;
+  margin-bottom: 2px !important;
+}
+
+body.print-mode hr {
+  margin: 3px 0 !important;
+}
+
+body.print-mode .row {
+  margin-bottom: 1px !important;
+}
+
+body.print-mode .mb-4 {
+  margin-bottom: 4px !important;
+}
+
+body.print-mode small {
+  font-size: 8px !important;
+}
+
+body.print-mode .fw-semibold {
+  font-size: 9px !important;
 }
 
 
@@ -338,7 +315,7 @@ body.print-mode #permitPDF {
 
   <!-- PHOTO (RIGHT) -->
   <div class="col-4 d-flex justify-content-end">
-    <div style="width:160px">
+    <div style="width:130px">
       <div class="border rounded ratio ratio-1x1 position-relative photo-box">
 
         <img id="photoPreview" class="img-fluid d-none w-100 h-100 object-fit-cover">
@@ -447,7 +424,8 @@ body.print-mode #permitPDF {
       <li>Bring a valid ID for verification purposes.</li>
       <li>Bring 2 pencils, eraser, sharpener.</li>
       <li>Bring snacks (to be consumed outside the testing room).</li>
-      <li>No cellphone inside the testing room.</li>
+      <li>Cellphones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
+      <li><strong>Examination fees are non-refundable under any circumstances.</strong></li>
     </ol>
 
     <!-- PRINT-ONLY SIGNATURE -->
@@ -532,9 +510,9 @@ document.getElementById('generatePDF').addEventListener('click', async () => {
       scrollY: 0
     },
     jsPDF: {
-      unit: 'mm',
-      format: 'a4',
-      orientation: 'portrait'
+      unit: 'in',
+      format: 'letter',    
+      orientation: 'landscape'
     },
     pagebreak: { mode: ['avoid-all'] }
   }).from(permit).save();
