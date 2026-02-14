@@ -22,6 +22,20 @@
    cursor: not-allowed;
  }
 
+ /* Small auto-generated age field */
+#age {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  border-style: dashed;
+  border-color: #ced4da;
+  cursor: not-allowed;
+}
+
+#age::placeholder {
+  color: #adb5bd;
+}
+
+
 .btn-send-otp {
   background: linear-gradient(135deg, #ffb347, #ef8809);
   border: none;
@@ -341,23 +355,53 @@
         </div>
       </div>
 
-      <!-- ROW 2: DATE OF BIRTH / GENDER -->
-      <div class="row g-3 mb-3">
-        <div class="col-md-6">
-          <label class="form-label fw-semibold">Date of Birth <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="date_of_birth" id="dateOfBirth" required placeholder="Select date">
-        </div>
+     <!-- ROW: DATE OF BIRTH / AGE / GENDER -->
+        <div class="row g-3 mb-3 align-items-end">
 
-        <div class="col-md-6">
-          <label class="form-label fw-semibold">Gender</label>
-          <select class="form-select" name="gender" id="gender">
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
+          <!-- DATE OF BIRTH -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">
+              Date of Birth <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              name="date_of_birth"
+              id="dateOfBirth"
+              required
+              placeholder="Select date"
+            >
+          </div>
+
+          <!-- AGE (AUTO-CALCULATED) -->
+          <div class="col-md-2">
+            <label class="form-label fw-semibold text-muted small">
+              Age
+            </label>
+            <input
+              type="text"
+              class="form-control text-center"
+              id="age"
+              name="age"
+              readonly
+              placeholder="—"
+            >
+          </div>
+
+          <!-- GENDER -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">
+              Gender
+            </label>
+            <select class="form-select" name="gender" id="gender">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
         </div>
-      </div>
 
         <!-- ROW: CONTACT NUMBER & TEST PERMIT -->
         <div class="row g-3 mb-3">
@@ -664,12 +708,44 @@
   proceedBtn.addEventListener('click', () => {
     window.location.href = 'examsched.html';
   });
+
 </script>
 
 
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 <script src="js/registration.js"></script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    flatpickr("#dateOfBirth", {
+      dateFormat: "Y-m-d",
+      maxDate: "today",
+      allowInput: false,
+      onChange: function (selectedDates) {
+        if (!selectedDates.length) return;
+
+        const dob = selectedDates[0];
+        const today = new Date();
+
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && today.getDate() < dob.getDate())
+        ) {
+          age--;
+        }
+
+        // Instantly display age
+        document.getElementById("age").value = age;
+      }
+    });
+  });
+</script>
+
 
 </body>
 </html>

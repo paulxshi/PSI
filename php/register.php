@@ -109,8 +109,8 @@ $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
     // Insert user data
-    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, region, exam_venue, exam_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)';
+    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, role, region, exam_venue, exam_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $last_name,
@@ -123,6 +123,7 @@ try {
         $hash,
         $gender !== '' ? $gender : '',
         $school,
+        'examinee',
         $region,
         $exam_venue,
         $exam_date !== '' ? $exam_date : null

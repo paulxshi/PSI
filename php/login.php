@@ -18,37 +18,24 @@ if ($email === '' || $password === '' || $test_permit === '') {
     exit;
 }
 
-/* Find user */
+/* Find user and verify test permit */
 $stmt = $pdo->prepare(
-    "SELECT user_id, password FROM users WHERE email = :email LIMIT 1"
+    "SELECT user_id, password, test_permit FROM users WHERE email = :email AND test_permit = :permit LIMIT 1"
 );
-$stmt->execute(['email' => $email]);
+$stmt->execute([
+    'email' => $email,
+    'permit' => $test_permit
+]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
-    echo json_encode(["success" => false, "message" => "Email not found"]);
+    echo json_encode(["success" => false, "message" => "Invalid email or test permit"]);
     exit;
 }
 
 /* Verify password */
 if (!password_verify($password, $user['password'])) {
     echo json_encode(["success" => false, "message" => "Incorrect password"]);
-    exit;
-}
-
-/* Verify test permit */
-$stmt = $pdo->prepare(
-    "SELECT test_id FROM test WHERE user_id = :uid AND test_permit = :permit LIMIT 1"
-);
-$stmt->execute([
-    'uid' => $user['user_id'],
-    'permit' => $test_permit
-]);
-
-$test = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$test) {
-    echo json_encode(["success" => false, "message" => "Invalid test permit"]);
     exit;
 }
 

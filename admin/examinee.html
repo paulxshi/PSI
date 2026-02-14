@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+    <link rel="icon" href="../imgs/PSI.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashstyle.css">
+</head>
+<style>
+.bg-orange-subtle {
+  background-color: rgba(253, 126, 20, 0.15);
+}
+
+.text-orange {
+  color: #fd7e14;
+}
+
+.schedule-table tbody tr {
+transition: background-color 0.2s ease;
+}
+
+.schedule-table tbody tr:hover {
+background-color: #f9fafb;
+}
+
+.schedule-table td {
+padding-top: 1rem;
+padding-bottom: 1rem;
+}
+
+.page-header {
+    padding: 15px 24px;
+    border-bottom: 3px solid #acacac;
+    max-width: 50%;
+}
+
+.page-title {
+  font-weight: 800;
+  font-size: 2rem;
+  color: #000;
+  margin-bottom: 0.75rem;
+}
+
+.page-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0;
+}
+
+.schedule-table tbody td {
+    font-size: 0.875rem; /* ~14px */
+    color: #374151;
+}
+
+.schedule-table thead th {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.table-actions .btn {
+    padding: 0.25rem 0.45rem;
+}
+
+.table-actions i {
+    font-size: 1rem;
+}
+
+
+</style>
+<body>
+
+    <!-- Sidebar Section -->
+    <section id="sidebar">
+        <a href="#" class="brand d-flex align-items-center">
+            <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
+            <span class="text">PSI-ADMINPortal</span>
+        </a>
+
+        <ul class="side-menu top">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bx bxs-dashboard"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="schedule.html">
+                    <i class="bx bx-calendar-check"></i>
+                    <span class="text">Create Schedule</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="managesched.html">
+                    <i class="bx bx-edit"></i>
+                    <span class="text">Schedule Management </span>
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="examinee.html">
+                    <i class="bx bx-group"></i>
+                    <span class="text">Examinee Management</span>
+                </a>
+            </li>
+
+        </ul>
+
+        <ul class="side-menu">
+            <li>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="bx bxs-log-out-circle"></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="content">
+        <nav>
+            <div class="greeting">
+                <span>User</span>
+            </div>
+        </nav>
+
+        <main class="p-4">
+
+            <div class="page-header mb-4">
+                <h1 class="page-title">Examinee Management</h1>
+                <p class="page-description">
+                    View and manage registered examinees and their examination permits.
+                </p>
+            </div>
+
+            <!-- Examinee Container -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Top Controls -->
+                    <div class="row g-3 align-items-center mb-4">
+
+                        <!-- Search / Filter -->
+                        <div class="col-md-4">
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Search name, email, or permit..."
+                            >
+                        </div>
+
+                        <div class="col-md-3">
+                            <select class="form-select">
+                                <option value="">Filter by Gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 text-md-end">
+                            <label class="btn btn-outline-dark w-100">
+                                <i class="bx bx-upload me-1"></i>
+                                Upload csv
+                                <input
+                                    type="file"
+                                    accept=".csv"
+                                    hidden
+                                >
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <!-- Examinee Table -->
+                    <div class="table-responsive">
+    <table class="table table-borderless align-middle schedule-table mb-0">
+
+        <thead>
+            <tr class="text-uppercase text-muted border-bottom">
+                <th>Test Permit</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Address</th>
+                <th class="text-end">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- Row -->
+            <tr class="border-bottom">
+                <td class="fw-semibold">2026-001</td>
+
+                <td>Juan Dela Cruz</td>
+
+                <td>
+                    <a href="mailto:juan@email.com" class="text-decoration-none">
+                        juan@email.com
+                    </a>
+                </td>
+
+                <td>March 12, 2002</td>
+
+                <td>
+                    <span class="badge bg-primary-subtle text-primary">
+                        Male
+                    </span>
+                </td>
+
+                <td>
+                    <div class="text-truncate" style="max-width: 240px;">
+                        Quezon City, Metro Manila, Philippines
+                    </div>
+                </td>
+
+                <!-- Actions -->
+                <td class="text-end table-actions">
+                    <div class="btn-group btn-group-sm">
+                        <button
+                            class="btn btn-light"
+                            title="View Details"
+                        >
+                            <i class="bx bx-show"></i>
+                        </button>
+
+                        <button
+                            class="btn btn-light"
+                            title="Edit"
+                        >
+                            <i class="bx bx-edit"></i>
+                        </button>
+
+                        <button
+                            class="btn btn-light text-danger"
+                            title="Delete"
+                        >
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+        </main>
+
+    </section>
+
+    <!-- Logout Modal -->
+    <div
+        class="modal fade"
+        id="logoutModal"
+        tabindex="-1"
+        aria-labelledby="logoutModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        Confirm Logout
+                    </h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+                    <a href="../php/logout.php" class="btn btn-danger">
+                        Logout
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
