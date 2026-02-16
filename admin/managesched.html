@@ -52,7 +52,11 @@ padding-bottom: 1rem;
   color: #4b5563;
   margin: 0;
 }
-
+.btn-close:focus,
+.no-focus:focus {
+    outline: none;
+    box-shadow: none;
+}
 
 </style>
 <body>
@@ -87,12 +91,18 @@ padding-bottom: 1rem;
             </li>
 
             <li>
-                <a href="examinee.html">
-                    <i class="bx bx-group"></i>
-                    <span class="text">Examinee Management</span>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
                 </a>
             </li>
 
+                <li>
+                    <a href="examinee.html">
+                        <i class="bx bx-group"></i>
+                        <span class="text">Examinee Management</span>
+                    </a>
+                </li>  
         </ul>
 
         <ul class="side-menu">
@@ -303,48 +313,62 @@ padding-bottom: 1rem;
     </section>
 
     <!-- Logout Modal -->
-    <div
-        class="modal fade"
-        id="logoutModal"
-        tabindex="-1"
-        aria-labelledby="logoutModalLabel"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+<div
+    class="modal fade"
+    id="logoutModal"
+    tabindex="-1"
+    aria-labelledby="logoutModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">
-                        Confirm Logout
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
-                </div>
-
-                <div class="modal-body">
-                    Are you sure you want to log out?
-                </div>
-
-                <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
-                        Cancel
-                    </button>
-                    <a href="../php/logout.php" class="btn btn-danger">
-                        Logout
-                    </a>
-                </div>
-
+            <!-- Modal Header -->
+            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+                <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close no-focus"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
             </div>
+
+            <!-- Divider -->
+            <div class="px-4">
+                <hr class="my-0">
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+                <p class="mb-0 text-muted">
+                    Are you sure you want to log out of your account?
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal"
+                >
+                    Cancel
+                </button>
+                <a
+                    href="../php/logout.php"
+                    class="btn btn-danger rounded-pill px-4"
+                >
+                    Logout
+                </a>
+            </div>
+
         </div>
     </div>
+</div>
 
 </body>
 </html>
