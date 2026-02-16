@@ -80,6 +80,16 @@
 .btn-verify-otp:active {
   transform: scale(0.97);
 }
+.verified-badge {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  padding: 0.45rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+  white-space: nowrap;
+}
 
 /* OTP INPUT GROUP POLISH */
 #otpContainer .form-control {
@@ -437,20 +447,20 @@
 
           <!-- GENDER -->
           <div class="col-md-4">
-        <label class="form-label">
-          Gender <span class="text-danger">*</span>
-        </label>
+          <label class="form-label">
+            Gender <span class="text-danger">*</span>
+          </label>
 
-        <select class="form-select" id="gender" name="gender" required>
-          <option value="" selected disabled>Select gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Prefer not to say">Prefer not to say</option>
-        </select>
+          <select class="form-select" id="gender" name="gender" required>
+            <option value="" selected disabled>Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
 
-        <div class="invalid-feedback">
-          Please select your gender.
-        </div>
+          <div class="invalid-feedback">
+            Please select your gender.
+          </div>
 
           </div>
 
@@ -520,8 +530,9 @@
                 Send OTP
               </button>
 
-            <span id="otpVerifiedBadge" class="otp-verified-badge" style="display:none;">
-              <i class="bi bi-check-circle"></i> Verified
+            <span id="otpVerifiedBadge" class="badge verified-badge ms-2" style="display:none;">
+              <i class="bi bi-shield-check me-1"></i>
+              Verified
             </span>
           </div>
           <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
@@ -569,15 +580,57 @@
       <div id="passwordSection" style="display:none;">
         <div class="row g-3 mb-3">
           <div class="col-md-6">
-            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" name="password" id="password" minlength="8" required placeholder="At least 8 characters">
-            <div id="passwordStrength" class="mt-1"></div>
-            <small class="text-muted">Must contain uppercase, lowercase, and number</small>
+            <label class="form-label">
+              Password <span class="text-danger">*</span>
+            </label>
+
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="At least 8 characters"
+                required
+              >
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                id="togglePassword"
+                aria-label="Toggle password visibility"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+
+            <div class="small text-muted mt-1">
+              Must contain uppercase, lowercase, and number
+            </div>
+
           </div>
 
           <div class="col-md-6">
-            <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required placeholder="Re-enter password">
+            <label class="form-label">
+  Confirm Password <span class="text-danger">*</span>
+</label>
+
+<div class="input-group">
+  <input
+    type="password"
+    class="form-control"
+    id="confirmPassword"
+    placeholder="Re-enter password"
+    required
+  >
+  <button
+    class="btn btn-outline-secondary"
+    type="button"
+    id="toggleConfirmPassword"
+    aria-label="Toggle confirm password visibility"
+  >
+    <i class="bi bi-eye"></i>
+  </button>
+</div>
+
           </div>
         </div>
 
@@ -836,6 +889,23 @@
 
 </script>
 
+<script>
+  function setupPasswordToggle(inputId, toggleBtnId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(toggleBtnId);
+    const icon = btn.querySelector('i');
+
+    btn.addEventListener('click', () => {
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      icon.classList.toggle('bi-eye');
+      icon.classList.toggle('bi-eye-slash');
+    });
+  }
+
+  setupPasswordToggle('password', 'togglePassword');
+  setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+</script>
 
 <!-- TERMS AND CONDITION -->
 <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
