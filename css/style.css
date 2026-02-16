@@ -23,11 +23,60 @@
   max-height: 600px;
   opacity: 1;
 }
-    
+
+.btn-download-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 9px 18px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+
+  border-radius: 14px;
+  color: #000000;
+  background-color: rgba(99, 102, 241, 0.05);
+
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.btn-download-pdf i {
+  font-size: 1.05rem;
+}
+
+.btn-download-pdf:hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.35),
+      rgba(99, 102, 241, 0.25)
+    );
+
+  box-shadow:
+    0 16px 36px rgba(20, 184, 166, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.btn-download-pdf:active {
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-download-pdf {
+    transition: none;
+  }
+}
+
 
 .region-card {
   border-radius: 22px;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
   height: auto;
   background: linear-gradient(
@@ -115,7 +164,7 @@
   backdrop-filter: blur(6px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   margin: 0 -18px;        
-  padding: 12px 18px;
+  padding: 15px 20px;
 
   font-size: 0.85rem;
   border-bottom: 1px solid rgba(255,255,255,0.12);
