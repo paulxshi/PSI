@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Build user card
       const card = `
-        <div class="col-12 col-lg-6 col-xl-4">
-          <div class="card border-1 rounded-3 h-100">
+        <div>
+          <div>
             <div class="card-body text-center border-bottom py-4">
               <h5 class="fw-bold mb-1">${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}</h5>
               <p class="text-muted mb-2">${roleDisplay}</p>
