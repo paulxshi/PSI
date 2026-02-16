@@ -135,7 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify({
                 email: email,
                 purpose: 'registration'
-            })
+            }),
+            credentials: 'same-origin'
         })
         .then(response => response.json())
         .then(data => {
@@ -383,7 +384,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch(CHECK_TEST_PERMIT_URL, {
             method: 'POST',
-            body: formData
+            body: formData,
+            credentials: 'same-origin'
         })
         .then(response => response.json())
         .then(data => {
