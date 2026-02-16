@@ -28,11 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordStrength = document.getElementById('passwordStrength');
     const registrationForm = document.getElementById('registrationForm');
     const allInputs = registrationForm.querySelectorAll('input:not(#otpInput)');
+    const invalidTestPermitModal = new bootstrap.Modal(document.getElementById('invalidTestPermitModal'), {
+        keyboard: false,
+        backdrop: 'static'
+    });
     
     // Test Permit Elements
     const testPermitInput = document.getElementById('testPermitNo');
     const firstNameInput = document.getElementById('firstName');
     const lastNameInput = document.getElementById('lastName');
+    const verifyTestPermitBtn = document.getElementById('verifyTestPermitBtn');
 
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
@@ -47,9 +52,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let testPermitVerified = false;
     let examineeData = null;
 
-    // Show/hide Send OTP button based on email validation
+    // Show/hide Send OTP button based on email validation and form state
     emailInput.addEventListener('input', function() {
-        if (emailInput.validity.valid && !isOtpVerified) {
+        // Only show OTP button if:
+        // 1. Email is not disabled (test permit verified)
+        // 2. Email is valid
+        // 3. OTP not yet verified
+        if (!emailInput.disabled && emailInput.validity.valid && !isOtpVerified) {
+            sendOtpBtn.style.display = 'inline';
+        } else if (isOtpVerified) {
+            // Keep button visible but disabled after OTP verified
             sendOtpBtn.style.display = 'inline';
         } else {
             sendOtpBtn.style.display = 'none';
@@ -63,6 +75,29 @@ document.addEventListener('DOMContentLoaded', function() {
             const testPermit = testPermitInput.value.trim();
             if (testPermit.length > 0) {
                 checkTestPermit(testPermit);
+            }
+        });
+
+        // Allow Enter key to verify test permit
+        testPermitInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const testPermit = testPermitInput.value.trim();
+                if (testPermit.length > 0) {
+                    checkTestPermit(testPermit);
+                }
+            }
+        });
+    }
+
+    // Verify Test Permit button click
+    if (verifyTestPermitBtn) {
+        verifyTestPermitBtn.addEventListener('click', function() {
+            const testPermit = testPermitInput.value.trim();
+            if (testPermit.length > 0) {
+                checkTestPermit(testPermit);
+            } else {
+                showTestPermitStatus('Please enter a Test Permit Number', 'danger');
             }
         });
     }
@@ -224,8 +259,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Hide OTP section and show success
             otpContainer.style.display = 'none';
-            sendOtpBtn.style.display = 'none';
             resendOtpBtn.style.display = 'none';
+            
+            // Disable OTP button but keep it visible
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.style.opacity = '0.6';
+            sendOtpBtn.style.cursor = 'not-allowed';
+            
+            // Show OTP verified badge
             otpVerifiedBadge.style.display = 'inline';
             
             // Stop cooldown timer
@@ -240,6 +281,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Show password section
             passwordSection.style.display = 'block';
+            
+            // ENABLE password fields
+            passwordInput.disabled = false;
+            confirmPasswordInput.disabled = false;
             
             // Focus on password input
             passwordInput.focus();
@@ -409,34 +454,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 firstNameInput.value = firstName || '';
                 emailInput.value = examineeData.email;
 
-                // Make fields readonly
-                lastNameInput.readOnly = true;
-                lastNameInput.classList.add('bg-light');
-                
-                firstNameInput.readOnly = true;
-                firstNameInput.classList.add('bg-light');
-                
-                emailInput.readOnly = true;
-                emailInput.classList.add('bg-light');
+                // ENABLE all personal info fields (NOT readonly - user can edit)
+                document.getElementById('firstName').disabled = false;
+                document.getElementById('lastName').disabled = false;
+                document.getElementById('middleName').disabled = false;
+                document.getElementById('dateOfBirth').disabled = false;
+                document.getElementById('age').disabled = false;
+                document.getElementById('gender').disabled = false;
+                document.getElementById('contactNumber').disabled = false;
+                document.getElementById('school').disabled = false;
+                document.getElementById('email').disabled = false;
 
-                // Hide OTP button and show status
-                sendOtpBtn.style.display = 'none';
-                showTestPermitStatus('Test permit verified! Fields auto-filled.', 'success');
+                // Show OTP button (keep it visible)
+                sendOtpBtn.style.display = 'inline';
+                showTestPermitStatus('Test permit verified! Please complete remaining fields.', 'success');
                 
                 validateForm();
             } else {
                 testPermitVerified = false;
                 examineeData = null;
                 
-                // Clear readonly state if it was set before
-                lastNameInput.readOnly = false;
-                lastNameInput.classList.remove('bg-light');
-                firstNameInput.readOnly = false;
-                firstNameInput.classList.remove('bg-light');
-                emailInput.readOnly = false;
-                emailInput.classList.remove('bg-light');
+                // DISABLE all personal info fields
+                document.getElementById('firstName').disabled = true;
+                document.getElementById('lastName').disabled = true;
+                document.getElementById('middleName').disabled = true;
+                document.getElementById('dateOfBirth').disabled = true;
+                document.getElementById('age').disabled = true;
+                document.getElementById('gender').disabled = true;
+                document.getElementById('contactNumber').disabled = true;
+                document.getElementById('school').disabled = true;
+                document.getElementById('email').disabled = true;
 
-                showTestPermitStatus(data.message || 'Test permit not found', 'danger');
+                // Clear fields
+                lastNameInput.value = '';
+                firstNameInput.value = '';
+                emailInput.value = '';
+
+                // Hide OTP button
+                sendOtpBtn.style.display = 'none';
+                
+                // Show modal
+                invalidTestPermitModal.show();
+                
                 validateForm();
             }
         })
@@ -444,16 +503,29 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error checking test permit:', error);
             testPermitVerified = false;
             examineeData = null;
+
+            // DISABLE all personal info fields
+            document.getElementById('firstName').disabled = true;
+            document.getElementById('lastName').disabled = true;
+            document.getElementById('middleName').disabled = true;
+            document.getElementById('dateOfBirth').disabled = true;
+            document.getElementById('age').disabled = true;
+            document.getElementById('gender').disabled = true;
+            document.getElementById('contactNumber').disabled = true;
+            document.getElementById('school').disabled = true;
+            document.getElementById('email').disabled = true;
+
+            // Clear fields
+            lastNameInput.value = '';
+            firstNameInput.value = '';
+            emailInput.value = '';
+
+            // Hide OTP button
+            sendOtpBtn.style.display = 'none';
             
-            // Clear readonly state
-            if (lastNameInput) lastNameInput.readOnly = false;
-            if (lastNameInput) lastNameInput.classList.remove('bg-light');
-            if (firstNameInput) firstNameInput.readOnly = false;
-            if (firstNameInput) firstNameInput.classList.remove('bg-light');
-            if (emailInput) emailInput.readOnly = false;
-            if (emailInput) emailInput.classList.remove('bg-light');
+            // Show modal
+            invalidTestPermitModal.show();
             
-            showTestPermitStatus('Error checking test permit', 'danger');
             validateForm();
         });
     }
@@ -480,15 +552,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = registrationForm;
         let isValid = true;
 
-        // Check all required fields
+        // Check all required fields that are NOT disabled
         allInputs.forEach(function(input) {
-            if (input.required && !input.value.trim()) {
+            // Skip disabled fields from validation
+            if (!input.disabled && input.required && !input.value.trim()) {
                 isValid = false;
             }
         });
 
-        // Check email validity
-        if (!emailInput.validity.valid) {
+        // Check email validity (if enabled)
+        if (!emailInput.disabled && !emailInput.validity.valid) {
             isValid = false;
         }
 
@@ -497,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         }
 
-        // Check password
+        // Check password (only if password section is shown)
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;
         let passwordValid = false;
@@ -512,8 +585,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check password match
         const passwordsMatch = password === confirmPassword && password.length > 0;
 
-        // Enable/disable register button
-        registerBtn.disabled = !(isValid && passwordValid && passwordsMatch);
+        // Enable/disable register button - only if passwords are being shown and filled
+        if (passwordSection.style.display !== 'none') {
+            registerBtn.disabled = !(isValid && passwordValid && passwordsMatch);
+        } else {
+            registerBtn.disabled = true;
+        }
     }
 
 

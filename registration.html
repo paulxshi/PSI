@@ -80,6 +80,16 @@
 .btn-verify-otp:active {
   transform: scale(0.97);
 }
+.verified-badge {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  padding: 0.45rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+  white-space: nowrap;
+}
 
 /* OTP INPUT GROUP POLISH */
 #otpContainer .form-control {
@@ -96,6 +106,42 @@
   display: block;
   font-size: 0.8rem;
   margin-top: 6px;
+}
+.btn-password-toggle {
+  border: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  color: #6b7280;
+  border-left: 0;
+  padding: 0 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-password-toggle i {
+  font-size: 1.05rem;
+}
+
+.btn-password-toggle:hover {
+  background-color: #eef2ff;
+  color: #2563eb;
+}
+
+.btn-password-toggle:active {
+  background-color: #e0e7ff;
+  transform: scale(0.96);
+}
+
+.btn-password-toggle:focus {
+  box-shadow: none;
+}
+.input-group .form-control {
+  border-right: 0;
+}
+
+.input-group .form-control:focus {
+  box-shadow: none;
 }
 
  .step {
@@ -384,21 +430,50 @@
         Personal Information
       </h6>
 
+      <!-- STEP 1: TEST PERMIT VERIFICATION (ALWAYS FIRST) -->
+      <div class="row g-3 mb-4 pb-4 border-bottom">
+        <div class="col-12">
+          <label class="form-label fw-semibold">
+            Test Permit Number <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              name="test_permit_no"
+              id="testPermitNo"
+              required
+              placeholder="Enter Test Permit Number"
+            >
+            <button
+              type="button"
+              id="verifyTestPermitBtn"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-check-circle me-1"></i>
+              Verify
+            </button>
+          </div>
+          <small id="testPermitStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
+        </div>
+      </div>
+
+      <!-- STEP 2: PERSONAL INFO (DISABLED UNTIL PERMIT VERIFIED) -->
       <!-- ROW 1: LAST / FIRST / MIDDLE -->
       <div class="row g-3 mb-3">
         <div class="col-md-4">
           <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="last_name" id="lastName" required>
+          <input type="text" class="form-control" name="last_name" id="lastName" required disabled>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="first_name" id="firstName" required>
+          <input type="text" class="form-control" name="first_name" id="firstName" required disabled>
         </div>
 
         <div class="col-md-4">
           <label class="form-label fw-semibold">Middle Name</label>
-          <input type="text" class="form-control" name="middle_name" id="middleName">
+          <input type="text" class="form-control" name="middle_name" id="middleName" disabled>
         </div>
       </div>
 
@@ -417,6 +492,7 @@
               id="dateOfBirth"
               required
               placeholder="Select date"
+              disabled
             >
           </div>
 
@@ -432,25 +508,32 @@
               name="age"
               readonly
               placeholder="—"
+              disabled
             >
           </div>
 
           <!-- GENDER -->
           <div class="col-md-4">
-            <label class="form-label fw-semibold">
-              Gender
-            </label>
-            <select class="form-select" name="gender" id="gender">
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
+          <label class="form-label">
+            Gender <span class="text-danger">*</span>
+          </label>
+
+          <select class="form-select" id="gender" name="gender" required disabled>
+            <option value="" selected disabled>Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+
+          <div class="invalid-feedback">
+            Please select your gender.
+          </div>
+
           </div>
 
         </div>
 
-        <!-- ROW: CONTACT NUMBER & TEST PERMIT -->
+        <!-- ROW: CONTACT NUMBER & SCHOOL -->
         <div class="row g-3 mb-3">
           <div class="col-md-6">
             <label class="form-label fw-semibold">
@@ -463,59 +546,43 @@
               id="contactNumber"
               required
               placeholder="e.g., 09123456789"
+              disabled
             >
           </div>
 
           <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Test Permit Number <span class="text-danger">*</span>
-            </label>
+            <label class="form-label fw-semibold">School <span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
-              name="test_permit_no"
-              id="testPermitNo"
+              name="school"
+              id="school"
               required
-              placeholder="Enter Test Permit Number"
+              placeholder="Enter School Name"
+              disabled
             >
           </div>
         </div>
 
-
-        <!-- SCHOOL -->
-      <div class="row mb-3">
-        <div class="col-12">
-          <label class="form-label fw-semibold">School <span class="text-danger">*</span></label>
-          <input
-            type="text"
-            class="form-control"
-            name="school"
-            id="school"
-            required
-            placeholder="Enter School Name"
-          >
-        </div>
-
-      </div>
       <!-- ROW 4: EMAIL -->
       <div class="row mb-2">
         <div class="col-12">
           <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
           <div class="input-group">
-            <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com">
+            <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com" disabled>
 
               <button
                 type="button"
                 id="sendOtpBtn"
                 class="btn btn-send-otp ms-2"
-                style="display:none;"
               >
                 <i class="bi bi-shield-lock me-1"></i>
                 Send OTP
               </button>
 
-            <span id="otpVerifiedBadge" class="otp-verified-badge" style="display:none;">
-              <i class="bi bi-check-circle"></i> Verified
+            <span id="otpVerifiedBadge" class="badge verified-badge ms-2" style="display:none;">
+              <i class="bi bi-shield-check me-1"></i>
+              Verified
             </span>
           </div>
           <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
@@ -563,15 +630,59 @@
       <div id="passwordSection" style="display:none;">
         <div class="row g-3 mb-3">
           <div class="col-md-6">
-            <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" name="password" id="password" minlength="8" required placeholder="At least 8 characters">
-            <div id="passwordStrength" class="mt-1"></div>
-            <small class="text-muted">Must contain uppercase, lowercase, and number</small>
+            <label class="form-label">
+              Password <span class="text-danger">*</span>
+            </label>
+
+            <div class="input-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="At least 8 characters"
+                required
+                disabled
+              >
+              <button
+                class="btn btn-password-toggle"
+                type="button"
+                id="togglePassword"
+                aria-label="Toggle password visibility"
+              >
+                <i class="bi bi-eye"></i>
+              </button>
+
+            </div>
+
+            <div class="small text-muted mt-1">
+              Must contain uppercase, lowercase, and number
+            </div>
+
           </div>
 
           <div class="col-md-6">
-            <label class="form-label fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required placeholder="Re-enter password">
+            <label class="form-label">
+  Confirm Password <span class="text-danger">*</span>
+</label>
+
+<div class="input-group">
+  <input
+    type="password"
+    class="form-control"
+    id="confirmPassword"
+    placeholder="Re-enter password"
+    required
+  >
+  <button
+    class="btn btn-outline-secondary"
+    type="button"
+    id="toggleConfirmPassword"
+    aria-label="Toggle confirm password visibility"
+  >
+    <i class="bi bi-eye"></i>
+  </button>
+</div>
+
           </div>
         </div>
 
@@ -816,20 +927,49 @@
     });
   });
 
-  // When user clicks "I Understand"
-  understandBtn.addEventListener('click', () => {
-    agreeTermsCheckbox.disabled = false; // enable checkbox
-    agreeTermsCheckbox.checked = true;   // auto-check checkbox
-    reminderProceedBtn.disabled = false; // allow proceeding
-  });
-
-  // Safety check (if user unchecks manually)
-  agreeTermsCheckbox.addEventListener('change', () => {
-    reminderProceedBtn.disabled = !agreeTermsCheckbox.checked;
-  });
-
 </script>
 
+<script>
+  function setupPasswordToggle(inputId, toggleBtnId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(toggleBtnId);
+    const icon = btn.querySelector('i');
+
+    btn.addEventListener('click', () => {
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      icon.classList.toggle('bi-eye');
+      icon.classList.toggle('bi-eye-slash');
+    });
+  }
+
+  setupPasswordToggle('password', 'togglePassword');
+  setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
+</script>
+
+<!-- INVALID TEST PERMIT MODAL -->
+<div class="modal fade" id="invalidTestPermitModal" tabindex="-1" aria-labelledby="invalidTestPermitLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-semibold" id="invalidTestPermitLabel">
+          <i class="bi bi-exclamation-circle text-danger me-2"></i>
+          Verification Failed
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center py-4">
+        <p class="text-danger fw-semibold mb-0">Test Permit is invalid.</p>
+        <p class="text-muted small mt-2">Please check that you've entered the correct Test Permit Number and try again.</p>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">
+          Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- TERMS AND CONDITION -->
 <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">

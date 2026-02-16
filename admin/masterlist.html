@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    #searchBtn {
+        display: none !important;
+    }
 
     .schedule-table tbody tr {
         transition: background-color 0.2s ease;
@@ -152,40 +155,94 @@
             </div>
 
             <!-- Stats Cards -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalUploaded">0</div>
-                        <div class="stat-label">Total Uploaded</div>
+                <div class="row g-4 mb-4">
+
+                    <!-- Total Uploaded -->
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm rounded-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                            Total Uploaded
+                                        </div>
+                                        <div class="fw-bold fs-2" id="totalUploaded">0</div>
+                                    </div>
+
+                                    <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width:56px;height:56px;">
+                                        <i class="bx bx-line-chart fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalRegistered">0</div>
-                        <div class="stat-label">Total Registered</div>
+
+                    <!-- Total Registered -->
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm rounded-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                            Total Registered
+                                        </div>
+                                        <div class="fw-bold fs-2" id="totalRegistered">0</div>
+                                    </div>
+
+                                    <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width:56px;height:56px;">
+                                        <i class="bx bx-user fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalNotRegistered">0</div>
-                        <div class="stat-label">Total Not Registered</div>
+
+                    <!-- Total Not Registered -->
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm rounded-3 h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                            Not Registered
+                                        </div>
+                                        <div class="fw-bold fs-2" id="totalNotRegistered">0</div>
+                                    </div>
+
+                                    <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
+                                        style="width:56px;height:56px;">
+                                        <i class="bx bx-user-minus fs-2"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
-            </div>
+
 
             <!-- Action Buttons -->
-            <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-                <div>
-                    <button class="btn btn-success rounded-pill px-3 me-2" id="uploadCsvBtn">
-                        <i class="bx bx-upload me-1"></i>
-                        Upload CSV
-                    </button>
-                    <button class="btn btn-dark rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createExamineeModal">
-                        <i class="bx bx-user-plus me-1"></i>
-                        Create Examinee
-                    </button>
+                <div class="d-flex justify-content-between align-items-center mb-4 gap-3">
+                    <div class="d-flex gap-2">
+                        <!-- Upload CSV -->
+                        <button id="uploadCsvBtn"
+                                class="btn btn-outline-success d-flex align-items-center gap-2">
+                            <i class="bx bx-upload"></i>
+                            Upload CSV
+                        </button>
+
+                        <!-- Create Examinee -->
+                        <button class="btn btn-outline-primary d-flex align-items-center gap-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#createExamineeModal">
+                            <i class="bx bx-user-plus"></i>
+                            Create Examinee
+                        </button>
+                    </div>
                 </div>
-            </div>
+
 
             <!-- Hidden CSV Upload Input -->
             <input type="file" id="csvFileInput" style="display:none;" accept=".csv" />
@@ -203,7 +260,7 @@
 
                     <div class="row g-3 align-items-center mb-4">
                         <!-- Search -->
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <input
                                 type="text"
                                 id="searchInput"
@@ -213,7 +270,7 @@
                         </div>
 
                         <!-- Status Filter -->
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <select id="statusFilter" class="form-select">
                                 <option value="">All Status</option>
                                 <option value="0">Not Registered</option>
