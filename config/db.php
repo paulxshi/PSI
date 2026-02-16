@@ -1,6 +1,6 @@
 <?php
 $host = '127.0.0.1';
-$db   = 'psi_database';
+$db   = 'psifinal';
 $user = 'root';
 $pass = '';
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
