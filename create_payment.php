@@ -45,14 +45,16 @@ $secretKey = "xnd_development_LkvLnIqM2G6qlGDFyMtdBUlpUI5Pr2SiZHhz4qRtp6QAkya4ME
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-$external_id = "ORDER-" . time();
+$external_id = "INV-" . time();
 $amount = $data['amount'];
 
 $payload = [
   "external_id" => $external_id,
   "amount" => $amount,
   "payer_email" => "customer@email.com",
-  "description" => "Website Payment"
+  "description" => "Website Payment",
+  "success_redirect_url" => "http://localhost/PSI/payment_success.html?invoice=" . $external_id,
+  "failure_redirect_url" => "http://localhost/PSI/payment_failed.html"
 ];
 
 $ch = curl_init();
