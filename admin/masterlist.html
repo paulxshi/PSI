@@ -12,18 +12,6 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
-    .schedule-table td {
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
-}
-
-.bg-orange-subtle {
-  background-color: rgba(253, 126, 20, 0.15);
-}
-
-.text-orange {
-  color: #fd7e14;
-}
 
     .schedule-table tbody tr {
         transition: background-color 0.2s ease;
@@ -72,9 +60,9 @@
         padding: 0.25rem 0.45rem;
     }
 
-.table-actions i {
-    font-size: 1rem;
-}
+    .table-actions i {
+        font-size: 1rem;
+    }
 
     .stat-card {
         border-radius: 12px;
@@ -89,29 +77,6 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000;
-    }
-
-    .stat-label {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-top: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 40px;
-    }
-
-    .pagination {
-        margin-top: 20px;
-    }
 
 </style>
 <body>
@@ -186,16 +151,45 @@
                 </p>
             </div>
 
-            <!-- Primary Action -->
-                <button
-                    class="btn btn-dark rounded-pill px-4"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createExamineeModal"
-                >
-                    <i class="bx bx-user-plus me-2"></i>
-                    Create Examinee
-                </button>
+            <!-- Stats Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUploaded">0</div>
+                        <div class="stat-label">Total Uploaded</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRegistered">0</div>
+                        <div class="stat-label">Total Registered</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalNotRegistered">0</div>
+                        <div class="stat-label">Total Not Registered</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+                <div>
+                    <button class="btn btn-success rounded-pill px-3 me-2" id="uploadCsvBtn">
+                        <i class="bx bx-upload me-1"></i>
+                        Upload CSV
+                    </button>
+                    <button class="btn btn-dark rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#createExamineeModal">
+                        <i class="bx bx-user-plus me-1"></i>
+                        Create Examinee
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hidden CSV Upload Input -->
+            <input type="file" id="csvFileInput" style="display:none;" accept=".csv" />
+
 
             <!-- Masterlist Container -->
             <div class="card border-0 shadow-sm rounded-4">
@@ -250,22 +244,13 @@
                                     <th>Test Permit</th>
                                     <th>Full Name</th>
                                     <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Uploaded Date</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-
-                                <tr>
-                                    <td class="fw-semibold">2026-001</td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>juan@email.com</td>
-                                </tr>
-
-                                <tr>
-                                    <td class="fw-semibold">2026-002</td>
-                                    <td>Maria Santos</td>
-                                    <td>maria@email.com</td>
-                                </tr>
-
+                            <tbody id="tableBody">
+                                <!-- Rows populated by JS -->
                             </tbody>
                         </table>
                     </div>
@@ -285,136 +270,60 @@
     </section>
 
     <!-- Create Examinee Modal -->
-<div
-    class="modal fade"
-    id="createExamineeModal"
-    tabindex="-1"
-    aria-labelledby="createExamineeModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title fw-semibold" id="createExamineeModalLabel">
-                    Create New Examinee
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form>
-
-                    <div class="row g-3">
-
-                        <!-- Test Permit -->
-                        <div class="col-md-4">
-                            <label class="form-label">Test Permit</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="e.g. 2026-003"
-                                required
-                            >
-                        </div>
-
-                        <!-- Full Name -->
-                        <div class="col-md-8">
-                            <label class="form-label">Full Name</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Juan Dela Cruz"
-                                required
-                            >
-                        </div>
-
-                        <!-- Email -->
-                        <div class="col-md-12">
-                            <label class="form-label">Email Address</label>
-                            <input
-                                type="email"
-                                class="form-control"
-                                placeholder="juan@email.com"
-                                required
-                            >
-                        </div>
-
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-
-                <button type="submit" class="btn btn-dark">
-                    Save Examinee
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-    <!-- Logout Modal -->
-    <div
-        class="modal fade"
-        id="logoutModal"
-        tabindex="-1"
-        aria-labelledby="logoutModalLabel"
-        aria-hidden="true"
-    >
+    <div class="modal fade" id="createExamineeModal" tabindex="-1" aria-labelledby="createExamineeLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">
-                        Confirm Logout
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
+                    <h5 class="modal-title" id="createExamineeLabel">Create Examinee Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <form id="createExamineeForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Test Permit <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="testPermitInput" name="test_permit" required placeholder="e.g., 2026-001">
+                            <small id="testPermitError" class="text-danger" style="display:none;"></small>
+                        </div>
 
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="fullNameInput" name="full_name" required placeholder="e.g., Juan Dela Cruz">
+                            <small id="fullNameError" class="text-danger" style="display:none;"></small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="emailInput" name="email" required placeholder="e.g., juan@email.com">
+                            <small id="emailError" class="text-danger" style="display:none;"></small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
                 <div class="modal-body">
                     Are you sure you want to log out?
                 </div>
-
                 <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
-                        Cancel
-                    </button>
-                    <a href="../php/logout.php" class="btn btn-danger">
-                        Logout
-                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="../php/logout.php" class="btn btn-danger">Logout</a>
                 </div>
-
             </div>
         </div>
     </div>
-
 
 </body>
 </html>

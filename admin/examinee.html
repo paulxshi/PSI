@@ -12,11 +12,6 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
-    .schedule-table td {
-        padding-top: 0.6rem;
-        padding-bottom: 0.6rem;
-    }
-
     .schedule-table tbody tr {
         transition: background-color 0.2s ease;
     }
@@ -64,11 +59,37 @@
         padding: 0.25rem 0.45rem;
     }
 
-.table-actions i {
-    font-size: 1rem;
-}
+    .table-actions i {
+        font-size: 1rem;
+    }
 
+    .stat-card {
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+        background: white;
+        transition: all 0.2s ease;
+    }
 
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 2rem;
+    }
 </style>
 <body>
 
@@ -143,6 +164,35 @@
                 </p>
             </div>
 
+
+            <!-- Stats Section -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRegistered">0</div>
+                        <div class="stat-label">Total Registered</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalApproved">0</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalPending">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRejected">0</div>
+                        <div class="stat-label">Rejected</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Examinee Container -->
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
@@ -179,75 +229,38 @@
                         </div>
                     </div>
 
-
-                    <!-- Examinee Table -->
-                    <div class="table-responsive">
-    <table class="table table-borderless align-middle schedule-table mb-0">
-
-        <thead>
-            <tr class="text-uppercase text-muted border-bottom">
-                <th>Test Permit</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Date of Birth</th>
-                <th>Gender</th>
-                <th>Address</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <!-- Row -->
-            <tr class="border-bottom">
-                <td class="fw-semibold">2026-001</td>
-
-                <td>Juan Dela Cruz</td>
-
-                <td>
-                    <a href="mailto:juan@email.com" class="text-decoration-none">
-                        juan@email.com
-                    </a>
-                </td>
-
-                <td>March 12, 2002</td>
-
-                <td>
-                    <span class="badge bg-primary-subtle text-primary">
-                        Male
-                    </span>
-                </td>
-
-                <td>
-                    <div class="text-truncate" style="max-width: 240px;">
-                        Quezon City, Metro Manila, Philippines
+                    <!-- Examinee Table Container -->
+                    <div id="tableContainer" style="display:none;">
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle schedule-table mb-0">
+                                <thead>
+                                    <tr class="text-uppercase text-muted border-bottom">
+                                        <th>Test Permit</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Venue</th>
+                                        <th>Exam Date</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </td>
 
-                <!-- Actions -->
-                <td class="text-end table-actions">
-                    <div class="btn-group btn-group-sm">
-
-                        <button
-                            class="btn btn-light"
-                            title="Edit"
-                        >
-                            <i class="bx bx-edit"></i>
-                        </button>
-
-                        <button
-                            class="btn btn-light text-danger"
-                            title="Delete"
-                        >
-                            <i class="bx bx-trash"></i>
-                        </button>
+                    <!-- Pagination -->
+                    <div id="paginationContainer" style="display:none;" class="mt-4">
+                        <nav aria-label="Pagination">
+                            <ul id="pagination" class="pagination justify-content-end">
+                                <!-- Populated by JavaScript -->
+                            </ul>
+                        </nav>
                     </div>
-                </td>
-            </tr>
 
-        </tbody>
-    </table>
-</div>
+                </div>
+            </div>
 
         </main>
 
@@ -286,18 +299,21 @@
                         <input type="hidden" id="rescheduleUserId">
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Region <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="rescheduleRegion" required>
+                            <label class="form-label fw-semibold">Select Schedule <span class="text-danger">*</span></label>
+                            <select class="form-control" id="rescheduleSchedule" required>
+                                <option value="">-- Choose an available schedule --</option>
+                            </select>
+                            <small class="text-muted d-block mt-2">Selected schedule will update: Date, Venue, and Region.</small>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Exam Venue <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="rescheduleVenue" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Exam Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="rescheduleDate" required>
+                        <!-- Schedule Preview -->
+                        <div id="schedulePreview" style="display:none;">
+                            <div class="alert alert-info mb-0">
+                                <p class="mb-2"><strong>Selected Schedule Details:</strong></p>
+                                <p class="mb-1"><small>📍 Venue: <span id="previewVenue"></span></small></p>
+                                <p class="mb-1"><small>📍 Region: <span id="previewRegion"></span></small></p>
+                                <p class="mb-0"><small>📅 Date: <span id="previewDate"></span></small></p>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -310,45 +326,20 @@
     </div>
 
     <!-- Logout Modal -->
-    <div
-        class="modal fade"
-        id="logoutModal"
-        tabindex="-1"
-        aria-labelledby="logoutModalLabel"
-        aria-hidden="true"
-    >
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">
-                        Confirm Logout
-                    </h5>
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                    ></button>
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     Are you sure you want to log out?
                 </div>
-
                 <div class="modal-footer">
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                    >
-                        Cancel
-                    </button>
-                    <a href="../php/logout.php" class="btn btn-danger">
-                        Logout
-                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="../php/logout.php" class="btn btn-danger">Logout</a>
                 </div>
-
             </div>
         </div>
     </div>

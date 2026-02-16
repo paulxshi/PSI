@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2026 at 09:51 AM
+-- Generation Time: Feb 16, 2026 at 03:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `psi_database`
+-- Database: `psifinal`
 --
 
 -- --------------------------------------------------------
@@ -50,6 +50,21 @@ INSERT INTO `examinees` (`test_id`, `user_id`, `date_of_test`, `date_of_registra
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `examinee_masterlist`
+--
+
+CREATE TABLE `examinee_masterlist` (
+  `id` int(11) NOT NULL,
+  `test_permit` varchar(50) DEFAULT NULL,
+  `full_name` varchar(150) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `used` tinyint(1) DEFAULT 0,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `otp_verifications`
 --
 
@@ -70,7 +85,7 @@ CREATE TABLE `otp_verifications` (
 --
 
 INSERT INTO `otp_verifications` (`verification_id`, `email`, `otp`, `otp_attempts`, `is_used`, `purpose`, `created_at`, `expires_at`, `verified_at`) VALUES
-(1, 'laarnialmadrones@gmail.com', '878865', 0, 0, 'registration', '2026-02-13 14:50:31', '2026-02-13 08:00:31', NULL);
+(1, 'laarnialmadrones@gmail.com', '610940', 0, 0, 'registration', '2026-02-14 20:37:00', '2026-02-14 13:47:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -95,10 +110,7 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`reset_id`, `user_id`, `email`, `otp`, `otp_attempts`, `is_used`, `created_at`, `expires_at`, `used_at`) VALUES
-(1, 2, 'leeivanalmadrones6@gmail.com', '461391', 0, 0, '2026-02-13 14:25:38', '2026-02-13 07:35:38', NULL),
-(2, 2, 'leeivanalmadrones6@gmail.com', '353748', 0, 0, '2026-02-13 14:38:00', '2026-02-13 07:48:00', NULL),
-(3, 2, 'leeivanalmadrones6@gmail.com', '968118', 1, 0, '2026-02-13 15:04:05', '2026-02-13 08:14:05', NULL),
-(4, 2, 'leeivanalmadrones6@gmail.com', '103109', 0, 0, '2026-02-13 15:04:57', '2026-02-13 08:14:57', NULL);
+(1, 23, 'ivssalmadrones@gmail.com', '694366', 0, 1, '2026-02-14 20:31:31', '2026-02-14 13:41:31', '2026-02-14 20:32:28');
 
 -- --------------------------------------------------------
 
@@ -131,7 +143,8 @@ INSERT INTO `payments` (`payment_id`, `transaction_no`, `payment_date`, `payment
 CREATE TABLE `schedules` (
   `schedule_id` int(11) NOT NULL,
   `venue_id` int(11) NOT NULL,
-  `schedule_datetime` datetime NOT NULL,
+  `schedule_datetime` date NOT NULL,
+  `num_registered` int(11) NOT NULL,
   `num_of_examinees` int(11) NOT NULL,
   `status` varchar(50) NOT NULL DEFAULT 'Incoming'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -140,19 +153,26 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 --
 
-INSERT INTO `schedules` (`schedule_id`, `venue_id`, `schedule_datetime`, `num_of_examinees`, `status`) VALUES
-(1, 1, '2026-02-17 00:00:00', 200, 'Incoming'),
-(2, 2, '2026-02-19 00:00:00', 100, 'Incoming'),
-(3, 3, '2026-02-23 00:00:00', 300, 'Incoming'),
-(4, 3, '2026-02-23 00:00:00', 300, 'Incoming'),
-(7, 2, '2026-02-16 00:00:00', 1000, 'Incoming'),
-(8, 2, '2026-10-23 00:00:00', 200, 'Incoming'),
-(9, 5, '2026-02-26 00:00:00', 250, 'Incoming'),
-(10, 1, '2026-03-04 00:00:00', 200, 'Incoming'),
-(11, 1, '2026-02-23 00:00:00', 300, 'Incoming'),
-(15, 1, '2026-03-12 00:00:00', 400, 'Incoming'),
-(16, 1, '2026-04-04 00:00:00', 250, 'Incoming'),
-(17, 1, '2026-03-04 00:00:00', 3000, 'Incoming');
+INSERT INTO `schedules` (`schedule_id`, `venue_id`, `schedule_datetime`, `num_registered`, `num_of_examinees`, `status`) VALUES
+(1, 1, '2026-02-17', 45, 200, 'Incoming'),
+(2, 2, '2026-02-19', 0, 100, 'Incoming'),
+(3, 3, '2026-02-23', 0, 300, 'Incoming'),
+(4, 3, '2026-02-23', 34, 300, 'Incoming'),
+(7, 2, '2026-02-16', 0, 1000, 'Incoming'),
+(8, 2, '2026-10-23', 108, 200, 'Incoming'),
+(9, 5, '2026-02-26', 59, 250, 'Incoming'),
+(10, 1, '2026-03-04', 38, 200, 'Incoming'),
+(11, 1, '2026-02-23', 0, 300, 'Incoming'),
+(15, 1, '2026-03-12', 209, 400, 'Incoming'),
+(16, 1, '2026-04-04', 40, 250, 'Incoming'),
+(17, 1, '2026-03-04', 0, 3000, 'Incoming'),
+(18, 6, '2026-03-01', 378, 500, 'Incoming'),
+(19, 7, '2026-03-10', 0, 300, 'Incoming'),
+(20, 8, '2026-03-20', 582, 1000, 'Incoming'),
+(21, 9, '2026-03-30', 78, 100, 'Incoming'),
+(22, 10, '2026-04-01', 0, 200, 'Incoming'),
+(23, 11, '2026-04-10', 0, 250, 'Incoming'),
+(24, 12, '2026-04-20', 0, 300, 'Incoming');
 
 -- --------------------------------------------------------
 
@@ -181,8 +201,8 @@ CREATE TABLE `users` (
   `nationality` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
-  `role` enum('examinee','admin') DEFAULT 'examinee',
-  `date_of_registration` datetime DEFAULT current_timestamp()
+  `role` enum('examinee','admin') NOT NULL DEFAULT 'examinee',
+  `date_of_registration` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -190,16 +210,17 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `test_permit`, `pmma_student_id`, `last_name`, `first_name`, `middle_name`, `email`, `contact_number`, `date_of_birth`, `age`, `gender`, `school`, `region`, `exam_venue`, `exam_date`, `email_verified`, `address`, `nationality`, `password`, `status`, `role`, `date_of_registration`) VALUES
-(1, NULL, NULL, 'Bernandino', 'Cezar', 'I', 'ernandinocezar@gmail.com', 963288424, '2003-02-12', 22, '', NULL, NULL, NULL, NULL, 0, 'P-3 Lugui LCN', '', 'cezar1212', '', '', '2026-02-13 16:48:25'),
-(2, NULL, NULL, 'Almadrones', 'Lee Ivan', 'O', 'leeivanalmadrones6@gmail.com', 2147483647, '2004-09-10', 21, '', NULL, NULL, NULL, NULL, 0, 'Purok 3 Lugui Labo Camarines Norte', '', '$2y$10$S.dQ1huZ/X25vFuRwsC8qOaGN1ISJ//t/lVRNxH8Zl5E0OuEGWdi6', '', '', '2026-02-13 16:48:25'),
-(3, '09-0909-09', '22-1512', 'Bernandino', 'Cezar', 'I', 'cezarbernandino12@gmail.com', 90908777, '2026-02-03', 18, 'Male', NULL, NULL, NULL, NULL, 0, 'Labo CN', 'FIlipino', '$2y$10$aVHzKHAZFsXnhg/Qbu6FfO1p9zLwoyJ1Y7NlXbSSK9xnXK7/Dftj2', '', '', '2026-02-13 16:48:25'),
-(6, NULL, NULL, 'Bernandino', 'Cezar', 's', 'bernandinoceza@gmail.com', 963234542, '2026-02-11', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$hJJf7rVeavqbaEENsKOMEeZNQdE/buYQhXT5Rn6EUePaZUBy9hKOe', '', '', '2026-02-13 16:48:25'),
-(15, NULL, NULL, 'Bernandino', 'Ceza', 's', 'bernandinocear@gmail.com', 963234542, '2026-02-11', 0, '', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$3/VyMuYldB8.vWPq1CCjd.1wL57Tj2GLUAPfth1WU9nIHJGT9SUXu', '', '', '2026-02-13 16:48:25'),
-(18, NULL, NULL, 'Bernando', 'Cezar', 'I', 'bernandocezar@gmail.com', 963234542, '2026-02-11', 0, '', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$VP4STuI94nNvGvhUNuOFDu.I//pUPZDktMSVIgBa99OpaPsBlpU2.', '', '', '2026-02-13 16:48:25'),
-(20, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'bernandinicezar@gmail.com', 963234542, '2026-02-11', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$EMlfA8JAk.hKfo3PSWxwqeEmNJ8PHB0pKPSWqv7tE5Ik.g6P/hVNq', '', '', '2026-02-13 16:48:25'),
-(21, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'nandinocezar@gmail.com', 963234542, '2026-02-12', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$piPzS1RXw58S7Yep5ObS9.yPRveFNJ9sTKESPl.4eh/kuzyrQztt2', '', '', '2026-02-13 16:48:25'),
-(23, 'ADMIN-0001', 'ADMIN', 'Administrator', 'System', 'O', 'ryanalmadrones6@gmail.com', 0, '1990-01-01', 30, 'Male', 'PMMA', 'NCR', 'Main Office', '2026-01-01', 1, 'PMMA Headquarters', 'Filipino', '$2y$10$3M4xPELGhhyz0wlEVt5pfuU4BRzj5tw3m13KoZnTtIU8wBwyyj4CS', 'active', 'admin', '2026-02-13 16:48:25'),
-(24, 'PMMA-2026-0001', '2026-001', 'Dela Cruz', 'Juan', 'S', 'ivssalmadrones@gmail.com', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$JgUZLxGMspH5xt44OACqMOwo/9r45L0Uzb2iWgUF7XLmI8cFxMXQG', 'active', 'examinee', '2026-02-13 16:48:25');
+(1, NULL, NULL, 'Bernandino', 'Cezar', 'I', 'ernandinocezar@gmail.com', 963288424, '2003-02-12', 22, '', NULL, NULL, NULL, NULL, 0, 'P-3 Lugui LCN', '', 'cezar1212', '', 'examinee', '2026-02-14'),
+(2, NULL, NULL, 'Almadrones', 'Lee Ivan', 'O', 'dasdas', 2147483647, '2004-09-10', 21, '', NULL, NULL, NULL, NULL, 0, 'Purok 3 Lugui Labo Camarines Norte', '', '$2y$10$S.dQ1huZ/X25vFuRwsC8qOaGN1ISJ//t/lVRNxH8Zl5E0OuEGWdi6', '', 'examinee', '2026-02-14'),
+(3, '09-0909-09', '22-1512', 'Bernandino', 'Cezar', 'I', 'cezarbernandino12@gmail.com', 90908777, '2026-02-03', 18, 'Male', NULL, NULL, NULL, NULL, 0, 'Labo CN', 'FIlipino', '$2y$10$aVHzKHAZFsXnhg/Qbu6FfO1p9zLwoyJ1Y7NlXbSSK9xnXK7/Dftj2', '', 'examinee', '2026-02-14'),
+(6, NULL, NULL, 'Bernandino', 'Cezar', 's', 'bernandinoceza@gmail.com', 963234542, '2026-02-11', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$hJJf7rVeavqbaEENsKOMEeZNQdE/buYQhXT5Rn6EUePaZUBy9hKOe', '', 'examinee', '2026-02-14'),
+(15, NULL, NULL, 'Bernandino', 'Ceza', 's', 'bernandinocear@gmail.com', 963234542, '2026-02-11', 0, '', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$3/VyMuYldB8.vWPq1CCjd.1wL57Tj2GLUAPfth1WU9nIHJGT9SUXu', '', 'examinee', '2026-02-14'),
+(18, NULL, NULL, 'Bernando', 'Cezar', 'I', 'bernandocezar@gmail.com', 963234542, '2026-02-11', 0, '', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$VP4STuI94nNvGvhUNuOFDu.I//pUPZDktMSVIgBa99OpaPsBlpU2.', '', 'examinee', '2026-02-14'),
+(20, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'bernandinicezar@gmail.com', 963234542, '2026-02-11', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$EMlfA8JAk.hKfo3PSWxwqeEmNJ8PHB0pKPSWqv7tE5Ik.g6P/hVNq', '', 'examinee', '2026-02-14'),
+(21, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'nandinocezar@gmail.com', 963234542, '2026-02-12', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$piPzS1RXw58S7Yep5ObS9.yPRveFNJ9sTKESPl.4eh/kuzyrQztt2', '', 'examinee', '2026-02-14'),
+(23, 'PMMA-2026-0001', '2026-001', 'Dela Cruz', 'Juan', 'S', 'dasdasdas', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$6u6HV.CNGf7O2RtFu6VBYO7FWK/hk8BFfPiqaa2okOy9JyHF959iK', 'active', 'examinee', '2026-02-14'),
+(24, 'ADMIN-0001', 'ADMIN', 'Administrator', 'System', 'O', 'leeivanalmadrones6@gmail.com', 0, '1990-01-01', 30, 'Male', 'PMMA', 'NCR', 'Main Office', '2026-01-01', 1, 'PMMA Headquarters', 'Filipino', '$2y$10$dvI69yvWxCj2JnjmKuis.enPVMYBy6ey741d3TIBJ9d2uJPd1ZD/O', 'active', 'admin', '2026-02-14'),
+(28, 'PMMA-2027', '2027', 'Almadrones', 'Lee Ivan', 'O', 'ivssalmadrones@gmail.com', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$ISFzMw0Ev9P7BT0Kf1ICduk8/cKt8kRsmzxDJU8H.6z4ucWx3SwEi', 'active', 'examinee', '2026-02-14');
 
 -- --------------------------------------------------------
 
@@ -221,7 +242,14 @@ INSERT INTO `venue` (`venue_id`, `venue_name`, `region`) VALUES
 (1, 'Manila', 'Luzon'),
 (2, 'Cebu', 'Visayas'),
 (3, 'Bicol', 'Luzon'),
-(5, 'Davao', 'Mindanao');
+(5, 'Davao', 'Mindanao'),
+(6, 'Iloilo City', 'Visayas'),
+(7, 'Quezon City', 'Luzon'),
+(8, 'Pasig City', 'Luzon'),
+(9, 'Bacolod City', 'Visayas'),
+(10, 'Roxas City', 'Visayas'),
+(11, 'Digos City', 'Mindanao'),
+(12, 'Tagum City', 'Mindanao');
 
 --
 -- Indexes for dumped tables
@@ -234,6 +262,13 @@ ALTER TABLE `examinees`
   ADD PRIMARY KEY (`test_id`),
   ADD KEY `fk_test_user` (`user_id`),
   ADD KEY `fk_test_schedule` (`schedule_id`);
+
+--
+-- Indexes for table `examinee_masterlist`
+--
+ALTER TABLE `examinee_masterlist`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `test_permit` (`test_permit`);
 
 --
 -- Indexes for table `otp_verifications`
@@ -274,7 +309,8 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `unique_person` (`first_name`,`last_name`,`middle_name`,`date_of_birth`),
   ADD UNIQUE KEY `pmma_student_id` (`pmma_student_id`),
   ADD UNIQUE KEY `test_permit` (`test_permit`),
-  ADD UNIQUE KEY `test_permit_2` (`test_permit`);
+  ADD UNIQUE KEY `test_permit_2` (`test_permit`),
+  ADD UNIQUE KEY `test_permit_3` (`test_permit`);
 
 --
 -- Indexes for table `venue`
@@ -293,6 +329,12 @@ ALTER TABLE `examinees`
   MODIFY `test_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `examinee_masterlist`
+--
+ALTER TABLE `examinee_masterlist`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `otp_verifications`
 --
 ALTER TABLE `otp_verifications`
@@ -302,7 +344,7 @@ ALTER TABLE `otp_verifications`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -314,19 +356,19 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `venue`
 --
 ALTER TABLE `venue`
-  MODIFY `venue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `venue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
