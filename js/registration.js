@@ -28,16 +28,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordStrength = document.getElementById('passwordStrength');
     const registrationForm = document.getElementById('registrationForm');
     const allInputs = registrationForm.querySelectorAll('input:not(#otpInput)');
+    
+    // Test Permit Elements
+    const testPermitInput = document.getElementById('testPermitNo');
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
 
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
     const SEND_OTP_URL = 'php/send_otp.php';
+    const CHECK_TEST_PERMIT_URL = 'php/check_test_permit.php';
 
     // State
     let cooldownTimer = null;
     let isCooldownActive = false;
     let isOtpVerified = false;
     let currentEmail = '';
+    let testPermitVerified = false;
+    let examineeData = null;
 
     // Show/hide Send OTP button based on email validation
     emailInput.addEventListener('input', function() {
@@ -48,6 +56,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         validateForm();
     });
+
+    // Test Permit validation and auto-fill
+    if (testPermitInput) {
+        testPermitInput.addEventListener('blur', function() {
+            const testPermit = testPermitInput.value.trim();
+            if (testPermit.length > 0) {
+                checkTestPermit(testPermit);
+            }
+        });
+    }
 
     // Send OTP button click
     sendOtpBtn.addEventListener('click', function() {
@@ -356,6 +374,103 @@ document.addEventListener('DOMContentLoaded', function() {
         if (feedback.length > 0 && password.length > 0) {
             passwordStrength.innerHTML += '<small class="text-muted d-block">Add ' + feedback.join(', ') + '</small>';
         }
+    }
+
+    // Check Test Permit in examinee_masterlist
+    function checkTestPermit(testPermit) {
+        const formData = new FormData();
+        formData.append('test_permit', testPermit);
+
+        fetch(CHECK_TEST_PERMIT_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Check Test Permit Response:', data);
+            
+            if (data.success) {
+                // Auto-fill examinee data
+                examineeData = data.data;
+                testPermitVerified = true;
+
+                // Extract full name into first and last name
+                const fullName = examineeData.full_name.trim();
+                const nameParts = fullName.split(/\s+/);
+                
+                // Last name is first part, first name is rest
+                const lastName = nameParts[0];
+                const firstName = nameParts.slice(1).join(' ');
+
+                // Auto-fill fields
+                lastNameInput.value = lastName;
+                firstNameInput.value = firstName || '';
+                emailInput.value = examineeData.email;
+
+                // Make fields readonly
+                lastNameInput.readOnly = true;
+                lastNameInput.classList.add('bg-light');
+                
+                firstNameInput.readOnly = true;
+                firstNameInput.classList.add('bg-light');
+                
+                emailInput.readOnly = true;
+                emailInput.classList.add('bg-light');
+
+                // Hide OTP button and show status
+                sendOtpBtn.style.display = 'none';
+                showTestPermitStatus('Test permit verified! Fields auto-filled.', 'success');
+                
+                validateForm();
+            } else {
+                testPermitVerified = false;
+                examineeData = null;
+                
+                // Clear readonly state if it was set before
+                lastNameInput.readOnly = false;
+                lastNameInput.classList.remove('bg-light');
+                firstNameInput.readOnly = false;
+                firstNameInput.classList.remove('bg-light');
+                emailInput.readOnly = false;
+                emailInput.classList.remove('bg-light');
+
+                showTestPermitStatus(data.message || 'Test permit not found', 'danger');
+                validateForm();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking test permit:', error);
+            testPermitVerified = false;
+            examineeData = null;
+            
+            // Clear readonly state
+            if (lastNameInput) lastNameInput.readOnly = false;
+            if (lastNameInput) lastNameInput.classList.remove('bg-light');
+            if (firstNameInput) firstNameInput.readOnly = false;
+            if (firstNameInput) firstNameInput.classList.remove('bg-light');
+            if (emailInput) emailInput.readOnly = false;
+            if (emailInput) emailInput.classList.remove('bg-light');
+            
+            showTestPermitStatus('Error checking test permit', 'danger');
+            validateForm();
+        });
+    }
+
+    // Show test permit status message
+    function showTestPermitStatus(message, type) {
+        // Create or get status element
+        let statusEl = document.getElementById('testPermitStatus');
+        
+        if (!statusEl) {
+            statusEl = document.createElement('small');
+            statusEl.id = 'testPermitStatus';
+            statusEl.style.display = 'block';
+            statusEl.style.marginTop = '6px';
+            testPermitInput.parentElement.appendChild(statusEl);
+        }
+
+        statusEl.textContent = message;
+        statusEl.className = 'small fw-semibold text-' + type;
     }
 
     // Validate entire form

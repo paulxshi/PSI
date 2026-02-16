@@ -164,11 +164,12 @@ padding-bottom: 1rem;
                         </div>
 
                         <div class="col-md-2 text-md-end">
-                            <label class="btn btn-outline-dark w-100">
+                            <label class="btn btn-outline-dark w-100" id="uploadCsvBtn">
                                 <i class="bx bx-upload me-1"></i>
                                 Upload csv
                                 <input
                                     type="file"
+                                    id="csvFile"
                                     accept=".csv"
                                     hidden
                                 >
@@ -176,6 +177,9 @@ padding-bottom: 1rem;
                         </div>
 
                     </div>
+
+                    <!-- Upload Status Alert -->
+                    <div id="uploadStatusAlert" class="alert" style="display:none;" role="alert"></div>
 
                     <!-- Examinee Table -->
                     <div class="table-responsive">
@@ -302,3 +306,93 @@ padding-bottom: 1rem;
 
 </body>
 </html>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const csvFileInput = document.getElementById('csvFile');
+    const uploadCsvBtn = document.getElementById('uploadCsvBtn');
+    const uploadStatusAlert = document.getElementById('uploadStatusAlert');
+
+    // Handle file selection
+    csvFileInput.addEventListener('change', function(e) {
+        const file = this.files[0];
+        
+        if (!file) {
+            return;
+        }
+
+        // Validate file type
+        if (!file.name.endsWith('.csv')) {
+            showUploadStatus('Please select a CSV file', 'danger');
+            csvFileInput.value = '';
+            return;
+        }
+
+        // Show uploading status
+        showUploadStatus('Uploading and processing CSV file...', 'info');
+        uploadCsvBtn.disabled = true;
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('csvFile', file);
+
+        // Send to backend
+        fetch('../php/upload_examinee_csv.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Upload Response:', data);
+            
+            if (data.success) {
+                let message = `Successfully imported ${data.successCount} records`;
+                if (data.errorCount > 0) {
+                    message += ` with ${data.errorCount} errors`;
+                }
+                showUploadStatus(message, 'success');
+                
+                // Show detailed errors if any
+                if (data.errors && data.errors.length > 0) {
+                    console.log('Upload Errors:', data.errors);
+                    data.errors.forEach(error => {
+                        console.warn(error);
+                    });
+                }
+                
+                // Reset file input
+                csvFileInput.value = '';
+                
+                // Reload table after short delay to show new data
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showUploadStatus(data.message || 'Upload failed', 'danger');
+                csvFileInput.value = '';
+            }
+            
+            uploadCsvBtn.disabled = false;
+        })
+        .catch(error => {
+            console.error('Upload Error:', error);
+            showUploadStatus('Network error during upload', 'danger');
+            csvFileInput.value = '';
+            uploadCsvBtn.disabled = false;
+        });
+    });
+
+    function showUploadStatus(message, type) {
+        uploadStatusAlert.textContent = message;
+        uploadStatusAlert.className = 'alert alert-' + type;
+        uploadStatusAlert.style.display = 'block';
+        
+        // Auto-hide success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                uploadStatusAlert.style.display = 'none';
+            }, 5000);
+        }
+    }
+});
+</script>
