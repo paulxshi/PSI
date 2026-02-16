@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    .schedule-table td {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+}
+
 .bg-orange-subtle {
   background-color: rgba(253, 126, 20, 0.15);
 }
@@ -139,59 +144,79 @@ padding-bottom: 1rem;
                 </p>
             </div>
 
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <a href="create-examinee.html" class="btn btn-dark rounded-pill px-3">
+                        <i class="bx bx-user-plus me-1"></i>
+                         Create Examinee
+                    </a>
+                </div>
+
             <!-- Examinee Container -->
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
 
-                    <!-- Top Controls -->
-                    <div class="row g-3 align-items-center mb-4">
+                        <!-- Top Controls -->
+                        <h6 class="fw-semibold mb-0 text-muted  mb-4">
+                            Examinee List
+                        </h6>
+                        
+                        <div class="row g-3 align-items-center mb-4">
 
-                        <!-- Search / Filter -->
-                        <div class="col-md-4">
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Search name, email, or permit..."
-                            >
-                        </div>
-
-                        <div class="col-md-3">
-                            <select class="form-select">
-                                <option value="">Filter by Gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-2 text-md-end">
-                            <label class="btn btn-outline-dark w-100">
-                                <i class="bx bx-upload me-1"></i>
-                                Upload csv
+                            <!-- Search -->
+                            <div class="col-md-3">
                                 <input
-                                    type="file"
-                                    accept=".csv"
-                                    hidden
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Search name, email, or permit..."
                                 >
-                            </label>
+                            </div>
+
+                            <!-- Gender Filter -->
+                            <div class="col-md-2">
+                                <select class="form-select">
+                                    <option value="">All Genders</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+
+                            <!-- Registration Status Filter -->
+                            <div class="col-md-2">
+                                <select class="form-select">
+                                    <option value="">All Status</option>
+                                    <option value="registered">Registered</option>
+                                    <option value="unregistered">Unregistered</option>
+                                </select>
+                            </div>
+
+                            <!-- Upload CSV -->
+                            <div class="col-md-2 ms-auto text-md-end">
+                                <label class="btn btn-outline-dark w-100">
+                                    <i class="bx bx-upload me-1"></i>
+                                    Upload CSV
+                                    <input type="file" accept=".csv" hidden>
+                                </label>
+                            </div>
+
                         </div>
 
-                    </div>
 
                     <!-- Examinee Table -->
-                    <div class="table-responsive">
-    <table class="table table-borderless align-middle schedule-table mb-0">
+    <div class="table-responsive">
+        <table class="table table-borderless align-middle schedule-table mb-0">
 
-        <thead>
-            <tr class="text-uppercase text-muted border-bottom">
-                <th>Test Permit</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Date of Birth</th>
-                <th>Gender</th>
-                <th>Address</th>
-                <th class="text-end">Actions</th>
-            </tr>
-        </thead>
+            <thead>
+                <tr class="text-uppercase text-muted border-bottom">
+                    <th>Test Permit</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
 
         <tbody>
 
@@ -207,8 +232,6 @@ padding-bottom: 1rem;
                     </a>
                 </td>
 
-                <td>March 12, 2002</td>
-
                 <td>
                     <span class="badge bg-primary-subtle text-primary">
                         Male
@@ -219,6 +242,12 @@ padding-bottom: 1rem;
                     <div class="text-truncate" style="max-width: 240px;">
                         Quezon City, Metro Manila, Philippines
                     </div>
+                </td>
+                
+                <td>
+                    <span class="badge bg-success-subtle text-success">
+                        Registered
+                    </span>
                 </td>
 
                 <!-- Actions -->
@@ -242,6 +271,48 @@ padding-bottom: 1rem;
                             class="btn btn-light text-danger"
                             title="Delete"
                         >
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="border-bottom">
+                <td class="fw-semibold">2026-001</td>
+                <td>Juan Dela Cruz</td>
+
+                <td>
+                    <a href="mailto:juan@email.com" class="text-decoration-none">
+                        juan@email.com
+                    </a>
+                </td>
+
+
+                <td>
+                    <span class="badge bg-primary-subtle text-secondary">
+                        Female
+                    </span>
+                </td>
+
+                <td>
+                    <div class="text-truncate" style="max-width: 240px;">
+                        Quezon City, Metro Manila, Philippines
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-secondary-subtle text-secondary">
+                        Unregistered
+                    </span>
+                </td>
+
+                <td class="text-end table-actions">
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-light" title="View">
+                            <i class="bx bx-show"></i>
+                        </button>
+                        <button class="btn btn-light" title="Edit">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-light text-danger" title="Delete">
                             <i class="bx bx-trash"></i>
                         </button>
                     </div>

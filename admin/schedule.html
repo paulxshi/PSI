@@ -161,7 +161,7 @@
                     <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-medium">Exam Month</label>
-                        <select class="form-select" name="exam_month" required>
+                        <select class="form-select" name="exam_month" id="exam_month" required>
                         <option value="">Select Month</option>
                         <option>January</option>
                         <option>February</option>
@@ -181,25 +181,28 @@
                     <div class="col-md-3">
                         <label class="form-label fw-medium">Day</label>
                         <input
-                        type="number"
-                        class="form-control"
-                        placeholder="12"
-                        min="1"
-                        max="31"
-                        name="exam_day"
-                        required
+                            type="number"
+                            class="form-control"
+                            placeholder="12"
+                            min="1"
+                            name="exam_day"
+                            id="exam_day"
+                            required
                         >
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label fw-medium">Year</label>
                         <input
-                        type="number"
-                        class="form-control"
-                        placeholder="2026"
-                        min="2025"
-                        name="exam_year"
-                        required
+                            type="number"
+                            class="form-control"
+                            placeholder="2026"
+                            min="2025"
+                            max="9999"
+                            maxlength="4"
+                            name="exam_year"
+                            id="exam_year"
+                            required
                         >
                     </div>
                     </div>
@@ -333,6 +336,58 @@
         </div>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const monthSelect = document.getElementById("exam_month");
+    const dayInput = document.getElementById("exam_day");
+    const yearInput = document.getElementById("exam_year");
+
+    function isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+    }
+
+    function getMaxDays(month, year) {
+        if (!month) return 31;
+
+        switch (month) {
+            case "April":
+            case "June":
+            case "September":
+            case "November":
+                return 30;
+            case "February":
+                return isLeapYear(year) ? 29 : 28;
+            default:
+                return 31;
+        }
+    }
+
+    function updateDayLimit() {
+        const month = monthSelect.value;
+        const year = parseInt(yearInput.value) || new Date().getFullYear();
+        const maxDays = getMaxDays(month, year);
+
+        dayInput.max = maxDays;
+
+        if (dayInput.value > maxDays) {
+            dayInput.value = maxDays;
+        }
+    }
+
+    /* Enforce 4-digit year */
+    yearInput.addEventListener("input", function () {
+        if (this.value.length > 4) {
+            this.value = this.value.slice(0, 4);
+        }
+        updateDayLimit();
+    });
+
+    monthSelect.addEventListener("change", updateDayLimit);
+    dayInput.addEventListener("input", updateDayLimit);
+
+});
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
