@@ -107,6 +107,42 @@
   font-size: 0.8rem;
   margin-top: 6px;
 }
+.btn-password-toggle {
+  border: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  color: #6b7280;
+  border-left: 0;
+  padding: 0 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-password-toggle i {
+  font-size: 1.05rem;
+}
+
+.btn-password-toggle:hover {
+  background-color: #eef2ff;
+  color: #2563eb;
+}
+
+.btn-password-toggle:active {
+  background-color: #e0e7ff;
+  transform: scale(0.96);
+}
+
+.btn-password-toggle:focus {
+  box-shadow: none;
+}
+.input-group .form-control {
+  border-right: 0;
+}
+
+.input-group .form-control:focus {
+  box-shadow: none;
+}
 
  .step {
    cursor: pointer;
@@ -608,13 +644,14 @@
                 disabled
               >
               <button
-                class="btn btn-outline-secondary"
+                class="btn btn-password-toggle"
                 type="button"
                 id="togglePassword"
                 aria-label="Toggle password visibility"
               >
                 <i class="bi bi-eye"></i>
               </button>
+
             </div>
 
             <div class="small text-muted mt-1">
@@ -635,7 +672,6 @@
     id="confirmPassword"
     placeholder="Re-enter password"
     required
-    disabled
   >
   <button
     class="btn btn-outline-secondary"
