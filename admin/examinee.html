@@ -64,42 +64,10 @@
         padding: 0.25rem 0.45rem;
     }
 
-    .table-actions i {
-        font-size: 1rem;
-    }
+.table-actions i {
+    font-size: 1rem;
+}
 
-    .stat-card {
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        border: 1px solid #e5e7eb;
-        background: white;
-        transition: all 0.2s ease;
-    }
-
-    .stat-card:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #000;
-    }
-
-    .stat-label {
-        font-size: 0.875rem;
-        color: #6b7280;
-        margin-top: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 40px;
-    }
 
 </style>
 <body>
@@ -132,18 +100,18 @@
                     <span class="text">Schedule Management</span>
                 </a>
             </li>
+            
+            <li>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
 
             <li class="active">
                 <a href="examinee.html">
                     <i class="bx bx-group"></i>
                     <span class="text">Examinee Management</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="masterlist.html">
-                    <i class="bx bx-group"></i>
-                    <span class="text">Examinee Masterlist</span>
                 </a>
             </li>
 
@@ -175,33 +143,12 @@
                 </p>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalRegistered">0</div>
-                        <div class="stat-label">Total Registered</div>
-                    </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <a class="btn btn-dark rounded-pill px-3">
+                        <i class="bx bx-user-plus me-1"></i>
+                         Create Examinee
+                    </a>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalApproved">0</div>
-                        <div class="stat-label">Approved</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalPending">0</div>
-                        <div class="stat-label">Pending</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalRejected">0</div>
-                        <div class="stat-label">Rejected</div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Examinee Container -->
             <div class="card border-0 shadow-sm rounded-4">
@@ -239,34 +186,119 @@
                         </div>
                     </div>
 
-                    <!-- Examinees Table -->
-                    <div class="table-responsive" id="tableContainer" style="display:none;">
-                        <table class="table table-borderless align-middle schedule-table mb-0">
-                            <thead>
-                                <tr class="text-uppercase text-muted border-bottom">
-                                    <th>Test Permit</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Exam Venue</th>
-                                    <th>Exam Date</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <!-- Rows populated by JS -->
-                            </tbody>
-                        </table>
+
+                    <!-- Examinee Table -->
+    <div class="table-responsive">
+        <table class="table table-borderless align-middle schedule-table mb-0">
+
+            <thead>
+                <tr class="text-uppercase text-muted border-bottom">
+                    <th>Test Permit</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+
+        <tbody>
+
+            <!-- Row -->
+            <tr class="border-bottom">
+                <td class="fw-semibold">2026-001</td>
+
+                <td>Juan Dela Cruz</td>
+
+                <td>
+                    <a href="mailto:juan@email.com" class="text-decoration-none">
+                        juan@email.com
+                    </a>
+                </td>
+
+                <td>
+                    <span class="badge bg-primary-subtle text-primary">
+                        Male
+                    </span>
+                </td>
+
+                <td>
+                    <div class="text-truncate" style="max-width: 240px;">
+                        Quezon City, Metro Manila, Philippines
                     </div>
+                </td>
+                
+                <td>
+                    <span class="badge bg-success-subtle text-success">
+                        Registered
+                    </span>
+                </td>
 
-                    <!-- Pagination -->
-                    <nav id="paginationContainer" style="display:none;">
-                        <ul id="pagination" class="pagination justify-content-center">
-                            <!-- Pagination buttons populated by JS -->
-                        </ul>
-                    </nav>
+                <!-- Actions -->
+                <td class="text-end table-actions">
+                    <div class="btn-group btn-group-sm">
 
-                </div>
-            </div>
+                        <button
+                            class="btn btn-light"
+                            title="Edit"
+                        >
+                            <i class="bx bx-edit"></i>
+                        </button>
+
+                        <button
+                            class="btn btn-light text-danger"
+                            title="Delete"
+                        >
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="border-bottom">
+                <td class="fw-semibold">2026-001</td>
+                <td>Juan Dela Cruz</td>
+
+                <td>
+                    <a href="mailto:juan@email.com" class="text-decoration-none">
+                        juan@email.com
+                    </a>
+                </td>
+
+
+                <td>
+                    <span class="badge bg-primary-subtle text-secondary">
+                        Female
+                    </span>
+                </td>
+
+                <td>
+                    <div class="text-truncate" style="max-width: 240px;">
+                        Quezon City, Metro Manila, Philippines
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-secondary-subtle text-secondary">
+                        Unregistered
+                    </span>
+                </td>
+
+                <td class="text-end table-actions">
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-light" title="Edit">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="btn btn-light text-danger" title="Delete">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
 
         </main>
 
@@ -329,20 +361,45 @@
     </div>
 
     <!-- Logout Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div
+        class="modal fade"
+        id="logoutModal"
+        tabindex="-1"
+        aria-labelledby="logoutModalLabel"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        Confirm Logout
+                    </h5>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
                 </div>
+
                 <div class="modal-body">
                     Are you sure you want to log out?
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../php/logout.php" class="btn btn-danger">Logout</a>
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+                    <a href="../php/logout.php" class="btn btn-danger">
+                        Logout
+                    </a>
                 </div>
+
             </div>
         </div>
     </div>
