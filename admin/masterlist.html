@@ -12,9 +12,33 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
-    .schedule-table td {
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
+.modal-content {
+    animation: fadeUp 0.25s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-control {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+}
+
+.form-label {
+    letter-spacing: 0.05em;
+}
+
+.schedule-table td {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
 }
 
 .bg-orange-subtle {
@@ -76,6 +100,12 @@ padding-bottom: 1rem;
     font-size: 1rem;
 }
 
+.btn-close:focus,
+.no-focus:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 
 </style>
 <body>
@@ -109,17 +139,17 @@ padding-bottom: 1rem;
                 </a>
             </li>
 
+            <li class="active">
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
+            
             <li>
                 <a href="examinee.html">
                     <i class="bx bx-group"></i>
                     <span class="text">Examinee Management</span>
-                </a>
-            </li>
-
-            <li class="active">
-                <a href="masterlist.html">
-                    <i class="bx bx-group"></i>
-                    <span class="text">Examinee Masterlist</span>
                 </a>
             </li>
         </ul>
@@ -153,7 +183,7 @@ padding-bottom: 1rem;
 
             <!-- Primary Action -->
                 <button
-                    class="btn btn-dark rounded-pill px-4"
+                    class="btn btn-dark rounded-pill px-2.5"
                     data-bs-toggle="modal"
                     data-bs-target="#createExamineeModal"
                 >
@@ -194,6 +224,7 @@ padding-bottom: 1rem;
                                     <th>Test Permit</th>
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -202,12 +233,22 @@ padding-bottom: 1rem;
                                     <td class="fw-semibold">2026-001</td>
                                     <td>Juan Dela Cruz</td>
                                     <td>juan@email.com</td>
+                                    <td>
+                                        <span class="badge bg-success-subtle text-success">
+                                            Registered
+                                        </span>
+                                    </td>                
                                 </tr>
 
                                 <tr>
                                     <td class="fw-semibold">2026-002</td>
                                     <td>Maria Santos</td>
                                     <td>maria@email.com</td>
+                                    <td>
+                                        <span class="badge bg-secondary-subtle text-secondary">
+                                            Unregistered
+                                        </span>
+                                    </td>
                                 </tr>
 
                             </tbody>
@@ -222,107 +263,26 @@ padding-bottom: 1rem;
     </section>
 
     <!-- Create Examinee Modal -->
-<div
-    class="modal fade"
-    id="createExamineeModal"
-    tabindex="-1"
-    aria-labelledby="createExamineeModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title fw-semibold" id="createExamineeModalLabel">
-                    Create New Examinee
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-                <form>
-
-                    <div class="row g-3">
-
-                        <!-- Test Permit -->
-                        <div class="col-md-4">
-                            <label class="form-label">Test Permit</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="e.g. 2026-003"
-                                required
-                            >
-                        </div>
-
-                        <!-- Full Name -->
-                        <div class="col-md-8">
-                            <label class="form-label">Full Name</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Juan Dela Cruz"
-                                required
-                            >
-                        </div>
-
-                        <!-- Email -->
-                        <div class="col-md-12">
-                            <label class="form-label">Email Address</label>
-                            <input
-                                type="email"
-                                class="form-control"
-                                placeholder="juan@email.com"
-                                required
-                            >
-                        </div>
-
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-
-                <button type="submit" class="btn btn-dark">
-                    Save Examinee
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-    <!-- Logout Modal -->
     <div
         class="modal fade"
-        id="logoutModal"
+        id="createExamineeModal"
         tabindex="-1"
-        aria-labelledby="logoutModalLabel"
+        aria-labelledby="createExamineeModalLabel"
         aria-hidden="true"
     >
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">
-                        Confirm Logout
-                    </h5>
+                <!-- Modal Header -->
+                <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="createExamineeModalLabel">
+                            Create Examinee
+                        </h5>
+                        <small class="text-muted">
+                            Add a new examinee record to the masterlist
+                        </small>
+                    </div>
                     <button
                         type="button"
                         class="btn-close"
@@ -331,26 +291,143 @@ padding-bottom: 1rem;
                     ></button>
                 </div>
 
-                <div class="modal-body">
-                    Are you sure you want to log out?
+                <!-- Divider -->
+                <div class="px-4">
+                    <hr class="my-0">
                 </div>
 
-                <div class="modal-footer">
+                <!-- Modal Body -->
+                <div class="modal-body px-4 py-4">
+                    <form>
+
+                        <div class="row g-4">
+
+                            <!-- Test Permit -->
+                            <div class="col-md-4">
+                                <label class="form-label small text-uppercase text-muted">
+                                    Test Permit
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control rounded-3"
+                                    placeholder="2026-003"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Full Name -->
+                            <div class="col-md-8">
+                                <label class="form-label small text-uppercase text-muted">
+                                    Full Name
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control rounded-3"
+                                    placeholder="Juan Dela Cruz"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-12">
+                                <label class="form-label small text-uppercase text-muted">
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    class="form-control rounded-3"
+                                    placeholder="juan@email.com"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer border-0 px-4 py-3">
                     <button
                         type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-outline-secondary rounded-pill px-4"
                         data-bs-dismiss="modal"
                     >
                         Cancel
                     </button>
-                    <a href="../php/logout.php" class="btn btn-danger">
-                        Logout
-                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-dark rounded-pill px-4"
+                    >
+                        <i class="bx bx-save me-1"></i>
+                        Save Examinee
+                    </button>
                 </div>
 
             </div>
         </div>
     </div>
+
+
+<!-- Logout Modal -->
+<div
+    class="modal fade"
+    id="logoutModal"
+    tabindex="-1"
+    aria-labelledby="logoutModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+                <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close no-focus"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            <!-- Divider -->
+            <div class="px-4">
+                <hr class="my-0">
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+                <p class="mb-0 text-muted">
+                    Are you sure you want to log out of your account?
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal"
+                >
+                    Cancel
+                </button>
+                <a
+                    href="../php/logout.php"
+                    class="btn btn-danger rounded-pill px-4"
+                >
+                    Logout
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>

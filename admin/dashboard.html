@@ -26,7 +26,11 @@
     border: 1px solid #dee2e6;
   }
 }
-
+.btn-close:focus,
+.no-focus:focus {
+    outline: none;
+    box-shadow: none;
+}
 </style>
 <body>
 
@@ -57,6 +61,14 @@
               <span class="text">Schedule Management</span>
             </a>
           </li>
+
+            <li>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
+         
             <li>
                 <a href="examinee.html">
                     <i class="bx bx-group"></i>
@@ -184,11 +196,12 @@
                 <input type="date" class="form-control form-control-sm">
               </div>
               
-              <button id="downloadPdfBtn" class="btn btn-download-pdf">
-                <i class="bx bx-download"></i>
-                <span>Download PDF</span>
-              </button>
-
+              <div class="ms-auto">
+                <button id="downloadPdfBtn" class="btn btn-outline-dark">
+                  <i class="bx bx-download me-2"></i>
+                  Download PDF
+                </button>
+              </div>
       
             </div>
           </div>
@@ -237,22 +250,61 @@
 
 </main>
 
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to log out?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <a href="../php/logout.php" class="btn btn-danger">Logout</a>
-      </div>
+<div
+    class="modal fade"
+    id="logoutModal"
+    tabindex="-1"
+    aria-labelledby="logoutModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+                <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close no-focus"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            <!-- Divider -->
+            <div class="px-4">
+                <hr class="my-0">
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+                <p class="mb-0 text-muted">
+                    Are you sure you want to log out of your account?
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal"
+                >
+                    Cancel
+                </button>
+                <a
+                    href="../php/logout.php"
+                    class="btn btn-danger rounded-pill px-4"
+                >
+                    Logout
+                </a>
+            </div>
+
+        </div>
     </div>
-  </div>
 </div>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -365,48 +417,85 @@ document.getElementById("downloadPdfBtn").addEventListener("click", () => {
   const pageWidth = doc.internal.pageSize.getWidth();
 
   /* ============================
-     COMPRESSED HEADER
+        HEADER
   ============================ */
 
-  const headerY = 32;
+/* ============================
+   ULTRA-COMPRESSED HEADER
+   + EXTRA BOTTOM SPACE
+   + EXAM DATE
+============================ */
 
-  // Left Logo (PSI)
-  doc.addImage("../imgs/PSI.png", "PNG", 40, headerY, 48, 48);
+const headerY = 18;
+const logoSize = 56;
 
-  // Right Logo (PMMA)
-  doc.addImage("../imgs/PMMA.png", "PNG", pageWidth - 88, headerY, 48, 48);
+// Left Logo (PSI)
+doc.addImage(
+  "../imgs/PSI.png",
+  "PNG",
+  pageWidth / 2 - 240,
+  headerY,
+  logoSize,
+  logoSize
+);
 
-  // Center Text
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text(
-    "Psy Systems and Innovation, OPC",
-    pageWidth / 2,
-    headerY + 16,
-    { align: "center" }
-  );
+// Right Logo (PMMA)
+doc.addImage(
+  "../imgs/PMMA.png",
+  "PNG",
+  pageWidth / 2 + 184,
+  headerY,
+  logoSize,
+  logoSize
+);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9.5);
-  doc.text(
-    "Philippine Merchant Marine Academy\nExamination Registration Report",
-    pageWidth / 2,
-    headerY + 30,
-    { align: "center", lineHeightFactor: 1.2 }
-  );
+// Main Title
+doc.setFont("helvetica", "bold");
+doc.setFontSize(12);
+doc.text(
+  "Psy Systems and Innovation, OPC",
+  pageWidth / 2,
+  headerY + 18,
+  { align: "center" }
+);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text(
-    "Registered Examinees — Manila",
-    pageWidth / 2,
-    headerY + 58,
-    { align: "center" }
-  );
+// Subtitle (single line, tight)
+doc.setFont("helvetica", "normal");
+doc.setFontSize(9.5);
+doc.text(
+  "Philippine Merchant Marine Academy • Examination Registration Report",
+  pageWidth / 2,
+  headerY + 32,
+  { align: "center" }
+);
 
-  // Divider (closer)
-  doc.setDrawColor(210);
-  doc.line(40, headerY + 70, pageWidth - 40, headerY + 70);
+// Section Title
+doc.setFont("helvetica", "bold");
+doc.setFontSize(11);
+doc.text(
+  "Registered Examinees — Manila",
+  pageWidth / 2,
+  headerY + 48,
+  { align: "center" }
+);
+
+doc.setFont("helvetica", "bold");
+doc.setFontSize(9.5);
+doc.text(
+  "Date of Examination: March 12–13, 2026",
+  pageWidth / 2,
+  headerY + 62,
+  { align: "center" }
+);
+
+// Divider (lower = more space below)
+doc.setDrawColor(180);
+doc.line(
+  pageWidth / 2 - 300,
+  headerY + 74,
+  pageWidth / 2 + 300,
+  headerY + 74
+);
 
   /* ============================
      TABLE
