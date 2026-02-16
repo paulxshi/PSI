@@ -532,7 +532,7 @@
           <button
             type="button"
             class="btn btn-primary px-4 rounded-pill"
-            id="proceedBtn"
+            id="registerBtn"
             disabled
           >
             Proceed to Examination Schedule 
@@ -683,7 +683,7 @@
     'confirmPassword'
   ];
 
-  const proceedBtn = document.getElementById('proceedBtn');
+  const registerBtn = document.getElementById('registerBtn');
 
   function checkPersonalInfoCompletion() {
     let isComplete = true;
@@ -695,7 +695,7 @@
       }
     });
 
-    proceedBtn.disabled = !isComplete;
+    registerBtn.disabled = !isComplete;
   }
 
   requiredFields.forEach(id => {
@@ -705,7 +705,7 @@
     }
   });
 
-  proceedBtn.addEventListener('click', () => {
+  registerBtn.addEventListener('click', () => {
     window.location.href = 'examsched.html';
   });
 

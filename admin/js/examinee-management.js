@@ -11,12 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
     const rescheduleModal = new bootstrap.Modal(document.getElementById('rescheduleModal'));
     const rescheduleForm = document.getElementById('rescheduleForm');
+    const rescheduleScheduleSelect = document.getElementById('rescheduleSchedule');
+    const schedulePreview = document.getElementById('schedulePreview');
 
     let currentPage = 1;
     let currentSearch = '';
     let currentData = {}; // Store for quick access
+    let availableSchedules = []; // Store schedules for selection
 
     // Initialize
+    loadSchedules();
     loadExamineeData();
 
     // Search button
@@ -33,11 +37,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Schedule selection change
+    rescheduleScheduleSelect.addEventListener('change', function() {
+        const selectedId = this.value;
+        if (selectedId) {
+            const selected = availableSchedules.find(s => s.schedule_id == selectedId);
+            if (selected) {
+                document.getElementById('previewVenue').textContent = selected.venue_name;
+                document.getElementById('previewRegion').textContent = selected.region;
+                document.getElementById('previewDate').textContent = new Date(selected.schedule_datetime).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                schedulePreview.style.display = 'block';
+            }
+        } else {
+            schedulePreview.style.display = 'none';
+        }
+    });
+
     // Reschedule form submission
     rescheduleForm.addEventListener('submit', function(e) {
         e.preventDefault();
         rescheduleExam();
     });
+
+    // Load available schedules for modal
+    function loadSchedules() {
+        fetch('../php/get_schedules_for_rescheduling.php', {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    availableSchedules = data.data;
+                    // Clear existing options except the placeholder
+                    rescheduleScheduleSelect.innerHTML = '<option value="">-- Choose an available schedule --</option>';
+                    
+                    // Add each schedule as an option
+                    data.data.forEach(schedule => {
+                        const dateObj = new Date(schedule.schedule_datetime);
+                        const dateStr = dateObj.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        
+                        const option = document.createElement('option');
+                        option.value = schedule.schedule_id;
+                        option.textContent = `${schedule.venue_name} (${schedule.region}) - ${dateStr}`;
+                        rescheduleScheduleSelect.appendChild(option);
+                    });
+                } else {
+                    rescheduleScheduleSelect.innerHTML = '<option value="">No available schedules</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading schedules:', error);
+                rescheduleScheduleSelect.innerHTML = '<option value="">Error loading schedules</option>';
+            });
+    }
 
     // Load examinee data
     function loadExamineeData() {
@@ -265,9 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!record) return;
 
         document.getElementById('rescheduleUserId').value = userId;
-        document.getElementById('rescheduleRegion').value = record.region || '';
-        document.getElementById('rescheduleVenue').value = record.exam_venue || '';
-        document.getElementById('rescheduleDate').value = record.exam_date || '';
+        rescheduleScheduleSelect.value = ''; // Reset to placeholder
+        schedulePreview.style.display = 'none'; // Hide preview initially
 
         rescheduleModal.show();
     };
@@ -275,20 +339,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Reschedule exam
     function rescheduleExam() {
         const userId = document.getElementById('rescheduleUserId').value;
-        const region = document.getElementById('rescheduleRegion').value.trim();
-        const venue = document.getElementById('rescheduleVenue').value.trim();
-        const date = document.getElementById('rescheduleDate').value.trim();
+        const scheduleId = rescheduleScheduleSelect.value;
 
-        if (!region || !venue || !date) {
-            showStatus('All fields are required', 'danger');
+        if (!scheduleId) {
+            showStatus('Please select a schedule', 'danger');
             return;
         }
 
         const formData = new FormData();
         formData.append('user_id', userId);
-        formData.append('region', region);
-        formData.append('exam_venue', venue);
-        formData.append('exam_date', date);
+        formData.append('schedule_id', scheduleId);
 
         fetch('../php/reschedule_exam.php', {
             method: 'POST',
@@ -303,6 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showStatus('Exam rescheduled successfully', 'success');
                     rescheduleModal.hide();
                     rescheduleForm.reset();
+                    schedulePreview.style.display = 'none';
                     loadExamineeData();
                 } else {
                     showStatus(data.message || 'Failed to reschedule exam', 'danger');

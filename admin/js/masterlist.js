@@ -1,5 +1,7 @@
 // Examinee Masterlist Management
 document.addEventListener('DOMContentLoaded', function() {
+    const uploadCsvBtn = document.getElementById('uploadCsvBtn');
+    const csvFileInput = document.getElementById('csvFileInput');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const searchBtn = document.getElementById('searchBtn');
@@ -17,6 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize
     loadMasterlistData();
+
+    // CSV Upload button
+    uploadCsvBtn.addEventListener('click', function() {
+        csvFileInput.click();
+    });
+
+    csvFileInput.addEventListener('change', function() {
+        uploadCsvFile(this.files[0]);
+    });
 
     // Search button
     searchBtn.addEventListener('click', function() {
@@ -288,6 +299,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 showStatus('Network error deleting record', 'danger');
             });
     };
+
+    // Upload CSV file
+    function uploadCsvFile(file) {
+        if (!file) return;
+
+        if (!file.name.endsWith('.csv')) {
+            showStatus('Please upload a CSV file only', 'danger');
+            csvFileInput.value = '';
+            return;
+        }
+
+        showLoading(true);
+
+        const formData = new FormData();
+        formData.append('csvFile', file);
+
+        fetch('../php/upload_examinee_csv.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('CSV Upload Response:', data);
+                
+                if (data.success) {
+                    const message = `CSV uploaded successfully! Processed: ${data.successCount} records. Errors: ${data.errorCount}`;
+                    showStatus(message, 'success');
+                    
+                    // Reset file input
+                    csvFileInput.value = '';
+                    
+                    // Reload data
+                    currentPage = 1;
+                    loadMasterlistData();
+                } else {
+                    let errorMsg = data.message || 'Failed to upload CSV';
+                    if (data.errors && data.errors.length > 0) {
+                        errorMsg += '\n\nErrors:\n' + data.errors.slice(0, 5).join('\n');
+                    }
+                    showStatus(errorMsg, 'danger');
+                    csvFileInput.value = '';
+                    showLoading(false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showStatus('Network error uploading CSV', 'danger');
+                csvFileInput.value = '';
+                showLoading(false);
+            });
+    }
 
     // Show loading spinner
     function showLoading(show) {
