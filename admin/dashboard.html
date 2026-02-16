@@ -11,8 +11,6 @@
   <link rel="stylesheet" href="../css/style.css">
 	<title>Dashboard</title>
 </head>
-
-
 <body>
 
 	<!-- Sidebar Section -->
@@ -125,9 +123,11 @@
 
               <!-- Filters -->
               <div class="d-flex align-items-center gap-2">
-                <input type="search"
-                      class="form-control form-control-sm"
-                      placeholder="Search test permit, name, or email">
+              <input type="search"
+                    class="form-control form-control-sm"
+                    style="min-width:300px;"
+                    placeholder="Search test permit, name, or email">
+
 
                 <input type="date" class="form-control form-control-sm">
               </div>
@@ -143,7 +143,7 @@
                   <th>Test Permit</th>
                   <th>Email</th>
                   <th>Name</th>
-                  <th>Date</th>
+                  <th>Date of Examination</th>
                 </tr>
               </thead>
 
@@ -265,15 +265,16 @@ function renderRegions(data) {
 
                 const available = sched.limit - sched.registered;
 
-                regionHTML += `
-                    <div class="region-table-row region-row"
-                         style="grid-template-columns: 2fr 1fr 1fr 1fr;">
-                        <span>${formatDate(sched.date)}</span>
-                        <span>${sched.registered}</span>
-                        <span>${sched.limit}</span>
-                        <span>${available}</span>
-                    </div>
-                `;
+              regionHTML += `
+                <div class="region-table-row region-row"
+                    style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+                  <span>${formatDate(sched.date)}</span>
+                  <span class="fw-semibold">${sched.registered}</span>
+                  <span class="fw-semibold text-danger">${sched.limit}</span>
+                  <span class="fw-semibold text-success">${available}</span>
+                </div>
+              `;
+
             });
 
             regionHTML += `</div>`;
