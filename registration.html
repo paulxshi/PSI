@@ -202,6 +202,26 @@
        background: white;
        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
  }
+
+    .btn-understand {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .btn-understand:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-understand:active {
+      transform: scale(0.96);
+    }
   </style>
 
  </head>
@@ -312,11 +332,38 @@
                   disclosed without proper authorization.
                 </p>
 
+                <div class="form-check mb-4">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="agreeTerms"
+                    disabled
+                  >
+                  <label class="form-check-label small" for="agreeTerms">
+                    I agree to the
+                    <a
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#termsModal"
+                      class="fw-semibold text-decoration-none"
+                    >
+                      Terms and Conditions
+                    </a>
+                  </label>
+                </div>
+
+
                 <div class="d-flex justify-content-end">
-                  <button class="btn btn-primary px-4 rounded-pill" onclick="goToPersonalInfo()">
-                    Proceed 
+                  <button
+                    id="reminderProceedBtn"
+                    class="btn btn-primary px-4 rounded-pill"
+                    onclick="goToPersonalInfo()"
+                    disabled
+                  >
+                    Proceed
                     <i class="bi bi-arrow-right-short"></i>
                   </button>
+
                 </div>
               </div>
             </div>
@@ -328,8 +375,8 @@
 
 
           <!-- REGISTER FORM -->
-          <form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
-          <div id="personalInfoCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+<form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
+  <div id="personalInfoCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
     <div class="card-body p-4">
 
       <h6 class="fw-semibold mb-4">
@@ -713,6 +760,7 @@
 
 
 <!-- Flatpickr JS -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
 <script src="js/registration.js"></script>
 
@@ -744,7 +792,114 @@
       }
     });
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const agreeTermsCheckbox = document.getElementById('agreeTerms');
+    const reminderProceedBtn = document.getElementById('reminderProceedBtn');
+    const understandBtn = document.getElementById('understandBtn');
+
+    if (!understandBtn) {
+      console.error('Understand button not found');
+      return;
+    }
+
+    // When user clicks "I Understand"
+    understandBtn.addEventListener('click', () => {
+      agreeTermsCheckbox.disabled = false; // enable checkbox
+      agreeTermsCheckbox.checked = true;   // auto-check checkbox
+      reminderProceedBtn.disabled = false; // enable Proceed
+    });
+
+    // Safety check (if user manually unchecks)
+    agreeTermsCheckbox.addEventListener('change', () => {
+      reminderProceedBtn.disabled = !agreeTermsCheckbox.checked;
+    });
+  });
+
+  // When user clicks "I Understand"
+  understandBtn.addEventListener('click', () => {
+    agreeTermsCheckbox.disabled = false; // enable checkbox
+    agreeTermsCheckbox.checked = true;   // auto-check checkbox
+    reminderProceedBtn.disabled = false; // allow proceeding
+  });
+
+  // Safety check (if user unchecks manually)
+  agreeTermsCheckbox.addEventListener('change', () => {
+    reminderProceedBtn.disabled = !agreeTermsCheckbox.checked;
+  });
+
 </script>
+
+
+<!-- TERMS AND CONDITION -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h5 class="modal-title fw-semibold mb-1">
+            Terms & Conditions
+          </h5>
+          <small class="text-muted">
+            Please read carefully before proceeding
+          </small>
+        </div>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body pt-3">
+        <div
+          class="p-3 rounded-3"
+          style="background:#f8f9fa; line-height:1.75;"
+        >
+          <p class="small text-muted">
+            By proceeding with this registration, you hereby confirm that all
+            information, statements, and documents submitted are true, accurate,
+            complete, and correct to the best of your knowledge.
+          </p>
+
+          <p class="small text-muted">
+            All personal data collected shall be processed, stored, and protected
+            in accordance with the Data Privacy Act of 2012 and its implementing
+            rules and regulations. Such information shall be used solely for
+            registration, verification, examination processing, and official
+            record-keeping purposes.
+          </p>
+
+          <p class="small text-muted mb-0">
+            Any misrepresentation, omission, or submission of false or misleading
+            information may result in the denial, revocation, or cancellation of
+            your application, without prejudice to any administrative or legal
+            actions that may be pursued.
+          </p>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer border-0 pt-0">
+        <button
+          type="button"
+          id="understandBtn"
+          class="btn btn-understand btn-sm px-3 rounded-pill"
+          data-bs-dismiss="modal"
+        >
+          <i class="bi bi-check-circle me-1"></i>
+          I Understand
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
 </body>
