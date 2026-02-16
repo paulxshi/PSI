@@ -153,16 +153,34 @@
                   Payment Information
                 </h6>
 
-                <div class="row g-3 mb-3">
-                  <div class="col-md-6">
-                    <label class="form-label fw-semibold">Payment Method <span class="text-danger">*</span></label>
-                    <select class="form-select" name="payment_method" id="paymentMethod">
-                      <option value="">Select Payment Method</option>
-                      <option value="gcash">GCash</option>
-                      <option value="bank_transfer">Bank Transfer</option>
-                      <option value="credit_card">Credit Card</option>
-                    </select>
-                  </div>
+
+                <div>
+                 <h6>Before You Proceed to Payment</h6>
+                  <p class="mb-3">
+                    To complete your transaction, you will be securely redirected to our trusted payment partner’s checkout page.
+                  </p>
+
+                  <p><b>What to expect:</b></p>
+                  <ul>
+                    <li>After clicking “Proceed to Payment”, you will be redirected to a secure payment page.</li>
+                    <li>You can choose your preferred payment method (e.g., e-Wallet, Online Banking, Card, or other available options).</li>
+                    <li>Once payment is completed, you will be automatically redirected back to our website.</li>
+                    <li>You will also receive a confirmation once your transaction is successful.</li>
+                  </ul>
+
+
+                  <p><b>Important Reminders:</b></p>
+                  <ul>
+                    <li>Do not close the payment page while the transaction is processing.</li>
+                    <li>Make sure to complete the payment within the given time to avoid expiration.</li>
+                    <li>If the page does not redirect automatically after payment, you may return to our website and check your order status.</li>
+                  </ul>
+
+
+                  <p>By continuing, you agree to proceed with the secure external payment process.</p>
+
+                </div>
+        
 
                   <!--
                   <div class="col-md-6">
@@ -180,7 +198,7 @@
 
                 <div class="d-flex justify-content-end">
                   <button type="button" onclick="payNow()" class="btn btn-primary px-4 rounded-pill">
-                     Proceed <i class="bi bi-check ms-1"></i>
+                     Proceed to Payment <i class="bi bi-check ms-1"></i>
                  </button>
                 </div>
 
@@ -200,21 +218,15 @@
 
 <script>
 function payNow() {
-  const method = document.getElementById("paymentMethod").value;
-
-  if (!method) {
-    alert("Please select a payment method");
-    return;
-  }
 
   fetch("create_payment.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      payment_method: method,
-      amount: 1500 // sample amount — replace dynamically
+      amount: 100 // sample amount — TO BE REPLACED 
     })
   })
+  
   .then(res => res.json())
   .then(data => {
     if (data.invoice_url) {

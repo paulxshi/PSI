@@ -41,7 +41,7 @@ try {
 
 
 
-$secretKey = "YOUR_XENDIT_SECRET_KEY"; // from dashboard
+$secretKey = "xnd_development_LkvLnIqM2G6qlGDFyMtdBUlpUI5Pr2SiZHhz4qRtp6QAkya4ME9Q6rvyIL150t"; // from dashboard
 
 $data = json_decode(file_get_contents("php://input"), true);
 
