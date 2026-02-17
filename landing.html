@@ -11,15 +11,48 @@
 
   <style>
     .glass-card {
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .accordion-button::after {
     filter: invert(1);
+    }
+    .accordion-button::after {
+    filter: invert(0) !important;
+    opacity: 0.85;
+    }
+
+    .accordion-button:not(.collapsed)::after {
+    filter: invert(0) !important;
+    }
+    button:focus,
+    button:active,
+    .accordion-button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    }
+
+    .accordion-button,
+    .accordion-item {
+    border: none !important;
+    }
+
+    .glass-card,
+    .glass-card * {
+    color: #000 !important;
     }
 
     .logo-glow {
@@ -36,6 +69,161 @@
     transform: scale(1);
     animation: pulseGlow 3.5s ease-in-out infinite;
     }
+
+    .proceed-btn {
+    animation: proceedPulse 3.2s ease-in-out infinite;
+    background: linear-gradient(135deg, #ffb347, #ef8809);
+    border: none;
+
+    box-shadow:
+        0 8px 18px rgba(239, 136, 9, 0.35),
+        0 0 18px rgba(255, 179, 71, 0.45);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        filter 0.3s ease;
+    }
+
+    .proceed-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    filter: brightness(1.1);
+    animation-play-state: paused;
+    box-shadow:
+        0 15px 35px rgba(239, 136, 9, 0.55),
+        0 0 35px rgba(255, 179, 71, 0.75);
+    text-decoration: none;
+    }
+
+    .proceed-btn:active {
+    transform: scale(0.97);
+    box-shadow:
+        0 6px 14px rgba(239, 136, 9, 0.4),
+        0 0 16px rgba(255, 179, 71, 0.5);
+    }
+
+    .proceed-btn i {
+    transition: transform 0.3s ease;
+    }
+
+    .proceed-btn:hover i {
+    transform: translateX(6px);
+    }
+
+.pmma-title {
+  font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.08;
+  letter-spacing: -0.6px;
+}
+
+.pmma-main {
+  display: inline-block;
+
+  font-size: clamp(2.5rem, 5vw, 3.6rem);
+  font-weight: 800;
+  color: #ffb703;
+  text-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+.pmma-sub {
+  display: inline-block;
+  margin-top: 6px;
+
+  font-size: clamp(2.3rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(255, 183, 3, 0.65);
+}
+
+/* Subtle underline accent (optional, clean) */
+.pmma-sub::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 3px;
+  margin-top: 6px;
+
+  background: linear-gradient(90deg, #ffb703, #ef8809);
+  border-radius: 2px;
+
+  box-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
+}
+.pmma-title {
+  animation: titleReveal 0.9s ease-out both;
+}
+
+.proceed-btn i {
+  animation: arrowHint 1.8s ease-in-out infinite;
+}
+
+.proceed-btn:hover i {
+  animation-play-state: paused;
+}
+
+@keyframes arrowHint {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes proceedPulse {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 8px 18px rgba(239, 136, 9, 0.35),
+      0 0 18px rgba(255, 179, 71, 0.45);
+  }
+
+  50% {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow:
+      0 14px 30px rgba(239, 136, 9, 0.55),
+      0 0 32px rgba(255, 179, 71, 0.75);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 8px 18px rgba(239, 136, 9, 0.35),
+      0 0 18px rgba(255, 179, 71, 0.45);
+  }
+}
+@keyframes titleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    @keyframes glowPulse {
+    0%, 100% {
+        box-shadow:
+        0 8px 18px rgba(239,136,9,0.35),
+        0 0 18px rgba(255,179,71,0.45);
+    }
+    50% {
+        box-shadow:
+        0 10px 22px rgba(239,136,9,0.45),
+        0 0 28px rgba(255,179,71,0.65);
+    }
+    }
+
+    .proceed-btn {
+    animation: glowPulse 2.8s ease-in-out infinite;
+    }
+
     @keyframes pulseGlow {
     0% {
         filter:
@@ -54,25 +242,25 @@
     }
     }
 
-@media (prefers-color-scheme: light) {
-  @keyframes pulseGlow {
-    0% {
-      filter:
-        drop-shadow(0 0 6px rgba(0, 0, 0, 0.25))
-        drop-shadow(0 0 14px rgba(0, 0, 0, 0.15));
+    @media (prefers-color-scheme: light) {
+    @keyframes pulseGlow {
+        0% {
+        filter:
+            drop-shadow(0 0 6px rgba(0, 0, 0, 0.25))
+            drop-shadow(0 0 14px rgba(0, 0, 0, 0.15));
+        }
+        50% {
+        filter:
+            drop-shadow(0 0 12px rgba(0, 0, 0, 0.4))
+            drop-shadow(0 0 24px rgba(0, 0, 0, 0.25));
+        }
+        100% {
+        filter:
+            drop-shadow(0 0 6px rgba(0, 0, 0, 0.25))
+            drop-shadow(0 0 14px rgba(0, 0, 0, 0.15));
+        }
     }
-    50% {
-      filter:
-        drop-shadow(0 0 12px rgba(0, 0, 0, 0.4))
-        drop-shadow(0 0 24px rgba(0, 0, 0, 0.25));
     }
-    100% {
-      filter:
-        drop-shadow(0 0 6px rgba(0, 0, 0, 0.25))
-        drop-shadow(0 0 14px rgba(0, 0, 0, 0.15));
-    }
-  }
-}
 
   </style>
 </head>
@@ -217,23 +405,6 @@
                 <h2 class="accordion-header">
                 <button class="accordion-button collapsed bg-transparent text-white"
                         data-bs-toggle="collapse"
-                        data-bs-target="#faq6">
-                    What should I do if I experience technical issues?
-                </button>
-                </h2>
-                <div id="faq6" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    If you encounter any technical problems, refresh the page and ensure a stable
-                    internet connection. If the issue persists, contact technical support immediately.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 7 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
                         data-bs-target="#faq7">
                     Can I update my personal information after registration?
                 </button>
@@ -246,7 +417,7 @@
                 </div>
             </div>
 
-            <!-- FAQ 8 -->
+            <!-- FAQ 7 -->
             <div class="accordion-item bg-transparent">
                 <h2 class="accordion-header">
                 <button class="accordion-button collapsed bg-transparent text-white"
@@ -266,7 +437,6 @@
             </div>
         </div>
         </div>
-
 
         <!-- CONTACT PANEL -->
         <div id="contactPanel" class="collapse glass-card">
@@ -308,13 +478,10 @@
             Welcome to the
           </h6>
 
-            <h1 class="display-4 fw-bolder mb-3"
-                style="letter-spacing:-0.5px;
-                    font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;">
-            <span class="text-warning">PMMA Examination</span><br>
-            Portal
+            <h1 class="pmma-title mb-3">
+            <span class="pmma-main">PMMA Examination</span><br>
+            <span class="pmma-sub">Portal</span>
             </h1>
-
 
           <!-- DESCRIPTION -->
           <p class="fs-6 text-white opacity-80 mb-4">
@@ -324,12 +491,12 @@
 
           <!-- CTA -->
             <a href="login.html"
-            class="btn btn-lg rounded-pill px-4 fw-semibold text-dark shadow"
-            style="background: linear-gradient(135deg, #ffb347, #ef8809); border:none;">
+            class="btn btn-lg rounded-pill px-4 fw-bold text-dark
+                    d-inline-flex align-items-center gap-2
+                    proceed-btn">
             Proceed
-            <i class="bx bx-right-arrow-alt me-2"></i>
+            <i class="bx bx-right-arrow-alt fs-4"></i>
             </a>
-
 
         </div>
       </div>
