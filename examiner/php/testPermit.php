@@ -1,7 +1,7 @@
 <?php
 session_start();
 header("Content-Type: application/json");
-require_once "../config/db.php";
+require_once "../../config/db.php";
 
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(["success" => false, "message" => "User not logged in"]);
@@ -24,21 +24,21 @@ try {
             u.contact_number,
             u.email,
             
-            t.test_id,
-            t.test_permit,
-            t.date_of_test,
-            t.date_of_registration,
-            t.venue,
-            t.status,
-            t.purpose,
+            e.user_id,
+            e.test_permit,
+            e.date_of_test,
+            e.date_of_registration,
+            e.schedule_id,
+            e.status,
+            e.purpose,
 
             p.transaction_no,
             p.payment_date,
             p.payment_amount
 
         FROM users u
-        LEFT JOIN examinees t ON u.user_id = t.user_id
-        LEFT JOIN payments p ON t.test_id = p.test_id
+        LEFT JOIN examinees e ON u.user_id = e.user_id
+        LEFT JOIN payments p ON e.user_id = p.user_id
         WHERE u.user_id = ?
         ORDER BY p.payment_date DESC
         LIMIT 1

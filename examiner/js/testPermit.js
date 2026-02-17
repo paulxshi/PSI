@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  fetch("../php/testPermit.php")
+  fetch("php/testPermit.php")
     .then(res => res.json())
     .then(response => {
 
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("email").textContent = data.email;
 
       document.getElementById("dateOfTest").textContent = testDate;
-      document.getElementById("venue").textContent = data.venue ?? "-";
+      // document.getElementById("venue").textContent = data.venue ?? "-";
 
       document.getElementById("transactionNo").textContent = data.transaction_no ?? "-";
       document.getElementById("paymentDate").textContent = paymentDate;
