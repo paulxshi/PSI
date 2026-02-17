@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>PMMA Registration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+  <script src="js/registration.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="imgs/PSI.png">
@@ -268,6 +270,9 @@
     .btn-understand:active {
       transform: scale(0.96);
     }
+    .permit-input {
+      max-width: 260px;
+    }
   </style>
 
  </head>
@@ -359,44 +364,98 @@
               <div class="card-body p-4">
 
                 <div class="d-flex align-items-center mb-3">
-                  <i class="bi bi-shield-lock-fill text-primary fs-4 me-2"></i>
-                  <h6 class="mb-0 fw-semibold">Data Privacy Notice</h6>
+                  <i class="bi bi-shield-lock-fill text-primary me-2" style="font-size:1.4rem;"></i>
+                  <h5 class="mb-0 fw-semibold">Terms and Conditions</h5>
                 </div>
 
-                <p class="text-muted small mb-3" style="line-height:1.7;">
-                  In compliance with <strong>Republic Act No. 10173</strong>, also known as the
-                  <strong>Data Privacy Act of 2012</strong>, the Philippine Maritime Academy
-                  (PMMA), in partnership with PSI Systems and Innovation, OPC, is committed to protecting
-                  your personal data.
-                </p>
-
-                <p class="text-muted small mb-4" style="line-height:1.7;">
-                  This registration form will collect personal information such as your name,
-                  contact details, date of birth, and other relevant information strictly for
-                  identification, verification processing, and official documentation purposes.
-                  All data collected will be handled with utmost confidentiality and will not be
-                  disclosed without proper authorization.
-                </p>
-
-                <div class="form-check mb-4">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="agreeTerms"
-                    disabled
+                  <div
+                    id="termsContainer"
+                    class="p-3 rounded-3 mb-4 overflow-auto"
+                    style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
                   >
-                  <label class="form-check-label small" for="agreeTerms">
-                    I agree to the
-                    <a
-                      href="#"
-                      data-bs-toggle="modal"
-                      data-bs-target="#termsModal"
-                      class="fw-semibold text-decoration-none"
+                    <p class="small text-muted">
+                      By proceeding with this registration, you acknowledge and agree that all
+                      information, statements, and documents you submit through the PSI Examination
+                      System are true, accurate, complete, and correct to the
+                      best of your knowledge.
+                    </p>
+
+                    <p class="small text-muted">
+                      The system will collect and process personal information including, but not
+                      limited to, your full name, date of birth, age, gender, contact number, email
+                      address, school affiliation, test permit number, and other details required
+                      for examination registration, identity verification, scheduling, and official
+                      record purposes.
+                    </p>
+
+                    <p class="small text-muted">
+                      In compliance with <strong>Republic Act No. 10173</strong>, otherwise known as
+                      the <strong>Data Privacy Act of 2012</strong>, all personal data collected shall
+                      be handled with strict confidentiality and shall be processed, stored, and
+                      protected using reasonable organizational, physical, and technical security
+                      measures. Your information will only be accessed by authorized personnel and
+                      will not be disclosed to unauthorized third parties, except as required by
+                      law or official regulatory bodies.
+                    </p>
+
+                    <p class="small text-muted">
+                      By registering, you expressly consent to the collection, use, storage, and
+                      processing of your personal data for purposes that include examination
+                      administration, exam scheduling, identity validation, result processing,
+                      payment verification, account management, and official communications related
+                      to the PSI examination.
+                    </p>
+
+                    <p class="small text-muted">
+                      The system includes an online examination scheduling feature. Once an
+                      examination schedule has been selected and confirmed, it shall be considered
+                      final. Requests for changes, rescheduling, or cancellations may be subject to
+                      approval and applicable policies set by the administering authority.
+                    </p>
+
+                    <p class="small text-muted">
+                      Examination fees collected through this system are used to cover
+                      administrative, operational, and examination-related costs. Please be
+                      advised that <strong>all payments made are strictly non-refundable</strong>,
+                      regardless of whether the applicant fails to attend the examination,
+                      withdraws the application, provides incorrect information, or fails to meet
+                      eligibility requirements.
+                    </p>
+
+                    <p class="small text-muted">
+                      No refunds shall be issued under any circumstances once payment has been
+                      successfully processed, including but not limited to examination
+                      disqualification, schedule conflicts, technical issues on the applicant’s
+                      end, or failure to complete subsequent steps in the registration process.
+                    </p>
+
+                    <p class="small text-muted">
+                      Any misrepresentation, omission, falsification of information, or submission
+                      of fraudulent documents may result in the denial, cancellation, or revocation
+                      of your application, disqualification from the examination, and possible
+                      prohibition from future PSI examinations, without prior notice and without
+                      refund.
+                    </p>
+
+                    <p class="small text-muted mb-0">
+                      By continuing with this registration, you confirm that you have read,
+                      understood, and voluntarily agreed to all the terms and conditions stated
+                      above, including the data privacy provisions and the no-refund policy.
+                    </p>
+
+                  </div>
+
+                  <div class="form-check mb-4 d-none" id="termsCheckboxWrapper">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="agreeTerms"
                     >
-                      Terms and Conditions
-                    </a>
-                  </label>
-                </div>
+                    <label class="form-check-label small" for="agreeTerms">
+                      I have read and agree to the Terms and Conditions
+                    </label>
+                  </div>
+
 
 
                 <div class="d-flex justify-content-end">
@@ -421,317 +480,317 @@
 
 
           <!-- REGISTER FORM -->
-<form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
-  <div id="personalInfoCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-    <div class="card-body p-4">
+          <form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
+            <div id="personalInfoCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+              <div class="card-body p-4">
 
-      <h6 class="fw-semibold mb-4">
-        <i class="bi bi-person-lines-fill me-2 text-primary"></i>
-        Personal Information
-      </h6>
+                <h6 class="fw-semibold mb-4">
+                  <i class="bi bi-person-lines-fill me-2 text-primary"></i>
+                  Personal Information
+                </h6>
 
-      <!-- STEP 1: TEST PERMIT VERIFICATION (ALWAYS FIRST) -->
-      <div class="row g-3 mb-4 pb-4 border-bottom">
-        <div class="col-12">
-          <label class="form-label fw-semibold">
-            Test Permit Number <span class="text-danger">*</span>
+                <!-- STEP 1: TEST PERMIT VERIFICATION (ALWAYS FIRST) -->
+                <div class="row g-3 mb-4 pb-4 border-bottom">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">
+                      Test Permit Number <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                      <input
+                        type="text"
+                        class="form-control permit-input"
+                        name="test_permit_no"
+                        id="testPermitNo"
+                        required
+                        placeholder="Enter Test Permit Number"
+                      >
+                      <button
+                        type="button"
+                        id="verifyTestPermitBtn"
+                        class="btn btn-primary"
+                      >
+                        <i class="bi bi-check-circle me-1"></i>
+                        Verify
+                      </button>
+                    </div>
+                    <small id="testPermitStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
+                  </div>
+                </div>
+
+                <!-- STEP 2: PERSONAL INFO (DISABLED UNTIL PERMIT VERIFIED) -->
+                <!-- ROW 1: LAST / FIRST / MIDDLE -->
+                <div class="row g-3 mb-3">
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="last_name" id="lastName" required disabled>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name="first_name" id="firstName" required disabled>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold">Middle Name</label>
+                    <input type="text" class="form-control" name="middle_name" id="middleName" disabled>
+                  </div>
+                </div>
+
+              <!-- ROW: DATE OF BIRTH / AGE / GENDER -->
+                  <div class="row g-3 mb-3 align-items-end">
+
+                    <!-- DATE OF BIRTH -->
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold">
+                        Date of Birth <span class="text-danger">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="date_of_birth"
+                        id="dateOfBirth"
+                        required
+                        placeholder="Select date"
+                        disabled
+                      >
+                    </div>
+
+                    <!-- AGE (AUTO-CALCULATED) -->
+                    <div class="col-md-2">
+                      <label class="form-label fw-semibold text-muted small">
+                        Age
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control text-center"
+                        id="age"
+                        name="age"
+                        readonly
+                        placeholder="—"
+                        disabled
+                      >
+                    </div>
+
+                    <!-- GENDER -->
+                    <div class="col-md-4">
+                    <label class="form-label">
+                      Gender <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" id="gender" name="gender" required disabled>
+                      <option value="" selected disabled>Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+
+                    <div class="invalid-feedback">
+                      Please select your gender.
+                    </div>
+
+                    </div>
+
+                  </div>
+
+                  <!-- ROW: CONTACT NUMBER & SCHOOL -->
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold">
+                        Contact Number <span class="text-danger">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        class="form-control"
+                        name="contact_number"
+                        id="contactNumber"
+                        required
+                        placeholder="e.g., 09123456789"
+                        disabled
+                      >
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label fw-semibold">School <span class="text-danger">*</span></label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="school"
+                        id="school"
+                        required
+                        placeholder="Enter School Name"
+                        disabled
+                      >
+                    </div>
+                  </div>
+
+                <!-- ROW 4: EMAIL -->
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com" disabled>
+
+                        <button
+                          type="button"
+                          id="sendOtpBtn"
+                          class="btn btn-send-otp ms-2"
+                        >
+                          <i class="bi bi-shield-lock me-1"></i>
+                          Send OTP
+                        </button>
+
+                      <span id="otpVerifiedBadge" class="badge verified-badge ms-2" style="display:none;">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Verified
+                      </span>
+                    </div>
+                    <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
+                  </div>
+                </div>
+
+                <!-- RESEND OTP -->
+                <div class="mb-3">
+                  <small
+                    id="resendOtpBtn"
+                    class="text-primary fw-semibold"
+                    style="cursor:pointer; display:none;"
+                  >
+                    Resend OTP
+                  </small>
+                </div>
+
+                <!-- OTP INPUT -->
+                <div id="otpContainer" class="mb-3" style="display:none;">
+                  <label class="form-label fw-semibold">OTP Code <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      class="form-control text-center"
+                      id="otpInput"
+                      maxlength="6"
+                      placeholder="000000"
+                      style="letter-spacing: 0.5rem; font-size: 1.1rem;"
+                    >
+                    
+                  <button
+                    type="button"
+                    id="verifyOtpBtn"
+                    class="btn btn-verify-otp"
+                  >
+                    <i class="bi bi-check-circle me-1"></i>
+                    Verify
+                  </button>
+
+                  </div>
+                  <small class="text-muted">Enter the 6-digit code sent to your email</small>
+                </div>
+
+                <!-- PASSWORD SECTION -->
+                <div id="passwordSection" style="display:none;">
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label">
+                        Password <span class="text-danger">*</span>
+                      </label>
+
+                      <div class="input-group">
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password"
+                          placeholder="At least 8 characters"
+                          required
+                          disabled
+                        >
+                        <button
+                          class="btn btn-password-toggle"
+                          type="button"
+                          id="togglePassword"
+                          aria-label="Toggle password visibility"
+                        >
+                          <i class="bi bi-eye"></i>
+                        </button>
+
+                      </div>
+
+                      <div class="small text-muted mt-1">
+                        Must contain uppercase, lowercase, and number
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label">
+            Confirm Password <span class="text-danger">*</span>
           </label>
+
           <div class="input-group">
             <input
-              type="text"
+              type="password"
               class="form-control"
-              name="test_permit_no"
-              id="testPermitNo"
+              id="confirmPassword"
+              placeholder="Re-enter password"
               required
-              placeholder="Enter Test Permit Number"
             >
             <button
+              class="btn btn-outline-secondary"
               type="button"
-              id="verifyTestPermitBtn"
-              class="btn btn-primary"
+              id="toggleConfirmPassword"
+              aria-label="Toggle confirm password visibility"
             >
-              <i class="bi bi-check-circle me-1"></i>
-              Verify
+              <i class="bi bi-eye"></i>
             </button>
           </div>
-          <small id="testPermitStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
-        </div>
-      </div>
 
-      <!-- STEP 2: PERSONAL INFO (DISABLED UNTIL PERMIT VERIFIED) -->
-      <!-- ROW 1: LAST / FIRST / MIDDLE -->
-      <div class="row g-3 mb-3">
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="last_name" id="lastName" required disabled>
-        </div>
+                    </div>
+                  </div>
 
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" name="first_name" id="firstName" required disabled>
-        </div>
+                  <div class="d-flex justify-content-end mb-3">
+                    <button
+                      type="button"
+                      class="btn btn-primary px-4 rounded-pill"
+                      id="registerBtn"
+                      disabled
+                    >
+                      Proceed to Examination Schedule 
+                      <i class="bi bi-arrow-right-short"></i>
+                    </button>
 
-        <div class="col-md-4">
-          <label class="form-label fw-semibold">Middle Name</label>
-          <input type="text" class="form-control" name="middle_name" id="middleName" disabled>
-        </div>
-      </div>
-
-     <!-- ROW: DATE OF BIRTH / AGE / GENDER -->
-        <div class="row g-3 mb-3 align-items-end">
-
-          <!-- DATE OF BIRTH -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Date of Birth <span class="text-danger">*</span>
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              name="date_of_birth"
-              id="dateOfBirth"
-              required
-              placeholder="Select date"
-              disabled
-            >
-          </div>
-
-          <!-- AGE (AUTO-CALCULATED) -->
-          <div class="col-md-2">
-            <label class="form-label fw-semibold text-muted small">
-              Age
-            </label>
-            <input
-              type="text"
-              class="form-control text-center"
-              id="age"
-              name="age"
-              readonly
-              placeholder="—"
-              disabled
-            >
-          </div>
-
-          <!-- GENDER -->
-          <div class="col-md-4">
-          <label class="form-label">
-            Gender <span class="text-danger">*</span>
-          </label>
-
-          <select class="form-select" id="gender" name="gender" required disabled>
-            <option value="" selected disabled>Select gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Prefer not to say">Prefer not to say</option>
-          </select>
-
-          <div class="invalid-feedback">
-            Please select your gender.
-          </div>
-
-          </div>
-
-        </div>
-
-        <!-- ROW: CONTACT NUMBER & SCHOOL -->
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              Contact Number <span class="text-danger">*</span>
-            </label>
-            <input
-              type="tel"
-              class="form-control"
-              name="contact_number"
-              id="contactNumber"
-              required
-              placeholder="e.g., 09123456789"
-              disabled
-            >
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">School <span class="text-danger">*</span></label>
-            <input
-              type="text"
-              class="form-control"
-              name="school"
-              id="school"
-              required
-              placeholder="Enter School Name"
-              disabled
-            >
-          </div>
-        </div>
-
-      <!-- ROW 4: EMAIL -->
-      <div class="row mb-2">
-        <div class="col-12">
-          <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
-          <div class="input-group">
-            <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com" disabled>
-
-              <button
-                type="button"
-                id="sendOtpBtn"
-                class="btn btn-send-otp ms-2"
-              >
-                <i class="bi bi-shield-lock me-1"></i>
-                Send OTP
-              </button>
-
-            <span id="otpVerifiedBadge" class="badge verified-badge ms-2" style="display:none;">
-              <i class="bi bi-shield-check me-1"></i>
-              Verified
-            </span>
-          </div>
-          <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
-        </div>
-      </div>
-
-      <!-- RESEND OTP -->
-      <div class="mb-3">
-        <small
-          id="resendOtpBtn"
-          class="text-primary fw-semibold"
-          style="cursor:pointer; display:none;"
-        >
-          Resend OTP
-        </small>
-      </div>
-
-      <!-- OTP INPUT -->
-      <div id="otpContainer" class="mb-3" style="display:none;">
-        <label class="form-label fw-semibold">OTP Code <span class="text-danger">*</span></label>
-        <div class="input-group">
-          <input
-            type="text"
-            class="form-control text-center"
-            id="otpInput"
-            maxlength="6"
-            placeholder="000000"
-            style="letter-spacing: 0.5rem; font-size: 1.1rem;"
-          >
-          
-        <button
-          type="button"
-          id="verifyOtpBtn"
-          class="btn btn-verify-otp"
-        >
-          <i class="bi bi-check-circle me-1"></i>
-          Verify
-        </button>
-
-        </div>
-        <small class="text-muted">Enter the 6-digit code sent to your email</small>
-      </div>
-
-      <!-- PASSWORD SECTION -->
-      <div id="passwordSection" style="display:none;">
-        <div class="row g-3 mb-3">
-          <div class="col-md-6">
-            <label class="form-label">
-              Password <span class="text-danger">*</span>
-            </label>
-
-            <div class="input-group">
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                placeholder="At least 8 characters"
-                required
-                disabled
-              >
-              <button
-                class="btn btn-password-toggle"
-                type="button"
-                id="togglePassword"
-                aria-label="Toggle password visibility"
-              >
-                <i class="bi bi-eye"></i>
-              </button>
-
-            </div>
-
-            <div class="small text-muted mt-1">
-              Must contain uppercase, lowercase, and number
-            </div>
-
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label">
-  Confirm Password <span class="text-danger">*</span>
-</label>
-
-<div class="input-group">
-  <input
-    type="password"
-    class="form-control"
-    id="confirmPassword"
-    placeholder="Re-enter password"
-    required
-  >
-  <button
-    class="btn btn-outline-secondary"
-    type="button"
-    id="toggleConfirmPassword"
-    aria-label="Toggle confirm password visibility"
-  >
-    <i class="bi bi-eye"></i>
-  </button>
-</div>
-
-          </div>
-        </div>
-
-        <div class="d-flex justify-content-end mb-3">
-          <button
-            type="button"
-            class="btn btn-primary px-4 rounded-pill"
-            id="registerBtn"
-            disabled
-          >
-            Proceed to Examination Schedule 
-            <i class="bi bi-arrow-right-short"></i>
-          </button>
-
-        </div>
-      </div>
-    </div>
-</div>
-
-
-            <!-- REGISTRATION COMPLETE -->
-            <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-              <div class="card-body p-4 text-center">
-
-                <div class="mb-4">
-                  <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                  </div>
                 </div>
-
-                <h5 class="fw-semibold mb-2">Registration Complete!</h5>
-
-                <p class="text-muted mb-4">
-                  Your registration has been successfully submitted. 
-                  You will receive a confirmation email shortly with your account details.
-                </p>
-
-                <div class="alert alert-info small mb-4">
-                  <strong>Next Steps:</strong><br>
-                  1. Check your email for confirmation<br>
-                  2. Proceed to login with your credentials<br>
-                  3. Download your test permit once approved
-                </div>
-
-                <a href="login.html" class="btn btn-primary px-4 rounded-pill">
-                  Login to Your Account
-                  <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-
               </div>
-            </div>
+          </div>
+
+
+                      <!-- REGISTRATION COMPLETE -->
+                      <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
+                        <div class="card-body p-4 text-center">
+
+                          <div class="mb-4">
+                            <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                          </div>
+
+                          <h5 class="fw-semibold mb-2">Registration Complete!</h5>
+
+                          <p class="text-muted mb-4">
+                            Your registration has been successfully submitted. 
+                            You will receive a confirmation email shortly with your account details.
+                          </p>
+
+                          <div class="alert alert-info small mb-4">
+                            <strong>Next Steps:</strong><br>
+                            1. Check your email for confirmation<br>
+                            2. Proceed to login with your credentials<br>
+                            3. Download your test permit once approved
+                          </div>
+
+                          <a href="login.html" class="btn btn-primary px-4 rounded-pill">
+                            Login to Your Account
+                            <i class="bi bi-arrow-right ms-1"></i>
+                          </a>
+
+                        </div>
+                      </div>
           </form>
 
         </div>
@@ -743,11 +802,8 @@
   function goToPersonalInfo() {
     document.getElementById('reminderCard').classList.add('d-none');
     document.getElementById('personalInfoCard').classList.remove('d-none');
-
-    // hide login prompt
     document.getElementById('loginPrompt').classList.add('d-none');
 
-    // Stepper visual update
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.querySelectorAll('.step')[1].classList.add('active');
   }
@@ -756,7 +812,6 @@
     const reminderCard = document.getElementById('reminderCard');
     const personalInfoCard = document.getElementById('personalInfoCard');
 
-    // reset step states
     steps.forEach(s => s.classList.remove('active', 'completed'));
 
     if (step === 1) {
@@ -810,17 +865,13 @@
       console.log('Hidden personal info card');
     }
 
-    // Stepper update
     const steps = document.querySelectorAll('.step');
     console.log('Found steps:', steps.length);
     
     steps.forEach(step => step.classList.remove('active', 'completed'));
 
-    // Mark previous steps completed
     if (steps[0]) steps[0].classList.add('completed'); // Reminders
     if (steps[1]) steps[1].classList.add('completed'); // Personal Info
-
-    // Activate Examination Schedule step
     if (steps[2]) steps[2].classList.add('active');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -869,41 +920,7 @@
 
 </script>
 
-
-<!-- Flatpickr JS -->
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-<script src="js/registration.js"></script>
-
-
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    flatpickr("#dateOfBirth", {
-      dateFormat: "Y-m-d",
-      maxDate: "today",
-      allowInput: false,
-      onChange: function (selectedDates) {
-        if (!selectedDates.length) return;
-
-        const dob = selectedDates[0];
-        const today = new Date();
-
-        let age = today.getFullYear() - dob.getFullYear();
-        const monthDiff = today.getMonth() - dob.getMonth();
-
-        if (
-          monthDiff < 0 ||
-          (monthDiff === 0 && today.getDate() < dob.getDate())
-        ) {
-          age--;
-        }
-
-        // Instantly display age
-        document.getElementById("age").value = age;
-      }
-    });
-  });
-
   document.addEventListener('DOMContentLoaded', () => {
     const agreeTermsCheckbox = document.getElementById('agreeTerms');
     const reminderProceedBtn = document.getElementById('reminderProceedBtn');
@@ -947,6 +964,65 @@
   setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const termsContainer = document.getElementById('termsContainer');
+  const checkboxWrapper = document.getElementById('termsCheckboxWrapper');
+  const agreeTerms = document.getElementById('agreeTerms');
+  const proceedBtn = document.getElementById('reminderProceedBtn');
+
+  proceedBtn.disabled = true;
+
+  // Detect scroll to bottom
+  termsContainer.addEventListener('scroll', () => {
+    const isAtBottom =
+      termsContainer.scrollTop + termsContainer.clientHeight >=
+      termsContainer.scrollHeight - 5;
+
+    if (isAtBottom) {
+      checkboxWrapper.classList.remove('d-none');
+    }
+  });
+
+  // Enable proceed only when checked
+  agreeTerms.addEventListener('change', () => {
+    proceedBtn.disabled = !agreeTerms.checked;
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const dobInput = document.getElementById('dateOfBirth');
+  const ageInput = document.getElementById('age');
+
+  flatpickr(dobInput, {
+    dateFormat: "Y-m-d",
+    maxDate: "today",
+    onChange: function(selectedDates) {
+      if (!selectedDates.length) {
+        ageInput.value = '';
+        return;
+      }
+
+      const birthDate = selectedDates[0];
+      const today = new Date();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+
+      ageInput.value = age >= 0 ? age : '';
+    }
+  });
+});
+</script>
+
 <!-- INVALID TEST PERMIT MODAL -->
 <div class="modal fade" id="invalidTestPermitModal" tabindex="-1" aria-labelledby="invalidTestPermitLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -971,75 +1047,6 @@
   </div>
 </div>
 
-<!-- TERMS AND CONDITION -->
-<div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 rounded-4 shadow-lg">
-
-      <!-- HEADER -->
-      <div class="modal-header border-0 pb-0">
-        <div>
-          <h5 class="modal-title fw-semibold mb-1">
-            Terms & Conditions
-          </h5>
-          <small class="text-muted">
-            Please read carefully before proceeding
-          </small>
-        </div>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-
-      <!-- BODY -->
-      <div class="modal-body pt-3">
-        <div
-          class="p-3 rounded-3"
-          style="background:#f8f9fa; line-height:1.75;"
-        >
-          <p class="small text-muted">
-            By proceeding with this registration, you hereby confirm that all
-            information, statements, and documents submitted are true, accurate,
-            complete, and correct to the best of your knowledge.
-          </p>
-
-          <p class="small text-muted">
-            All personal data collected shall be processed, stored, and protected
-            in accordance with the Data Privacy Act of 2012 and its implementing
-            rules and regulations. Such information shall be used solely for
-            registration, verification, examination processing, and official
-            record-keeping purposes.
-          </p>
-
-          <p class="small text-muted mb-0">
-            Any misrepresentation, omission, or submission of false or misleading
-            information may result in the denial, revocation, or cancellation of
-            your application, without prejudice to any administrative or legal
-            actions that may be pursued.
-          </p>
-
-        </div>
-      </div>
-
-      <!-- FOOTER -->
-      <div class="modal-footer border-0 pt-0">
-        <button
-          type="button"
-          id="understandBtn"
-          class="btn btn-understand btn-sm px-3 rounded-pill"
-          data-bs-dismiss="modal"
-        >
-          <i class="bi bi-check-circle me-1"></i>
-          I Understand
-        </button>
-
-      </div>
-
-    </div>
-  </div>
-</div>
 
 
 </body>
