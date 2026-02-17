@@ -80,6 +80,40 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
+    .modern-alert {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        background-color: #ecfdf5;          
+        color: #065f46;                    
+        border: 1px solid #a7f3d0;
+        border-radius: 10px;
+
+        padding: 14px 18px;
+        font-size: 0.95rem;
+        font-weight: 500;
+
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+        animation: slideFadeIn 0.35s ease-out;
+    }
+
+    .modern-alert i {
+        font-size: 1.25rem;
+        color: #10b981;
+    }
+
+    /* Smooth entrance animation */
+    @keyframes slideFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
 </style>
 <body>
@@ -155,7 +189,7 @@
             </div>
 
             <!-- Stats Cards -->
-                <div class="row g-4 mb-4">
+                <div class="row g-4 mb-5">
 
                     <!-- Total Uploaded -->
                     <div class="col-md-3">
@@ -225,7 +259,7 @@
 
             <!-- Action Buttons -->
                 <div class="d-flex justify-content-between align-items-center mb-4 gap-3">
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-3">
                         <!-- Upload CSV -->
                         <button id="uploadCsvBtn"
                                 class="btn btn-outline-success d-flex align-items-center gap-2">
@@ -253,7 +287,7 @@
                 <div class="card-body p-4">
 
                     <!-- Status Alert -->
-                    <div id="statusAlert" class="alert" style="display:none;" role="alert"></div>
+                    <div id="statusAlert" class="alert alert-success modern-alert" style="display:none;" role="alert"></div>
 
                     <!-- Top Controls -->
                     <h6 class="fw-semibold mb-4 text-muted">Examinee Masterlist</h6>
@@ -327,41 +361,84 @@
     </section>
 
     <!-- Create Examinee Modal -->
-    <div class="modal fade" id="createExamineeModal" tabindex="-1" aria-labelledby="createExamineeLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createExamineeLabel">Create Examinee Record</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Create Examinee Modal -->
+<div class="modal fade" id="createExamineeModal" tabindex="-1" aria-labelledby="createExamineeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-semibold" id="createExamineeLabel">
+                        Create Examinee
+                    </h5>
+                    <p class="text-muted small mb-0">
+                        Add a new examinee record manually
+                    </p>
                 </div>
-                <form id="createExamineeForm">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Test Permit <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="testPermitInput" name="test_permit" required placeholder="e.g., 2026-001">
-                            <small id="testPermitError" class="text-danger" style="display:none;"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="fullNameInput" name="full_name" required placeholder="e.g., Juan Dela Cruz">
-                            <small id="fullNameError" class="text-danger" style="display:none;"></small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="emailInput" name="email" required placeholder="e.g., juan@email.com">
-                            <small id="emailError" class="text-danger" style="display:none;"></small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Record</button>
-                    </div>
-                </form>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Body -->
+            <form id="createExamineeForm">
+                <div class="modal-body pt-3">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">
+                            Test Permit <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               id="testPermitInput"
+                               name="test_permit"
+                               placeholder="2026-001"
+                               required>
+                        <small id="testPermitError" class="text-danger d-none"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               id="fullNameInput"
+                               name="full_name"
+                               placeholder="Juan Dela Cruz"
+                               required>
+                        <small id="fullNameError" class="text-danger d-none"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input type="email"
+                               class="form-control form-control-lg"
+                               id="emailInput"
+                               name="email"
+                               placeholder="juan@email.com"
+                               required>
+                        <small id="emailError" class="text-danger d-none"></small>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        Create Record
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
+</div>
+
 
     <!-- Logout Modal -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
