@@ -77,19 +77,24 @@ $errors = [];
 try {
     $pdo->beginTransaction();
     
-    // Prepare statement
+    // Prepare statement with new columns
     $stmt = $pdo->prepare("
-        INSERT INTO examinee_masterlist (test_permit, full_name, email, used)
-        VALUES (:test_permit, :full_name, :email, 0)
+        INSERT INTO examinee_masterlist (test_permit, last_name, first_name, middle_name, email, used)
+        VALUES (:test_permit, :last_name, :first_name, :middle_name, :email, 0)
         ON DUPLICATE KEY UPDATE 
-            full_name = VALUES(full_name),
+            last_name = VALUES(last_name),
+            first_name = VALUES(first_name),
+            middle_name = VALUES(middle_name),
             email = VALUES(email),
             used = 0
     ");
     
     foreach ($csvData as $index => $record) {
+        // Extract fields with case-insensitive mapping
         $testPermit = $record['test_permit'] ?? $record['testpermit'] ?? $record['permit'] ?? '';
-        $fullName = $record['full_name'] ?? $record['fullname'] ?? $record['name'] ?? '';
+        $lastName = $record['last_name'] ?? $record['lastname'] ?? '';
+        $firstName = $record['first_name'] ?? $record['firstname'] ?? '';
+        $middleName = $record['middle_name'] ?? $record['middlename'] ?? '';
         $email = $record['email'] ?? '';
         
         // Validate required fields
@@ -99,9 +104,15 @@ try {
             continue;
         }
         
-        if (empty($fullName)) {
+        if (empty($lastName)) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Missing full name";
+            $errors[] = "Row " . ($index + 2) . ": Missing last name";
+            continue;
+        }
+        
+        if (empty($firstName)) {
+            $errorCount++;
+            $errors[] = "Row " . ($index + 2) . ": Missing first name";
             continue;
         }
         
@@ -115,7 +126,9 @@ try {
         try {
             $stmt->execute([
                 ':test_permit' => $testPermit,
-                ':full_name' => $fullName,
+                ':last_name' => $lastName,
+                ':first_name' => $firstName,
+                ':middle_name' => $middleName ?: '',
                 ':email' => $email
             ]);
             $successCount++;

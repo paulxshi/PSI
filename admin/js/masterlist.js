@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         params.append('search', currentSearch);
         if (currentStatus) {
             params.append('status', currentStatus);
-        }
+        } 
         params.append('page', currentPage);
 
         fetch(`../php/get_examinee_masterlist.php?${params.toString()}`, {
@@ -130,6 +130,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 minute: '2-digit'
             });
 
+            // Use full_name if available (from CONCAT in query), otherwise build from parts
+            const fullName = record.full_name || escapeHtml(record.first_name + ' ' + record.last_name);
+
             const deleteBtn = record.used == 0
                 ? `<button class="btn btn-light text-danger" onclick="deleteRecord(${record.id})" title="Delete">
                         <i class="bx bx-trash"></i>
@@ -139,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = `
                 <tr class="border-bottom">
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
-                    <td>${escapeHtml(record.full_name)}</td>
+                    <td>${fullName}</td>
                     <td>
                         <a href="mailto:${escapeHtml(record.email)}" class="text-decoration-none">
                             ${escapeHtml(record.email)}
@@ -211,17 +214,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create examinee
     function createExaminee() {
         const testPermit = document.getElementById('testPermitInput').value.trim();
-        const fullName = document.getElementById('fullNameInput').value.trim();
+        const lastName = document.getElementById('lastNameInput').value.trim();
+        const firstName = document.getElementById('firstNameInput').value.trim();
+        const middleName = document.getElementById('middleNameInput').value.trim();
         const email = document.getElementById('emailInput').value.trim();
 
         // Clear errors
         document.getElementById('testPermitError').style.display = 'none';
-        document.getElementById('fullNameError').style.display = 'none';
+        document.getElementById('lastNameError').style.display = 'none';
+        document.getElementById('firstNameError').style.display = 'none';
+        document.getElementById('middleNameError').style.display = 'none';
         document.getElementById('emailError').style.display = 'none';
 
         const formData = new FormData();
         formData.append('test_permit', testPermit);
-        formData.append('full_name', fullName);
+        formData.append('last_name', lastName);
+        formData.append('first_name', firstName);
+        formData.append('middle_name', middleName);
         formData.append('email', email);
 
         fetch('../php/create_examinee_masterlist.php', {
@@ -252,9 +261,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.message.includes('Test permit')) {
                         document.getElementById('testPermitError').textContent = data.message;
                         document.getElementById('testPermitError').style.display = 'block';
-                    } else if (data.message.includes('Full name')) {
-                        document.getElementById('fullNameError').textContent = data.message;
-                        document.getElementById('fullNameError').style.display = 'block';
+                    } else if (data.message.includes('Last name')) {
+                        document.getElementById('lastNameError').textContent = data.message;
+                        document.getElementById('lastNameError').style.display = 'block';
+                    } else if (data.message.includes('First name')) {
+                        document.getElementById('firstNameError').textContent = data.message;
+                        document.getElementById('firstNameError').style.display = 'block';
                     } else if (data.message.includes('Email')) {
                         document.getElementById('emailError').textContent = data.message;
                         document.getElementById('emailError').style.display = 'block';

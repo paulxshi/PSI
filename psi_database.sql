@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2026 at 03:51 AM
+-- Generation Time: Feb 17, 2026 at 06:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `psifinal`
+-- Database: `psi_database`
 --
 
 -- --------------------------------------------------------
@@ -55,12 +55,45 @@ INSERT INTO `examinees` (`test_id`, `user_id`, `date_of_test`, `date_of_registra
 
 CREATE TABLE `examinee_masterlist` (
   `id` int(11) NOT NULL,
-  `test_permit` varchar(50) DEFAULT NULL,
-  `full_name` varchar(150) DEFAULT NULL,
-  `email` varchar(150) DEFAULT NULL,
+  `test_permit` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `middle_name` varchar(50) DEFAULT '',
+  `email` varchar(150) NOT NULL,
   `used` tinyint(1) DEFAULT 0,
+  `used_by` int(11) DEFAULT NULL COMMENT 'user_id of who used this permit',
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `examinee_masterlist`
+--
+
+INSERT INTO `examinee_masterlist` (`id`, `test_permit`, `last_name`, `first_name`, `middle_name`, `email`, `used`, `used_by`, `uploaded_at`) VALUES
+(1, '901-2345', 'Diaz', 'Kimberly', 'Louise', 'kimberly.diaz@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(2, '112-2334', 'Valdez', 'Christian', 'Mark', 'christian.valdez@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(3, '223-3445', 'Alvarez', 'Samantha', 'Jane', 'samantha.alvarez@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(4, '2026-102', 'Dela Cruz', 'Maria', '', 'maria.delacruz@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(5, '2026-103', 'De Guzman', 'Carlos', 'Miguel', 'carlos.deguzman@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(6, '2026-104', 'San Juan', 'Ana', 'Sofia', 'ana.sanjuan@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(7, '2026-105', 'Dela Peña', 'Pedro', '', 'pedro.delapena@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(8, '222-3333', 'Martinez', 'Luis', 'Antonio', 'luis.martinez@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(9, '333-4444', 'Ramos', 'Isabella', 'Marie', 'isabella.ramos@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(10, '444-5555', 'Gonzales', 'Mark', 'Anthony', 'mark.gonzales@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(11, '555-6666', 'Bautista', 'Angela', 'Rose', 'angela.bautista@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(12, '666-7777', 'Navarro', 'Michael', 'James', 'michael.navarro@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(13, '777-8888', 'Villanueva', 'Sarah', 'Joy', 'sarah.villanueva@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(14, '888-0001', 'Cruz', 'Daniel', 'Lee', 'daniel.cruz@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(15, '999-0002', 'Gomez', 'Patricia', 'Anne', 'patricia.gomez@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(16, '000-1111', 'Ramirez', 'Joshua', 'Paul', 'joshua.ramirez@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(17, '123-4567', 'Lim', 'Christine', 'Mae', 'christine.lim@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(18, '234-5678', 'Aquino', 'Kevin', 'John', 'kevin.aquino@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(19, '345-6789', 'Flores', 'Karen', 'Grace', 'karen.flores@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(20, '456-7890', 'Mendoza', 'Ryan', 'Patrick', 'ryan.mendoza@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(21, '567-8901', 'Torres', 'Jessica', 'Claire', 'jessica.torres@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(22, '678-9012', 'Morales', 'Adrian', 'Joseph', 'adrian.morales@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(23, '789-0123', 'Castro', 'Nicole', 'Faith', 'nicole.castro@example.com', 0, NULL, '2026-02-17 05:07:20'),
+(25, '22-0828', 'Almadrones', 'Lee Ivan', 'Oliva', 'laarnialmadrones@gmail.com', 0, NULL, '2026-02-17 05:09:11');
 
 -- --------------------------------------------------------
 
@@ -85,7 +118,12 @@ CREATE TABLE `otp_verifications` (
 --
 
 INSERT INTO `otp_verifications` (`verification_id`, `email`, `otp`, `otp_attempts`, `is_used`, `purpose`, `created_at`, `expires_at`, `verified_at`) VALUES
-(1, 'laarnialmadrones@gmail.com', '610940', 0, 0, 'registration', '2026-02-14 20:37:00', '2026-02-14 13:47:00', NULL);
+(1, 'laarnialmadrones@gmail.com', '610940', 0, 0, 'registration', '2026-02-14 20:37:00', '2026-02-14 13:47:00', NULL),
+(2, 'leeivanalmadrones6@gmail.com', '911704', 0, 0, 'registration', '2026-02-16 15:32:27', '2026-02-16 08:42:27', NULL),
+(3, 'leeivanalmadrones6@gmail.com', '931158', 0, 0, 'registration', '2026-02-16 16:29:22', '2026-02-16 09:39:22', NULL),
+(4, 'leeivanalmadrones6@gmail.com', '373955', 0, 0, 'registration', '2026-02-16 16:46:05', '2026-02-16 09:56:05', NULL),
+(5, 'johnpaulgabo8@gmail.com', '285196', 0, 0, 'registration', '2026-02-16 19:59:43', '2026-02-16 13:09:43', NULL),
+(6, 'laarnialmadrones@gmail.com', '526832', 0, 0, 'registration', '2026-02-17 13:16:25', '2026-02-17 06:26:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -110,7 +148,8 @@ CREATE TABLE `password_resets` (
 --
 
 INSERT INTO `password_resets` (`reset_id`, `user_id`, `email`, `otp`, `otp_attempts`, `is_used`, `created_at`, `expires_at`, `used_at`) VALUES
-(1, 23, 'ivssalmadrones@gmail.com', '694366', 0, 1, '2026-02-14 20:31:31', '2026-02-14 13:41:31', '2026-02-14 20:32:28');
+(1, 23, 'ivssalmadrones@gmail.com', '694366', 0, 1, '2026-02-14 20:31:31', '2026-02-14 13:41:31', '2026-02-14 20:32:28'),
+(2, 28, 'ivssalmadrones@gmail.com', '371327', 0, 1, '2026-02-16 17:03:01', '2026-02-16 10:13:01', '2026-02-16 17:03:34');
 
 -- --------------------------------------------------------
 
@@ -172,7 +211,9 @@ INSERT INTO `schedules` (`schedule_id`, `venue_id`, `schedule_datetime`, `num_re
 (21, 9, '2026-03-30', 78, 100, 'Incoming'),
 (22, 10, '2026-04-01', 0, 200, 'Incoming'),
 (23, 11, '2026-04-10', 0, 250, 'Incoming'),
-(24, 12, '2026-04-20', 0, 300, 'Incoming');
+(24, 12, '2026-04-20', 0, 300, 'Incoming'),
+(25, 3, '2026-02-17', 0, 100, 'Incoming'),
+(26, 3, '2026-03-10', 0, 150, 'Incoming');
 
 -- --------------------------------------------------------
 
@@ -219,8 +260,8 @@ INSERT INTO `users` (`user_id`, `test_permit`, `pmma_student_id`, `last_name`, `
 (20, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'bernandinicezar@gmail.com', 963234542, '2026-02-11', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$EMlfA8JAk.hKfo3PSWxwqeEmNJ8PHB0pKPSWqv7tE5Ik.g6P/hVNq', '', 'examinee', '2026-02-14'),
 (21, NULL, NULL, 'onidnanreb', 'Cezarrrr', 's', 'nandinocezar@gmail.com', 963234542, '2026-02-12', 0, 'male', NULL, NULL, NULL, NULL, 0, '', '', '$2y$10$piPzS1RXw58S7Yep5ObS9.yPRveFNJ9sTKESPl.4eh/kuzyrQztt2', '', 'examinee', '2026-02-14'),
 (23, 'PMMA-2026-0001', '2026-001', 'Dela Cruz', 'Juan', 'S', 'dasdasdas', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$6u6HV.CNGf7O2RtFu6VBYO7FWK/hk8BFfPiqaa2okOy9JyHF959iK', 'active', 'examinee', '2026-02-14'),
-(24, 'ADMIN-0001', 'ADMIN', 'Administrator', 'System', 'O', 'leeivanalmadrones6@gmail.com', 0, '1990-01-01', 30, 'Male', 'PMMA', 'NCR', 'Main Office', '2026-01-01', 1, 'PMMA Headquarters', 'Filipino', '$2y$10$dvI69yvWxCj2JnjmKuis.enPVMYBy6ey741d3TIBJ9d2uJPd1ZD/O', 'active', 'admin', '2026-02-14'),
-(28, 'PMMA-2027', '2027', 'Almadrones', 'Lee Ivan', 'O', 'ivssalmadrones@gmail.com', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$ISFzMw0Ev9P7BT0Kf1ICduk8/cKt8kRsmzxDJU8H.6z4ucWx3SwEi', 'active', 'examinee', '2026-02-14');
+(24, 'ADMIN-0001', 'ADMIN', 'Administrator', 'System', 'O', 'leeivanalmadrones6@gmail.com', 0, '1990-01-01', 30, 'Male', 'PMMA', 'NCR', 'Main Office', '2026-01-01', 1, 'PMMA Headquarters', 'Filipino', '$2y$10$VTMJK8eJXgtGXLQWiauCROr58g2S/uaN102Q2kHKT/AosVi2Chs.S', 'active', 'admin', '2026-02-14'),
+(28, 'PMMA-2027', '2027', 'Almadrones', 'Lee Ivan', 'O', 'ivssalmadrones@gmail.com', 2147483647, '2004-05-15', 21, 'Male', 'PMMA', 'NCR', 'Manila Testing Center', '2026-03-15', 1, '123 Mabini Street, Manila', 'Filipino', '$2y$10$E1LIIjaaIe1R77FKUlhQBe//8Zy3lTgwJje5VFF6FJUPbuG07CsVy', 'active', 'examinee', '2026-02-14');
 
 -- --------------------------------------------------------
 
@@ -268,7 +309,12 @@ ALTER TABLE `examinees`
 --
 ALTER TABLE `examinee_masterlist`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `test_permit` (`test_permit`);
+  ADD UNIQUE KEY `test_permit` (`test_permit`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idx_test_permit` (`test_permit`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_used` (`used`),
+  ADD KEY `idx_used_by` (`used_by`);
 
 --
 -- Indexes for table `otp_verifications`
@@ -310,7 +356,8 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `pmma_student_id` (`pmma_student_id`),
   ADD UNIQUE KEY `test_permit` (`test_permit`),
   ADD UNIQUE KEY `test_permit_2` (`test_permit`),
-  ADD UNIQUE KEY `test_permit_3` (`test_permit`);
+  ADD UNIQUE KEY `test_permit_3` (`test_permit`),
+  ADD UNIQUE KEY `uk_users_test_permit` (`test_permit`);
 
 --
 -- Indexes for table `venue`
@@ -332,19 +379,19 @@ ALTER TABLE `examinees`
 -- AUTO_INCREMENT for table `examinee_masterlist`
 --
 ALTER TABLE `examinee_masterlist`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `otp_verifications`
 --
 ALTER TABLE `otp_verifications`
-  MODIFY `verification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `verification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -356,7 +403,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `users`
