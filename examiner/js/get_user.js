@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("userCard");
 
-  fetch("../php/get_user.php")
+  fetch("php/get_user.php")
     .then(res => {
       console.log("Response status:", res.status);
       if (!res.ok) {
@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div>
           <div>
             <div class="card-body text-center border-bottom py-4">
+            <input type="hidden" id="user_id" name="user_id" value="${user.user_id}">
               <h5 class="fw-bold mb-1">${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}</h5>
               <p class="text-muted mb-2">${roleDisplay}</p>
               <div class="d-flex justify-content-center gap-2">
@@ -104,9 +105,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
       container.insertAdjacentHTML("beforeend", card);
 
+
+          
+const userId = document.getElementById("user_id").value;
+
+// 🔥 Fetch transaction number from PHP
+fetch("php/get_transaction.php?user_id=" + userId)
+  .then(response => response.json())
+  .then(data => {
+
+    if (data.status !== "success") {
+      alert("Unable to retrieve transaction number.");
+      return;
+    }
+
+    const transactionNo = data.transaction_no;
+
+    // QR Value (what gets scanned)
+    const qrValue = "https://yourdomain.com/PSI/testpermit.html?transaction_no=" + transactionNo;
+
+    document.getElementById("qrText").innerText = qrValue;
+
+    // Generate QR Code
+    const qr = new QRCode(document.getElementById("qrContainer"), {
+      text: qrValue,
+      width: 180,
+      height: 180,
+    });
+
+    // Download Function
+    document.getElementById("downloadQR").addEventListener("click", function () {
+      const img = document.querySelector("#qrContainer img");
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = transactionNo + "_QR.png";
+      link.click();
+    });
+
+  })
+  .catch(error => console.error(error));
+
+  
+  
     })
     .catch(err => {
       console.error("Fetch error:", err);
       container.innerHTML = `<p class="text-danger">Error loading user data: ${err.message}</p>`;
     });
+
+
+
+
 });

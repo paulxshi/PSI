@@ -5,7 +5,7 @@ header("Content-Type: application/json");
 error_log("get_user.php called - Session ID: " . session_id());
 error_log("Session user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
 
-require_once "../config/db.php";
+require_once "../../config/db.php";
 
 try {
     // Check if user is logged in
