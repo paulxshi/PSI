@@ -26,7 +26,7 @@ try {
 
     // Search condition
     if (!empty($search)) {
-        $whereConditions[] = "(test_permit LIKE :search OR full_name LIKE :search OR email LIKE :search)";
+        $whereConditions[] = "(test_permit LIKE :search OR CONCAT(first_name, ' ', last_name) LIKE :search OR email LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
@@ -46,7 +46,16 @@ try {
 
     // Get data
     $dataQuery = "
-        SELECT id, test_permit, full_name, email, used, uploaded_at
+        SELECT 
+            id, 
+            test_permit, 
+            last_name, 
+            first_name, 
+            middle_name,
+            CONCAT(first_name, ' ', last_name) as full_name,
+            email, 
+            used, 
+            uploaded_at
         FROM examinee_masterlist
         $whereClause
         ORDER BY uploaded_at DESC

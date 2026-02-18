@@ -20,7 +20,7 @@ if (empty($testPermit)) {
 
 try {
     $stmt = $pdo->prepare("
-        SELECT id, test_permit, full_name, email, used
+        SELECT id, test_permit, last_name, first_name, middle_name, email, used
         FROM examinee_masterlist
         WHERE test_permit = :test_permit
         LIMIT 1
@@ -53,8 +53,11 @@ try {
         'success' => true,
         'message' => 'Test permit verified',
         'data' => [
+            'id' => $record['id'],
             'test_permit' => $record['test_permit'],
-            'full_name' => $record['full_name'],
+            'last_name' => $record['last_name'],
+            'first_name' => $record['first_name'],
+            'middle_name' => $record['middle_name'],
             'email' => $record['email']
         ]
     ]);
