@@ -11,6 +11,28 @@
     <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
+<style>
+    .page-header {
+        padding: 15px 24px;
+        border-bottom: 3px solid #acacac;
+        max-width: 60%;
+    }
+
+    .page-title {
+        font-weight: 800;
+        font-size: 2rem;
+        color: #000;
+        margin-bottom: 0.75rem;
+    }
+
+    .page-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #4b5563;
+        margin: 0;
+    }
+
+</style>
 <body>
 
     <!-- Sidebar Section -->
@@ -89,84 +111,98 @@
 
 <main class="p-4">
 
-  <!-- Page Header -->
-  <div class="mb-4">
-    <h5 class="fw-bold text-uppercase mb-1">Examination History</h5>
-    <p class="text-muted small mb-0">
-      Overview of completed examinations with registration and attendance records.
-    </p>
-  </div>
+            <div class="page-header mb-4">
+                <h1 class="page-title">Examinee Management</h1>
+                <p class="page-description">
+                    Administrative interface for monitoring registered examinees, reviewing profile details,
+                    tracking examination completion, and managing exam rescheduling based on available schedules.
+                </p>
+            </div>
 
   <!-- Table Card -->
   <div class="card border-0 shadow-sm rounded-4">
     
     <!-- Card Header -->
-    <div class="px-4 py-3 border-bottom bg-white d-flex align-items-center">
-      <h6 class="fw-semibold mb-0">Exam Attendance Summary</h6>
+    <div class="px-4 py-3 border-bottom d-flex align-items-center bg-white rounded-top-4">
 
-      <!-- Optional Search -->
-      <input
+    <input
         type="search"
-        class="form-control form-control-sm ms-auto"
-        style="max-width: 260px;"
-        placeholder="Search region, venue, or date"
-      >
+        class="form-control form-control-sm ms-auto rounded-pill"
+        style="max-width: 240px;"
+        placeholder="Search..."
+    >
     </div>
+
 
     <!-- Table -->
-    <div class="table-responsive">
-      <table class="table align-middle mb-0 table-hover">
-        <thead class="small text-uppercase text-muted">
-          <tr>
-            <th>Region</th>
-            <th>Venue</th>
-            <th>Exam Date</th>
-            <th class="text-center">Registered</th>
-            <th class="text-center">Attendees</th>
-          </tr>
-        </thead>
+<div class="table-responsive">
+  <table class="table table-borderless align-middle mb-0">
+    <thead class="bg-light text-muted small text-uppercase">
+      <tr>
+        <th class="ps-4">Region</th>
+        <th>Venue</th>
+        <th>Exam Date</th>
+        <th class="text-center">Registered</th>
+        <th class="text-center">Attendees</th>
+      </tr>
+    </thead>
 
-        <tbody>
-          <tr>
-            <td>Luzon</td>
-            <td>Manila Testing Center</td>
-            <td>March 12, 2026</td>
-            <td class="text-center fw-semibold">120</td>
-            <td class="text-center fw-semibold text-success">115</td>
-          </tr>
+    <tbody class="small">
+      <tr class="border-bottom">
+        <td class="ps-4 fw-semibold">Luzon</td>
+        <td>Manila Testing Center</td>
+        <td>Mar 12, 2026</td>
+        <td class="text-center fw-semibold">120</td>
+        <td class="text-center">
+          <span class="badge rounded-pill bg-success-subtle text-success px-3">
+            115
+          </span>
+        </td>
+      </tr>
 
-          <tr>
-            <td>Luzon</td>
-            <td>Pasig City Hall</td>
-            <td>March 13, 2026</td>
-            <td class="text-center fw-semibold">90</td>
-            <td class="text-center fw-semibold text-warning">82</td>
-          </tr>
+      <tr class="border-bottom">
+        <td class="ps-4 fw-semibold">Luzon</td>
+        <td>Pasig City Hall</td>
+        <td>Mar 13, 2026</td>
+        <td class="text-center fw-semibold">90</td>
+        <td class="text-center">
+          <span class="badge rounded-pill bg-warning-subtle text-warning px-3">
+            82
+          </span>
+        </td>
+      </tr>
 
-          <tr>
-            <td>Visayas</td>
-            <td>Cebu Convention Center</td>
-            <td>March 15, 2026</td>
-            <td class="text-center fw-semibold">150</td>
-            <td class="text-center fw-semibold text-success">147</td>
-          </tr>
+      <tr class="border-bottom">
+        <td class="ps-4 fw-semibold">Visayas</td>
+        <td>Cebu Convention Center</td>
+        <td>Mar 15, 2026</td>
+        <td class="text-center fw-semibold">150</td>
+        <td class="text-center">
+          <span class="badge rounded-pill bg-success-subtle text-success px-3">
+            147
+          </span>
+        </td>
+      </tr>
 
-          <tr>
-            <td>Mindanao</td>
-            <td>Davao Training Hall</td>
-            <td>March 18, 2026</td>
-            <td class="text-center fw-semibold">100</td>
-            <td class="text-center fw-semibold text-danger">88</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <tr>
+        <td class="ps-4 fw-semibold">Mindanao</td>
+        <td>Davao Training Hall</td>
+        <td>Mar 18, 2026</td>
+        <td class="text-center fw-semibold">100</td>
+        <td class="text-center">
+          <span class="badge rounded-pill bg-danger-subtle text-danger px-3">
+            88
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
   </div>
 
 </main>
-
-
 
     </section>
 
