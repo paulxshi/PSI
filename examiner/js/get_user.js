@@ -29,19 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
         year: 'numeric'
       });
 
-      // Format date of registration
-      const regDate = user.date_of_registration 
-        ? new Date(user.date_of_registration).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
-          })
-        : "N/A";
-
-      // Populate exam-info section if exists
-      const regDateEl = document.getElementById("registration-date");
+ 
       const purposeEl = document.getElementById("purpose");
-      if (regDateEl) regDateEl.textContent = regDate;
       if (purposeEl) purposeEl.textContent = user.purpose || "N/A";
 
       // Format role display
@@ -121,8 +110,9 @@ fetch("php/get_transaction.php?user_id=" + userId)
 
     const transactionNo = data.transaction_no;
 
+
     // QR Value (what gets scanned)
-    const qrValue = "https://yourdomain.com/PSI/testpermit.html?transaction_no=" + transactionNo;
+    const qrValue = "http://localhost/PSI/admin/QR_scanned.html?transaction_no=" + transactionNo;
 
     document.getElementById("qrText").innerText = qrValue;
 
@@ -145,8 +135,61 @@ fetch("php/get_transaction.php?user_id=" + userId)
   })
   .catch(error => console.error(error));
 
-  
-  
+
+fetch("php/get_exam_details.php?user_id=" + userId)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then(data => {
+
+    if (data.status !== "success") {
+      console.warn(data.message || "No exam details found.");
+      return;
+    }
+
+    // Format registration date
+    const registrationDate = data.date_of_registration
+      ? new Date(data.date_of_registration).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        })
+      : "N/A";
+
+          const examinationDate = data.date_of_test
+      ? new Date(data.date_of_test).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric"
+        })
+      : "N/A";
+
+    const registrationEl = document.getElementById("registration-date");
+    if (registrationEl) {
+      registrationEl.textContent = registrationDate || "N/A";
+    }
+
+    const examDateEl = document.getElementById("examination-date");
+    if (examDateEl) {
+      examDateEl.textContent = examinationDate || "N/A";
+    }
+
+    const venueNameEl = document.getElementById("examination-venue");
+    if (venueNameEl) {
+      venueNameEl.textContent =
+        (data.venue_name ? data.venue_name + ", " : "") +
+        (data.region || "N/A");
+    }
+
+  })
+  .catch(error => {
+    console.error("Error fetching exam details:", error);
+  });
+
+
     })
     .catch(err => {
       console.error("Fetch error:", err);
