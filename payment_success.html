@@ -38,6 +38,31 @@
       background: #fff;
     }
 
+    .success-blob {
+      width: 120px;
+      height: 120px;
+      background: #e9fbf3;
+      border-radius: 55% 45% 60% 40% / 55% 60% 40% 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-blob-inner {
+      width: 68px;
+      height: 68px;
+      background: #1fbf75;
+      border-radius: 50% 60% 45% 55% / 55% 45% 60% 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-blob-inner i {
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
     .step-line {
       flex: 1;
       height: 2px;
@@ -145,36 +170,72 @@
             </div>
           </div>
 
-          <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
+<div class="card border-0 shadow-sm rounded-4">
+  <div class="card-body p-4 p-md- text-center">
 
-                <h6 class="fw-semibold mb-4">
-                  <i class="bi bi-credit-card me-2 text-primary"></i>
-                  Payment Information
-                </h6>
-
-
-                <div>
-    <h2 style="color:green;">Examination Successfully Scheduled</h2>
-
-  <p>Thank you for your payment.</p>
-
-  <h3 id="invoiceText">Loading Invoice...</h3>
+    <div class="mb-4 d-flex justify-content-center">
+      <div class="success-blob">
+        <div class="success-blob-inner">
+          <i class="bi bi-check"></i>
+        </div>
+      </div>
+    </div>
 
 
+    <!-- Title -->
+    <h4 class="fw-bold text-success mb-4">
+      Payment Successful
+    </h4>
 
-                </div>
-        
+    <!-- Receipt -->
+    <div class="border rounded-4 p-4 p-md-5 text-start mx-auto"
+         style="max-width:640px;">
 
+      <div class="row mb-3">
+        <div class="col text-muted small">Payment Type</div>
+        <div class="col text-end fw-semibold">Online Payment</div>
+      </div>
 
-                <div class="d-flex justify-content-end">
-                  <button type="button" onclick="login()" class="btn btn-primary px-4 rounded-pill">
-                     Login to Dashboard <i class="bi bi-check ms-1"></i>
-                 </button>
-                </div>
+      <div class="row mb-3">
+        <div class="col text-muted small">Examination</div>
+        <div class="col text-end fw-semibold">PMMA Exam</div>
+      </div>
 
-              </div>
-            </div>
+      <div class="row mb-3">
+        <div class="col text-muted small">Email</div>
+        <div class="col text-end fw-semibold">Registered Email</div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="row mb-3">
+        <div class="col text-muted small">Amount Paid</div>
+        <div class="col text-end fw-bold text-success fs-4">
+          ₱500.00
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col text-muted small">Transaction ID</div>
+        <div class="col text-end fw-semibold">
+          <span id="invoiceText">Loading Invoice...</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="d-flex justify-content-center mt-5">
+      <button type="button"
+              onclick="login()"
+              class="btn btn-primary px-4 py-2 rounded-pill">
+        Login to Dashboard <i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
             </div>
           </div>
 
