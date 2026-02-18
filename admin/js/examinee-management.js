@@ -123,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     // Update stats
                     document.getElementById('totalRegistered').textContent = data.summary.total_registered;
-                    document.getElementById('totalApproved').textContent = data.summary.approved;
-                    document.getElementById('totalPending').textContent = data.summary.pending;
-                    document.getElementById('totalRejected').textContent = data.summary.rejected;
+                    document.getElementById('totalRegistered').textContent = data.summary.total_registered;
+                    document.getElementById('totalCompleted').textContent = data.summary.completed;
+
 
                     // Populate table
                     populateTable(data.data);
