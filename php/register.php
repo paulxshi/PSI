@@ -29,18 +29,13 @@ $date_of_birth = trim($_POST['date_of_birth'] ?? '');
 $contact_number = trim($_POST['contact_number'] ?? '');
 $gender = trim($_POST['gender'] ?? '');
 $school = trim($_POST['school'] ?? '');
+$address = trim($_POST['address'] ?? '');
+$nationality = trim($_POST['nationality'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm_password = $_POST['confirm_password'] ?? '';
 
-// Exam schedule fields
-$region = trim($_POST['region'] ?? '');
-$exam_venue = trim($_POST['exam_venue'] ?? '');
-$exam_date = trim($_POST['exam_date'] ?? '');
-
-// Payment fields
-$payment_method = trim($_POST['payment_method'] ?? '');
-$payment_reference = trim($_POST['payment_reference'] ?? '');
-$payment_date = trim($_POST['payment_date'] ?? '');
+// Exam schedule and payment fields will be handled separately
+// For now, we only save personal information during registration
 
 error_log("Email to verify: $email");
 error_log("Test Permit: $test_permit");
@@ -154,9 +149,10 @@ try {
     // Begin transaction for consistency
     $pdo->beginTransaction();
     
-    // Insert user data with test_permit
-    $sql = 'INSERT INTO users (test_permit, last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, role, region, exam_venue, exam_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)';
+    // Insert user data with test_permit and status='incomplete'
+    // Status will be changed to 'active' after payment confirmation via webhook
+    $sql = 'INSERT INTO users (test_permit, last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, address, nationality, email_verified, status, role)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         $test_permit,
@@ -170,14 +166,22 @@ try {
         $hash,
         $gender !== '' ? $gender : '',
         $school,
-        'examinee',
-        $region,
-        $exam_venue,
-        $exam_date !== '' ? $exam_date : null
+        $address !== '' ? $address : '',
+        $nationality !== '' ? $nationality : '',
+        'incomplete', // User cannot login until payment is confirmed
+        'examinee'
     ]);
 
     // Get the newly created user ID
     $userId = $pdo->lastInsertId();
+
+    // Create examinees table entry with 'Pending' status
+    // Status will be updated to 'Scheduled' after schedule selection
+    $examineeStmt = $pdo->prepare("
+        INSERT INTO examinees (user_id, test_permit, status)
+        VALUES (?, ?, 'Pending')
+    ");
+    $examineeStmt->execute([$userId, $test_permit]);
 
     // Mark test permit as used in examinee_masterlist
     $markUsedStmt = $pdo->prepare("
@@ -190,20 +194,13 @@ try {
         ':test_permit' => $test_permit
     ]);
 
-    // Payment insertion is optional - can be skipped or handled separately
-    // For now, we just register the user and their exam info
-
     // Commit transaction
     $pdo->commit();
 
-    // Create session
-    session_regenerate_id(true);
-    $_SESSION['user_id'] = $userId;
-    $_SESSION['email'] = $email;
-    $_SESSION['first_name'] = $first_name;
-    $_SESSION['last_name'] = $last_name;
-
-    respond(true, 'Registration successful!', 200);
+    // DO NOT create session - user should not be logged in automatically
+    // They can only login after payment confirmation (status='active')
+    
+    respond(true, 'Registration successful! Please proceed to schedule selection and payment.', 200);
 } catch (PDOException $e) {
     // Rollback transaction on error
     try {

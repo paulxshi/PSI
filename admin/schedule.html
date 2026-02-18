@@ -173,54 +173,35 @@
                 </div>
 
 
-                    <!-- Date Row -->
+                    <!-- Date & Time Row -->
                     <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-medium">Exam Month</label>
-                        <select class="form-select" name="exam_month" id="exam_month" required>
-                        <option value="">Select Month</option>
-                        <option>January</option>
-                        <option>February</option>
-                        <option>March</option>
-                        <option>April</option>
-                        <option>May</option>
-                        <option>June</option>
-                        <option>July</option>
-                        <option>August</option>
-                        <option>September</option>
-                        <option>October</option>
-                        <option>November</option>
-                        <option>December</option>
-                        </select>
-                    </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Exam Date</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="exam_date"
+                                id="exam_date"
+                                required
+                            >
+                            <div class="form-text">
+                                Select the examination date
+                            </div>
+                        </div>
 
-                    <div class="col-md-3">
-                        <label class="form-label fw-medium">Day</label>
-                        <input
-                            type="number"
-                            class="form-control"
-                            placeholder="12"
-                            min="1"
-                            name="exam_day"
-                            id="exam_day"
-                            required
-                        >
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label fw-medium">Year</label>
-                        <input
-                            type="number"
-                            class="form-control"
-                            placeholder="2026"
-                            min="2025"
-                            max="9999"
-                            maxlength="4"
-                            name="exam_year"
-                            id="exam_year"
-                            required
-                        >
-                    </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Exam Time</label>
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="exam_time"
+                                id="exam_time"
+                                required
+                            >
+                            <div class="form-text">
+                                Select the examination time
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Examinees & Price -->
@@ -414,59 +395,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const monthSelect = document.getElementById("exam_month");
-    const dayInput = document.getElementById("exam_day");
-    const yearInput = document.getElementById("exam_year");
-
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
-    }
-
-    function getMaxDays(month, year) {
-        if (!month) return 31;
-
-        switch (month) {
-            case "April":
-            case "June":
-            case "September":
-            case "November":
-                return 30;
-            case "February":
-                return isLeapYear(year) ? 29 : 28;
-            default:
-                return 31;
-        }
-    }
-
-    function updateDayLimit() {
-        const month = monthSelect.value;
-        const year = parseInt(yearInput.value) || new Date().getFullYear();
-        const maxDays = getMaxDays(month, year);
-
-        dayInput.max = maxDays;
-
-        if (dayInput.value > maxDays) {
-            dayInput.value = maxDays;
-        }
-    }
-
-    /* Enforce 4-digit year */
-    yearInput.addEventListener("input", function () {
-        if (this.value.length > 4) {
-            this.value = this.value.slice(0, 4);
-        }
-        updateDayLimit();
-    });
-
-    monthSelect.addEventListener("change", updateDayLimit);
-    dayInput.addEventListener("input", updateDayLimit);
-
-});
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
     const regionSelect = document.getElementById("exam_region");
     const venueInput = document.getElementById("exam_area");
 
@@ -513,9 +441,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const regionSelect = document.getElementById("exam_region");
     const venueInput   = document.getElementById("exam_area");
-    const monthSelect  = document.getElementById("exam_month");
-    const dayInput     = document.getElementById("exam_day");
-    const yearInput    = document.getElementById("exam_year");
+    const dateInput    = document.getElementById("exam_date");
+    const timeInput    = document.getElementById("exam_time");
     const limitInput   = document.querySelector('input[name="exam_limit"]');
     const priceInput   = document.querySelector('input[name="exam_price"]');
 
@@ -530,9 +457,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const region = regionSelect.value;
         const venue  = venueInput.value;
-        const month  = monthSelect.value;
-        const day    = dayInput.value;
-        const year   = yearInput.value;
+        const date   = dateInput.value;
+        const time   = timeInput.value;
         const limit  = limitInput.value;
         const price  = priceInput.value;
 
@@ -540,16 +466,29 @@ document.addEventListener("DOMContentLoaded", function () {
         previewRegion.textContent = region || "—";
         previewVenue.textContent  = venue  || "—";
 
-        previewDate.textContent =
-            month && day && year ? `${month} ${day}, ${year}` : "—";
+        // Format date and time for preview
+        if (date && time) {
+            const dateObj = new Date(date + 'T' + time);
+            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const formattedTime = dateObj.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            previewDate.textContent = `${formattedDate} at ${formattedTime}`;
+        } else {
+            previewDate.textContent = "—";
+        }
 
         previewLimit.textContent = limit || "—";
         previewPrice.textContent = price ? `₱${Number(price).toLocaleString()}` : "—";
 
         // Enable publish button only if all fields are filled
         const isComplete =
-            region && venue && month && day && year && limit && price;
-
+            region && venue && date && time && limit && price;
 
         publishBtn.disabled = !isComplete;
     }
@@ -558,9 +497,8 @@ document.addEventListener("DOMContentLoaded", function () {
     [
         regionSelect,
         venueInput,
-        monthSelect,
-        dayInput,
-        yearInput,
+        dateInput,
+        timeInput,
         limitInput,
         priceInput
     ].forEach(el => el.addEventListener("input", updatePreview));

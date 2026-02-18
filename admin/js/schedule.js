@@ -1,81 +1,76 @@
-
 document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.querySelector("form");
+    const form = document.getElementById("scheduleForm");
     const publishBtn = document.getElementById("publishBtn");
-    const confirmBtn = document.getElementById("confirmCreateBtn");
     const modalElement = document.getElementById("confirmScheduleModal");
-    const createSchedBtn = document.getElementById("createSchedBtn");
+    const confirmBtn = document.getElementById("confirmCreateBtn");
     const confirmModal = new bootstrap.Modal(modalElement);
 
-    // Handle Create Schedule click
-    publishBtn.addEventListener("click", function () {
+    // Handle Publish Schedule click
+    publishBtn.addEventListener("click", function (e) {
+        e.preventDefault();
 
         // Get values
         const region = document.querySelector("[name='exam_region']").value;
         const venue = document.querySelector("[name='exam_area']").value;
-        const month = document.querySelector("[name='exam_month']").value;
-        const day = document.querySelector("[name='exam_day']").value;
-        const year = document.querySelector("[name='exam_year']").value;
+        const date = document.querySelector("[name='exam_date']").value;
+        const time = document.querySelector("[name='exam_time']").value;
         const limit = document.querySelector("[name='exam_limit']").value;
+        const price = document.querySelector("[name='exam_price']").value;
 
         // Validation
-        if (!region || !venue || !month || !day || !year || !limit) {
+        if (!region || !venue || !date || !time || !limit || !price) {
             alert("Please complete all fields.");
             return;
         }
 
-        // Format exam date
-        const examDate = `${month} ${day}, ${year}`;
-
-        // Inject preview values
-        document.getElementById("previewRegion").textContent = region;
-        document.getElementById("previewVenue").textContent = venue;
-        document.getElementById("previewDate").textContent = examDate;
-        document.getElementById("previewLimit").textContent = `${limit} Examinees`;
-
-        document.getElementById("publishBtn").disabled = false;
-
-        // Show confirmation modal ONLY if validation passed
+        // Show confirmation modal
         confirmModal.show();
     });
 
-    // Submit normally when confirmed
+    // Submit form via AJAX when confirmed
     confirmBtn.addEventListener("click", function () {
         confirmModal.hide();
-        form.requestSubmit(); // ✅ triggers normal submit + validation
-    });
+        
+        // Show loading state
+        publishBtn.disabled = true;
+        publishBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
 
+        const formData = new FormData(form);
 
-    
-
-createSchedBtn.addEventListener("click", function () {
-
-            // Get values
-            const region = document.querySelector("[name='exam_region']").value;
-            const venue = document.querySelector("[name='exam_area']").value;
-            const month = document.querySelector("[name='exam_month']").value;
-            const day = document.querySelector("[name='exam_day']").value;
-            const year = document.querySelector("[name='exam_year']").value;
-            const limit = document.querySelector("[name='exam_limit']").value;
-
-            if (!region || !venue || !month || !day || !year || !limit) {
-                alert("Please complete all fields.");
-                return;
+        fetch('php/save_schedule.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Schedule Creation Response:', data);
+            
+            if (data.success) {
+                // Show success message
+                alert(data.message || 'Schedule successfully created!');
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                // Show error message
+                alert(data.message || 'Failed to create schedule. Please try again.');
+                
+                // Reset button
+                publishBtn.disabled = false;
+                publishBtn.textContent = 'Publish Schedule';
             }
-
-            // Format exam date
-            const examDate = `${month} ${day}, ${year}`;
-
-            // Inject preview values
-            document.getElementById("previewRegion").textContent = region;
-            document.getElementById("previewVenue").textContent = venue;
-            document.getElementById("previewDate").textContent = examDate;
-            document.getElementById("previewLimit").textContent = `${limit} Examinees`;
-
-            // Enable publish button
-            document.getElementById("publishBtn").disabled = false;
+        })
+        .catch(error => {
+            console.error('Error creating schedule:', error);
+            alert('Network error. Please try again.');
+            
+            // Reset button
+            publishBtn.disabled = false;
+            publishBtn.textContent = 'Publish Schedule';
         });
+    });
 
 });
 

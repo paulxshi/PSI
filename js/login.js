@@ -24,9 +24,19 @@ document.addEventListener("DOMContentLoaded", () => {
         (data.success ? "text-success" : "text-danger");
 
       if (data.success) {
+        // Redirect based on user role
         setTimeout(() => {
-          window.location.href = "examiner/dashboard.html";
+          if (data.role === 'admin') {
+            window.location.href = "admin/dashboard.html";
+          } else {
+            window.location.href = "examiner/dashboard.html";
+          }
         }, 800); 
+      } else if (data.redirect) {
+        // If login failed but redirect is provided (incomplete registration)
+        setTimeout(() => {
+          window.location.href = data.redirect;
+        }, 1500);
       }
 
     })

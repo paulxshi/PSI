@@ -914,9 +914,61 @@
     }
   });
 
+  // Submit registration data when clicking "Proceed to Examination Schedule"
   registerBtn.addEventListener('click', () => {
-    window.location.href = 'examsched.html';
+    submitRegistration();
   });
+
+  // Submit registration function
+  function submitRegistration() {
+    const formData = new FormData();
+    
+    // Add all form fields
+    formData.append('test_permit', document.getElementById('testPermitNo').value.trim());
+    formData.append('last_name', document.getElementById('lastName').value.trim());
+    formData.append('first_name', document.getElementById('firstName').value.trim());
+    formData.append('middle_name', document.getElementById('middleName').value.trim());
+    formData.append('email', document.getElementById('email').value.trim());
+    formData.append('date_of_birth', document.getElementById('dateOfBirth').value.trim());
+    formData.append('contact_number', document.getElementById('contactNumber').value.trim());
+    formData.append('gender', document.getElementById('gender').value);
+    formData.append('school', document.getElementById('school').value.trim());
+    formData.append('address', document.getElementById('address')?.value.trim() || '');
+    formData.append('nationality', document.getElementById('nationality')?.value.trim() || '');
+    formData.append('password', document.getElementById('password').value);
+    formData.append('confirm_password', document.getElementById('confirmPassword').value);
+
+    // Disable button and show loading state
+    registerBtn.disabled = true;
+    registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+
+    fetch('php/register.php', {
+      method: 'POST',
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Registration Response:', data);
+      
+      if (data.success) {
+        // Registration successful - redirect to exam schedule
+        alert('Registration successful! Please proceed to schedule selection.');
+        window.location.href = 'examsched.html';
+      } else {
+        // Registration failed - show error
+        alert(data.message || 'Registration failed. Please try again.');
+        registerBtn.disabled = false;
+        registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
+      }
+    })
+    .catch(error => {
+      console.error('Registration Error:', error);
+      alert('Network error. Please try again.');
+      registerBtn.disabled = false;
+      registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
+    });
+  }
 
 </script>
 

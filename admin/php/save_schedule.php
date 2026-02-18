@@ -1,6 +1,7 @@
 <?php
 require_once "../../config/db.php";
 
+header('Content-Type: application/json');
 
 // Check if form submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -8,16 +9,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form values and sanitize
     $region = trim($_POST['exam_region']);
     $venue_name = trim($_POST['exam_area']);
-    $month = $_POST['exam_month'];
-    $day = (int)$_POST['exam_day'];
-    $year = (int)$_POST['exam_year'];
+    $date = trim($_POST['exam_date']); // Format: YYYY-MM-DD
+    $time = trim($_POST['exam_time']); // Format: HH:MM
     $exam_limit = (int)$_POST['exam_limit'];
+    $exam_price = (float)$_POST['exam_price'];
 
-    // Convert month name to number
-    $month_number = date("m", strtotime($month));
+    // Validate required fields
+    if (empty($region) || empty($venue_name) || empty($date) || empty($time) || $exam_limit <= 0 || $exam_price < 0) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'All fields are required and must be valid.'
+        ]);
+        exit();
+    }
 
-    // Build datetime string
-    $schedule_datetime = sprintf("%04d-%02d-%02d 00:00:00", $year, $month_number, $day);
+    // Combine date and time into datetime format
+    $schedule_datetime = $date . ' ' . $time . ':00';
 
     try {
         // Start transaction
@@ -37,21 +44,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $venue_id = $pdo->lastInsertId();
         }
 
-        // 3️⃣ Insert schedule
-        $stmtSchedule = $pdo->prepare("INSERT INTO schedules (venue_id, schedule_datetime, num_of_examinees) VALUES (?, ?, ?)");
-        $stmtSchedule->execute([$venue_id, $schedule_datetime, $exam_limit]);
+        // 3️⃣ Insert schedule with price
+        $stmtSchedule = $pdo->prepare("
+            INSERT INTO schedules (venue_id, schedule_datetime, num_of_examinees, price, num_registered, status) 
+            VALUES (?, ?, ?, ?, 0, 'Incoming')
+        ");
+        $stmtSchedule->execute([$venue_id, $schedule_datetime, $exam_limit, $exam_price]);
 
         // Commit transaction
         $pdo->commit();
 
-        echo '<div class="alert alert-success">Schedule successfully created!</div>';
+        echo json_encode([
+            'success' => true,
+            'message' => 'Schedule successfully created!'
+        ]);
 
     } catch (Exception $e) {
         $pdo->rollBack();
-        echo '<div class="alert alert-danger">Error: ' . htmlspecialchars($e->getMessage()) . '</div>';
+        error_log('Schedule creation error: ' . $e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error creating schedule: ' . $e->getMessage()
+        ]);
     }
 
-    // Redirect to dashboard
-    header("Location: ../dashboard.html");
+    exit();
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Invalid request method.'
+    ]);
     exit();
 }

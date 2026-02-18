@@ -20,12 +20,20 @@ if (isset($_GET['type'])) {
     if ($_GET['type'] == "schedules" && isset($_GET['venue_id'])) {
 
         $stmt = $pdo->prepare("
-            SELECT schedule_id, schedule_datetime
+            SELECT schedule_id, schedule_datetime, price
             FROM schedules
             WHERE venue_id = ? AND status = 'Incoming'
             ORDER BY schedule_datetime ASC
         ");
         $stmt->execute([$_GET['venue_id']]);
-        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        
+        $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Add exam_price field for backward compatibility
+        foreach ($schedules as &$schedule) {
+            $schedule['exam_price'] = $schedule['price'];
+        }
+        
+        echo json_encode($schedules);
     }
 }
