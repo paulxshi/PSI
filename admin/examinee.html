@@ -172,27 +172,60 @@
             <div class="page-header mb-4">
                 <h1 class="page-title">Examinee Management</h1>
                 <p class="page-description">
-                    View and manage registered examinees, reschedule exams.
+                    Administrative interface for monitoring registered examinees, reviewing profile details,
+                    tracking examination completion, and managing exam rescheduling based on available schedules.
                 </p>
             </div>
 
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-5">
 
-            <!-- Stats Section -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-6">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalRegistered">0</div>
-                    <div class="stat-label">Registered</div>
+                <!-- Total Registered -->
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Total Registered
+                                    </div>
+                                    <!-- ID RETAINED -->
+                                    <div class="fw-bold fs-2" id="totalRegistered">0</div>
+                                </div>
+
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-user fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Total Completed -->
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Completed
+                                    </div>
+                                    <!-- ID RETAINED -->
+                                    <div class="fw-bold fs-2" id="totalCompleted">0</div>
+                                </div>
+
+                                <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-check-circle fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="col-md-6">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCompleted">0</div>
-                    <div class="stat-label">Completed</div>
-                </div>
-            </div>
-        </div>
 
 
             <!-- Examinee Container -->
