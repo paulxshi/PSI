@@ -48,6 +48,29 @@ if (!$examinee) {
 }
 
 /* --------------------------------------------------
+   STEP 2.1: Check if already completed
+-------------------------------------------------- */
+$status = strtolower($examinee['examinee_status']);
+
+if ($status === 'completed') {
+    echo json_encode([
+        "status_class" => "already_used",
+        "status_message" => "⚠ EXAMINEE ALREADY MARKED COMPLETED",
+        "examinee_id" => $examinee['examinee_id']
+    ]);
+    exit;
+}
+
+if ($status === 'rejected') {
+    echo json_encode([
+        "status_class" => "rejected",
+        "status_message" => "❌ EXAMINEE ENTRY WAS REJECTED",
+        "examinee_id" => $examinee['examinee_id']
+    ]);
+    exit;
+}
+
+/* --------------------------------------------------
    STEP 3: Check user
 -------------------------------------------------- */
 $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
@@ -108,7 +131,7 @@ echo json_encode([
     "test_permit" => $user['test_permit'],
     "exam_date" => date("F d, Y", strtotime($schedule['schedule_datetime'])),
     "venue" => $venue['venue_name'],
-
+    "examinee_id" => $examinee['examinee_id'],
     "transaction_no" => $payment['transaction_no'],
     "payment_status" => $payment['status'],
     "payment_date" => $payment['payment_date'],

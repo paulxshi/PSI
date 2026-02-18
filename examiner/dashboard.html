@@ -32,23 +32,32 @@
 }
 
 .content-box {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #cccccc;
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   background: #ffffff;
   border-radius: 6px;
   padding: 20px;
 }
 
-/* Set Heights to Mimic Layout */
+
 #userCard {
-  width: 100%; /* Tall left panel */
+  width: 100%;
 }
 
 #qrCode {
-  min-height: 200px; /* Smaller top-right */
+  min-height: 200px;
 }
 
 #faq {
-  min-height: 300px; /* Larger bottom-right */
+  min-height: 300px;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;     
+  text-align: center;     
+  gap: 10px;               
 }
 
 
@@ -172,16 +181,18 @@
             
   <div class="d-flex justify-content-between align-items-center mb-3">
   <h5 class="mb-0">Your QR Code</h5>
+
+</div>
+
+<!-- HTML -->
+<div class="centered-content">
+  <div id="qrContainer"></div> 
+  <p class="text-muted mt-2" id="qrText"></p>
   <button id="downloadQR" class="btn btn-sm btn-primary">
     Download
   </button>
 </div>
 
-<div class="text-center">
-  <div id="qrContainer"></div> 
-  <p class="text-muted mt-2" id="qrText"></p>
-
-</div>
 
 
           </div>
