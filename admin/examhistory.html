@@ -12,6 +12,79 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    /* Table */
+.exam-table th {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.exam-table td {
+  padding: 18px 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Region Pills */
+.region-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.region-pill.luzon {
+  background: #e0edff;
+  color: #2563eb;
+}
+
+.region-pill.visayas {
+  background: #fff3cd;
+  color: #ca8a04;
+}
+
+.region-pill.mindanao {
+  background: #ffe4d5;
+  color: #ea580c;
+}
+
+/* Status Pills */
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pill.available {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.full {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-pill.closed {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+/* Action Buttons */
+.icon-btn {
+  border: none;
+  background: #f8fafc;
+  padding: 6px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: #e5e7eb;
+}
+
     .page-header {
         padding: 15px 24px;
         border-bottom: 3px solid #acacac;
@@ -122,82 +195,88 @@
   <!-- Table Card -->
   <div class="card border-0 shadow-sm rounded-4">
     
-    <!-- Card Header -->
-    <div class="px-4 py-3 border-bottom d-flex align-items-center bg-white rounded-top-4">
-
+    <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
     <input
         type="search"
-        class="form-control form-control-sm ms-auto rounded-pill"
-        style="max-width: 240px;"
-        placeholder="Search..."
+        class="form-control rounded-pill"
+        style="max-width: 260px;"
+        placeholder="Search by venue or date..."
     >
     </div>
 
 
+
     <!-- Table -->
-<div class="table-responsive">
-  <table class="table table-borderless align-middle mb-0">
-    <thead class="bg-light text-muted small text-uppercase">
-      <tr>
-        <th class="ps-4">Region</th>
-        <th>Venue</th>
-        <th>Exam Date</th>
-        <th class="text-center">Registered</th>
-        <th class="text-center">Attendees</th>
-      </tr>
-    </thead>
+<table class="table align-middle exam-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>REGION</th>
+      <th>VENUE</th>
+      <th>EXAM DATE</th>
+      <th>REGISTERED</th>
+      <th>ATTENDEES</th>
+    </tr>
+  </thead>
 
-    <tbody class="small">
-      <tr class="border-bottom">
-        <td class="ps-4 fw-semibold">Luzon</td>
-        <td>Manila Testing Center</td>
-        <td>Mar 12, 2026</td>
-        <td class="text-center fw-semibold">120</td>
-        <td class="text-center">
-          <span class="badge rounded-pill bg-success-subtle text-success px-3">
-            115
-          </span>
-        </td>
-      </tr>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>
+        <span class="region-pill luzon">Luzon</span>
+      </td>
+      <td>Manila Testing Center</td>
+      <td>
+        <div class="fw-semibold">March 15, 2026</div>
+        <div class="text-muted small">Monday</div>
+      </td>
+      <td>
+        <strong>120</strong> examinees
+      </td>
+      <td>
+        <strong>110</strong> attended
+      </td>
+    </tr>
 
-      <tr class="border-bottom">
-        <td class="ps-4 fw-semibold">Luzon</td>
-        <td>Pasig City Hall</td>
-        <td>Mar 13, 2026</td>
-        <td class="text-center fw-semibold">90</td>
-        <td class="text-center">
-          <span class="badge rounded-pill bg-warning-subtle text-warning px-3">
-            82
-          </span>
-        </td>
-      </tr>
+    <tr>
+      <td>2</td>
+      <td>
+        <span class="region-pill visayas">Visayas</span>
+      </td>
+      <td>Cebu Examination Hall</td>
+      <td>
+        <div class="fw-semibold">April 2, 2026</div>
+        <div class="text-muted small">Thursday</div>
+      </td>
+      <td>
+        <strong>120</strong> examinees
+      </td>
+      <td>
+        <strong>98</strong> attended
+      </td>
+    </tr>
 
-      <tr class="border-bottom">
-        <td class="ps-4 fw-semibold">Visayas</td>
-        <td>Cebu Convention Center</td>
-        <td>Mar 15, 2026</td>
-        <td class="text-center fw-semibold">150</td>
-        <td class="text-center">
-          <span class="badge rounded-pill bg-success-subtle text-success px-3">
-            147
-          </span>
-        </td>
-      </tr>
+    <tr>
+      <td>3</td>
+      <td>
+        <span class="region-pill mindanao">Mindanao</span>
+      </td>
+      <td>Davao Testing Center</td>
+      <td>
+        <div class="fw-semibold">May 10, 2026</div>
+        <div class="text-muted small">Sunday</div>
+      </td>
+      <td>
+        <strong>100</strong> examinees
+      </td>
+      <td>
+        <strong>87</strong> attended
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-      <tr>
-        <td class="ps-4 fw-semibold">Mindanao</td>
-        <td>Davao Training Hall</td>
-        <td>Mar 18, 2026</td>
-        <td class="text-center fw-semibold">100</td>
-        <td class="text-center">
-          <span class="badge rounded-pill bg-danger-subtle text-danger px-3">
-            88
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+
 
 
   </div>
