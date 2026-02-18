@@ -12,6 +12,66 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    .pagination {
+        gap: 6px;
+    }
+
+    .pagination .page-link {
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: #374151;
+        background-color: transparent;
+        transition: all 0.15s ease;
+        margin-top: 20px;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #111827;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #9ca3af;
+        pointer-events: none;
+        background-color: transparent;
+    }
+
+    .pagination .page-link i {
+        font-size: 1rem;
+    }
+
+    .pagination .page-link {
+        min-width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #tableContainer {
+    min-height: 300px; 
+    }
+    .table-fade {
+        animation: tableFade 0.2s ease-in-out;
+    }
+
+    @keyframes tableFade {
+        from {
+            opacity: 0.7;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
     #searchBtn {
         display: none !important;
     }
@@ -32,7 +92,7 @@
     .page-header {
         padding: 15px 24px;
         border-bottom: 3px solid #acacac;
-        max-width: 50%;
+        max-width: 60%;
     }
 
     .page-title {
@@ -98,12 +158,35 @@
         animation: slideFadeIn 0.35s ease-out;
     }
 
+    #paginationContainer {
+        border: none !important;
+    }
+
+    #paginationContainer::before,
+    #paginationContainer::after {
+        display: none !important;
+    }
+
+    .card-body nav {
+        border-top: none !important;
+    }
+
     .modern-alert i {
         font-size: 1.25rem;
         color: #10b981;
     }
 
-    /* Smooth entrance animation */
+    .pagination .page-link:focus,
+    .pagination .page-link:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .pagination .page-link:focus-visible {
+        box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.25); 
+        border-radius: 8px;
+    }
+
     @keyframes slideFadeIn {
         from {
             opacity: 0;
@@ -194,9 +277,11 @@
         <main class="p-4">
 
             <div class="page-header mb-4">
-                <h1 class="page-title">Examinee Masterlist</h1>
+                <h1 class="page-title">Examinee Masterlist Administration</h1>
                 <p class="page-description">
-                    Manage test permits and examinee data from uploaded CSV files.
+                    Centralized repository for managing official examinee records, including test permits,
+                    personal details, registration status, and upload history. This module supports CSV-based
+                    data imports and manual record creation for administrative control and verification.
                 </p>
             </div>
 
@@ -480,23 +565,52 @@
 
 
     <!-- Logout Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to log out?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../php/logout.php" class="btn btn-danger">Logout</a>
-                </div>
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1"
+     aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal Header -->
+            <div class="modal-header border-0 justify-content-center pb-0">
+                <h5 class="modal-title fw-semibold" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+                <button type="button" class="btn-close position-absolute end-0 me-3"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <i class="bx bx-log-out-circle fs-1 text-danger mb-3"></i>
+                <p class="mb-0 text-muted">
+                    Are you sure you want to log out of your account?
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal"
+                >
+                    Cancel
+                </button>
+
+                <!-- FUNCTION RETAINED -->
+                <a
+                    href="../php/logout.php"
+                    class="btn btn-danger rounded-pill px-4"
+                >
+                    Logout
+                </a>
+            </div>
+
         </div>
     </div>
+</div>
+
 
 </body>
 </html>
