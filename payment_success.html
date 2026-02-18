@@ -185,14 +185,44 @@
   </div>
 </div>
 
-  <script src="js/success.js"></script>
-
 <script>
+// Check if payment was actually processed
+fetch('php/check_payment_status.php', {
+  credentials: 'same-origin'
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Payment Status:', data);
+  
+  if (data.success && data.payment) {
+    if (data.payment.status === 'PAID') {
+      document.getElementById('invoiceText').innerHTML = 
+        '<span class="text-success">✓ Payment Confirmed</span><br>' +
+        '<small class="text-muted">Invoice: ' + data.payment.external_id + '</small>';
+    } else if (data.payment.status === 'PENDING') {
+      document.getElementById('invoiceText').innerHTML = 
+        '<span class="text-warning">⏳ Payment Processing...</span><br>' +
+        '<small class="text-muted">Please wait while we confirm your payment.</small><br>' +
+        '<small class="text-muted">Invoice: ' + data.payment.external_id + '</small>';
+      
+      // Auto-refresh to check for webhook update
+      setTimeout(() => location.reload(), 5000);
+    } else {
+      document.getElementById('invoiceText').innerHTML = 
+        '<span class="text-danger">Payment Status: ' + data.payment.status + '</span>';
+    }
+  } else {
+    document.getElementById('invoiceText').textContent = 'Invoice #: N/A';
+  }
+})
+.catch(error => {
+  console.error('Error checking payment:', error);
+  document.getElementById('invoiceText').textContent = 'Invoice #: N/A';
+});
+
 function login() {
-
-window.location.href = "login.html";
+  window.location.href = "login.html";
 }
-
 </script>
 
 </body>

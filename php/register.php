@@ -177,9 +177,10 @@ try {
 
     // Create examinees table entry with 'Pending' status
     // Status will be updated to 'Scheduled' after schedule selection
+    // examinee_status will be set to 'Registered' after payment
     $examineeStmt = $pdo->prepare("
-        INSERT INTO examinees (user_id, test_permit, status)
-        VALUES (?, ?, 'Pending')
+        INSERT INTO examinees (user_id, test_permit, status, examinee_status)
+        VALUES (?, ?, 'Pending', NULL)
     ");
     $examineeStmt->execute([$userId, $test_permit]);
 
@@ -197,8 +198,13 @@ try {
     // Commit transaction
     $pdo->commit();
 
-    // DO NOT create session - user should not be logged in automatically
-    // They can only login after payment confirmation (status='active')
+    // Create temporary session to allow user to complete registration flow
+    // This allows schedule selection and payment, but NOT full login access
+    // Full login is only allowed after payment confirmation (status='active')
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = $userId;
+    $_SESSION['registration_flow'] = true; // Flag to indicate incomplete registration
+    $_SESSION['test_permit'] = $test_permit;
     
     respond(true, 'Registration successful! Please proceed to schedule selection and payment.', 200);
 } catch (PDOException $e) {

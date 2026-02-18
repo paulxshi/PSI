@@ -154,69 +154,72 @@
       Examination Schedule
     </h6>
 
-<div class="row g-3 mb-3">
-  <div class="col-md-6">
-    <label class="form-label fw-semibold">Region</label>
-    <select id="region" class="form-select">
-      <option value="">Select Region</option>
-    </select>
-  </div>
+    <form id="scheduleForm" method="POST" action="php/save_examinee_schedule.php">
 
-  <div class="col-md-6">
-    <label class="form-label fw-semibold">Examination Venue</label>
-    <select id="venue" class="form-select">
-      <option value="">Select Venue</option>
-    </select>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Region</label>
+          <select id="region" class="form-select" required>
+            <option value="">Select Region</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Examination Venue</label>
+          <select id="venue" name="venue_id" class="form-select" required>
+            <option value="">Select Venue</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4 align-items-end">
+
+        <!-- Examination Date -->
+        <div class="col-md-8">
+          <label class="form-label fw-semibold">Examination Date</label>
+          <select id="schedule" name="schedule_id" class="form-select" required>
+            <option value="">Select Date</option>
+          </select>
+        </div>
+
+        <!-- Examination Fee (smaller width) -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Examination Fee</label>
+          <input
+            type="text"
+            id="examFee"
+            class="form-control fw-semibold text-success"
+            placeholder="—"
+            readonly
+          >
+        </div>
+
+      </div>
+
+
+
+      <div class="alert alert-light border small text-muted mb-4">
+        <i class="bi bi-info-circle me-1"></i>
+        Examination schedules, venues, and regions are uploaded and assigned
+        by PSI officials. Please wait for official announcements.
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
+          <i class="bi bi-arrow-left me-1"></i>
+          Go Back
+        </a>
+
+        <button type="submit" id="proceedBtn" class="btn btn-primary px-4 rounded-pill" disabled>
+          Proceed
+          <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+
+    </form>
+
   </div>
 </div>
-
-    <div class="row g-3 mb-4 align-items-end">
-
-      <!-- Examination Date -->
-      <div class="col-md-8">
-        <label class="form-label fw-semibold">Examination Date</label>
-        <select id="schedule" class="form-select">
-          <option value="">Select Date</option>
-        </select>
-      </div>
-
-      <!-- Examination Fee (smaller width) -->
-      <div class="col-md-4">
-        <label class="form-label fw-semibold">Examination Fee</label>
-        <input
-          type="text"
-          id="examFee"
-          class="form-control fw-semibold text-success"
-          placeholder="—"
-          readonly
-        >
-      </div>
-
-    </div>
-
-
-
-    <div class="alert alert-light border small text-muted mb-4">
-      <i class="bi bi-info-circle me-1"></i>
-      Examination schedules, venues, and regions are uploaded and assigned
-      by PSI officials. Please wait for official announcements.
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center">
-      <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
-        <i class="bi bi-arrow-left me-1"></i>
-        Go Back
-      </a>
-
-      <a href="payment.html" class="btn btn-primary px-4 rounded-pill">
-        Proceed
-        <i class="bi bi-arrow-right ms-1"></i>
-      </a>
-    </div>
-
-
-      </div>
-    </div>
 
 
         </div>
@@ -234,6 +237,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const venueSelect = document.getElementById("venue");
     const scheduleSelect = document.getElementById("schedule");
     const examFeeInput = document.getElementById("examFee");
+    const proceedBtn = document.getElementById("proceedBtn");
+    const scheduleForm = document.getElementById("scheduleForm");
+
+    // Function to validate form and enable/disable proceed button
+    function validateForm() {
+        const isValid = regionSelect.value && 
+                       venueSelect.value && 
+                       scheduleSelect.value;
+        proceedBtn.disabled = !isValid;
+    }
 
     // 🔹 Load Regions on Page Load
     fetch("php/get_schedules.php?type=regions")
@@ -262,6 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
         venueSelect.disabled = true;
         scheduleSelect.disabled = true;
         examFeeInput.value = "";
+        validateForm();
 
         if (region === "") return;
 
@@ -287,64 +301,107 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
-// 🔹 When Venue Changes → Load Schedules 
-venueSelect.addEventListener("change", function () {
+    // 🔹 When Venue Changes → Load Schedules 
+    venueSelect.addEventListener("change", function () {
 
-    const venueId = this.value;
+        const venueId = this.value;
 
-    scheduleSelect.innerHTML = '<option value="">Select Date</option>';
-    scheduleSelect.disabled = true;
-    examFeeInput.value = "";
+        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        scheduleSelect.disabled = true;
+        examFeeInput.value = "";
+        validateForm();
 
-    if (venueId === "") return;
+        if (venueId === "") return;
 
-    fetch("php/get_schedules.php?type=schedules&venue_id=" + venueId)
-        .then(response => response.json())
-        .then(data => {
+        fetch("php/get_schedules.php?type=schedules&venue_id=" + venueId)
+            .then(response => response.json())
+            .then(data => {
 
-            if (data.length === 0) {
-                scheduleSelect.innerHTML = '<option value="">No schedules available</option>';
-                return;
-            }
+                if (data.length === 0) {
+                    scheduleSelect.innerHTML = '<option value="">No schedules available</option>';
+                    return;
+                }
 
-            data.forEach(schedule => {
-                const option = document.createElement("option");
-                option.value = schedule.schedule_id;
+                data.forEach(schedule => {
+                    const option = document.createElement("option");
+                    option.value = schedule.schedule_id;
 
-                const date = new Date(schedule.schedule_datetime);
+                    const date = new Date(schedule.schedule_datetime);
 
-                const formattedDate = date.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    option.textContent = formattedDate;
+
+                    // 🔹 Store exam price as data attribute
+                    option.dataset.fee = schedule.exam_price;
+
+                    scheduleSelect.appendChild(option);
                 });
 
-                option.textContent = formattedDate;
+                scheduleSelect.disabled = false;
+            })
+            .catch(error => console.error("Error loading schedules:", error));
+    });
 
-                // 🔹 Store exam price as data attribute
-                option.dataset.fee = schedule.exam_price;
+    // 🔹 When Schedule Changes → Update Fee and Validate
+    scheduleSelect.addEventListener("change", function () {
 
-                scheduleSelect.appendChild(option);
-            });
+        const selectedOption = this.options[this.selectedIndex];
+        const fee = selectedOption.dataset.fee;
 
-            scheduleSelect.disabled = false;
-        })
-        .catch(error => console.error("Error loading schedules:", error));
-});
-
-        scheduleSelect.addEventListener("change", function () {
-
-            const selectedOption = this.options[this.selectedIndex];
-            const fee = selectedOption.dataset.fee;
-
-            if (!fee) {
-                examFeeInput.value = "";
-                return;
-            }
-
+        if (!fee) {
+            examFeeInput.value = "";
+        } else {
             examFeeInput.value = "₱" + Number(fee).toLocaleString();
-        });
+        }
+        
+        validateForm();
+    });
 
+    // 🔹 Handle Form Submission
+    scheduleForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        // Disable button and show loading
+        proceedBtn.disabled = true;
+        proceedBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+        
+        const formData = new FormData(this);
+        
+        fetch('php/save_examinee_schedule.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Schedule Save Response:', data);
+            
+            if (data.success) {
+                // Redirect to payment page
+                window.location.href = 'payment.html';
+            } else {
+                // Show error
+                alert(data.message || 'Failed to save schedule. Please try again.');
+                
+                // Reset button
+                proceedBtn.disabled = false;
+                proceedBtn.innerHTML = 'Proceed <i class="bi bi-arrow-right ms-1"></i>';
+            }
+        })
+        .catch(error => {
+            console.error('Error saving schedule:', error);
+            alert('Network error. Please try again.');
+            
+            // Reset button
+            proceedBtn.disabled = false;
+            proceedBtn.innerHTML = 'Proceed <i class="bi bi-arrow-right ms-1"></i>';
+        });
+    });
 
 });
 </script>

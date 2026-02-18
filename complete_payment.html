@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Pending Payment - PMMA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .main-card { max-width: 700px; width: 100%; }
+        .btn-complete { font-size: 1.2rem; padding: 1rem 2rem; }
+        .status-box { padding: 20px; border-radius: 10px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="main-card">
+    <div class="card shadow-lg">
+        <div class="card-header bg-warning text-dark text-center py-4">
+            <h3><i class="bi bi-hourglass-split"></i> Payment Stuck? Complete It Now!</h3>
+        </div>
+        
+        <div class="card-body p-4">
+            
+            <div class="alert alert-info">
+                <h5><i class="bi bi-info-circle"></i> What's Happening?</h5>
+                <p class="mb-0">Your payment was created but not completed. Click the button below to complete it instantly (for testing purposes).</p>
+            </div>
+
+            <div id="statusBox" class="status-box bg-light text-center">
+                <h5 id="statusText">Ready to complete your payment</h5>
+                <p id="statusDetail" class="text-muted mb-0">Click the button below</p>
+            </div>
+
+            <div class="text-center mb-4">
+                <button onclick="completePendingPayment()" class="btn btn-success btn-complete">
+                    <i class="bi bi-lightning-charge"></i> Complete Payment Now
+                </button>
+            </div>
+
+            <hr>
+
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6><i class="bi bi-question-circle"></i> What This Does:</h6>
+                    <ul class="mb-0">
+                        <li>Finds your most recent PENDING payment</li>
+                        <li>Triggers webhook to mark it as PAID</li>
+                        <li>Updates database (examinees → Scheduled, users → active)</li>
+                        <li>Redirects you to success page with invoice number</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function completePendingPayment() {
+    const statusBox = document.getElementById('statusBox');
+    const statusText = document.getElementById('statusText');
+    const statusDetail = document.getElementById('statusDetail');
+    const btn = document.querySelector('.btn-complete');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+    
+    statusBox.className = 'status-box bg-info text-white text-center';
+    statusText.textContent = 'Finding your pending payment...';
+    statusDetail.textContent = '';
+    
+    // First, get the pending payment details
+    fetch('php/get_pending_payment_for_webhook.php')
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success || !data.payment) {
+            throw new Error(data.message || 'No pending payment found');
+        }
+        
+        const payment = data.payment;
+        statusText.textContent = 'Payment found! Triggering webhook...';
+        statusDetail.textContent = 'Invoice: ' + payment.external_id;
+        
+        // Now trigger the webhook
+        const webhookPayload = {
+            id: payment.xendit_invoice_id,
+            external_id: payment.external_id,
+            status: 'PAID',
+            amount: parseFloat(payment.amount),
+            paid_at: new Date().toISOString(),
+            created: new Date().toISOString(),
+            updated: new Date().toISOString()
+        };
+        
+        return fetch('webhook.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(webhookPayload)
+        });
+    })
+    .then(response => response.json())
+    .then(webhookResult => {
+        if (webhookResult.success) {
+            statusBox.className = 'status-box bg-success text-white text-center';
+            statusText.innerHTML = '<i class="bi bi-check-circle-fill"></i> Payment Completed Successfully!';
+            statusDetail.textContent = 'Redirecting you to success page...';
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'payment_success.html';
+            }, 2000);
+        } else {
+            throw new Error(webhookResult.message || 'Webhook failed');
+        }
+    })
+    .catch(error => {
+        statusBox.className = 'status-box bg-danger text-white text-center';
+        statusText.innerHTML = '<i class="bi bi-x-circle-fill"></i> Error';
+        statusDetail.textContent = error.message;
+        
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-lightning-charge"></i> Try Again';
+        
+        console.error('Error:', error);
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Webhook Diagnostics - Xendit Integration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; padding: 20px; }
+        .diagnostic-card { margin-bottom: 20px; }
+        .status-badge { font-size: 1.1rem; padding: 0.5rem 1rem; }
+        .code-block { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; overflow-x: auto; }
+        .test-result { margin-top: 15px; padding: 10px; border-radius: 5px; }
+        .test-result.success { background: #d1e7dd; border: 1px solid #badbcc; }
+        .test-result.error { background: #f8d7da; border: 1px solid #f5c2c7; }
+        .test-result.warning { background: #fff3cd; border: 1px solid #ffecb5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-bug"></i> Xendit Webhook Diagnostics</h4>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">Diagnose and test your Xendit webhook integration with ngrok.</p>
+                </div>
+            </div>
+
+            <!-- Test 1: Check Ngrok Status -->
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-1-circle"></i> Ngrok Connection Test</h5>
+                </div>
+                <div class="card-body">
+                    <p>Testing if ngrok is properly tunneling to your local server...</p>
+                    <button class="btn btn-primary" onclick="testNgrok()">
+                        <i class="bi bi-arrow-repeat"></i> Test Ngrok Connection
+                    </button>
+                    <div id="ngrokResult"></div>
+                </div>
+            </div>
+
+            <!-- Test 2: Webhook Reachability -->
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-2-circle"></i> Webhook Endpoint Test</h5>
+                </div>
+                <div class="card-body">
+                    <p>Test if your webhook endpoint can receive and process Xendit callbacks.</p>
+                    <button class="btn btn-success" onclick="testWebhook()">
+                        <i class="bi bi-send"></i> Send Test Webhook
+                    </button>
+                    <div id="webhookResult"></div>
+                </div>
+            </div>
+
+            <!-- Test 3: Check Pending Payments -->
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-3-circle"></i> Pending Payments Status</h5>
+                </div>
+                <div class="card-body">
+                    <p>Check for payments that are waiting for webhook confirmation.</p>
+                    <button class="btn btn-info text-white" onclick="checkPendingPayments()">
+                        <i class="bi bi-clock-history"></i> Check Pending Payments
+                    </button>
+                    <div id="pendingResult"></div>
+                </div>
+            </div>
+
+            <!-- Test 4: Manual Webhook Trigger -->
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-4-circle"></i> Force Webhook Update</h5>
+                </div>
+                <div class="card-body">
+                    <p>Manually trigger webhook update for a specific invoice (for testing only).</p>
+                    <div class="mb-3">
+                        <label class="form-label">Xendit Invoice ID:</label>
+                        <input type="text" class="form-control" id="manualInvoiceId" placeholder="e.g., 6995625653b9bc3482141fb3">
+                    </div>
+                    <button class="btn btn-warning" onclick="forceWebhook()">
+                        <i class="bi bi-lightning"></i> Force Webhook Update
+                    </button>
+                    <div id="forceResult"></div>
+                </div>
+            </div>
+
+            <!-- Configuration Display -->
+            <div class="card shadow-sm diagnostic-card">
+                <div class="card-header">
+                    <h5><i class="bi bi-gear"></i> Current Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <td><strong>Ngrok Webhook URL:</strong></td>
+                            <td><code>https://zenobia-septentrional-explicitly.ngrok-free.dev/PSI/webhook.php</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Local Webhook URL:</strong></td>
+                            <td><code>http://localhost/PSI/webhook.php</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Xendit Mode:</strong></td>
+                            <td><span class="badge bg-warning">Development/Test Mode</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function testNgrok() {
+    const resultDiv = document.getElementById('ngrokResult');
+    resultDiv.innerHTML = '<div class="spinner-border spinner-border-sm mt-3" role="status"></div> Testing...';
+    
+    fetch('https://zenobia-septentrional-explicitly.ngrok-free.dev/PSI/webhook.php', {
+        method: 'GET'
+    })
+    .then(response => {
+        resultDiv.innerHTML = `
+            <div class="test-result success">
+                <i class="bi bi-check-circle"></i> <strong>Success!</strong> Ngrok is reachable.
+                <br><small>HTTP Status: ${response.status}</small>
+            </div>
+        `;
+    })
+    .catch(error => {
+        resultDiv.innerHTML = `
+            <div class="test-result error">
+                <i class="bi bi-x-circle"></i> <strong>Error!</strong> Cannot reach ngrok URL.
+                <br><small>${error.message}</small>
+                <br><br><strong>Possible Issues:</strong>
+                <ul>
+                    <li>Ngrok is not running</li>
+                    <li>Ngrok URL has changed (free tier resets on restart)</li>
+                    <li>Firewall blocking the connection</li>
+                </ul>
+            </div>
+        `;
+    });
+}
+
+function testWebhook() {
+    const resultDiv = document.getElementById('webhookResult');
+    resultDiv.innerHTML = '<div class="spinner-border spinner-border-sm mt-3" role="status"></div> Sending test webhook...';
+    
+    // Send a test webhook payload
+    const testPayload = {
+        id: 'test_' + Date.now(),
+        external_id: 'TEST_' + Date.now(),
+        status: 'PAID',
+        amount: 1000,
+        paid_at: new Date().toISOString()
+    };
+    
+    fetch('webhook.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CALLBACK-TOKEN': 'test_token'
+        },
+        body: JSON.stringify(testPayload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        resultDiv.innerHTML = `
+            <div class="test-result ${data.success ? 'success' : 'warning'}">
+                <i class="bi bi-${data.success ? 'check' : 'exclamation'}-circle"></i> <strong>Webhook Response:</strong>
+                <div class="code-block mt-2">${JSON.stringify(data, null, 2)}</div>
+                <small class="d-block mt-2">This means your webhook endpoint is working and can receive data.</small>
+            </div>
+        `;
+    })
+    .catch(error => {
+        resultDiv.innerHTML = `
+            <div class="test-result error">
+                <i class="bi bi-x-circle"></i> <strong>Error!</strong> Webhook test failed.
+                <br><small>${error.message}</small>
+            </div>
+        `;
+    });
+}
+
+function checkPendingPayments() {
+    const resultDiv = document.getElementById('pendingResult');
+    resultDiv.innerHTML = '<div class="spinner-border spinner-border-sm mt-3" role="status"></div> Checking database...';
+    
+    fetch('php/check_pending_payments.php')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.pending_payments && data.pending_payments.length > 0) {
+            let html = '<div class="test-result warning"><i class="bi bi-exclamation-triangle"></i> <strong>Found ' + data.pending_payments.length + ' pending payment(s):</strong><br><br>';
+            html += '<table class="table table-sm table-bordered mt-2">';
+            html += '<tr><th>Invoice ID</th><th>External ID</th><th>Amount</th><th>Created</th><th>Action</th></tr>';
+            data.pending_payments.forEach(payment => {
+                html += `<tr>
+                    <td><code>${payment.xendit_invoice_id}</code></td>
+                    <td>${payment.external_id}</td>
+                    <td>₱${payment.amount}</td>
+                    <td>${payment.created_at}</td>
+                    <td><button class="btn btn-sm btn-primary" onclick="forceWebhookForInvoice('${payment.xendit_invoice_id}')">Trigger Webhook</button></td>
+                </tr>`;
+            });
+            html += '</table></div>';
+            resultDiv.innerHTML = html;
+        } else {
+            resultDiv.innerHTML = `
+                <div class="test-result success">
+                    <i class="bi bi-check-circle"></i> <strong>No pending payments found.</strong>
+                    <br><small>All payments have been processed or no payments exist yet.</small>
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        resultDiv.innerHTML = `
+            <div class="test-result error">
+                <i class="bi bi-x-circle"></i> <strong>Error checking payments:</strong> ${error.message}
+            </div>
+        `;
+    });
+}
+
+function forceWebhook() {
+    const invoiceId = document.getElementById('manualInvoiceId').value.trim();
+    if (!invoiceId) {
+        alert('Please enter an Invoice ID');
+        return;
+    }
+    forceWebhookForInvoice(invoiceId);
+}
+
+function forceWebhookForInvoice(invoiceId) {
+    const resultDiv = document.getElementById('forceResult');
+    resultDiv.innerHTML = '<div class="spinner-border spinner-border-sm mt-3" role="status"></div> Triggering webhook...';
+    
+    const payload = {
+        id: invoiceId,
+        external_id: 'FORCE_TRIGGER_' + Date.now(),
+        status: 'PAID',
+        amount: 1000,
+        paid_at: new Date().toISOString(),
+        created: new Date().toISOString(),
+        updated: new Date().toISOString()
+    };
+    
+    fetch('webhook.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        resultDiv.innerHTML = `
+            <div class="test-result ${data.success ? 'success' : 'warning'}">
+                <i class="bi bi-${data.success ? 'check' : 'info'}-circle"></i> <strong>Result:</strong> ${data.message || JSON.stringify(data)}
+                <div class="code-block mt-2">${JSON.stringify(data, null, 2)}</div>
+            </div>
+        `;
+        if (data.success) {
+            setTimeout(() => checkPendingPayments(), 1000);
+        }
+    })
+    .catch(error => {
+        resultDiv.innerHTML = `
+            <div class="test-result error">
+                <i class="bi bi-x-circle"></i> <strong>Error:</strong> ${error.message}
+            </div>
+        `;
+    });
+}
+</script>
+
+</body>
+</html>
