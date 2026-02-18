@@ -476,50 +476,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
-    const regionSelect = document.getElementById("exam_region");
-    const venueInput = document.getElementById("exam_area");
-
-    fetch("php/get_venues.php")
-        .then(res => res.json())
-        .then(data => {
-
-            data.forEach(venue => {
-
-                const option = document.createElement("option");
-
-                // Display format
-                option.textContent = `${venue.region}, ${venue.venue_name}`;
-
-                // Store both values internally
-                option.value = `${venue.region}|${venue.venue_name}`;
-
-                regionSelect.appendChild(option);
-            });
-
-        });
-
-    // When user selects something
-    regionSelect.addEventListener("change", function () {
-
-        if (this.value.includes("|")) {
-
-            const [region, venue] = this.value.split("|");
-
-            // Set region dropdown to only region
-            this.value = region;
-
-            // Autofill venue
-            venueInput.value = venue;
-        }
-
-    });
-
-});
-
-</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
