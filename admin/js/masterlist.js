@@ -163,46 +163,41 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Populate pagination
-    function populatePagination(paginationData) {
-        pagination.innerHTML = '';
+ function populatePagination(paginationData) {
+    pagination.innerHTML = '';
 
-        const { current_page, total_pages } = paginationData;
+    const { current_page, total_pages } = paginationData;
 
-        // Previous button
-        if (current_page > 1) {
-            pagination.innerHTML += `
-                <li class="page-item">
-                    <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
-                        <i class="bx bx-left-arrow"></i>
-                    </a>
-                </li>
-            `;
-        }
+    // Previous
+    pagination.innerHTML += `
+        <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
+                <i class="bx bx-chevron-left"></i>
+            </a>
+        </li>
+    `;
 
-        // Page numbers
-        for (let i = 1; i <= total_pages; i++) {
-            if (i === current_page) {
-                pagination.innerHTML += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
-            } else {
-                pagination.innerHTML += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="goToPage(${i}); return false;">${i}</a>
-                    </li>
-                `;
-            }
-        }
-
-        // Next button
-        if (current_page < total_pages) {
-            pagination.innerHTML += `
-                <li class="page-item">
-                    <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
-                        <i class="bx bx-right-arrow"></i>
-                    </a>
-                </li>
-            `;
-        }
+    // Page numbers
+    for (let i = 1; i <= total_pages; i++) {
+        pagination.innerHTML += `
+            <li class="page-item ${i === current_page ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${i}); return false;">
+                    ${i}
+                </a>
+            </li>
+        `;
     }
+
+    // Next
+    pagination.innerHTML += `
+        <li class="page-item ${current_page === total_pages ? 'disabled' : ''}">
+            <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
+                <i class="bx bx-chevron-right"></i>
+            </a>
+        </li>
+    `;
+}
+
 
     // Go to page (global function)
     window.goToPage = function(page) {

@@ -12,6 +12,44 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    .pagination {
+        gap: 6px;
+    }
+
+    .pagination .page-link {
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: #374151;
+        background-color: transparent;
+        transition: all 0.15s ease;
+        margin-top: 20px;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #111827;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #9ca3af;
+        pointer-events: none;
+        background-color: transparent;
+    }
+
+    /* Arrow icons */
+    .pagination .page-link i {
+        font-size: 1rem;
+    }
+
+
     #searchBtn {
         display: none !important;
     }
