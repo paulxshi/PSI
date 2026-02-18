@@ -112,7 +112,7 @@ fetch("php/get_transaction.php?user_id=" + userId)
 
 
     // QR Value (what gets scanned)
-    const qrValue = "http://localhost/PSI/admin/QR_scanned.html?transaction_no=" + transactionNo;
+    const qrValue = transactionNo;
 
     document.getElementById("qrText").innerText = qrValue;
 
