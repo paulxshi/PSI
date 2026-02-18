@@ -331,23 +331,52 @@
     </div>
 
     <!-- Logout Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to log out?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../php/logout.php" class="btn btn-danger">Logout</a>
-                </div>
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1"
+     aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal Header -->
+            <div class="modal-header border-0 justify-content-center pb-0">
+                <h5 class="modal-title fw-semibold" id="logoutModalLabel">
+                    Confirm Logout
+                </h5>
+                <button type="button" class="btn-close position-absolute end-0 me-3"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <i class="bx bx-log-out-circle fs-1 text-danger mb-3"></i>
+                <p class="mb-0 text-muted">
+                    Are you sure you want to log out of your account?
+                </p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
+                <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                    data-bs-dismiss="modal"
+                >
+                    Cancel
+                </button>
+
+                <!-- FUNCTION RETAINED -->
+                <a
+                    href="../php/logout.php"
+                    class="btn btn-danger rounded-pill px-4"
+                >
+                    Logout
+                </a>
+            </div>
+
         </div>
     </div>
+</div>
+
 
 </body>
 </html>

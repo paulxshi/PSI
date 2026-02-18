@@ -106,6 +106,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 paginationContainer.style.display = 'none';
                 showLoading(false);
             });
+            
+            tableContainer.classList.remove('table-fade');
+            void tableContainer.offsetWidth; // reflow
+            tableContainer.classList.add('table-fade');
+
     }
 
     // Populate table rows
@@ -200,11 +205,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Go to page (global function)
-    window.goToPage = function(page) {
-        currentPage = page;
-        loadMasterlistData();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+        window.goToPage = function(page) {
+            currentPage = page;
+            loadMasterlistData();
+        };
+
 
     // Create examinee
     function createExaminee() {
