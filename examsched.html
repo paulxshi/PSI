@@ -170,14 +170,30 @@
   </div>
 </div>
 
-<div class="row g-3 mb-4">
-  <div class="col-md-6">
-    <label class="form-label fw-semibold">Examination Date</label>
-    <select id="schedule" class="form-select">
-      <option value="">Select Date</option>
-    </select>
-  </div>
-</div>
+    <div class="row g-3 mb-4 align-items-end">
+
+      <!-- Examination Date -->
+      <div class="col-md-8">
+        <label class="form-label fw-semibold">Examination Date</label>
+        <select id="schedule" class="form-select">
+          <option value="">Select Date</option>
+        </select>
+      </div>
+
+      <!-- Examination Fee (smaller width) -->
+      <div class="col-md-4">
+        <label class="form-label fw-semibold">Examination Fee</label>
+        <input
+          type="text"
+          id="examFee"
+          class="form-control fw-semibold text-success"
+          placeholder="—"
+          readonly
+        >
+      </div>
+
+    </div>
+
 
 
     <div class="alert alert-light border small text-muted mb-4">
@@ -186,21 +202,21 @@
       by PSI officials. Please wait for official announcements.
     </div>
 
-<div class="d-flex justify-content-between align-items-center">
-  <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
-    <i class="bi bi-arrow-left me-1"></i>
-    Go Back
-  </a>
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
+        <i class="bi bi-arrow-left me-1"></i>
+        Go Back
+      </a>
 
-  <a href="payment.html" class="btn btn-primary px-4 rounded-pill">
-    Proceed
-    <i class="bi bi-arrow-right ms-1"></i>
-  </a>
-</div>
+      <a href="payment.html" class="btn btn-primary px-4 rounded-pill">
+        Proceed
+        <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
 
 
-  </div>
-</div>
+      </div>
+    </div>
 
 
         </div>
@@ -217,6 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const regionSelect = document.getElementById("region");
     const venueSelect = document.getElementById("venue");
     const scheduleSelect = document.getElementById("schedule");
+    const examFeeInput = document.getElementById("examFee");
 
     // 🔹 Load Regions on Page Load
     fetch("php/get_schedules.php?type=regions")
@@ -244,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
         scheduleSelect.innerHTML = '<option value="">Select Date</option>';
         venueSelect.disabled = true;
         scheduleSelect.disabled = true;
+        examFeeInput.value = "";
 
         if (region === "") return;
 
@@ -276,6 +294,7 @@ venueSelect.addEventListener("change", function () {
 
     scheduleSelect.innerHTML = '<option value="">Select Date</option>';
     scheduleSelect.disabled = true;
+    examFeeInput.value = "";
 
     if (venueId === "") return;
 
@@ -300,9 +319,10 @@ venueSelect.addEventListener("change", function () {
                     day: 'numeric'
                 });
 
-              
-
                 option.textContent = formattedDate;
+
+                // 🔹 Store exam price as data attribute
+                option.dataset.fee = schedule.exam_price;
 
                 scheduleSelect.appendChild(option);
             });
@@ -311,6 +331,20 @@ venueSelect.addEventListener("change", function () {
         })
         .catch(error => console.error("Error loading schedules:", error));
 });
+
+        scheduleSelect.addEventListener("change", function () {
+
+            const selectedOption = this.options[this.selectedIndex];
+            const fee = selectedOption.dataset.fee;
+
+            if (!fee) {
+                examFeeInput.value = "";
+                return;
+            }
+
+            examFeeInput.value = "₱" + Number(fee).toLocaleString();
+        });
+
 
 });
 </script>

@@ -20,7 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Get POST data
 $testPermit = isset($_POST['test_permit']) ? trim($_POST['test_permit']) : '';
-$fullName = isset($_POST['full_name']) ? trim($_POST['full_name']) : '';
+$lastName = isset($_POST['last_name']) ? trim($_POST['last_name']) : '';
+$firstName = isset($_POST['first_name']) ? trim($_POST['first_name']) : '';
+$middleName = isset($_POST['middle_name']) ? trim($_POST['middle_name']) : '';
 $email = isset($_POST['email']) ? trim($_POST['email']) : '';
 
 // Validate fields are not empty
@@ -30,9 +32,15 @@ if (empty($testPermit)) {
     exit;
 }
 
-if (empty($fullName)) {
+if (empty($lastName)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Full name is required']);
+    echo json_encode(['success' => false, 'message' => 'Last name is required']);
+    exit;
+}
+
+if (empty($firstName)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'First name is required']);
     exit;
 }
 
@@ -72,13 +80,15 @@ try {
 
     // Insert new record
     $insertStmt = $pdo->prepare("
-        INSERT INTO examinee_masterlist (test_permit, full_name, email, used)
-        VALUES (:test_permit, :full_name, :email, 0)
+        INSERT INTO examinee_masterlist (test_permit, last_name, first_name, middle_name, email, used)
+        VALUES (:test_permit, :last_name, :first_name, :middle_name, :email, 0)
     ");
 
     $insertStmt->execute([
         ':test_permit' => $testPermit,
-        ':full_name' => $fullName,
+        ':last_name' => $lastName,
+        ':first_name' => $firstName,
+        ':middle_name' => $middleName,
         ':email' => $email
     ]);
 
@@ -90,7 +100,9 @@ try {
         'data' => [
             'id' => (int)$newId,
             'test_permit' => $testPermit,
-            'full_name' => $fullName,
+            'last_name' => $lastName,
+            'first_name' => $firstName,
+            'middle_name' => $middleName,
             'email' => $email,
             'used' => 0,
             'uploaded_at' => date('Y-m-d H:i:s')

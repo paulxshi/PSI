@@ -99,6 +99,18 @@
                         <i class="bx bx-group"></i>
                         <span class="text">Examinee Management</span>
                     </a>
+                </li> 
+                <li>
+                    <a href="examhistory.html">
+                        <i class="bx bx-history"></i>
+                        <span class="text">Exam History</span>
+                    </a>
+                </li> 
+                <li>
+                    <a href="scanner.html">
+                        <i class="bx bx-qr-scan"></i>
+                        <span class="text">QR Scan</span>
+                    </a>
                 </li>    
                             
             </ul>
@@ -223,21 +235,40 @@
                     </div>
                     </div>
 
-                    <!-- Number of Examinees -->
-                    <div class="mb-4">
-                        <label class="form-label fw-medium">Number of Examinees</label>
-                        <input
-                            type="number"
-                            class="form-control"
-                            name="exam_limit"
-                            min="1"
-                            placeholder="e.g. 150"
-                            required
-                        >
-                        <div class="form-text">
-                            Maximum number of examinees allowed for this schedule.
+                    <!-- Examinees & Price -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Number of Examinees</label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                name="exam_limit"
+                                min="1"
+                                placeholder="e.g. 150"
+                                required
+                            >
+                            <div class="form-text">
+                                Maximum number of examinees allowed.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Exam Price</label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                name="exam_price"
+                                min="0"
+                                step="0.01"
+                                placeholder="e.g. 500"
+                                required
+                            >
+                            <div class="form-text">
+                                Examination Fee
+                            </div>
                         </div>
                     </div>
+
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-end gap-2">
@@ -277,6 +308,11 @@
                 <div class="border rounded-3 p-3">
                     <small class="text-muted text-uppercase d-block mb-1">Number of Examinees</small>
                     <div class="fw-semibold text-danger" id="previewLimit">—</div>
+                </div>
+
+                <div class="border rounded-3 p-3 mt-3">
+                    <small class="text-muted text-uppercase d-block mb-1">Exam Price</small>
+                    <div class="fw-semibold text-success" id="previewPrice">—</div>
                 </div>
 
                 <div class="alert alert-light border mt-4 small mb-3">
@@ -493,11 +529,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const dayInput     = document.getElementById("exam_day");
     const yearInput    = document.getElementById("exam_year");
     const limitInput   = document.querySelector('input[name="exam_limit"]');
+    const priceInput   = document.querySelector('input[name="exam_price"]');
 
     const previewRegion = document.getElementById("previewRegion");
     const previewVenue  = document.getElementById("previewVenue");
     const previewDate   = document.getElementById("previewDate");
     const previewLimit  = document.getElementById("previewLimit");
+    const previewPrice  = document.getElementById("previewPrice");
     const publishBtn    = document.getElementById("publishBtn");
 
     function updatePreview() {
@@ -508,6 +546,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const day    = dayInput.value;
         const year   = yearInput.value;
         const limit  = limitInput.value;
+        const price  = priceInput.value;
 
         // Update preview text
         previewRegion.textContent = region || "—";
@@ -517,10 +556,12 @@ document.addEventListener("DOMContentLoaded", function () {
             month && day && year ? `${month} ${day}, ${year}` : "—";
 
         previewLimit.textContent = limit || "—";
+        previewPrice.textContent = price ? `₱${Number(price).toLocaleString()}` : "—";
 
         // Enable publish button only if all fields are filled
         const isComplete =
-            region && venue && month && day && year && limit;
+            region && venue && month && day && year && limit && price;
+
 
         publishBtn.disabled = !isComplete;
     }
@@ -532,7 +573,8 @@ document.addEventListener("DOMContentLoaded", function () {
         monthSelect,
         dayInput,
         yearInput,
-        limitInput
+        limitInput,
+        priceInput
     ].forEach(el => el.addEventListener("input", updatePreview));
 
 });
@@ -555,6 +597,7 @@ document.addEventListener("DOMContentLoaded", function () {
             previewVenue.textContent  = "—";
             previewDate.textContent   = "—";
             previewLimit.textContent  = "—";
+            previewPrice.textContent = "—";
 
             publishBtn.disabled = true;
         }, 0);

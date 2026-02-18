@@ -441,17 +441,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 examineeData = data.data;
                 testPermitVerified = true;
 
-                // Extract full name into first and last name
-                const fullName = examineeData.full_name.trim();
-                const nameParts = fullName.split(/\s+/);
-                
-                // Last name is first part, first name is rest
-                const lastName = nameParts[0];
-                const firstName = nameParts.slice(1).join(' ');
-
-                // Auto-fill fields
-                lastNameInput.value = lastName;
-                firstNameInput.value = firstName || '';
+                // Auto-fill fields with data from masterlist (no parsing needed)
+                lastNameInput.value = examineeData.last_name || '';
+                firstNameInput.value = examineeData.first_name || '';
+                document.getElementById('middleName').value = examineeData.middle_name || '';
                 emailInput.value = examineeData.email;
 
                 // ENABLE all personal info fields (NOT readonly - user can edit)
@@ -488,6 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear fields
                 lastNameInput.value = '';
                 firstNameInput.value = '';
+                document.getElementById('middleName').value = '';
                 emailInput.value = '';
 
                 // Hide OTP button

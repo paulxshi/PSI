@@ -24,6 +24,7 @@ $last_name = trim($_POST['last_name'] ?? '');
 $first_name = trim($_POST['first_name'] ?? '');
 $middle_name = trim($_POST['middle_name'] ?? '');
 $email = trim($_POST['email'] ?? '');
+$test_permit = trim($_POST['test_permit'] ?? '');
 $date_of_birth = trim($_POST['date_of_birth'] ?? '');
 $contact_number = trim($_POST['contact_number'] ?? '');
 $gender = trim($_POST['gender'] ?? '');
@@ -42,11 +43,17 @@ $payment_reference = trim($_POST['payment_reference'] ?? '');
 $payment_date = trim($_POST['payment_date'] ?? '');
 
 error_log("Email to verify: $email");
+error_log("Test Permit: $test_permit");
 
 // Email will be verified client-side via OTP
 // No database OTP verification needed for client-side only approach
 
 $errors = [];
+
+// Test permit validation
+if (empty($test_permit)) {
+    $errors[] = 'Test permit is required.';
+}
 
 // Required field validation
 if ($last_name === '' || $first_name === '' || $email === '' || $date_of_birth === '' || $contact_number === '' || $password === '' || $confirm_password === '') {
@@ -94,6 +101,42 @@ if ($errors) {
     respond(false, implode('<br>', $errors), 422);
 }
 
+// Verify test permit exists in examinee_masterlist
+try {
+    $permitStmt = $pdo->prepare("
+        SELECT id, test_permit, last_name, first_name, middle_name, email, used
+        FROM examinee_masterlist
+        WHERE test_permit = :test_permit
+        LIMIT 1
+    ");
+    $permitStmt->execute([':test_permit' => $test_permit]);
+    $permitRecord = $permitStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$permitRecord) {
+        respond(false, 'Test permit not found in examinee masterlist.', 404);
+    }
+    
+    // Check if permit has already been used
+    if ($permitRecord['used'] == 1) {
+        respond(false, 'This test permit has already been registered.', 409);
+    }
+    
+    // Verify email matches the masterlist record (security check)
+    if (strtolower($permitRecord['email']) !== strtolower($email)) {
+        respond(false, 'Email does not match the test permit record.', 422);
+    }
+    
+    // Verify name matches the masterlist record for consistency (allow flexibility)
+    $masterlistFullName = trim($permitRecord['first_name'] . ' ' . $permitRecord['last_name']);
+    $submittedFullName = trim($first_name . ' ' . $last_name);
+    
+    error_log("Masterlist Name: $masterlistFullName, Submitted Name: $submittedFullName");
+    
+} catch (PDOException $e) {
+    error_log('Test permit verification error: ' . $e->getMessage());
+    respond(false, 'Error verifying test permit.', 500);
+}
+
 
 // Check if user already exists (same email)
 $checkSql = "SELECT user_id FROM users WHERE email = ? LIMIT 1";
@@ -108,11 +151,15 @@ if ($checkStmt->fetch()) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
-    // Insert user data
-    $sql = 'INSERT INTO users (last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, role, region, exam_venue, exam_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)';
+    // Begin transaction for consistency
+    $pdo->beginTransaction();
+    
+    // Insert user data with test_permit
+    $sql = 'INSERT INTO users (test_permit, last_name, first_name, middle_name, email, date_of_birth, age, contact_number, password, gender, school, email_verified, role, region, exam_venue, exam_date)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
+        $test_permit,
         $last_name,
         $first_name,
         $middle_name !== '' ? $middle_name : '',
@@ -132,8 +179,22 @@ try {
     // Get the newly created user ID
     $userId = $pdo->lastInsertId();
 
+    // Mark test permit as used in examinee_masterlist
+    $markUsedStmt = $pdo->prepare("
+        UPDATE examinee_masterlist
+        SET used = 1, used_by = :user_id
+        WHERE test_permit = :test_permit
+    ");
+    $markUsedStmt->execute([
+        ':user_id' => $userId,
+        ':test_permit' => $test_permit
+    ]);
+
     // Payment insertion is optional - can be skipped or handled separately
     // For now, we just register the user and their exam info
+
+    // Commit transaction
+    $pdo->commit();
 
     // Create session
     session_regenerate_id(true);
@@ -144,6 +205,13 @@ try {
 
     respond(true, 'Registration successful!', 200);
 } catch (PDOException $e) {
+    // Rollback transaction on error
+    try {
+        $pdo->rollBack();
+    } catch (Exception $rollbackError) {
+        error_log('Rollback error: ' . $rollbackError->getMessage());
+    }
+    
     error_log('Registration error: ' . $e->getMessage());
     if (isset($e->errorInfo[1]) && $e->errorInfo[1] == 1062) {
         $msg = 'User already registered.';
