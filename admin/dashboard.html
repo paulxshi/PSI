@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="../css/dashstyle.css">
   <link rel="stylesheet" href="../css/style.css">
+
 	<title>Dashboard</title>
 </head>
 
@@ -31,6 +32,54 @@
     outline: none;
     box-shadow: none;
 }
+/* Status box base */
+.status {
+    font-size: 22px;
+    font-weight: 600;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* 🟢 VALID */
+.status.valid {
+    color: #1e7e34;
+    background-color: #dbffe3;
+}
+
+/* 🔴 INVALID */
+.status.invalid {
+    color: #c82333;
+    background-color: #f8d7da;
+}
+
+/* 🟡 WARNING */
+.status.warning {
+    color: #a07800;
+    background-color: #fff3cd;
+}
+
+
+@media (min-width: 992px) {
+  .region-divider {
+    border-right: 1px solid #e9ecef;
+  }
+}
+
+.region-table-row {
+  border-radius: 0.5rem;
+  transition: 
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.region-table-row:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+  cursor: pointer;
+}
+
 </style>
 <body>
 
@@ -122,11 +171,11 @@
       <!-- Message -->
       <div>
         <h6 class="mb-1 fw-bold text-uppercase" style="letter-spacing:0.08em;">
-          Psy Systems and Innovations, OPC.
+          Psy Systems and Innovations, OPC
         </h6>
         <p class="mb-0 text-muted small">
-          Examination Registration Dashboard — monitor venue capacity, registration limits,
-          and regional availability in real time.
+          Examination Registration Management Dashboard providing real-time visibility of
+          examinee counts, venue capacity limits, and available examination slots across all regions.
         </p>
       </div>
 
@@ -138,12 +187,17 @@
   <div class="container-fluid mt-4">
    <div class="row g-3 justify-content-start region-row-wrapper">
 
-<div class="container-fluid mt-4">
-  <div class="row g-3 justify-content-start region-row-wrapper" id="regionsContainer">
-    <!-- JS builds everything -->
+  <div class="container-fluid mt-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <div class="row g-4" id="regionsContainer">
+        <!-- JS injects regions as columns -->
+      </div>
+    </div>
   </div>
-</div>
 
+
+
+ 
 
   </div>
 </div>
@@ -264,7 +318,100 @@
         </div>
 
       </div>
+    </div> 
+
+
+
+       <br><br><br>
+<div class="card p-3 mb-3">
+  <h6>Manual QR Test (For Development)</h6>
+
+  <div class="input-group">
+    <input type="text" id="manualQR" class="form-control"
+           placeholder="Enter QR Value (ex: TXN1771223060)">
+    <button class="btn btn-primary" onclick="simulateScan()">Scan</button>
+  </div>
+</div>
+
+
+
+<!-- QR RESULT MODAL -->
+<div class="modal fade" id="qrResultModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">Examinee Verification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <!-- ✅ VERIFICATION STATUS -->
+        <div id="verificationStatus" class="status valid text-center mb-4">
+          ✔ VALID – ALLOWED TO ENTER
+        </div>
+
+
+        <!-- ✅ EXAMINEE INFORMATION -->
+        <div class="section mb-4">
+          <h6 class="border-bottom pb-2">Examinee Information</h6>
+          <div class="row">
+            <div class="col-4 fw-bold">Name:</div>
+            <div class="col-8" id="name">Juan Dela Cruz</div>
+
+            <div class="col-4 fw-bold">Test Permit No:</div>
+            <div class="col-8" id="test_permit">2026-00125</div>
+          </div>
+        </div>
+
+
+        <!-- ✅ EXAM DETAILS -->
+        <div class="section mb-4">
+          <h6 class="border-bottom pb-2">Examination Details</h6>
+          <div class="row">
+            <div class="col-4 fw-bold">Date:</div>
+            <div class="col-8" id="examination_date">March 15, 2026</div>
+
+            <div class="col-4 fw-bold">Venue:</div>
+            <div class="col-8" id="examination_venue">Pasig City, Luzon</div>
+          </div>
+        </div>
+
+
+        <!-- ✅ PAYMENT CONFIRMATION -->
+        <div class="section mb-2">
+          <h6 class="border-bottom pb-2">Payment Confirmation</h6>
+          <div class="row">
+            <div class="col-4 fw-bold">Transaction No:</div>
+            <div class="col-8" id="transaction_no">1771223060</div>
+
+            <div class="col-4 fw-bold">Payment Status:</div>
+            <div class="col-8" id="status">PAID ✔</div>
+
+            <div class="col-4 fw-bold">Payment Date:</div>
+            <div class="col-8" id="payment_date">February 18, 2026</div>
+
+            <div class="col-4 fw-bold">Amount:</div>
+            <div class="col-8" id="payment_amount">₱1,200.00</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER ACTIONS -->
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="rejectBtn">REJECT</button>
+        <button class="btn btn-success" id="completeBtn">MARK AS COMPLETED</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">SCAN NEXT</button>
+      </div>
+
     </div>
+  </div>
+</div>
+
 
 </main>
 
@@ -324,7 +471,32 @@
         </div>
     </div>
 </div>
+
+<script src="js/scanner.js"></script>
 <script>
+
+
+
+function simulateScan() {
+
+    const fakeQR = document.getElementById("manualQR").value.trim();
+
+    if (!fakeQR) {
+        alert("Enter QR value first.");
+        return;
+    }
+
+    console.log("Simulated Scan:", fakeQR);
+
+    // This calls the SAME function used by real scanner
+    onScanSuccess(fakeQR);
+}
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch("php/dashboard.php")
         .then(res => res.json())
@@ -350,72 +522,70 @@ document.addEventListener("click", function(e) {
 
 
 function renderRegions(data) {
+  const container = document.getElementById("regionsContainer");
+  container.innerHTML = "";
 
-    const container = document.getElementById("regionsContainer");
-    container.innerHTML = "";
+  Object.keys(data).forEach(region => {
 
-    Object.keys(data).forEach(region => {
+    let regionHTML = `
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 region-divider">
+        <div class="h-100">
 
-        let regionHTML = `
-        <div class="col-xl-4 col-lg-4 col-md-6">
-            <div class="region-card">
-                <div class="region-header">
-                    <span class="region-title">${region}</span>
-                </div>
+          <h6 class="fw-bold text-uppercase text-muted mb-3"
+              style="letter-spacing:0.12em;">
+            ${region}
+          </h6>
 
-                <div class="region-table">
-                    <div class="region-table-header"
-                         style="grid-template-columns: 2fr 1fr 1fr 1fr;">
-                        <span>Venue</span>
-                        <span>Registered</span>
-                        <span>Limit</span>
-                        <span>Available</span>
-                    </div>
-        `;
+          <div class="region-table">
+            <div class="region-table-header"
+                 style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+              <span>Venue</span>
+              <span>Registered</span>
+              <span>Limit</span>
+              <span>Available</span>
+            </div>
+    `;
 
-        Object.keys(data[region]).forEach(venue => {
+    Object.keys(data[region]).forEach(venue => {
+      const venueId = `${region}-${venue}`.replace(/\s+/g, '-');
 
-            const venueId = venue.replace(/\s+/g, '-');
+      regionHTML += `
+        <div class="venue-header d-flex justify-content-between align-items-center mb-1"
+             data-target="${venueId}">
+          <strong>${venue}</strong>
+          <button class="venue-toggle">
+            <i class="bx bx-chevron-down"></i>
+          </button>
+        </div>
 
-            regionHTML += `
-                <div class="venue-header d-flex justify-content-between align-items-center mb-1"
-                     data-target="${venueId}">
-                    <strong>${venue}</strong>
-                    <button class="venue-toggle">
-                        <i class="bx bx-chevron-down"></i>
-                    </button>
-                </div>
+        <div class="venue-schedule" id="${venueId}">
+      `;
 
-                <div class="venue-schedule" id="${venueId}">
-            `;
-
-            data[region][venue].forEach(sched => {
-
-                const available = sched.limit - sched.registered;
-
-              regionHTML += `
-                <div class="region-table-row region-row"
-                    style="grid-template-columns: 2fr 1fr 1fr 1fr;">
-                  <span>${formatDate(sched.date)}</span>
-                  <span class="fw-semibold">${sched.registered}</span>
-                  <span class="fw-semibold text-danger">${sched.limit}</span>
-                  <span class="fw-semibold text-success">${available}</span>
-                </div>
-              `;
-
-            });
-
-            regionHTML += `</div>`;
-        });
+      data[region][venue].forEach(sched => {
+        const available = sched.limit - sched.registered;
 
         regionHTML += `
-                </div>
-            </div>
-        </div>
+          <div class="region-table-row"
+               style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+            <span>${formatDate(sched.date)}</span>
+            <span class="fw-semibold">${sched.registered}</span>
+            <span class="fw-semibold text-danger">${sched.limit}</span>
+            <span class="fw-semibold text-success">${available}</span>
+          </div>
         `;
+      });
 
-        container.innerHTML += regionHTML;
+      regionHTML += `</div>`;
     });
+
+    regionHTML += `
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.insertAdjacentHTML("beforeend", regionHTML);
+  });
 }
 
 
@@ -437,12 +607,6 @@ document.getElementById("downloadPdfBtn").addEventListener("click", () => {
   /* ============================
         HEADER
   ============================ */
-
-/* ============================
-   ULTRA-COMPRESSED HEADER
-   + EXTRA BOTTOM SPACE
-   + EXAM DATE
-============================ */
 
 const headerY = 18;
 const logoSize = 56;
