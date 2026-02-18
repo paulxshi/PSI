@@ -25,6 +25,7 @@
     .accordion-button::after {
     filter: invert(1);
     }
+
     .accordion-button::after {
     filter: invert(0) !important;
     opacity: 0.85;
@@ -102,6 +103,20 @@
         0 0 16px rgba(255, 179, 71, 0.5);
     }
 
+    .navbar .login-btn {
+      transform: translateY(-3px) scale(1.04);
+      background: linear-gradient(135deg, #ffb347, #ef8809);
+      box-shadow: none;
+    }
+    .login-btn:hover {
+    transform: translateY(-3px) scale(1.04);
+    filter: brightness(1.1);
+    animation-play-state: paused;
+    box-shadow:
+      0 6px 14px rgba(239, 136, 9, 0.25),
+      0 0 12px rgba(255, 179, 71, 0.35);
+    text-decoration: none;
+    }
     .proceed-btn i {
     transition: transform 0.3s ease;
     }
@@ -110,22 +125,22 @@
     transform: translateX(6px);
     }
 
-.pmma-title {
-  font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  line-height: 1.08;
-  letter-spacing: -0.6px;
-}
+  .pmma-title {
+    font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.08;
+    letter-spacing: -0.6px;
+  }
 
-.pmma-main {
-  display: inline-block;
+  .pmma-main {
+    display: inline-block;
 
-  font-size: clamp(2.5rem, 5vw, 3.6rem);
-  font-weight: 800;
-  color: #ffb703;
-  text-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.65),
-    0 0 18px rgba(0, 0, 0, 0.45);
-}
+    font-size: clamp(2.5rem, 5vw, 3.6rem);
+    font-weight: 800;
+    color: #ffb703;
+    text-shadow:
+      0 3px 8px rgba(0, 0, 0, 0.65),
+      0 0 18px rgba(0, 0, 0, 0.45);
+  }
 
 .pmma-sub {
   display: inline-block;
@@ -299,10 +314,18 @@
                 </a>
 
                 <a href="javascript:void(0)"
-                id="contactBtn"
-                class="text-decoration-none fs-6 text-primary fw-semibold">
-                Contact Us
+                    id="contactBtn"
+                    class="text-decoration-none fs-6 text-primary fw-semibold">
+                    Contact Us
                 </a>
+                
+                <a href="login.html"
+                  class="btn btn-sm rounded-pill fw-semibold
+                          d-inline-flex align-items-center gap-1
+                          login-btn text-dark px-3">
+                  Login
+                </a>
+
             </div>
         <!-- INFO PANELS -->
         <div class="container position-fixed top-0 start-50 translate-middle-x pt-5 mt-5"
@@ -449,7 +472,7 @@
 
             <ul class="list-unstyled text-white opacity-75">
                 <li><i class="bi bi-envelope me-2"></i> psi.clientcare@gmail.com</li>
-                <li><i class="bi bi-messenger me-2"></i> psi.clientcare@gmail.com</li>
+                <li><i class="bi bi-messenger me-2"></i>Psy Systems and Innovations, OPC</li>
                 <li><i class="bi bi-envelope me-2"></i> support@pmma.edu.ph</li>
                 <li><i class="bi bi-telephone me-2"></i> (02) 8-123-4567</li>
                 <li><i class="bi bi-geo-alt me-2"></i> PMMA Campus, San Narciso, Zambales</li>
@@ -490,11 +513,11 @@
           </p>
 
           <!-- CTA -->
-            <a href="login.html"
+            <a href="registration.html"
             class="btn btn-lg rounded-pill px-4 fw-bold text-dark
                     d-inline-flex align-items-center gap-2
                     proceed-btn">
-            Proceed
+            Register
             <i class="bx bx-right-arrow-alt fs-4"></i>
             </a>
 
