@@ -12,7 +12,16 @@ if (isset($_GET['type'])) {
 
     if ($_GET['type'] == "venues" && isset($_GET['region'])) {
 
-        $stmt = $pdo->prepare("SELECT venue_id, venue_name FROM venue WHERE region = ?");
+        $stmt = $pdo->prepare("
+            SELECT DISTINCT v.venue_id, v.venue_name 
+            FROM venue v
+            INNER JOIN schedules s ON v.venue_id = s.venue_id
+            WHERE v.region = ? 
+                AND s.status = 'Incoming'
+                AND s.scheduled_date >= CURDATE()
+                AND COALESCE(s.num_registered, 0) < s.num_of_examinees
+            ORDER BY v.venue_name ASC
+        ");
         $stmt->execute([$_GET['region']]);
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     }

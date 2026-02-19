@@ -11,6 +11,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 }
 
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/log_activity.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -112,6 +113,29 @@ try {
         ]);
 
         $pdo->commit();
+
+        // Log activity
+        if (isset($_SESSION['user_id'])) {
+            $metadata = [
+                'user_id' => $userId,
+                'test_permit' => $examinee['test_permit'],
+                'old_schedule_id' => $oldScheduleId,
+                'new_schedule_id' => $newScheduleId,
+                'new_date' => $newSchedule['scheduled_date'],
+                'venue' => $newSchedule['venue_name'],
+                'region' => $newSchedule['region']
+            ];
+            logActivity(
+                'schedule_changed',
+                "Admin rescheduled examinee (Permit: {$examinee['test_permit']}) to {$newSchedule['venue_name']} on {$newSchedule['scheduled_date']}",
+                $_SESSION['user_id'],
+                $_SESSION['username'] ?? 'Admin',
+                $_SESSION['email'] ?? '',
+                'admin',
+                'info',
+                $metadata
+            );
+        }
 
         echo json_encode([
             'success' => true,

@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 
 require_once '../config/db.php';
+require_once 'log_activity.php';
 
 error_log("=== VERIFY OTP DEBUG ===");
 error_log("Input: " . file_get_contents('php://input'));
@@ -84,6 +85,9 @@ try {
         $newAttempts = $verification['otp_attempts'] + 1;
         $stmt = $pdo->prepare('UPDATE otp_verifications SET otp_attempts = ? WHERE verification_id = ?');
         $stmt->execute([$newAttempts, $verification_id]);
+        
+        // Log failed OTP attempt
+        logActivity('otp_failed', "OTP verification failed for purpose: $purpose. Attempts: $newAttempts/3", null, null, $email, 'examinee', 'warning');
 
         $attemptsLeft = 3 - $newAttempts;
         echo json_encode([
@@ -99,6 +103,9 @@ try {
     $stmt->execute([$verification_id]);
 
     error_log("OTP verified successfully for verification_id: $verification_id");
+    
+    // Log successful OTP verification
+    logActivity('otp_verified', "OTP verified successfully for purpose: $purpose", null, null, $email, 'examinee', 'info');
 
     echo json_encode([
         'success' => true,

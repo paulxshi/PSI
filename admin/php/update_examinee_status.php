@@ -1,5 +1,7 @@
 <?php
 require_once "../../config/db.php";
+require_once "../../php/log_activity.php";
+session_start();
 
 
 header('Content-Type: application/json');
@@ -32,6 +34,25 @@ $stmt = $pdo->prepare("
 ");
 
 $stmt->execute([$status, $examineeId]);
+
+// Log activity
+if (isset($_SESSION['user_id'])) {
+    $metadata = [
+        'examinee_id' => $examineeId,
+        'new_status' => $status,
+        'action' => $action
+    ];
+    logActivity(
+        'admin_examinee_updated',
+        "Admin updated examinee #{$examineeId} status to {$status}",
+        $_SESSION['user_id'],
+        $_SESSION['username'] ?? 'Admin',
+        $_SESSION['email'] ?? '',
+        'admin',
+        'info',
+        $metadata
+    );
+}
 
 echo json_encode([
     "success" => true,

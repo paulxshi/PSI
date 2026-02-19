@@ -226,6 +226,24 @@ try {
     // Commit transaction
     $pdo->commit();
 
+    // Log registration completion
+    require_once __DIR__ . '/log_activity.php';
+    $metadata = [
+        'user_id' => $userId,
+        'test_permit' => $test_permit,
+        'email' => $email
+    ];
+    logActivity(
+        'registration_completed',
+        "New user registered: {$email} (Permit: {$test_permit})",
+        $userId,
+        $email,
+        $email,
+        'examinee',
+        'info',
+        $metadata
+    );
+
     // Create temporary session to allow user to complete registration flow
     // This allows schedule selection and payment, but NOT full login access
     // Full login is only allowed after payment confirmation (status='active')
