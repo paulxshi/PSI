@@ -3,6 +3,33 @@ session_start();
 header("Content-Type: application/json");
 
 require_once "../config/db.php";
+require_once "RateLimiter.php";
+
+// Initialize rate limiter
+$rateLimiter = new RateLimiter($pdo);
+$clientIP = $_SERVER['REMOTE_ADDR'];
+
+// Check rate limit - max 8 login attempts, blocked for 15 minutes after exceeding
+if (!$rateLimiter->checkLimit('login', $clientIP, 8, 900)) {
+    $secondsRemaining = $rateLimiter->getTimeUntilUnblocked('login', $clientIP);
+    
+    // Convert to user-friendly time format
+    if ($secondsRemaining < 60) {
+        $timeDisplay = ceil($secondsRemaining) . " second" . (ceil($secondsRemaining) != 1 ? "s" : "");
+    } else {
+        $minutes = ceil($secondsRemaining / 60);
+        $timeDisplay = $minutes . " minute" . ($minutes != 1 ? "s" : "");
+    }
+    
+    $message = "Too many login attempts. Please try again in " . $timeDisplay . ".";
+    
+    echo json_encode([
+        "success" => false, 
+        "message" => $message,
+        "retry_after" => $secondsRemaining
+    ]);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["success" => false, "message" => "Invalid request"]);
