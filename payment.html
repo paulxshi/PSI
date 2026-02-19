@@ -192,7 +192,7 @@
                       <div class="col-6 text-muted">Venue:</div>
                       <div class="col-6 text-end fw-semibold" id="venue">—</div>
                       
-                      <div class="col-6 text-muted">Date & Time:</div>
+                      <div class="col-6 text-muted">Exam Date:</div>
                       <div class="col-6 text-end fw-semibold" id="examDate">—</div>
                       
                       <div class="col-12"><hr class="my-2"></div>
@@ -235,10 +235,6 @@
                   </a>
                   
                   <div>
-                    <a href="mock_payment.html" class="btn btn-outline-info px-3 rounded-pill me-2" style="font-size: 0.9rem;">
-                      <i class="bi bi-wrench me-1"></i>
-                      Test Mode
-                    </a>
                     
                     <button type="button" id="payNowBtn" class="btn btn-primary px-4 rounded-pill">
                       Proceed to Payment <i class="bi bi-check ms-1"></i>
@@ -300,8 +296,8 @@ function displayExamDetails(data) {
   document.getElementById('venue').textContent = data.venue_name || '—';
   
   // Format date
-  if (data.schedule_datetime) {
-    const date = new Date(data.schedule_datetime);
+  if (data.scheduled_date) {
+    const date = new Date(data.scheduled_date + 'T00:00:00');
     const formatted = date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
