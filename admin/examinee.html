@@ -12,7 +12,60 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
-/* ===== Premium Modal Header ===== */
+/* Slightly larger and more balanced profile modal */
+#profileModal .modal-dialog {
+    max-width: 600px;
+}
+
+#profileModal .modal-content {
+    max-height: 90vh;
+}
+
+#profileModal .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Enlarge profile content */
+#profileModal .compact-profile {
+    font-size: 1rem; 
+}
+
+/* Header */
+#profileModal .avatar {
+    width: 44px;   
+    height: 44px;
+    font-size: 1.1rem;
+}
+
+#profileModal .name {
+    font-size: 1.3rem;
+}
+
+#profileModal .meta {
+    font-size: 0.8rem;
+}
+
+/* Status pill */
+#profileModal .status-pill {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+}
+
+/* Info grid text */
+#profileModal .info-grid label {
+    font-size: 12px; 
+}
+
+#profileModal .info-grid span {
+    font-size: 0.95rem;
+}
+
+/* Card spacing */
+#profileModal .info-card {
+    padding: 1.5rem; /* was 0.75rem */
+}
+
 
 .premium-modal-header {
     padding: 1rem 1.5rem;
@@ -509,7 +562,7 @@
 
         <!-- View Profile Modal -->
         <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg-6 modal-dialog-centered">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header premium-modal-header">
                     <div class="title-wrap">
@@ -528,9 +581,6 @@
                         <div id="profileContent" class="profile-form-modal">
                             <!-- Populated by JS -->
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
