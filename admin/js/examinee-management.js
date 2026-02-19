@@ -1,7 +1,7 @@
 // Examinee Management - Registered Examinees
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
+    const regionFilter = document.getElementById('regionFilter');
     const tableContainer = document.getElementById('tableContainer');
     const tableBody = document.getElementById('tableBody');
     const paginationContainer = document.getElementById('paginationContainer');
@@ -13,28 +13,79 @@ document.addEventListener('DOMContentLoaded', function() {
     const rescheduleForm = document.getElementById('rescheduleForm');
     const rescheduleScheduleSelect = document.getElementById('rescheduleSchedule');
     const schedulePreview = document.getElementById('schedulePreview');
+    const activeFilterBadge = document.getElementById('activeFilterBadge');
+    const filterText = document.getElementById('filterText');
+    const clearFilterBtn = document.getElementById('clearFilterBtn');
 
     let currentPage = 1;
     let currentSearch = '';
+    let currentStatus = ''; // Filter by examinee status
+    let currentRegion = ''; // Filter by region
     let currentData = {}; // Store for quick access
     let availableSchedules = []; // Store schedules for selection
+    let searchTimeout = null;
 
     // Initialize
     loadSchedules();
     loadExamineeData();
 
-    // Search button
-    searchBtn.addEventListener('click', function() {
-        currentSearch = searchInput.value.trim();
+    // Status filter - Click on stat cards
+    document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
+    document.getElementById('totalCompleted').parentElement.parentElement.parentElement.style.cursor = 'pointer';
+
+    document.getElementById('totalRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
+        currentStatus = currentStatus === 'Registered' ? '' : 'Registered';
         currentPage = 1;
+        updateCardHighlights();
+        updateFilterBadge();
         loadExamineeData();
+    });
+
+    document.getElementById('totalCompleted').parentElement.parentElement.parentElement.addEventListener('click', function() {
+        currentStatus = currentStatus === 'Completed' ? '' : 'Completed';
+        currentPage = 1;
+        updateCardHighlights();
+        updateFilterBadge();
+        loadExamineeData();
+    });
+
+    // Clear filter button
+    clearFilterBtn.addEventListener('click', function() {
+        currentStatus = '';
+        currentRegion = '';
+        regionFilter.value = '';
+        currentPage = 1;
+        updateCardHighlights();
+        updateFilterBadge();
+        loadExamineeData();
+    });
+
+    // Search on input with debounce
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            currentSearch = searchInput.value.trim();
+            currentPage = 1;
+            loadExamineeData();
+        }, 500); // Wait 500ms after user stops typing
     });
 
     // Enter key in search input
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            searchBtn.click();
+            clearTimeout(searchTimeout);
+            currentSearch = searchInput.value.trim();
+            currentPage = 1;
+            loadExamineeData();
         }
+    });
+
+    // Region filter change
+    regionFilter.addEventListener('change', function() {
+        currentRegion = this.value;
+        currentPage = 1;
+        updateFilterBadge();
+        loadExamineeData();
     });
 
     // Schedule selection change
@@ -45,11 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selected) {
                 document.getElementById('previewVenue').textContent = selected.venue_name;
                 document.getElementById('previewRegion').textContent = selected.region;
-                document.getElementById('previewDate').textContent = new Date(selected.schedule_datetime).toLocaleDateString('en-US', {
+                document.getElementById('previewDate').textContent = new Date(selected.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
+                document.getElementById('previewCapacity').textContent = selected.num_of_examinees;
+                document.getElementById('previewSlots').textContent = selected.available_slots || 0;
                 schedulePreview.style.display = 'block';
             }
         } else {
@@ -78,16 +131,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Add each schedule as an option
                     data.data.forEach(schedule => {
-                        const dateObj = new Date(schedule.schedule_datetime);
+                        const dateObj = new Date(schedule.scheduled_date + 'T00:00:00');
                         const dateStr = dateObj.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric'
                         });
                         
+                        const slots = schedule.available_slots || 0;
+                        
                         const option = document.createElement('option');
                         option.value = schedule.schedule_id;
-                        option.textContent = `${schedule.venue_name} (${schedule.region}) - ${dateStr}`;
+                        option.textContent = `${schedule.venue_name} (${schedule.region}) - ${dateStr} [${slots} slots left]`;
                         rescheduleScheduleSelect.appendChild(option);
                     });
                 } else {
@@ -100,6 +155,37 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Update card highlights based on active filter
+    function updateCardHighlights() {
+        const registeredCard = document.getElementById('totalRegistered').parentElement.parentElement.parentElement;
+        const completedCard = document.getElementById('totalCompleted').parentElement.parentElement.parentElement;
+
+        // Remove all highlights
+        registeredCard.classList.remove('border-primary', 'shadow');
+        completedCard.classList.remove('border-success', 'shadow');
+
+        // Add highlight to active filter
+        if (currentStatus === 'Registered') {
+            registeredCard.classList.add('border-primary', 'border-3', 'shadow');
+        } else if (currentStatus === 'Completed') {
+            completedCard.classList.add('border-success', 'border-3', 'shadow');
+        }
+    }
+
+    // Update filter badge display
+    function updateFilterBadge() {
+        const filters = [];
+        if (currentStatus) filters.push(currentStatus);
+        if (currentRegion) filters.push(currentRegion);
+        
+        if (filters.length > 0) {
+            filterText.textContent = `Showing: ${filters.join(' - ')} Examinees`;
+            activeFilterBadge.style.display = 'block';
+        } else {
+            activeFilterBadge.style.display = 'none';
+        }
+    }
+
     // Load examinee data
     function loadExamineeData() {
         showLoading(true);
@@ -107,6 +193,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const params = new URLSearchParams();
         params.append('search', currentSearch);
         params.append('page', currentPage);
+        if (currentStatus) {
+            params.append('status', currentStatus);
+        }
+        if (currentRegion) {
+            params.append('region', currentRegion);
+        }
 
         fetch(`../php/get_registered_examinees.php?${params.toString()}`, {
             method: 'GET',

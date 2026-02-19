@@ -1,5 +1,5 @@
 <?php
-// Reschedule exam for a registered user - updates examinees table with new schedule_id
+// Reschedule exam for a registered user - updates examinees table with new schedule_id and manages slot counts
 header('Content-Type: application/json');
 session_start();
 
@@ -19,44 +19,61 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $userId = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
-$scheduleId = isset($_POST['schedule_id']) ? (int)$_POST['schedule_id'] : 0;
+$newScheduleId = isset($_POST['schedule_id']) ? (int)$_POST['schedule_id'] : 0;
 
-if (empty($userId) || empty($scheduleId)) {
+if (empty($userId) || empty($newScheduleId)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'User ID and Schedule ID are required']);
     exit;
 }
 
 try {
-    // Check if examinee record exists
+    // Get current examinee record with old schedule_id
     $checkStmt = $pdo->prepare("
-        SELECT e.test_id, e.user_id, u.test_permit 
+        SELECT e.examinee_id, e.schedule_id as old_schedule_id, u.test_permit 
         FROM examinees e 
         JOIN users u ON e.user_id = u.user_id 
-        WHERE e.user_id = :user_id LIMIT 1
+        WHERE e.user_id = :user_id AND e.status = 'Scheduled'
+        LIMIT 1
     ");
     $checkStmt->execute([':user_id' => $userId]);
     $examinee = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$examinee) {
         http_response_code(404);
-        echo json_encode(['success' => false, 'message' => 'Examinee record not found']);
+        echo json_encode(['success' => false, 'message' => 'Examinee record not found or not in Scheduled status']);
         exit;
     }
 
-    // Verify schedule exists and get details
-    $scheduleStmt = $pdo->prepare("
-        SELECT s.schedule_id, s.scheduled_date, v.venue_name, v.region 
+    $oldScheduleId = $examinee['old_schedule_id'];
+
+    // Check if trying to reschedule to same schedule
+    if ($oldScheduleId == $newScheduleId) {
+        echo json_encode(['success' => false, 'message' => 'Examinee is already scheduled for this date']);
+        exit;
+    }
+
+    // Verify new schedule exists and has capacity
+    $newScheduleStmt = $pdo->prepare("
+        SELECT s.schedule_id, s.scheduled_date, s.num_of_examinees, s.num_registered,
+               v.venue_name, v.region 
         FROM schedules s 
         JOIN venue v ON s.venue_id = v.venue_id 
-        WHERE s.schedule_id = :schedule_id
+        WHERE s.schedule_id = :schedule_id AND s.status = 'Incoming'
     ");
-    $scheduleStmt->execute([':schedule_id' => $scheduleId]);
-    $schedule = $scheduleStmt->fetch(PDO::FETCH_ASSOC);
+    $newScheduleStmt->execute([':schedule_id' => $newScheduleId]);
+    $newSchedule = $newScheduleStmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$schedule) {
+    if (!$newSchedule) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Invalid schedule selection']);
+        echo json_encode(['success' => false, 'message' => 'Invalid schedule selection or schedule not available']);
+        exit;
+    }
+
+    // Check if new schedule has available slots
+    $availableSlots = $newSchedule['num_of_examinees'] - $newSchedule['num_registered'];
+    if ($availableSlots <= 0) {
+        echo json_encode(['success' => false, 'message' => 'Selected schedule is full. No available slots.']);
         exit;
     }
 
@@ -64,35 +81,33 @@ try {
     $pdo->beginTransaction();
     
     try {
-        // Update examinees table with new schedule_id
+        // 1. Decrease num_registered on old schedule (if exists)
+        if ($oldScheduleId) {
+            $decreaseOldStmt = $pdo->prepare("
+                UPDATE schedules 
+                SET num_registered = GREATEST(0, num_registered - 1)
+                WHERE schedule_id = :schedule_id
+            ");
+            $decreaseOldStmt->execute([':schedule_id' => $oldScheduleId]);
+        }
+
+        // 2. Increase num_registered on new schedule
+        $increaseNewStmt = $pdo->prepare("
+            UPDATE schedules 
+            SET num_registered = num_registered + 1
+            WHERE schedule_id = :schedule_id
+        ");
+        $increaseNewStmt->execute([':schedule_id' => $newScheduleId]);
+
+        // 3. Update examinees table with new schedule_id
         $updateExamineeStmt = $pdo->prepare("
             UPDATE examinees
             SET schedule_id = :schedule_id,
-                date_of_test = :date_of_test,
-                venue = :venue
+                updated_at = NOW()
             WHERE user_id = :user_id
         ");
-
         $updateExamineeStmt->execute([
-            ':schedule_id' => $scheduleId,
-            ':date_of_test' => $schedule['scheduled_date'],
-            ':venue' => $schedule['venue_name'],
-            ':user_id' => $userId
-        ]);
-
-        // Also update users table for consistency
-        $updateUserStmt = $pdo->prepare("
-            UPDATE users
-            SET exam_date = :exam_date,
-                exam_venue = :exam_venue,
-                region = :region
-            WHERE user_id = :user_id
-        ");
-
-        $updateUserStmt->execute([
-            ':exam_date' => substr($schedule['schedule_datetime'], 0, 10),
-            ':exam_venue' => $schedule['venue_name'],
-            ':region' => $schedule['region'],
+            ':schedule_id' => $newScheduleId,
             ':user_id' => $userId
         ]);
 
@@ -100,14 +115,15 @@ try {
 
         echo json_encode([
             'success' => true,
-            'message' => 'Exam successfully rescheduled to new schedule',
+            'message' => 'Exam successfully rescheduled',
             'data' => [
                 'user_id' => $userId,
                 'test_permit' => $examinee['test_permit'],
-                'schedule_id' => $scheduleId,
-                'date_of_test' => $schedule['scheduled_date'],
-                'venue' => $schedule['venue_name'],
-                'region' => $schedule['region']
+                'old_schedule_id' => $oldScheduleId,
+                'new_schedule_id' => $newScheduleId,
+                'scheduled_date' => $newSchedule['scheduled_date'],
+                'venue' => $newSchedule['venue_name'],
+                'region' => $newSchedule['region']
             ]
         ]);
     } catch (Exception $e) {
@@ -117,6 +133,7 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
+    error_log('Reschedule error: ' . $e->getMessage());
     echo json_encode([
         'success' => false,
         'message' => 'Database error: ' . $e->getMessage()

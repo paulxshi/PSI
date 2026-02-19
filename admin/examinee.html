@@ -90,6 +90,17 @@
         text-align: center;
         padding: 2rem;
     }
+
+    /* Clickable stat cards */
+    .stat-card-clickable {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .stat-card-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
 </style>
 <body>
 
@@ -182,7 +193,9 @@
 
                 <!-- Total Registered -->
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                    <div class="card border-0 shadow-sm rounded-3 h-100 stat-card-clickable" 
+                         title="Click to filter by Registered examinees"
+                         data-bs-toggle="tooltip">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -204,7 +217,9 @@
 
                 <!-- Total Completed -->
                 <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                    <div class="card border-0 shadow-sm rounded-3 h-100 stat-card-clickable"
+                         title="Click to filter by Completed examinees"
+                         data-bs-toggle="tooltip">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -235,6 +250,19 @@
                     <!-- Status Alert -->
                     <div id="statusAlert" class="alert" style="display:none;" role="alert"></div>
 
+                    <!-- Active Filter Indicator -->
+                    <div id="activeFilterBadge" class="mb-3" style="display:none;">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-info px-3 py-2">
+                                <i class='bx bx-filter-alt me-1'></i>
+                                <span id="filterText">All Examinees</span>
+                            </span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="clearFilterBtn">
+                                Clear Filter
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Top Controls -->
                     <h6 class="fw-semibold mb-4 text-muted">Registered Examinees</h6>
 
@@ -247,6 +275,16 @@
                                 class="form-control"
                                 placeholder="Search by name, email, or test permit..."
                             >
+                        </div>
+
+                        <!-- Region Filter -->
+                        <div class="col-md-3">
+                            <select class="form-select" id="regionFilter">
+                                <option value="">All Regions</option>
+                                <option value="Luzon">Luzon</option>
+                                <option value="Visayas">Visayas</option>
+                                <option value="Mindanao">Mindanao</option>
+                            </select>
                         </div>
                     </div>
 
@@ -340,7 +378,9 @@
                                 <p class="mb-2"><strong>Selected Schedule Details:</strong></p>
                                 <p class="mb-1"><small>📍 Venue: <span id="previewVenue"></span></small></p>
                                 <p class="mb-1"><small>📍 Region: <span id="previewRegion"></span></small></p>
-                                <p class="mb-0"><small>📅 Date: <span id="previewDate"></span></small></p>
+                                <p class="mb-1"><small>📅 Date: <span id="previewDate"></span></small></p>
+                                <p class="mb-1"><small>👥 Capacity: <span id="previewCapacity"></span></small></p>
+                                <p class="mb-0"><small>✅ Available Slots: <span id="previewSlots" class="text-success fw-bold"></span></small></p>
                             </div>
                         </div>
                     </div>

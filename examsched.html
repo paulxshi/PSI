@@ -334,7 +334,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         day: 'numeric'
                     });
 
-                    option.textContent = formattedDate;
+                    const slots = schedule.available_slots || 0;
+                    option.textContent = `${formattedDate} (${slots} slots available)`;
 
                     // 🔹 Store exam price as data attribute
                     option.dataset.fee = schedule.exam_price;

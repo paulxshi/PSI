@@ -13,19 +13,23 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 require_once '../config/db.php';
 
 try {
-    // Get all available schedules with venue information
+    // Get only valid, selectable schedules with available slots
     $query = "
         SELECT 
             s.schedule_id,
             s.scheduled_date,
             s.num_of_examinees,
+            s.num_registered,
             s.status,
             v.venue_id,
             v.venue_name,
-            v.region
+            v.region,
+            (s.num_of_examinees - COALESCE(s.num_registered, 0)) as available_slots
         FROM schedules s
         JOIN venue v ON s.venue_id = v.venue_id
         WHERE s.status = 'Incoming'
+            AND s.scheduled_date >= CURDATE()
+            AND COALESCE(s.num_registered, 0) < s.num_of_examinees
         ORDER BY s.scheduled_date ASC
     ";
 

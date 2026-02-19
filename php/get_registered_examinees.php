@@ -1,5 +1,5 @@
 <?php
-// Get registered examinees from users table with search and pagination
+// Get registered examinees from examinees table with schedule details
 header('Content-Type: application/json');
 session_start();
 
@@ -14,51 +14,77 @@ require_once __DIR__ . '/../config/db.php';
 
 // Get parameters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$status = isset($_GET['status']) ? trim($_GET['status']) : ''; // Filter by examinee_status
+$region = isset($_GET['region']) ? trim($_GET['region']) : ''; // Filter by region
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $limit = 10; // Records per page
 $offset = ($page - 1) * $limit;
 
 try {
-    // Build base query
-    $whereConditions = ['status = "approved"']; // Only approved registrations
+    // Build base query - Join examinees with users and schedules
+    $whereConditions = ["e.status = 'Scheduled'"]; // Only those who have paid and confirmed
     $params = [];
+
+    // Status filter (examinee_status)
+    if (!empty($status)) {
+        $whereConditions[] = "e.examinee_status = :status";
+        $params[':status'] = $status;
+    }
+
+    // Region filter
+    if (!empty($region)) {
+        $whereConditions[] = "v.region = :region";
+        $params[':region'] = $region;
+    }
 
     // Search condition
     if (!empty($search)) {
-        $whereConditions[] = "(CONCAT(first_name, ' ', last_name) LIKE :search OR email LIKE :search OR test_permit LIKE :search)";
+        $whereConditions[] = "(CONCAT(u.first_name, ' ', u.last_name) LIKE :search OR u.email LIKE :search OR u.test_permit LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
 
     // Get total count
-    $countQuery = "SELECT COUNT(*) as total FROM users $whereClause";
+    $countQuery = "
+        SELECT COUNT(*) as total 
+        FROM examinees e
+        INNER JOIN users u ON e.user_id = u.user_id
+        LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
+        LEFT JOIN venue v ON s.venue_id = v.venue_id
+        $whereClause
+    ";
     $countStmt = $pdo->prepare($countQuery);
     $countStmt->execute($params);
     $totalRecords = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 
-    // Get data
+    // Get data with schedule information
     $dataQuery = "
         SELECT 
-            user_id,
-            CONCAT(first_name, ' ', last_name) as full_name,
-            first_name,
-            last_name,
-            email,
-            contact_number,
-            test_permit,
-            gender,
-            date_of_birth,
-            age,
-            school,
-            region,
-            exam_venue,
-            exam_date,
-            status,
-            date_of_registration
-        FROM users
+            u.user_id,
+            u.test_permit,
+            u.first_name,
+            u.last_name,
+            CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) as full_name,
+            u.email,
+            u.contact_number,
+            u.gender,
+            u.date_of_birth,
+            u.age,
+            u.school,
+            v.region,
+            v.venue_name as exam_venue,
+            s.scheduled_date as exam_date,
+            e.status,
+            e.examinee_status,
+            e.schedule_id,
+            e.date_of_registration
+        FROM examinees e
+        INNER JOIN users u ON e.user_id = u.user_id
+        LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
+        LEFT JOIN venue v ON s.venue_id = v.venue_id
         $whereClause
-        ORDER BY date_of_registration DESC
+        ORDER BY e.date_of_registration DESC
         LIMIT :limit OFFSET :offset
     ";
     
@@ -80,10 +106,11 @@ try {
     $summaryStmt = $pdo->prepare("
         SELECT 
             COUNT(*) as total_registered,
-            SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
-            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
-            SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
-        FROM users
+            SUM(CASE WHEN examinee_status = 'Completed' THEN 1 ELSE 0 END) as completed,
+            SUM(CASE WHEN examinee_status = 'Absent' THEN 1 ELSE 0 END) as absent,
+            SUM(CASE WHEN examinee_status = 'Registered' THEN 1 ELSE 0 END) as registered
+        FROM examinees
+        WHERE status = 'Scheduled'
     ");
     $summaryStmt->execute();
     $summary = $summaryStmt->fetch(PDO::FETCH_ASSOC);
@@ -102,9 +129,9 @@ try {
         ],
         'summary' => [
             'total_registered' => (int)$summary['total_registered'],
-            'approved' => (int)$summary['approved'],
-            'pending' => (int)$summary['pending'],
-            'rejected' => (int)$summary['rejected']
+            'completed' => (int)$summary['completed'],
+            'absent' => (int)$summary['absent'],
+            'registered' => (int)$summary['registered']
         ]
     ]);
 

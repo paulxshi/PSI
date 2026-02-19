@@ -20,9 +20,18 @@ if (isset($_GET['type'])) {
     if ($_GET['type'] == "schedules" && isset($_GET['venue_id'])) {
 
         $stmt = $pdo->prepare("
-            SELECT schedule_id, scheduled_date, price
+            SELECT 
+                schedule_id, 
+                scheduled_date, 
+                price,
+                num_of_examinees,
+                COALESCE(num_registered, 0) as num_registered,
+                (num_of_examinees - COALESCE(num_registered, 0)) as available_slots
             FROM schedules
-            WHERE venue_id = ? AND status = 'Incoming'
+            WHERE venue_id = ? 
+                AND status = 'Incoming'
+                AND scheduled_date >= CURDATE()
+                AND COALESCE(num_registered, 0) < num_of_examinees
             ORDER BY scheduled_date ASC
         ");
         $stmt->execute([$_GET['venue_id']]);
