@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const option = document.createElement("option");
                     option.value = schedule.schedule_id;
 
-                    const date = new Date(schedule.scheduled_date + 'T00:00:00');
+                    const date = new Date(schedule.schedule_datetime);
 
                     const formattedDate = date.toLocaleDateString('en-US', {
                         year: 'numeric',

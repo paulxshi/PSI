@@ -90,7 +90,7 @@ try {
         ");
 
         $updateUserStmt->execute([
-            ':exam_date' => $schedule['scheduled_date'],
+            ':exam_date' => substr($schedule['schedule_datetime'], 0, 10),
             ':exam_venue' => $schedule['venue_name'],
             ':region' => $schedule['region'],
             ':user_id' => $userId

@@ -59,7 +59,7 @@ try {
     
     // Filter by date
     if (!empty($date_filter)) {
-        $sql .= " AND s.scheduled_date = :date_filter";
+        $sql .= " AND DATE(s.schedule_datetime) = :date_filter";
         $params[':date_filter'] = $date_filter;
     }
     

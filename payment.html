@@ -300,8 +300,8 @@ function displayExamDetails(data) {
   document.getElementById('venue').textContent = data.venue_name || '—';
   
   // Format date
-  if (data.scheduled_date) {
-    const date = new Date(data.scheduled_date + 'T00:00:00');
+  if (data.schedule_datetime) {
+    const date = new Date(data.schedule_datetime);
     const formatted = date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',

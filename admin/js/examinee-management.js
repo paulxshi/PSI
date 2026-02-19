@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selected) {
                 document.getElementById('previewVenue').textContent = selected.venue_name;
                 document.getElementById('previewRegion').textContent = selected.region;
-                document.getElementById('previewDate').textContent = new Date(selected.scheduled_date + 'T00:00:00').toLocaleDateString('en-US', {
+                document.getElementById('previewDate').textContent = new Date(selected.schedule_datetime).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Add each schedule as an option
                     data.data.forEach(schedule => {
-                        const dateObj = new Date(schedule.scheduled_date + 'T00:00:00');
+                        const dateObj = new Date(schedule.schedule_datetime);
                         const dateStr = dateObj.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
