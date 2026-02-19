@@ -12,7 +12,30 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
-/* Slightly larger and more balanced profile modal */
+.reschedule-modal {
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.15);
+}
+
+.filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.filter-bar .form-select,
+.filter-bar .form-control {
+    font-size: 0.8rem;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
 #profileModal .modal-dialog {
     max-width: 600px;
 }
@@ -46,13 +69,11 @@
     font-size: 0.8rem;
 }
 
-/* Status pill */
 #profileModal .status-pill {
     font-size: 0.75rem;
     padding: 0.3rem 0.7rem;
 }
 
-/* Info grid text */
 #profileModal .info-grid label {
     font-size: 12px; 
 }
@@ -61,11 +82,10 @@
     font-size: 0.95rem;
 }
 
-/* Card spacing */
+
 #profileModal .info-card {
     padding: 1.5rem; /* was 0.75rem */
 }
-
 
 .premium-modal-header {
     padding: 1rem 1.5rem;
@@ -590,45 +610,81 @@
     </section>
 
     <!-- Reschedule Modal -->
-    <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rescheduleLabel">Reschedule Exam</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content reschedule-modal">
+
+            <!-- Header -->
+            <div class="modal-header premium-modal-header">
+                <div class="title-wrap">
+                    <div class="title-icon bg-warning-subtle text-warning">
+                        <i class="bx bx-calendar-edit"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title mb-0">Reschedule Exam</h5>
+                        <small class="modal-subtitle">Select a new available schedule</small>
+                    </div>
                 </div>
-                <form id="rescheduleForm">
-                    <div class="modal-body">
-                        <input type="hidden" id="rescheduleUserId">
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Select Schedule <span class="text-danger">*</span></label>
-                            <select class="form-control" id="rescheduleSchedule" required>
-                                <option value="">-- Choose an available schedule --</option>
-                            </select>
-                            <small class="text-muted d-block mt-2">Selected schedule will update: Date, Venue, and Region.</small>
-                        </div>
+            <form id="rescheduleForm">
+                <div class="modal-body">
 
-                        <!-- Schedule Preview -->
-                        <div id="schedulePreview" style="display:none;">
-                            <div class="alert alert-info mb-0">
-                                <p class="mb-2"><strong>Selected Schedule Details:</strong></p>
-                                <p class="mb-1"><small>📍 Venue: <span id="previewVenue"></span></small></p>
-                                <p class="mb-1"><small>📍 Region: <span id="previewRegion"></span></small></p>
-                                <p class="mb-1"><small>📅 Date: <span id="previewDate"></span></small></p>
-                                <p class="mb-1"><small>👥 Capacity: <span id="previewCapacity"></span></small></p>
-                                <p class="mb-0"><small>✅ Available Slots: <span id="previewSlots" class="text-success fw-bold"></span></small></p>
+                    <input type="hidden" id="rescheduleUserId">
+
+                    <!-- Filters -->
+                    <div class="filter-bar mb-3">
+                        <select id="filterRegion" class="form-select form-select-sm">
+                            <option value="">All Regions</option>
+                        </select>
+
+                        <select id="filterVenue" class="form-select form-select-sm">
+                            <option value="">All Venues</option>
+                        </select>
+
+                        <input type="date" id="filterDate" class="form-control form-control-sm">
+                    </div>
+
+                    <!-- Schedule Select -->
+                    <label class="form-label fw-semibold small mb-2">
+                        Available Schedules <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" id="rescheduleSchedule" required>
+                        <option value="">-- Choose a schedule --</option>
+                    </select>
+
+                    <!-- Preview -->
+                    <div id="schedulePreview" class="mt-3" style="display:none;">
+                        <div class="alert alert-info mb-0">
+                            <div class="small fw-semibold mb-2">Selected Schedule</div>
+                            <div class="small">📍 <span id="previewVenue"></span></div>
+                            <div class="small">🌍 <span id="previewRegion"></span></div>
+                            <div class="small">📅 <span id="previewDate"></span></div>
+                            <div class="small">👥 Capacity: <span id="previewCapacity"></span></div>
+                            <div class="small fw-bold text-success">
+                                Slots Left: <span id="previewSlots"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Reschedule Exam</button>
-                    </div>
-                </form>
-            </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        Confirm Reschedule
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
+</div>
+
+
 
     <!-- Logout Modal -->
 <!-- Logout Modal -->

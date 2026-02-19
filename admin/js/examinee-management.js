@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeFilterBadge = document.getElementById('activeFilterBadge');
     const filterText = document.getElementById('filterText');
     const clearFilterBtn = document.getElementById('clearFilterBtn');
+    const filterRegion = document.getElementById('filterRegion');
+    const filterVenue = document.getElementById('filterVenue');
+    const filterDate = document.getElementById('filterDate');
 
     let currentPage = 1;
     let currentSearch = '';
@@ -30,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSummaryStats(); // Load stats only on page load
     showLoading(false); // Hide loading spinner initially
     showInitialMessage(); // Show instruction to select a status
+
+    filterRegion.addEventListener('change', renderFilteredSchedules);
+    filterVenue.addEventListener('change', renderFilteredSchedules);
+    filterDate.addEventListener('change', renderFilteredSchedules);
 
     // Status filter - Click on stat cards
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
@@ -111,6 +118,48 @@ document.addEventListener('DOMContentLoaded', function() {
             schedulePreview.style.display = 'none';
         }
     });
+
+        function populateScheduleFilters() {
+            const regions = [...new Set(availableSchedules.map(s => s.region))];
+            const venues = [...new Set(availableSchedules.map(s => s.venue_name))];
+
+            filterRegion.innerHTML = '<option value="">All Regions</option>';
+            filterVenue.innerHTML = '<option value="">All Venues</option>';
+
+            regions.forEach(r => {
+                filterRegion.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+
+            venues.forEach(v => {
+                filterVenue.innerHTML += `<option value="${v}">${v}</option>`;
+            });
+        }
+        function renderFilteredSchedules() {
+            const region = filterRegion.value;
+            const venue = filterVenue.value;
+            const date = filterDate.value;
+
+            const filtered = availableSchedules.filter(s => {
+                if (region && s.region !== region) return false;
+                if (venue && s.venue_name !== venue) return false;
+                if (date && s.scheduled_date !== date) return false;
+                return true;
+            });
+
+            rescheduleScheduleSelect.innerHTML =
+                '<option value="">-- Choose a schedule --</option>';
+
+            filtered.forEach(s => {
+                const dateStr = new Date(s.scheduled_date + 'T00:00:00')
+                    .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                rescheduleScheduleSelect.innerHTML += `
+                    <option value="${s.schedule_id}">
+                        ${s.venue_name} (${s.region}) - ${dateStr} [${s.available_slots || 0} slots]
+                    </option>
+                `;
+            });
+        }
 
     // Reschedule form submission
     rescheduleForm.addEventListener('submit', function(e) {
@@ -476,16 +525,19 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Open reschedule modal (global function)
-    window.openRescheduleModal = function(userId) {
-        const record = currentData[userId];
-        if (!record) return;
+        window.openRescheduleModal = function(userId) {
+            document.getElementById('rescheduleUserId').value = userId;
 
-        document.getElementById('rescheduleUserId').value = userId;
-        rescheduleScheduleSelect.value = ''; // Reset to placeholder
-        schedulePreview.style.display = 'none'; // Hide preview initially
+            filterRegion.value = '';
+            filterVenue.value = '';
+            filterDate.value = '';
 
-        rescheduleModal.show();
-    };
+            schedulePreview.style.display = 'none';
+            renderFilteredSchedules();
+
+            rescheduleModal.show();
+        };
+
 
     // Reschedule exam
     function rescheduleExam() {
