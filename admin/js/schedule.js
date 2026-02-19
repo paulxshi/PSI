@@ -14,12 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const region = document.querySelector("[name='exam_region']").value;
         const venue = document.querySelector("[name='exam_area']").value;
         const date = document.querySelector("[name='exam_date']").value;
-        const time = document.querySelector("[name='exam_time']").value;
         const limit = document.querySelector("[name='exam_limit']").value;
         const price = document.querySelector("[name='exam_price']").value;
 
         // Validation
-        if (!region || !venue || !date || !time || !limit || !price) {
+        if (!region || !venue || !date || !limit || !price) {
             alert("Please complete all fields.");
             return;
         }

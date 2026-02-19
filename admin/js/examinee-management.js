@@ -45,12 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selected) {
                 document.getElementById('previewVenue').textContent = selected.venue_name;
                 document.getElementById('previewRegion').textContent = selected.region;
-                document.getElementById('previewDate').textContent = new Date(selected.scheduled_date).toLocaleDateString('en-US', {
+                document.getElementById('previewDate').textContent = new Date(selected.schedule_datetime).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    day: 'numeric'
                 });
                 schedulePreview.style.display = 'block';
             }
@@ -80,13 +78,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Add each schedule as an option
                     data.data.forEach(schedule => {
-                        const dateObj = new Date(schedule.scheduled_date);
+                        const dateObj = new Date(schedule.schedule_datetime);
                         const dateStr = dateObj.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
+                            year: 'numeric'
                         });
                         
                         const option = document.createElement('option');
