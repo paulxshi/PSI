@@ -64,6 +64,17 @@
     border-right: 1px solid #e9ecef;
   }
 }
+.input-group-text {
+  border-right: 0;
+}
+
+.input-group .form-control:focus {
+  box-shadow: none;
+}
+
+.input-group:focus-within {
+  box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+}
 
 .region-table-row {
   border-radius: 0.5rem;
@@ -183,6 +194,46 @@
   </div>
 </div>
 
+<div class="container-fluid mb-4">
+  <div class="row justify-content-start">
+    <div class="col-xl-4 col-lg-5 col-md-7 col-sm-10">
+
+      <div class="card border-0 rounded-4 p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <i class="bx bx bx-qr text-primary fs-5"></i>
+          <h6 class="mb-0 fw-semibold">Manual QR Test</h6>
+        </div>
+
+        <div class="input-group input-group-md">
+
+          <span class="input-group-text bg-light">
+            <i class="bx bx-qr-scan text-muted"></i>
+          </span>
+
+          <input
+            type="text"
+            id="manualQR"
+            class="form-control shadow-none"
+            placeholder="Enter QR value"
+          >
+
+          <button
+            class="btn btn-primary px-3"
+            onclick="simulateScan()"
+          >
+            Scan
+          </button>
+
+        </div>
+
+        <small class="text-muted d-block mt-2">
+          Simulates QR validation using live scanner logic.
+        </small>
+      </div>
+
+    </div>
+  </div>
+</div>
 
   <div class="container-fluid mt-4">
    <div class="row g-3 justify-content-start region-row-wrapper">
@@ -319,21 +370,6 @@
 
       </div>
     </div> 
-
-
-
-       <br><br><br>
-<div class="card p-3 mb-3">
-  <h6>Manual QR Test (For Development)</h6>
-
-  <div class="input-group">
-    <input type="text" id="manualQR" class="form-control"
-           placeholder="Enter QR Value (ex: TXN1771223060)">
-    <button class="btn btn-primary" onclick="simulateScan()">Scan</button>
-  </div>
-</div>
-
-
 
 <!-- QR RESULT MODAL -->
 <div class="modal fade" id="qrResultModal" tabindex="-1" aria-hidden="true">
