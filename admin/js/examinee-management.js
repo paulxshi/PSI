@@ -392,51 +392,83 @@ document.addEventListener('DOMContentLoaded', function() {
             day: 'numeric'
         }) : 'Not Set';
 
+        const statusClass =
+        record.status === 'Completed'
+            ? 'completed'
+            : 'registered';
+
         const profileHTML = `
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <p><strong>Test Permit:</strong> ${escapeHtml(record.test_permit)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Status:</strong> <span class="badge bg-success-subtle text-success">${escapeHtml(record.status)}</span></p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>First Name:</strong> ${escapeHtml(record.first_name)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Last Name:</strong> ${escapeHtml(record.last_name)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Contact:</strong> ${escapeHtml(record.contact_number)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Date of Birth:</strong> ${birthDate}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Age:</strong> ${record.age}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Gender:</strong> ${escapeHtml(record.gender)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>School:</strong> ${escapeHtml(record.school)}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Region:</strong> ${escapeHtml(record.region)}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Exam Venue:</strong> ${escapeHtml(record.exam_venue || 'Not Set')}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Exam Date:</strong> ${examDate}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Registration Date:</strong> ${registrationDate}</p>
-                </div>
+        <div class="compact-profile">
+
+        <!-- Header -->
+        <div class="compact-header">
+            <div class="avatar">
+            ${escapeHtml(record.first_name.charAt(0))}
             </div>
+
+            <div class="header-text">
+            <div class="name">${escapeHtml(record.full_name)}</div>
+            <div class="meta">${escapeHtml(record.test_permit)} · ${escapeHtml(record.email)}</div>
+            </div>
+
+            <span class="status-pill ${statusClass}">
+            ${escapeHtml(record.status)}
+            </span>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-card">
+            <div class="info-grid">
+
+            <div>
+                <label>Exam</label>
+                <span>${escapeHtml(record.exam_venue || 'Not Set')}</span>
+            </div>
+
+            <div>
+                <label>Date</label>
+                <span>${examDate}</span>
+            </div>
+
+            <div>
+                <label>Region</label>
+                <span>${escapeHtml(record.region)}</span>
+            </div>
+
+            <div>
+                <label>Registered</label>
+                <span>${registrationDate}</span>
+            </div>
+
+            <div>
+                <label>DOB</label>
+                <span>${birthDate}</span>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <span>${record.age}</span>
+            </div>
+
+            <div>
+                <label>Gender</label>
+                <span>${escapeHtml(record.gender)}</span>
+            </div>
+
+            <div>
+                <label>Contact</label>
+                <span>${escapeHtml(record.contact_number)}</span>
+            </div>
+
+            <div>
+                <label>School</label>
+                <span>${escapeHtml(record.school || '—')}</span>
+            </div>
+
+            </div>
+        </div>
+
+        </div>
         `;
 
         document.getElementById('profileContent').innerHTML = profileHTML;
