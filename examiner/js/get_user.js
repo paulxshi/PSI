@@ -81,12 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="fw-semibold">${user.school}</div>
               </div>
               ` : ''}
-              ${user.region ? `
-              <div class="mb-3">
-                <small class="text-muted text-uppercase">Region</small>
-                <div class="fw-semibold">${user.region}</div>
-              </div>
-              ` : ''}
             </div>
           </div>
         </div>
@@ -108,7 +102,7 @@ fetch("php/get_transaction.php?user_id=" + userId)
       return;
     }
 
-    const transactionNo = data.transaction_no;
+    const transactionNo = data.external_id;
 
 
     // QR Value (what gets scanned)

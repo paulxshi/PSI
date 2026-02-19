@@ -11,7 +11,7 @@ $user_id = $_GET['user_id'];
 try {
     // Get the latest successful payment of the user
     $stmt = $pdo->prepare("
-        SELECT transaction_no
+        SELECT external_id
         FROM payments
         WHERE user_id = :user_id
         ORDER BY payment_date DESC
@@ -24,7 +24,7 @@ try {
     if ($payment) {
         echo json_encode([
             "status" => "success",
-            "transaction_no" => $payment['transaction_no']
+            "external_id" => $payment['external_id']
         ]);
     } else {
         echo json_encode([

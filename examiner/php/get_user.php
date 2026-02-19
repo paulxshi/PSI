@@ -21,8 +21,8 @@ try {
     // Get user data directly from users table
     $stmt = $pdo->prepare("
         SELECT user_id, first_name, middle_name, last_name, email, contact_number, 
-               date_of_birth, age, test_permit, role, status, school, region, 
-               gender, address, nationality, exam_venue, exam_date, pmma_student_id,
+               date_of_birth, age, test_permit, role, status, school,
+               gender, address, nationality,
                date_of_registration
         FROM users
         WHERE user_id = ?
@@ -39,9 +39,7 @@ try {
 
     error_log("User found: " . json_encode($user));
 
-    // Set default values for fields that don't exist in this table
-    $user['purpose'] = null;
-    $user['date_of_test'] = $user['exam_date'] ?? null;
+ 
 
     echo json_encode(["success" => true, "user" => $user]);
 

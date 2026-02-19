@@ -1,11 +1,34 @@
 <?php
 require "../../config/db.php";
 
+
+/* --------------------------------------------
+   Prevent PHP warnings from breaking JSON
+--------------------------------------------- */
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 
+/* --------------------------------------------
+   Read JSON input from fetch()
+--------------------------------------------- */
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['transaction_no'])) {
+/* ✅ PLACE THE CHECK RIGHT HERE */
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo json_encode([
+        "status_class" => "invalid",
+        "status_message" => "Invalid JSON received."
+    ]);
+    exit;
+}
+
+/* --------------------------------------------
+   Now validate expected field
+--------------------------------------------- */
+if (!isset($data['external_id'])) {
     echo json_encode([
         "status_class" => "invalid",
         "status_message" => "No transaction number received."
@@ -13,13 +36,12 @@ if (!isset($data['transaction_no'])) {
     exit;
 }
 
-$transactionNo = $data['transaction_no'];
-
+$invoiceNo = $data['external_id'];
 /* --------------------------------------------------
    STEP 1: Check if payment exists
 -------------------------------------------------- */
-$stmt = $pdo->prepare("SELECT * FROM payments WHERE transaction_no = ?");
-$stmt->execute([$transactionNo]);
+$stmt = $pdo->prepare("SELECT * FROM payments WHERE external_id = ?");
+$stmt->execute([$invoiceNo]);
 $payment = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$payment) {
@@ -132,10 +154,10 @@ echo json_encode([
     "exam_date" => date("F d, Y", strtotime($schedule['schedule_datetime'])),
     "venue" => $venue['venue_name'],
     "examinee_id" => $examinee['examinee_id'],
-    "transaction_no" => $payment['transaction_no'],
+    "invoice_no" => $payment['external_id'],
     "payment_status" => $payment['status'],
     "payment_date" => $payment['payment_date'],
-    "amount" => "₱" . number_format($payment['payment_amount'], 2),
+    "amount" => "₱" . number_format($payment['amount'], 2),
 
     "debug" => "All joins successful"
 ]);
