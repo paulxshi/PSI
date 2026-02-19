@@ -13,7 +13,7 @@ try {
 $stmt = $pdo->prepare("
     SELECT 
         e.date_of_registration,
-        s.schedule_datetime AS date_of_test,
+        s.scheduled_date AS date_of_test,
         v.venue_name,
         v.region
     FROM examinees e

@@ -7,12 +7,12 @@ $sql = "SELECT
             v.region,
             v.venue_id,
             v.venue_name,
-            s.schedule_datetime,
+            s.scheduled_date,
             s.num_registered,
             s.num_of_examinees
         FROM venue v
         LEFT JOIN schedules s ON s.venue_id = v.venue_id
-        ORDER BY v.region, v.venue_name, s.schedule_datetime";
+        ORDER BY v.region, v.venue_name, s.scheduled_date";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -28,7 +28,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if (!isset($data[$region][$venue])) $data[$region][$venue] = [];
 
     $data[$region][$venue][] = [
-        "date" => $row['schedule_datetime'],
+        "date" => $row['scheduled_date'],
         "registered" => $row['num_registered'],
         "limit" => $row['num_of_examinees']
     ];

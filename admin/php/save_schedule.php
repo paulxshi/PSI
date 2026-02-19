@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Combine date and time into datetime format
-    $schedule_datetime = $date . ' ' . $time . ':00';
+    $scheduled_date = $date . ' ' . $time . ':00';
 
     try {
         // Start transaction
@@ -46,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 3️⃣ Insert schedule with price
         $stmtSchedule = $pdo->prepare("
-            INSERT INTO schedules (venue_id, schedule_datetime, num_of_examinees, price, num_registered, status) 
+            INSERT INTO schedules (venue_id, scheduled_date, num_of_examinees, price, num_registered, status) 
             VALUES (?, ?, ?, ?, 0, 'Incoming')
         ");
-        $stmtSchedule->execute([$venue_id, $schedule_datetime, $exam_limit, $exam_price]);
+        $stmtSchedule->execute([$venue_id, $scheduled_date, $exam_limit, $exam_price]);
 
         // Commit transaction
         $pdo->commit();

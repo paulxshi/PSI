@@ -299,7 +299,7 @@
 
             <!-- Title -->
             <h6 class="fw-semibold mb-0">
-              Registered Examinees for Manila
+               Completed Examinees 
             </h6>
 
             <!-- RIGHT GROUP (HORIZONTAL, NO WRAP) -->
@@ -329,42 +329,24 @@
         </div>
 
 
-          <!-- Table -->
-          <div class="table-responsive">
-            <table class="table align-middle mb-0 table-hover">
-              <thead class="small text-uppercase text-muted">
-                <tr>
-                  <th>Test Permit</th>
-                  <th>Email</th>
-                  <th>Name</th>
-                  <th>Date of Examination</th>
-                </tr>
-              </thead>
+<div class="table-responsive">
+  <table class="table align-middle mb-0 table-hover">
+    <thead class="small text-uppercase text-muted">
+      <tr>
+        <th>Test Permit</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Date of Examination</th>
+      </tr>
+    </thead>
 
-              <tbody>
-                <tr>
-                  <td>1234-5678</td>
-                  <td>juan.delacruz@email.com</td>
-                  <td>Juan Dela Cruz</td>
-                  <td>12 March 2026</td>
-                </tr>
+    <tbody id="examineeTableBody">
+      <!-- Data will be inserted here -->
+    </tbody>
+  </table>
+</div>
 
-                <tr>
-                  <td>1234-5678</td>
-                  <td>maria.santos@email.com</td>
-                  <td>Maria Santos</td>
-                  <td>12 March 2026</td>
-                </tr>
-
-                <tr>
-                  <td>1234-5679</td>
-                  <td>pedro.reyes@email.com</td>
-                  <td>Pedro Reyes</td>
-                  <td>13 March 2026</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<script src="js/dashboard_table.js"></script>
 
         </div>
 
@@ -396,10 +378,10 @@
           <h6 class="border-bottom pb-2">Examinee Information</h6>
           <div class="row">
             <div class="col-4 fw-bold">Name:</div>
-            <div class="col-8" id="name">Juan Dela Cruz</div>
+            <div class="col-8" id="name"></div>
 
             <div class="col-4 fw-bold">Test Permit No:</div>
-            <div class="col-8" id="test_permit">2026-00125</div>
+            <div class="col-8" id="test_permit"></div>
           </div>
         </div>
 
@@ -409,10 +391,10 @@
           <h6 class="border-bottom pb-2">Examination Details</h6>
           <div class="row">
             <div class="col-4 fw-bold">Date:</div>
-            <div class="col-8" id="examination_date">March 15, 2026</div>
+            <div class="col-8" id="examination_date"></div>
 
             <div class="col-4 fw-bold">Venue:</div>
-            <div class="col-8" id="examination_venue">Pasig City, Luzon</div>
+            <div class="col-8" id="examination_venue"></div>
           </div>
         </div>
 
@@ -422,16 +404,16 @@
           <h6 class="border-bottom pb-2">Payment Confirmation</h6>
           <div class="row">
             <div class="col-4 fw-bold">Transaction No:</div>
-            <div class="col-8" id="invoice_no">1771223060</div>
+            <div class="col-8" id="invoice_no"></div>
 
             <div class="col-4 fw-bold">Payment Status:</div>
-            <div class="col-8" id="status">PAID ✔</div>
+            <div class="col-8" id="status"></div>
 
             <div class="col-4 fw-bold">Payment Date:</div>
-            <div class="col-8" id="payment_date">February 18, 2026</div>
+            <div class="col-8" id="payment_date"></div>
 
             <div class="col-4 fw-bold">Amount:</div>
-            <div class="col-8" id="payment_amount">₱1,200.00</div>
+            <div class="col-8" id="payment_amount"></div>
           </div>
         </div>
 

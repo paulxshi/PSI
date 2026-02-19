@@ -46,7 +46,7 @@ try {
 
     // Verify schedule exists and get details
     $scheduleStmt = $pdo->prepare("
-        SELECT s.schedule_id, s.schedule_datetime, v.venue_name, v.region 
+        SELECT s.schedule_id, s.scheduled_date, v.venue_name, v.region 
         FROM schedules s 
         JOIN venue v ON s.venue_id = v.venue_id 
         WHERE s.schedule_id = :schedule_id
@@ -75,7 +75,7 @@ try {
 
         $updateExamineeStmt->execute([
             ':schedule_id' => $scheduleId,
-            ':date_of_test' => $schedule['schedule_datetime'],
+            ':date_of_test' => $schedule['scheduled_date'],
             ':venue' => $schedule['venue_name'],
             ':user_id' => $userId
         ]);
@@ -90,7 +90,7 @@ try {
         ");
 
         $updateUserStmt->execute([
-            ':exam_date' => substr($schedule['schedule_datetime'], 0, 10),
+            ':exam_date' => substr($schedule['scheduled_date'], 0, 10),
             ':exam_venue' => $schedule['venue_name'],
             ':region' => $schedule['region'],
             ':user_id' => $userId
@@ -105,7 +105,7 @@ try {
                 'user_id' => $userId,
                 'test_permit' => $examinee['test_permit'],
                 'schedule_id' => $scheduleId,
-                'date_of_test' => $schedule['schedule_datetime'],
+                'date_of_test' => $schedule['scheduled_date'],
                 'venue' => $schedule['venue_name'],
                 'region' => $schedule['region']
             ]

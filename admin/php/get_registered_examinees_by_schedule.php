@@ -25,7 +25,7 @@ try {
             CONCAT(u.first_name, ' ', u.middle_name, ' ', u.last_name) as full_name,
             u.first_name,
             u.last_name,
-            s.schedule_datetime,
+            s.scheduled_date,
             v.venue_name,
             v.region,
             e.status as examinee_status,
@@ -59,7 +59,7 @@ try {
     
     // Filter by date
     if (!empty($date_filter)) {
-        $sql .= " AND DATE(s.schedule_datetime) = :date_filter";
+        $sql .= " AND DATE(s.scheduled_date) = :date_filter";
         $params[':date_filter'] = $date_filter;
     }
     
@@ -87,7 +87,7 @@ try {
     
     // Format dates for display
     foreach ($examinees as &$examinee) {
-        $examinee['exam_date_formatted'] = date('F j, Y', strtotime($examinee['schedule_datetime']));
+        $examinee['exam_date_formatted'] = date('F j, Y', strtotime($examinee['scheduled_date']));
     }
     
     echo json_encode([
