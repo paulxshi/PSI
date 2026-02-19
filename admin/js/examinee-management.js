@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize
     loadSchedules();
-    loadExamineeData();
+    loadSummaryStats(); // Load stats only on page load
+    showLoading(false); // Hide loading spinner initially
+    showInitialMessage(); // Show instruction to select a status
 
     // Status filter - Click on stat cards
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
@@ -186,8 +188,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Load summary statistics only (without loading table data)
+    function loadSummaryStats() {
+        // Make a lightweight request to get only summary counts
+        fetch('../php/get_registered_examinees.php?page=1&limit=0', {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.summary) {
+                    // Update stat cards
+                    document.getElementById('totalRegistered').textContent = data.summary.total_registered;
+                    document.getElementById('totalCompleted').textContent = data.summary.completed;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading summary stats:', error);
+                // Set to 0 on error
+                document.getElementById('totalRegistered').textContent = '0';
+                document.getElementById('totalCompleted').textContent = '0';
+            });
+    }
+
     // Load examinee data
     function loadExamineeData() {
+        // If no status is selected, show initial message
+        if (!currentStatus) {
+            showInitialMessage();
+            return;
+        }
+
         showLoading(true);
 
         const params = new URLSearchParams();
@@ -466,6 +497,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show loading spinner
     function showLoading(show) {
         loadingSpinner.style.display = show ? 'block' : 'none';
+    }
+
+    // Show initial instruction message
+    function showInitialMessage() {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-5">
+                    <div class="text-muted">
+                        <i class="bx bx-info-circle fs-1 mb-3 d-block"></i>
+                        <h5 class="mb-2">Select a Status to View Examinees</h5>
+                        <p class="mb-0">Click on "Total Registered" or "Completed" above to view examinees</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        tableContainer.style.display = 'block';
+        paginationContainer.style.display = 'none';
     }
 
     // Show status message
