@@ -22,9 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Combine date and time into datetime format
-    $schedule_datetime = $date . ' ' . $time . ':00';
-
     try {
         // Start transaction
         $pdo->beginTransaction();
