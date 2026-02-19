@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="../imgs/PSI.png">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="../css/dashstyle.css">
+  <link rel="stylesheet" href="../css/permitpdf.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+	<title>Test Permit</title>
+</head>
+
+<style>
+.permit-note {
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #ef0707;
+  line-height: 1.4;
+  margin-top: 50px;
+  font-style: italic;
+}
+
+.photo-box {
+  cursor: pointer;
+}
+
+.upload-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.photo-box:hover .upload-overlay {
+  opacity: 1;
+}
+
+#permitPDF {
+  color: #000;
+  padding: 30px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.permit-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 2px solid #000;
+  display: inline-block;
+  padding: 6px 18px;
+  margin-top: 15px;
+}
+
+body.print-mode .print-signature {
+  display: block !important;
+}
+
+body.print-mode #permitPDF {
+  max-width: 210mm;
+  min-height: 297mm;
+  padding: 15mm 14mm;
+  font-size: 12px;
+  line-height: 1.3;
+
+}
+
+@media print {
+  .photo-box {
+    width: 80px !important;
+  }
+}
+
+body.print-mode .photo-box {
+  width: 85px !important;
+}
+
+@media print {
+
+  #sidebar,
+  nav,
+  .btn {
+    display: none !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    size: Letter landscape;
+    margin: 8mm;
+  }
+
+  #permitPDF {
+    width: 100%;
+    padding: 8mm;
+    font-size: 10px;
+    line-height: 1.15;
+    box-shadow: none !important;
+  }
+
+  hr {
+    margin: 4px 0 !important;
+  }
+
+  .row {
+    margin-bottom: 2px !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 6px !important;
+  }
+
+  h6 {
+    font-size: 11px;
+    margin-bottom: 3px !important;
+  }
+
+  small {
+    font-size: 8.5px;
+  }
+
+  .fw-semibold {
+    font-size: 9.8px;
+  }
+
+  .col-md-6 {
+    width: 33.333% !important;
+  }
+
+  .col-md-4 {
+    width: 25% !important;
+  }
+
+  #permitPDF img {
+    max-height: 50px !important;
+  }
+
+  .photo-box {
+    width: 85px !important;
+  }
+
+  .permit-note {
+    font-size: 9px;
+    margin-top: 8px;
+  }
+
+  ol {
+    font-size: 8.5px;
+    padding-left: 10px;
+  }
+
+  li {
+    margin-bottom: 1px;
+  }
+
+  .print-signature {
+    display: block !important;
+    margin-top: 6px;
+  }
+}
+
+#permitPDF ol {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+#permitPDF li {
+  margin-bottom: 1px;
+  line-height: 1.2;
+}
+
+
+#permitPDF h6 {
+  margin-bottom: 6px !important;
+  padding-bottom: 3px;
+  letter-spacing: 0.3px;
+}
+
+#permitPDF .row {
+  margin-bottom: 2px !important;
+}
+
+#permitPDF .fw-semibold {
+  line-height: 1.15;
+}
+
+#permitPDF .mb-4 {
+  margin-bottom: 6px !important;
+}
+
+body.print-mode #permitPDF {
+  width: 100% !important;
+  padding: 0.35in !important;
+
+  font-size: 9.5px !important;
+  line-height: 1.1 !important;
+
+  box-shadow: none !important;
+}
+body.print-mode h6 {
+  font-size: 10px !important;
+  margin-bottom: 2px !important;
+}
+
+body.print-mode hr {
+  margin: 3px 0 !important;
+}
+
+body.print-mode .row {
+  margin-bottom: 1px !important;
+}
+
+body.print-mode .mb-4 {
+  margin-bottom: 4px !important;
+}
+
+body.print-mode small {
+  font-size: 8px !important;
+}
+
+body.print-mode .fw-semibold {
+  font-size: 9px !important;
+}
+
+.btn-close:focus,
+.no-focus:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+</style>
+
+
+<body>
+	<!-- Sidebar Section -->
+		<section id="sidebar">
+		<a href="#" class="brand" style="display: flex; align-items: center;">
+			<img src="../imgs/PSI.png" alt="RHULogo" class="logo">
+			<span class="text">PSI-PMMA Portal</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a href="dashboard.html">
+					<i class="bx bxs-dashboard"></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+
+			<li class="active">
+				<a href="TestPermit.html">
+				<i class="bx bx-pencil" /></i>
+					<span class="text">Test Permit</span>
+				</a>
+			</li>
+		</ul>
+
+		<ul class="side-menu">
+<li>
+  <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+    <i class="bx bxs-log-out-circle"></i>
+    <span class="text">Logout</span>
+  </a>
+</li>
+</ul>
+		
+	</section>
+
+	<section id="content">
+		<nav>
+      			<div class="greeting">
+                <span>User</span>
+            </div>
+		</nav>
+
+<!-- MAIN CONTENT -->
+<main class="container py-3">
+
+  <!-- PERMIT PDF AREA -->
+  <div id="permitPDF" class="bg-white p-4 shadow-sm">
+
+    <!-- HEADER -->
+    <div class="text-center mb-4">
+      <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+        <img src="../imgs/PSI.png" style="max-height:80px">
+        <div>
+          <h6 class="fw-bold text-uppercase mb-1">PSY Systems and Innovation, OPC</h6>
+          <div class="small text-muted text-uppercase">Philippine Merchant Marine Academy</div>
+          <div class="small text-muted text-uppercase">Psychological Evaluation</div>
+        </div>
+        <img src="../imgs/PMMA.png" style="max-height:80px">
+      </div>
+
+      <h6 class="fw-bold text-uppercase mt-3">Test Permit</h6>
+    </div>
+
+    <hr>
+
+<!-- NOTE + PHOTO ROW -->
+<div class="row align-items-start mb-3">
+
+  <!-- NOTE (LEFT) -->
+  <div class="col-8">
+    <div class="permit-note">
+      PLEASE BRING THIS TEST PERMIT ON EXAMINATION DAY.
+    </div>
+  </div>
+
+  <!-- PHOTO (RIGHT) -->
+  <div class="col-4 d-flex justify-content-end">
+    <div style="width:130px">
+      <div class="border rounded ratio ratio-1x1 position-relative photo-box">
+
+        <img id="photoPreview" class="img-fluid d-none w-100 h-100 object-fit-cover">
+
+        <div id="photoPlaceholder"
+             class="d-flex flex-column justify-content-center align-items-center small text-muted text-center h-100">
+          <strong>2 × 2 Picture</strong>
+          <span>white background wearing white shirt</span>
+        </div>
+
+        <div class="upload-overlay d-flex justify-content-center align-items-center">
+          <label for="photoInput" class="btn btn-sm btn-outline-light">
+            Upload Photo
+          </label>
+        </div>
+      </div>
+
+      <input type="file" id="photoInput" accept="image/*" hidden>
+    </div>
+  </div>
+
+</div>
+
+
+    <!-- PERSONAL INFORMATION -->
+
+    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Personal Information</h6>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <small class="text-muted">Test Permit No.</small>
+        <div class="fw-semibold" id="testPermit">050-2018</div>
+      </div>
+      <div class="col-md-6">
+        <small class="text-muted">Status</small>
+        <div class="fw-semibold text-success" id="status">Detected</div>
+      </div>
+      <div class="col-md-6">
+        <small class="text-muted">Name of Examinee</small>
+        <div class="fw-semibold" id="fullName">User</div>
+      </div>
+      <div class="col-md-6">
+        <small class="text-muted">Date of Birth</small>
+        <div class="fw-semibold" id="dob">02/11/2026</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Age</small>
+        <div class="fw-semibold" id="age">18</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Gender</small>
+        <div class="fw-semibold" id="gender">Male</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Nationality</small>
+        <div class="fw-semibold" id="nationality">Filipino</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Contact Number</small>
+        <div class="fw-semibold" id="contact">09123456789</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Email Address</small>
+        <div class="fw-semibold" id="email">example@gmail.com</div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Schedule of Examination</h6>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <small class="text-muted">Date of Testing</small>
+        <div class="fw-semibold" id="dateOfTest">05/27/2025</div>
+      </div>
+      <div class="col-md-6">
+        <small class="text-muted">Venue</small>
+        <div class="fw-semibold" id="venue">Manila</div>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Payment Details</h6>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <small class="text-muted">Transaction No.</small>
+        <div class="fw-semibold" id="transactionNo">123456789</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Payment Date</small>
+        <div class="fw-semibold" id="paymentDate">02/11/2026</div>
+      </div>
+      <div class="col-md-4">
+        <small class="text-muted">Amount</small>
+        <div class="fw-semibold" id="amount">₱100.00</div>
+      </div>
+    </div>
+
+    <!-- GUIDELINES -->
+    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Guidelines</h6>
+
+    <ol class="small text-muted">
+      <li><strong>Examination fees are non-refundable under any circumstances.</strong></li>
+      <li>Attach 2×2 ID picture with name tag in white background.</li>
+      <li>Wear white shirt, maong pants, and rubber shoes on examination day.</li>
+      <li>Bring a valid ID for verification purposes.</li>
+      <li>Bring 2 pencils, eraser, sharpener.</li>
+      <li>Bring snacks (to be consumed outside the testing room).</li>
+      <li>Cellphones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
+    </ol>
+
+    <!-- PRINT-ONLY SIGNATURE -->
+<div class="print-signature mt-4 d-none">
+  <p class="fst-italic mb-4">Verified by:</p>
+
+  <div style="margin-top:40px; width:260px;">
+    <div style="border-bottom:1px solid #000; height:30px;"></div>
+    <div class="small text-center mt-1">
+      Signature over Printed Name
+    </div>
+    <div class="small fst-italic text-center mt-1">
+      (to be filled by the official representative of PSI)
+    </div>
+  </div>
+</div>
+
+  </div>
+
+<div class="d-flex justify-content-center mt-4">
+  <button id="generatePDF" class="btn btn-danger px-4 py-2">
+    <i class="bx bx-download me-2"></i>
+    Generate PDF
+  </button>
+</div>
+
+</main>
+
+<!-- Logout Confirmation Modal -->
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  aria-labelledby="logoutModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered logout-modal">
+    <div class="modal-content border-0 rounded-4 shadow">
+
+      <!-- Header -->
+      <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+          Confirm Logout
+        </h5>
+        <button
+          type="button"
+          class="btn-close no-focus"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Divider -->
+      <div class="px-4">
+        <hr class="my-0">
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body px-4 py-4 text-center">
+        <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+        <p class="mb-0 text-muted">
+          Are you sure you want to log out of your account?
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+        <button
+          type="button"
+          class="btn btn-outline-secondary rounded-pill px-4"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <a
+          href="../php/logout.php"
+          class="btn btn-danger rounded-pill px-4"
+        >
+          Logout
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="js/testPermit.js"></script>
+<script>
+  // PHOTO UPLOAD
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+  const photoPlaceholder = document.getElementById('photoPlaceholder');
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      photoPreview.src = e.target.result;
+      photoPreview.classList.remove('d-none');
+      photoPlaceholder.classList.add('d-none');
+    };
+    reader.readAsDataURL(file);
+  });
+
+document.getElementById('generatePDF').addEventListener('click', async () => {
+  const permit = document.getElementById('permitPDF');
+
+  document.body.classList.add('print-mode');
+
+  await html2pdf().set({
+    margin: 0,
+    filename: 'PMMA_Test_Permit.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      scrollY: 0
+    },
+    jsPDF: {
+      unit: 'in',
+      format: 'letter',    
+      orientation: 'landscape'
+    },
+    pagebreak: { mode: ['avoid-all'] }
+  }).from(permit).save();
+
+  document.body.classList.remove('print-mode');
+});
+
+</script>
+
+</body>
+</html>
+

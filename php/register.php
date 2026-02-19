@@ -4,6 +4,34 @@ header('Content-Type: application/json');
 
 session_start();
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/RateLimiter.php';
+
+// Initialize rate limiter
+$rateLimiter = new RateLimiter($pdo);
+$clientIP = $_SERVER['REMOTE_ADDR'];
+
+// Check rate limit - max 8 registration attempts, blocked for 15 minutes after exceeding
+if (!$rateLimiter->checkLimit('registration', $clientIP, 8, 900)) {
+    $secondsRemaining = $rateLimiter->getTimeUntilUnblocked('registration', $clientIP);
+    
+    // Convert to user-friendly time format
+    if ($secondsRemaining < 60) {
+        $timeDisplay = ceil($secondsRemaining) . " second" . (ceil($secondsRemaining) != 1 ? "s" : "");
+    } else {
+        $minutes = ceil($secondsRemaining / 60);
+        $timeDisplay = $minutes . " minute" . ($minutes != 1 ? "s" : "");
+    }
+    
+    $message = "Too many registration attempts. Please try again in " . $timeDisplay . ".";
+    
+    http_response_code(429);
+    echo json_encode([
+        'success' => false, 
+        'message' => $message,
+        'retry_after' => $secondsRemaining
+    ]);
+    exit;
+}
 
 error_log("=== REGISTER DEBUG ===");
 error_log("POST data: " . print_r($_POST, true));
