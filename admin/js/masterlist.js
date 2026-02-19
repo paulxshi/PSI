@@ -16,6 +16,48 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     let currentSearch = '';
     let currentStatus = '';
+    let deleteTargetId = null;
+    let deleteTargetName = '';
+
+
+
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (!deleteTargetId) return;
+
+    this.disabled = true;
+    this.textContent = 'Deleting...';
+
+    const formData = new FormData();
+    formData.append('id', deleteTargetId);
+
+    fetch('../php/delete_examinee_masterlist.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showStatus('Examinee record deleted successfully', 'success');
+                loadMasterlistData();
+            } else {
+                showStatus(data.message || 'Failed to delete record', 'danger');
+            }
+        })
+        .catch(() => {
+            showStatus('Network error deleting record', 'danger');
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.textContent = 'Delete Examinee';
+            deleteTargetId = null;
+
+            bootstrap.Modal.getInstance(
+                document.getElementById('deleteExamineeModal')
+            ).hide();
+        });
+});
 
     // Initialize
     loadMasterlistData();
@@ -282,35 +324,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Delete record (global function)
-    window.deleteRecord = function(id) {
-        if (!confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-            return;
-        }
+        window.deleteRecord = function(id) {
+            deleteTargetId = id;
 
-        const formData = new FormData();
-        formData.append('id', id);
+            // Get name from row (safe + simple)
+            const row = event.target.closest('tr');
+            deleteTargetName = row.children[1].textContent;
 
-        fetch('../php/delete_examinee_masterlist.php', {
-            method: 'POST',
-            body: formData,
-            credentials: 'same-origin'
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Delete Response:', data);
-                
-                if (data.success) {
-                    showStatus('Record deleted successfully', 'success');
-                    loadMasterlistData();
-                } else {
-                    showStatus(data.message || 'Failed to delete record', 'danger');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showStatus('Network error deleting record', 'danger');
-            });
-    };
+            document.getElementById('deleteExamineeName').textContent = deleteTargetName;
+
+            new bootstrap.Modal(
+                document.getElementById('deleteExamineeModal')
+            ).show();
+        };
 
     // Upload CSV file
     function uploadCsvFile(file) {
