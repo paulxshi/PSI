@@ -151,7 +151,7 @@ echo json_encode([
 
     "name" => $fullName,
     "test_permit" => $user['test_permit'],
-    "exam_date" => date("F d, Y", strtotime($schedule['schedule_datetime'])),
+    "exam_date" => date("F d, Y", strtotime($schedule['scheduled_date'])),
     "venue" => $venue['venue_name'],
     "examinee_id" => $examinee['examinee_id'],
     "invoice_no" => $payment['external_id'],

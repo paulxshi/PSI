@@ -300,14 +300,12 @@ function displayExamDetails(data) {
   document.getElementById('venue').textContent = data.venue_name || '—';
   
   // Format date
-  if (data.schedule_datetime) {
-    const date = new Date(data.schedule_datetime);
+  if (data.scheduled_date) {
+    const date = new Date(data.scheduled_date + 'T00:00:00');
     const formatted = date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric'
     });
     document.getElementById('examDate').textContent = formatted;
   }

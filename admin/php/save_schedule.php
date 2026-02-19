@@ -9,22 +9,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form values and sanitize
     $region = trim($_POST['exam_region']);
     $venue_name = trim($_POST['exam_area']);
-    $date = trim($_POST['exam_date']); // Format: YYYY-MM-DD
-    $time = trim($_POST['exam_time']); // Format: HH:MM
+    $scheduled_date = trim($_POST['exam_date']); // Format: YYYY-MM-DD
     $exam_limit = (int)$_POST['exam_limit'];
     $exam_price = (float)$_POST['exam_price'];
 
     // Validate required fields
-    if (empty($region) || empty($venue_name) || empty($date) || empty($time) || $exam_limit <= 0 || $exam_price < 0) {
+    if (empty($region) || empty($venue_name) || empty($scheduled_date) || $exam_limit <= 0 || $exam_price < 0) {
         echo json_encode([
             'success' => false,
             'message' => 'All fields are required and must be valid.'
         ]);
         exit();
     }
-
-    // Combine date and time into datetime format
-    $schedule_datetime = $date . ' ' . $time . ':00';
 
     try {
         // Start transaction
@@ -46,10 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 3️⃣ Insert schedule with price
         $stmtSchedule = $pdo->prepare("
-            INSERT INTO schedules (venue_id, schedule_datetime, num_of_examinees, price, num_registered, status) 
+            INSERT INTO schedules (venue_id, scheduled_date, num_of_examinees, price, num_registered, status) 
             VALUES (?, ?, ?, ?, 0, 'Incoming')
         ");
-        $stmtSchedule->execute([$venue_id, $schedule_datetime, $exam_limit, $exam_price]);
+        $stmtSchedule->execute([$venue_id, $scheduled_date, $exam_limit, $exam_price]);
 
         // Commit transaction
         $pdo->commit();

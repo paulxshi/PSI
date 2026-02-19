@@ -20,10 +20,10 @@ if (isset($_GET['type'])) {
     if ($_GET['type'] == "schedules" && isset($_GET['venue_id'])) {
 
         $stmt = $pdo->prepare("
-            SELECT schedule_id, schedule_datetime, price
+            SELECT schedule_id, scheduled_date, price
             FROM schedules
             WHERE venue_id = ? AND status = 'Incoming'
-            ORDER BY schedule_datetime ASC
+            ORDER BY scheduled_date ASC
         ");
         $stmt->execute([$_GET['venue_id']]);
         

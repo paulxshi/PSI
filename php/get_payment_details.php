@@ -22,7 +22,7 @@ try {
             u.test_permit,
             CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS full_name,
             e.status AS examinee_status,
-            s.schedule_datetime,
+            s.scheduled_date,
             s.price,
             v.venue_name
         FROM users u
@@ -69,7 +69,7 @@ try {
         'data' => [
             'test_permit' => $result['test_permit'],
             'full_name' => $result['full_name'],
-            'schedule_datetime' => $result['schedule_datetime'],
+            'scheduled_date' => $result['scheduled_date'],
             'price' => $result['price'],
             'venue_name' => $result['venue_name']
         ]

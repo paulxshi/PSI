@@ -17,7 +17,7 @@ try {
     $query = "
         SELECT 
             s.schedule_id,
-            s.schedule_datetime,
+            s.scheduled_date,
             s.num_of_examinees,
             s.status,
             v.venue_id,
@@ -26,7 +26,7 @@ try {
         FROM schedules s
         JOIN venue v ON s.venue_id = v.venue_id
         WHERE s.status = 'Incoming'
-        ORDER BY s.schedule_datetime ASC
+        ORDER BY s.scheduled_date ASC
     ";
 
     $stmt = $pdo->prepare($query);
