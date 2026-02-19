@@ -193,7 +193,7 @@
 
       <div class="row mb-3">
         <div class="col text-muted small">Payment Type</div>
-        <div class="col text-end fw-semibold">Online Payment</div>
+        <div class="col text-end fw-semibold" id="paymentType">Online Payment</div>
       </div>
 
       <div class="row mb-3">
@@ -203,7 +203,7 @@
 
       <div class="row mb-3">
         <div class="col text-muted small">Email</div>
-        <div class="col text-end fw-semibold">Registered Email</div>
+        <div class="col text-end fw-semibold" id="userEmail">Loading...</div>
       </div>
 
       <hr class="my-4">
@@ -260,6 +260,16 @@ fetch('php/check_payment_status.php', {
     const amount = parseFloat(data.payment.amount);
     document.getElementById('amountPaid').textContent = '₱' + amount.toFixed(2);
     
+    // Update payment type dynamically
+    if (data.payment.payment_method) {
+      document.getElementById('paymentType').textContent = data.payment.payment_method;
+    }
+    
+    // Update email dynamically
+    if (data.payment.email) {
+      document.getElementById('userEmail').textContent = data.payment.email;
+    }
+    
     if (data.payment.status === 'PAID') {
       document.getElementById('invoiceText').innerHTML = 
         '<span class="text-success">✓ Payment Confirmed</span><br>' +
@@ -274,11 +284,13 @@ fetch('php/check_payment_status.php', {
     }
   } else {
     document.getElementById('invoiceText').textContent = 'Invoice #: N/A';
+    document.getElementById('userEmail').textContent = 'N/A';
   }
 })
 .catch(error => {
   console.error('Error checking payment:', error);
   document.getElementById('invoiceText').textContent = 'Invoice #: N/A';
+  document.getElementById('userEmail').textContent = 'N/A';
 });
 
 function login() {

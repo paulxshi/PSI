@@ -44,12 +44,41 @@ if (!password_verify($password, $user['password'])) {
 
 /* Check user status - must be 'active' to login */
 if ($user['status'] === 'incomplete') {
-    echo json_encode([
-        "success" => false, 
-        "message" => "Your account is not yet activated. Please complete your registration and payment.",
-        "redirect" => "registration.html"
-    ]);
-    exit;
+    // Check examinee status to determine correct redirect based on progress
+    $examineeCheckStmt = $pdo->prepare(
+        "SELECT status, schedule_id FROM examinees WHERE user_id = :user_id LIMIT 1"
+    );
+    $examineeCheckStmt->execute([':user_id' => $user['user_id']]);
+    $examineeCheck = $examineeCheckStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($examineeCheck) {
+        // User has completed registration, check next step
+        if ($examineeCheck['status'] === 'Awaiting Payment' && $examineeCheck['schedule_id']) {
+            // Schedule selected, needs to pay
+            echo json_encode([
+                "success" => false, 
+                "message" => "Please complete your payment to activate your account.",
+                "redirect" => "payment.html"
+            ]);
+            exit;
+        } else {
+            // Schedule not yet selected
+            echo json_encode([
+                "success" => false, 
+                "message" => "Please select your exam schedule to continue.",
+                "redirect" => "examsched.html"
+            ]);
+            exit;
+        }
+    } else {
+        // No examinee record - should complete registration
+        echo json_encode([
+            "success" => false, 
+            "message" => "Please complete your registration first.",
+            "redirect" => "registration.html"
+        ]);
+        exit;
+    }
 }
 
 if ($user['status'] === 'blocked') {
@@ -63,7 +92,7 @@ if ($user['status'] === 'blocked') {
 /* For examinees, check examinees table status */
 if ($user['role'] === 'examinee') {
     $examineeStmt = $pdo->prepare(
-        "SELECT status FROM examinees WHERE user_id = :user_id LIMIT 1"
+        "SELECT status, schedule_id FROM examinees WHERE user_id = :user_id LIMIT 1"
     );
     $examineeStmt->execute([':user_id' => $user['user_id']]);
     $examinee = $examineeStmt->fetch(PDO::FETCH_ASSOC);
@@ -79,12 +108,24 @@ if ($user['role'] === 'examinee') {
     
     /* Check if examinee status is 'Scheduled' */
     if ($examinee['status'] !== 'Scheduled') {
-        echo json_encode([
-            "success" => false, 
-            "message" => "Please complete your exam schedule and payment before logging in.",
-            "redirect" => "examsched.html"
-        ]);
-        exit;
+        // Determine where to redirect based on progress
+        if ($examinee['status'] === 'Awaiting Payment' && $examinee['schedule_id']) {
+            // Schedule selected, needs to pay
+            echo json_encode([
+                "success" => false, 
+                "message" => "Please complete your payment to access your dashboard.",
+                "redirect" => "payment.html"
+            ]);
+            exit;
+        } else {
+            // Schedule not yet selected or in 'Pending' status
+            echo json_encode([
+                "success" => false, 
+                "message" => "Please select your exam schedule before logging in.",
+                "redirect" => "examsched.html"
+            ]);
+            exit;
+        }
     }
 }
 
