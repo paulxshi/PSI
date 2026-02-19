@@ -6,60 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="icon" href="imgs/PSI.png">
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+        .status-box { 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0; 
         }
-        .main-card { max-width: 700px; width: 100%; }
-        .btn-complete { font-size: 1.2rem; padding: 1rem 2rem; }
-        .status-box { padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .btn-complete { 
+            background: linear-gradient(135deg, #ffb347, #ef8809);
+            border: none;
+            color: #000;
+            font-weight: 600;
+            font-size: 1.1rem; 
+            padding: 0.75rem 2rem;
+            border-radius: 999px;
+            box-shadow: 0 8px 18px rgba(239, 136, 9, 0.35), 0 0 18px rgba(255, 179, 71, 0.45);
+            transition: all 0.3s ease;
+        }
+        .btn-complete:hover {
+            background: linear-gradient(135deg, #ef8809, #d97706);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(239, 136, 9, 0.45), 0 0 25px rgba(255, 179, 71, 0.65);
+        }
+        .btn-complete:active {
+            transform: scale(0.97);
+        }
+        .btn-complete:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
-<body>
 
-<div class="main-card">
-    <div class="card shadow-lg">
-        <div class="card-header bg-warning text-dark text-center py-4">
-            <h3><i class="bi bi-hourglass-split"></i> Payment Stuck? Complete It Now!</h3>
-        </div>
-        
-        <div class="card-body p-4">
+<body
+  class="min-vh-100 d-flex align-items-center justify-content-center"
+  style="background: url('imgs/bg.jpg') center center / cover no-repeat fixed;"
+>
+
+<div
+  class="position-fixed top-0 start-0 w-100 h-100"
+  style="backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 0;">
+</div>
+
+<div class="container position-relative" style="z-index: 1;">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
             
-            <div class="alert alert-info">
-                <h5><i class="bi bi-info-circle"></i> What's Happening?</h5>
-                <p class="mb-0">Your payment was created but not completed. Click the button below to complete it instantly (for testing purposes).</p>
-            </div>
+            <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75">
+                <div class="card-body p-4">
+                    
+                    <div class="d-flex justify-content-center align-items-center mb-4">
+                        <img src="imgs/PSI.png" class="img-fluid" style="max-width:80px;">
+                        <div class="mx-3" style="width:1px; height:40px; background-color:#8f8f8f;"></div>
+                        <img src="imgs/PMMA.png" class="img-fluid" style="max-width:80px;">
+                    </div>
 
-            <div id="statusBox" class="status-box bg-light text-center">
-                <h5 id="statusText">Ready to complete your payment</h5>
-                <p id="statusDetail" class="text-muted mb-0">Click the button below</p>
-            </div>
+                    <div id="statusBox" class="status-box bg-light text-center">
+                        <h5 id="statusText">Ready to complete your payment</h5>
+                        <p id="statusDetail" class="text-muted mb-0">Click the button below</p>
+                    </div>
 
-            <div class="text-center mb-4">
-                <button onclick="completePendingPayment()" class="btn btn-success btn-complete">
-                    <i class="bi bi-lightning-charge"></i> Complete Payment Now
-                </button>
-            </div>
+                    <div class="text-center">
+                        <button onclick="completePendingPayment()" class="btn btn-complete">
+                            <i class="bi bi-lightning-charge"></i> Complete Payment Now
+                        </button>
+                    </div>
 
-            <hr>
-
-            <div class="card bg-light">
-                <div class="card-body">
-                    <h6><i class="bi bi-question-circle"></i> What This Does:</h6>
-                    <ul class="mb-0">
-                        <li>Finds your most recent PENDING payment</li>
-                        <li>Triggers webhook to mark it as PAID</li>
-                        <li>Updates database (examinees → Scheduled, users → active)</li>
-                        <li>Redirects you to success page with invoice number</li>
-                    </ul>
                 </div>
             </div>
-
+            
         </div>
     </div>
 </div>
