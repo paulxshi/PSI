@@ -41,50 +41,68 @@ document.addEventListener("DOMContentLoaded", () => {
       const statusDisplay = user.status ? user.status.charAt(0).toUpperCase() + user.status.slice(1) : 'Inactive';
 
       // Build user card
-      const card = `
-        <div>
-          <div>
-            <div class="card-body text-center border-bottom py-4">
-            <input type="hidden" id="user_id" name="user_id" value="${user.user_id}">
-              <h5 class="fw-bold mb-1">${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}</h5>
-              <p class="text-muted mb-2">${roleDisplay}</p>
-              <div class="d-flex justify-content-center gap-2">
-                <span class="badge ${statusBadgeClass}">${statusDisplay}</span>
+        const card = `
+          <div class="user-card">
+
+            <!-- Header -->
+            <div class="user-card-header">
+              <div class="avatar">
+                ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
               </div>
+
+              <h5 class="user-name">
+                ${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}
+              </h5>
+
+              <p class="user-role">${roleDisplay}</p>
+
+              <span class="status-pill ${statusBadgeClass}">
+                ${statusDisplay}
+              </span>
+
+              <input type="hidden" id="user_id" value="${user.user_id}">
             </div>
-            <div class="card-body px-4">
-              <div class="mb-3">
-                <small class="text-muted text-uppercase">Test Permit</small>
-                <div class="fw-semibold">${user.test_permit ?? "N/A"}</div>
+
+            <!-- Body -->
+            <div class="user-card-body">
+
+              <div class="info-row">
+                <span class="info-label">Test Permit</span>
+                <span class="info-value">${user.test_permit ?? "N/A"}</span>
               </div>
-              <div class="mb-3">
-                <small class="text-muted text-uppercase">Email Address</small>
-                <div class="fw-semibold">${user.email}</div>
+
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">${user.email}</span>
               </div>
-              <div class="mb-3">
-                <small class="text-muted text-uppercase">Contact Number</small>
-                <div class="fw-semibold">${user.contact_number}</div>
+
+              <div class="info-row">
+                <span class="info-label">Contact</span>
+                <span class="info-value">${user.contact_number}</span>
               </div>
-              <div class="row">
-                <div class="col-6 mb-3">
-                  <small class="text-muted text-uppercase">Birthday</small>
-                  <div class="fw-semibold">${dobFormatted}</div>
+
+              <div class="info-grid">
+                <div>
+                  <span class="info-label">Birthday</span>
+                  <span class="info-value">${dobFormatted}</span>
                 </div>
-                <div class="col-6 mb-3">
-                  <small class="text-muted text-uppercase">Age</small>
-                  <div class="fw-semibold">${user.age}</div>
+                <div>
+                  <span class="info-label">Age</span>
+                  <span class="info-value">${user.age}</span>
                 </div>
               </div>
+
               ${user.school ? `
-              <div class="mb-3">
-                <small class="text-muted text-uppercase">School</small>
-                <div class="fw-semibold">${user.school}</div>
+              <div class="info-row">
+                <span class="info-label">School</span>
+                <span class="info-value">${user.school}</span>
               </div>
               ` : ''}
+
             </div>
           </div>
-        </div>
-      `;
+        `;
+
 
       container.insertAdjacentHTML("beforeend", card);
 
@@ -118,13 +136,41 @@ fetch("php/get_transaction.php?user_id=" + userId)
     });
 
     // Download Function
-    document.getElementById("downloadQR").addEventListener("click", function () {
-      const img = document.querySelector("#qrContainer img");
-      const link = document.createElement("a");
-      link.href = img.src;
-      link.download = transactionNo + "_QR.png";
-      link.click();
-    });
+document.getElementById("downloadQR").addEventListener("click", () => {
+  const canvas = document.querySelector("#qrContainer canvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  const logo = new Image();
+  logo.src = "../imgs/PSI.png";
+
+  logo.onload = () => {
+    const size = canvas.width * 0.22;
+    const x = (canvas.width - size) / 2;
+    const y = (canvas.height - size) / 2;
+
+    // White background circle
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(
+      x + size / 2,
+      y + size / 2,
+      size / 2 + 4,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill();
+
+    // Draw logo
+    ctx.drawImage(logo, x, y, size, size);
+
+    const link = document.createElement("a");
+    link.download = transactionNo + "_QR.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+});
+
 
   })
   .catch(error => console.error(error));
@@ -189,8 +235,23 @@ fetch("php/get_exam_details.php?user_id=" + userId)
       console.error("Fetch error:", err);
       container.innerHTML = `<p class="text-danger">Error loading user data: ${err.message}</p>`;
     });
+});
 
+document.querySelectorAll('.faq-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const row = toggle.closest('.faq-row');
+    const content = row.querySelector('.faq-content-wrapper');
 
+    // Close all others
+    document.querySelectorAll('.faq-row').forEach(r => {
+      if (r !== row) {
+        r.classList.remove('active');
+        r.querySelector('.faq-content-wrapper').classList.remove('open');
+      }
+    });
 
-
+    // Toggle current
+    row.classList.toggle('active');
+    content.classList.toggle('open');
+  });
 });

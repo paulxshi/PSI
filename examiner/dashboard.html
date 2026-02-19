@@ -6,214 +6,15 @@
 	<link rel="icon" href="../imgs/PSI.png">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 	<link rel="stylesheet" href="../css/dashstyle.css">
-
+  <link rel="stylesheet" href="css/dashboard.css">
 	<title>Dashboard</title>
 </head>
-
-<style>
-.qr-card {
-  background: linear-gradient(145deg, #eef2f7, #f8fafc);
-  border-radius: 18px;
-  padding: 28px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-}
-
-.qr-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.qr-subtitle {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 20px;
-}
-
-.qr-box {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 14px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-#qrContainer canvas,
-#qrContainer img {
-  width: 180px !important;
-  height: 180px !important;
-}
-
-.qr-code-text {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin-bottom: 16px;
-}
-
-.qr-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #9ca3af;
-  font-size: 0.75rem;
-  margin: 16px 0;
-}
-
-.qr-divider::before,
-.qr-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: #e5e7eb;
-}
-
-.qr-manual {
-  display: flex;
-  gap: 8px;
-}
-
-.qr-manual input {
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
-}
-
-.btn-copy {
-  background: #2563eb;
-  color: #fff;
-  border-radius: 8px;
-}
-
-.btn-copy:hover {
-  background: #1e40af;
-}
-
-.exam-info {
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 12px;
-}
-.exam-info small {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-}
-.exam-value {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-	font-size: 1.1rem;
-    letter-spacing: 0.5px;
-  	color: #111827;
-}
-
-.content-box {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 24px;
-  border: 1px solid #e5e7eb;
-  box-shadow:
-    0 1px 2px rgba(16, 24, 40, 0.04),
-    0 8px 24px rgba(16, 24, 40, 0.06);
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-
-
-#userCard {
-  width: 100%;
-}
-
-#qrCode {
-  min-height: 200px;
-}
-
-#faq {
-  min-height: 300px;
-}
-
-.centered-content {
-  display: flex;
-  flex-direction: column; 
-  align-items: center;     
-  text-align: center;     
-  gap: 10px;               
-}
-.faq-ui {
-  border-top: 1px solid #e5e7eb;
-}
-
-.faq-row {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.faq-toggle {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 18px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-.faq-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #111827;
-}
-
-.faq-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.faq-chevron {
-  font-size: 1.4rem;
-  color: #6b7280;
-  transition: transform 0.3s ease;
-}
-
-/* MANUAL CONTENT CONTROL */
-.faq-content-wrapper {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-}
-
-.faq-content-wrapper.open {
-  max-height: 300px;
-}
-
-.faq-content {
-  padding: 0 0 16px 50px;
-  font-size: 0.9rem;
-  color: #4b5563;
-  line-height: 1.6;
-}
-
-/* Chevron rotate when open */
-.faq-row.active .faq-chevron {
-  transform: rotate(180deg);
-}
-
-
-</style>
 
 <body>
 
 	<!-- Sidebar Section -->
-		<section id="sidebar">
+	<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
 			<img src="../imgs/PSI.png" alt="RHULogo" class="logo">
 			<span class="text">PSI-PMMA Portal</span>
@@ -235,82 +36,92 @@
 		</ul>
 
 		<ul class="side-menu">
-<li>
-  <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-    <i class="bx bxs-log-out-circle"></i>
-    <span class="text">Logout</span>
-  </a>
-</li>
-
-
+      <li>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+          <i class="bx bxs-log-out-circle"></i>
+          <span class="text">Logout</span>
+        </a>
+      </li>
     </ul>
 		
 	</section>
 
 	<section id="content">
-		<nav>
-      			<div class="greeting">
-                <span>User</span>
-            </div>
-		</nav>
 
-<main class="container-fluid p-4">
+      <nav>
+        <div class="greeting">
+          <span>User</span>
+        </div>
+      </nav>
+
+    <main class="container-fluid p-4">
 
       <!-- EXAM INFO HEADER -->
     <div class="row mb-4">
         <div class="col-12">
-        <div class="d-flex justify-content-between text-center exam-info">
-          <div class="flex-fill">
-            <small class="d-inline-block bg-success bg-opacity-10 text-success 
-                        px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
-              Date of Registration
-            </small>
-            <div class="fw-bold" id="registration-date">
-              <!-- JS will populate -->
-            </div>
-          </div>
-            <div class="flex-fill">
-            <small class="d-inline-block bg-success bg-opacity-10 text-success 
-                        px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
-              Date of Examination
-            </small>
-            <div class="fw-bold" id="examination-date">
-              <!-- JS will populate -->
-            </div>
-          </div>
+          <div class="d-flex justify-content-between text-center exam-info">
 
             <div class="flex-fill">
-            <small class="d-inline-block bg-success bg-opacity-10 text-success 
-                        px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
-              Examination Venue
-            </small>
-            <div class="fw-bold" id="examination-venue">
-              <!-- JS will populate -->
+              <small class="d-inline-block bg-success bg-opacity-10 text-success 
+                          px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
+                Date of Registration
+              </small>
+              <div class="fw-bold" id="registration-date">
+                <!-- JS will populate -->
+              </div>
             </div>
-        </div>
+
+            <div class="flex-fill">
+              <small class="d-inline-block bg-success bg-opacity-10 text-success 
+                          px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
+                Date of Examination
+              </small>
+              <div class="fw-bold" id="examination-date">
+                <!-- JS will populate -->
+              </div>
+            </div>
+
+              <div class="flex-fill">
+              <small class="d-inline-block bg-success bg-opacity-10 text-success 
+                          px-3 py-1 rounded-pill text-uppercase fw-semibold mb-2">
+                Examination Venue
+              </small>
+              <div class="fw-bold" id="examination-venue">
+                <!-- JS will populate -->
+              </div>
+          </div>
+          </div>
       </div>
-      </div>
+
     </div>
 
       <!-- USER INFO CONTAINER -->
       <div class="container">
         <div class="row g-4">
-          <!-- LEFT: USER CARD (Tall) -->
-          <div class="col-md-5">
-            <div id="userCard" class="content-box">
-              <!-- USER INFO -->
-            
-            </div>
-          </div>
-              <div class="col-4">
-                <div id="qrCode" class="qr-card">
+            <!--USER CARD -->
 
-                  <h5 class="qr-title">Scan QR Code</h5>
-                  <p class="qr-subtitle">Scan this QR Code in-app to verify device.</p>
+            <div class="col-12 col-lg-5">
+                <div id="userCard" class="content-box">
+                  <!-- USER INFO -->
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div id="qrCode" class="qr-card">
+                  <h5 class="qr-title fw-bold">Scan QR Code</h5>
+
+                  <p class="qr-subtitle">
+                    Download and present this QR code at the examination site for verification.
+                  </p>
 
                   <!-- QR Box -->
                   <div class="qr-box">
                     <div id="qrContainer"></div>
+                      <img
+                        src="../imgs/PSI.png"
+                        alt="PSI Logo"
+                        class="qr-logo"
+                      />
                   </div>
 
                   <!-- QR Text -->
@@ -322,94 +133,85 @@
                   Download QR Code
                 </button>
                 </div>
-              </div>
-
-          <!-- RIGHT SIDE -->
-          <div class="col-md-8">
-            <div class="row g-4">
-              
-              <div id="faq" class="content-box">
-                <h4 class="fw-semibold mb-1">Frequently asked questions</h4>
-                <p class="text-muted mb-4" style="font-size: 0.9rem;">
-                  These are the most common questions about the examination process.
-                </p>
-
-                <div class="faq-ui">
-
-                  <div class="faq-row">
-                    <button class="faq-toggle">
-                      <div class="faq-left">
-                        <div class="faq-icon"><i class="bx bx-info-circle"></i></div>
-                        <span>What happens after I complete the online registration?</span>
-                      </div>
-                      <i class="bx bx-chevron-down faq-chevron"></i>
-                    </button>
-                    <div class="faq-content-wrapper open">
-                      <div class="faq-content">
-                        Once your online registration is confirmed, you will receive a registration confirmation and via email, which serves as your entry pass for the onsite examination.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="faq-row">
-                    <button class="faq-toggle">
-                      <div class="faq-left">
-                        <div class="faq-icon"><i class="bx bx-edit"></i></div>
-                        <span>Do I need to bring anything for the onsite exam?</span>
-                      </div>
-                      <i class="bx bx-chevron-down faq-chevron"></i>
-                    </button>
-                    <div class="faq-content-wrapper">
-                      <div class="faq-content">
-                        Yes. Bring a pen, your ID, your confirmation email and the QR code provided after registration. These will be scanned at the entrance to verify your registration.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="faq-row">
-                    <button class="faq-toggle">
-                      <div class="faq-left">
-                        <div class="faq-icon"><i class="bx bx-calendar"></i></div>
-                        <span>Can I reschedule my onsite examination?</span>
-                      </div>
-                      <i class="bx bx-chevron-down faq-chevron"></i>
-                    </button>
-                    <div class="faq-content-wrapper">
-                      <div class="faq-content">
-                        Rescheduling depends on availability. Contact the site administrator for assistance. Any rescheduling fees, if applicable, will be clearly indicated.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="faq-row">
-                    <button class="faq-toggle">
-                      <div class="faq-left">
-                        <div class="faq-icon"><i class="bx bx-qr"></i></div>
-                        <span>What if I lose my QR code or confirmation?</span>
-                      </div>
-                      <i class="bx bx-chevron-down faq-chevron"></i>
-                    </button>
-                    <div class="faq-content-wrapper">
-                      <div class="faq-content">
-                        You can log in to your account at any time to download your QR code or confirmation slip again. If you encounter issues, contact the support team before your exam date.
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-
-              </div>
-
-
-
             </div>
+          
+            <div class="row g-4">
+                <div class="col-12 col-lg-8">
+                  <div id="faq" class="content-box">
+                      <h4 class="fw-semibold mb-1">Frequently asked questions</h4>
+                      <p class="text-muted mb-4" style="font-size: 0.9rem;">
+                        These are the most common questions about the examination process.
+                      </p>
+
+                      <div class="faq-ui">
+
+                        <div class="faq-row">
+                          <button class="faq-toggle">
+                            <div class="faq-left">
+                              <div class="faq-icon"><i class="bx bx-info-circle"></i></div>
+                              <span>What happens after I complete the online registration?</span>
+                            </div>
+                            <i class="bx bx-chevron-down faq-chevron"></i>
+                          </button>
+                          <div class="faq-content-wrapper open">
+                            <div class="faq-content">
+                              Once your online registration is confirmed, you will receive a registration confirmation and via email, which serves as your entry pass for the onsite examination.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="faq-row">
+                          <button class="faq-toggle">
+                            <div class="faq-left">
+                              <div class="faq-icon"><i class="bx bx-edit"></i></div>
+                              <span>Do I need to bring anything for the onsite exam?</span>
+                            </div>
+                            <i class="bx bx-chevron-down faq-chevron"></i>
+                          </button>
+                          <div class="faq-content-wrapper">
+                            <div class="faq-content">
+                              Yes. Bring a pen, your ID, your confirmation email and the QR code provided after registration. These will be scanned at the entrance to verify your registration.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="faq-row">
+                          <button class="faq-toggle">
+                            <div class="faq-left">
+                              <div class="faq-icon"><i class="bx bx-calendar"></i></div>
+                              <span>Can I reschedule my onsite examination?</span>
+                            </div>
+                            <i class="bx bx-chevron-down faq-chevron"></i>
+                          </button>
+                          <div class="faq-content-wrapper">
+                            <div class="faq-content">
+                              Rescheduling depends on availability. Contact the site administrator for assistance. Any rescheduling fees, if applicable, will be clearly indicated.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="faq-row">
+                          <button class="faq-toggle">
+                            <div class="faq-left">
+                              <div class="faq-icon"><i class="bx bx-qr"></i></div>
+                              <span>What if I lose my QR code or confirmation?</span>
+                            </div>
+                            <i class="bx bx-chevron-down faq-chevron"></i>
+                          </button>
+                          <div class="faq-content-wrapper">
+                            <div class="faq-content">
+                              You can log in to your account at any time to download your QR code or confirmation slip again. If you encounter issues, contact the support team before your exam date.
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                  </div>
+              </div>
           </div>
 
-        </div>
-      </div>
-
-
+     </div>
+  </div>
 </main>
 
 <!-- Logout Confirmation Modal -->
@@ -434,27 +236,6 @@
 <script src="js/get_user.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-document.querySelectorAll('.faq-toggle').forEach(toggle => {
-  toggle.addEventListener('click', () => {
-    const row = toggle.closest('.faq-row');
-    const content = row.querySelector('.faq-content-wrapper');
-
-    // Close all others
-    document.querySelectorAll('.faq-row').forEach(r => {
-      if (r !== row) {
-        r.classList.remove('active');
-        r.querySelector('.faq-content-wrapper').classList.remove('open');
-      }
-    });
-
-    // Toggle current
-    row.classList.toggle('active');
-    content.classList.toggle('open');
-  });
-});
-</script>
 
 </body>
 </html>
