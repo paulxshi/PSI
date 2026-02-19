@@ -1,45 +1,88 @@
-// Function to fetch and render completed examinees
-async function fetchAndRenderCompletedExaminees() {
-    try {
-        const response = await fetch('php/dashboard.php'); // Adjust endpoint if needed (e.g., add a query param for 'completed' only)
-        const data = await response.json();
-        
-        // Assume data is an array of completed examinees: [{ test_permit, name, email, exam_date }, ...]
-        // If the structure differs, adjust accordingly.
-        
-        const tbody = document.getElementById('examineeTableBody');
-        const currentRows = tbody.querySelectorAll('tr');
-        const newRowCount = data.length;
-        
-        // Simple check: Update only if row count differs (or compute a hash for deeper comparison)
-        if (currentRows.length !== newRowCount) {
-            tbody.innerHTML = ''; // Clear existing rows
-            data.forEach(examinee => {
-                const row = `
-                    <tr>
-                        <td>${examinee.test_permit}</td>
-                        <td>${examinee.name}</td>
-                        <td>${examinee.email}</td>
-                        <td>${examinee.exam_date}</td>
-                    </tr>
-                `;
-                tbody.insertAdjacentHTML('beforeend', row);
-            });
-        }
-    } catch (error) {
-        console.error('Error fetching completed examinees:', error);
+document.addEventListener("DOMContentLoaded", function () {
+    const tableBody = document.getElementById("examineeTableBody");
+    let existingIds = new Set(); // Track displayed examinees
+
+    // Function to fetch and update table
+    function fetchCompletedExaminees() {
+        fetch("php/get_completed_examinees.php")
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    if (existingIds.size === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="text-center">No records found</td>
+                            </tr>
+                        `;
+                    }
+                    return;
+                }
+
+                // Sort by updated_at descending so latest appear first
+                data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+                data.forEach(examinee => {
+                    if (!existingIds.has(examinee.examinee_id)) {
+                        existingIds.add(examinee.examinee_id);
+
+const formattedDate = examinee.scheduled_date
+    ? new Date(examinee.scheduled_date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    : "Not Scheduled";
+
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${examinee.test_permit}</td>
+                            <td>${examinee.full_name}</td>
+                            <td>${examinee.email}</td>
+                            <td>${formattedDate}</td>
+                            <td>${examinee.examinee_status}</td>
+                        `;
+
+                        // Insert at the top
+                        tableBody.prepend(row);
+                    }
+                });
+
+                 updateCompletedCount();
+            })
+            .catch(error => console.error("Error:", error));
     }
+
+    // Initial fetch
+    fetchCompletedExaminees();
+
+    // Poll server every 5 seconds for new completed examinees
+    setInterval(fetchCompletedExaminees, 1000);
+
+
+
+    function updateCompletedCount() {
+    const tableBody = document.getElementById('examineeTableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    let completedCount = 0;
+
+    rows.forEach(row => {
+        const statusCell = row.cells[4]; // Assuming Status is the 5th column (index 4)
+        if (statusCell && statusCell.textContent.trim().toLowerCase() === 'completed') {
+            completedCount++;
+        }
+    });
+
+    document.getElementById('completedCount').textContent = completedCount;
 }
 
-// Initial load on page load
-document.addEventListener('DOMContentLoaded', () => {
-    fetchAndRenderCompletedExaminees();
-    
-    // Poll every 5 seconds for updates
-    const pollInterval = setInterval(fetchAndRenderCompletedExaminees, 5000);
-    
-    // Stop polling on page unload to avoid memory leaks
-    window.addEventListener('beforeunload', () => {
-        clearInterval(pollInterval);
-    });
+
+
+
+const currentDateEl = document.getElementById('currentDate');
+const today = new Date();
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+// Format the date
+currentDateEl.textContent = today.toLocaleDateString(undefined, options);
+
 });
