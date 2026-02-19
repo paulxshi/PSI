@@ -1,6 +1,8 @@
 // Schedule Management JavaScript
 let allSchedules = [];
 let filteredSchedules = [];
+let currentPage = 1;
+const rowsPerPage = 8;
 
 // Load schedules on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -50,10 +52,14 @@ async function loadSchedules() {
 // Display schedules in table
 function displaySchedules() {
     const tbody = document.getElementById('scheduleTableBody');
-    
     if (!tbody) return;
-    
-    if (filteredSchedules.length === 0) {
+
+    // Pagination calculation
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedSchedules = filteredSchedules.slice(start, end);
+
+    if (paginatedSchedules.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="text-center py-5">
@@ -64,73 +70,131 @@ function displaySchedules() {
         `;
         return;
     }
-    
-    tbody.innerHTML = filteredSchedules.map((schedule, index) => `
+
+    tbody.innerHTML = paginatedSchedules.map((schedule, index) => `
         <tr class="border-bottom">
-            <td class="fw-semibold">${index + 1}</td>
-            <td>${schedule.region}</td>
-            <td>${schedule.venue_name}</td>
-            <td>
-                <div class="fw-medium">${schedule.date}</div>
-                <small class="text-muted">${schedule.day}</small>
+            <td data-label="#">${start + index + 1}</td>
+            <td data-label="Region">${schedule.region}</td>
+            <td data-label="Venue">${schedule.venue_name}</td>
+            <td data-label="Date">${schedule.scheduled_date}</td>
+            <td data-label="Capacity">
+                ${schedule.num_registered} / ${schedule.capacity}
             </td>
-            <td>
-                <strong>${schedule.num_registered}</strong> / <strong>${schedule.capacity}</strong> 
-                <small class="text-muted">slots</small>
+            <td data-label="Exam Fee">₱${schedule.price}</td>
+            <td data-label="Status">
+                <span class="badge ${getStatusBadge(schedule.status)}">
+                    ${schedule.status}
+                </span>
             </td>
-            <td class="fw-semibold text-nowrap">₱${schedule.price}</td>
-            <td>${schedule.status}</td>
-            <td class="text-end">
+            <td data-label="Actions" class="text-end">
                 <div class="btn-group btn-group-sm">
-                    <button 
-                        class="btn btn-light" 
-                        title="Edit" 
-                        onclick="editSchedule(${schedule.schedule_id})"
-                    >
+                    <button class="btn btn-light"
+                        onclick="editSchedule(${schedule.schedule_id})">
                         <i class="bx bx-edit"></i>
                     </button>
-                    <button 
-                        class="btn btn-light text-danger" 
-                        title="Delete"
-                        onclick="confirmDelete(${schedule.schedule_id}, '${schedule.venue_name}')"
-                    >
+                    <button class="btn btn-light text-danger"
+                        onclick="confirmDelete(${schedule.schedule_id}, '${schedule.venue_name.replace(/'/g, "\\'")}')">
                         <i class="bx bx-trash"></i>
                     </button>
                 </div>
             </td>
         </tr>
     `).join('');
+
+    renderPagination();
 }
+function renderPagination() {
+    const paginationContainer = document.getElementById('pagination');
+    if (!paginationContainer) return;
+
+    const totalPages = Math.ceil(filteredSchedules.length / rowsPerPage);
+
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let buttons = `
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <button class="page-link" onclick="changePage(${currentPage - 1})">
+                <i class="bx bx-chevron-left"></i>
+            </button>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+        buttons += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                <button class="page-link" onclick="changePage(${i})">
+                    ${i}
+                </button>
+            </li>
+        `;
+    }
+
+    buttons += `
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <button class="page-link" onclick="changePage(${currentPage + 1})">
+               <i class="bx bx-chevron-right"></i>
+            </button>
+        </li>
+    `;
+
+    paginationContainer.innerHTML = `
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center custom-pagination">
+                ${buttons}
+            </ul>
+        </nav>
+    `;
+}
+function changePage(page) {
+    const totalPages = Math.ceil(filteredSchedules.length / rowsPerPage);
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    displaySchedules();
+}
+
+function getStatusBadge(status) {
+    switch (status.toLowerCase()) {
+        case 'incoming': return 'bg-info text-dark';
+        case 'closed': return 'bg-warning text-dark';
+        case 'completed': return 'bg-success';
+        default: return 'bg-secondary';
+    }
+}
+
 
 // Filter schedules
 function filterSchedules() {
+    currentPage = 1; // RESET PAGE
+
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const regionFilter = document.getElementById('regionFilter')?.value || '';
     const statusFilter = document.getElementById('statusFilter')?.value || '';
     const sortFilter = document.getElementById('sortFilter')?.value || '';
-    
+
     filteredSchedules = allSchedules.filter(schedule => {
-        const matchesSearch = 
+        return (
             schedule.venue_name.toLowerCase().includes(searchTerm) ||
-            schedule.date.toLowerCase().includes(searchTerm) ||
-            schedule.region.toLowerCase().includes(searchTerm);
-        
-        const matchesRegion = !regionFilter || schedule.region === regionFilter;
-        const matchesStatus = !statusFilter || schedule.status.toLowerCase() === statusFilter.toLowerCase();
-        
-        return matchesSearch && matchesRegion && matchesStatus;
+            schedule.scheduled_date.toLowerCase().includes(searchTerm) ||
+            schedule.region.toLowerCase().includes(searchTerm)
+        ) &&
+        (!regionFilter || schedule.region === regionFilter) &&
+        (!statusFilter || schedule.status.toLowerCase() === statusFilter.toLowerCase());
     });
-    
-    // Apply sorting
+
     if (sortFilter === 'newest') {
         filteredSchedules.sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
     } else if (sortFilter === 'oldest') {
-        filteredSchedules.sort((a, b) => new Date(a.scheduled_date) - new Date(a.scheduled_date));
+        filteredSchedules.sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date));
     }
-    
+
     displaySchedules();
     updateTotalCount();
 }
+
 
 // Update total count
 function updateTotalCount() {
