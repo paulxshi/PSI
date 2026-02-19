@@ -1,25 +1,37 @@
+let scanLocked = false;
+
+
 
 function onScanSuccess(decodedText) {
 
-    console.log("Scanned:", decodedText);
+    if (scanLocked) return;
+    scanLocked = true;
 
-    // Example decodedText = "TXN1771223060"
-    const transactionNo = decodedText;
+    console.log("Scanned:", decodedText);
 
     fetch("php/verify_qr.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ transaction_no: transactionNo })
+        body: JSON.stringify({ external_id: decodedText })
     })
     .then(res => res.json())
     .then(data => {
-        showQRResult(data); // this opens your modal
+        showQRResult(data);
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+        console.error(err);
+        scanLocked = false;
+    });
 }
 
+
+document.getElementById('qrResultModal')
+    .addEventListener('hidden.bs.modal', function () {
+        scanLocked = false;
+        window.currentExamineeId = null;
+    });
 
 
 function applyActionState(state) {
@@ -64,6 +76,14 @@ function applyActionState(state) {
 }
 
 
+function setText(id, value) {
+    const el = document.getElementById(id);
+    if (!el) {
+        console.warn("Element not found:", id);
+        return;
+    }
+    el.textContent = value ?? "-";
+}
 
 function showQRResult(data) {
 
@@ -71,14 +91,15 @@ function showQRResult(data) {
     window.currentExamineeId = (data.status_class === "valid") ? data.examinee_id : null;
 
     // Fill fields
-    document.getElementById("name").textContent = data.name ?? "-";
-    document.getElementById("test_permit").textContent = data.test_permit ?? "-";
-    document.getElementById("examination_date").textContent = data.exam_date ?? "-";
-    document.getElementById("examination_venue").textContent = data.venue ?? "-";
-    document.getElementById("transaction_no").textContent = data.transaction_no ?? "-";
-    document.getElementById("status").textContent = data.payment_status ?? "-";
-    document.getElementById("payment_date").textContent = data.payment_date ?? "-";
-    document.getElementById("payment_amount").textContent = data.amount ?? "-";
+setText("name", data.name);
+setText("test_permit", data.test_permit);
+setText("examination_date", data.exam_date);
+setText("examination_venue", data.venue);
+setText("invoice_no", data.invoice_no);
+setText("status", data.payment_status);
+setText("payment_date", data.payment_date);
+setText("payment_amount", data.amount);
+
 
     // Change status text
     const statusBox = document.getElementById("verificationStatus");
@@ -109,32 +130,37 @@ function showQRResult(data) {
     modal.show();
 }
 
+document.addEventListener("DOMContentLoaded", function () {
 
-document.getElementById("completeBtn").addEventListener("click", function () {
+    const completeBtn = document.getElementById("completeBtn");
+    const rejectBtn = document.getElementById("rejectBtn");
 
-    if (!window.currentExamineeId) {
-        alert("No examinee selected.");
-        return;
+    if (completeBtn) {
+        completeBtn.addEventListener("click", function () {
+
+            if (!window.currentExamineeId) {
+                alert("No examinee selected.");
+                return;
+            }
+
+            applyActionState("completed");
+            updateStatus("complete");
+        });
     }
 
-    // 🔥 Instantly reflect change in UI
-    applyActionState("completed");
+    if (rejectBtn) {
+        rejectBtn.addEventListener("click", function () {
 
-    updateStatus("complete");
-});
+            if (!window.currentExamineeId) {
+                alert("No examinee selected.");
+                return;
+            }
 
-
-document.getElementById("rejectBtn").addEventListener("click", function () {
-
-    if (!window.currentExamineeId) {
-        alert("No examinee selected.");
-        return;
+            applyActionState("rejected");
+            updateStatus("reject");
+        });
     }
 
-    // 🔥 Instantly reflect change in UI
-    applyActionState("rejected");
-
-    updateStatus("reject");
 });
 
 
