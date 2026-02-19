@@ -210,7 +210,7 @@
 
       <div class="row mb-3">
         <div class="col text-muted small">Amount Paid</div>
-        <div class="col text-end fw-bold text-success fs-4">
+        <div class="col text-end fw-bold text-success fs-4" id="amountPaid">
           ₱500.00
         </div>
       </div>
@@ -256,18 +256,18 @@ fetch('php/check_payment_status.php', {
   console.log('Payment Status:', data);
   
   if (data.success && data.payment) {
+    // Update amount dynamically
+    const amount = parseFloat(data.payment.amount);
+    document.getElementById('amountPaid').textContent = '₱' + amount.toFixed(2);
+    
     if (data.payment.status === 'PAID') {
       document.getElementById('invoiceText').innerHTML = 
         '<span class="text-success">✓ Payment Confirmed</span><br>' +
         '<small class="text-muted">Invoice: ' + data.payment.external_id + '</small>';
     } else if (data.payment.status === 'PENDING') {
-      document.getElementById('invoiceText').innerHTML = 
-        '<span class="text-warning">⏳ Payment Processing...</span><br>' +
-        '<small class="text-muted">Please wait while we confirm your payment.</small><br>' +
-        '<small class="text-muted">Invoice: ' + data.payment.external_id + '</small>';
-      
-      // Auto-refresh to check for webhook update
-      setTimeout(() => location.reload(), 5000);
+      // Redirect to complete_payment.html for pending payments
+      console.log('Payment still pending, redirecting to complete payment page...');
+      window.location.href = 'complete_payment.html';
     } else {
       document.getElementById('invoiceText').innerHTML = 
         '<span class="text-danger">Payment Status: ' + data.payment.status + '</span>';
