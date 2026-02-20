@@ -39,13 +39,30 @@ if (!in_array($fileType, $allowedMimes)) {
     exit;
 }
 
-// Read CSV file
+// Read CSV file with auto-detect delimiter
 $csvData = [];
 if (($handle = fopen($file['tmp_name'], 'r')) !== false) {
     $header = null;
     $rowNum = 0;
+    $delimiter = ','; // Default to comma
     
-    while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+    // Auto-detect delimiter from first line
+    $firstLine = fgets($handle);
+    if ($firstLine) {
+        // Count occurrences of common delimiters
+        $commaCount = substr_count($firstLine, ',');
+        $tabCount = substr_count($firstLine, "\t");
+        
+        // Choose the most frequent delimiter (tab or comma)
+        if ($tabCount > 0 && $tabCount >= $commaCount) {
+            $delimiter = "\t";
+        }
+        
+        // Reset file pointer to beginning
+        rewind($handle);
+    }
+    
+    while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
         $rowNum++;
         
         // First row is header
