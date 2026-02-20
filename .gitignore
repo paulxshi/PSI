@@ -1,0 +1,42 @@
+# Ignore sensitive configuration files
+config/payment_config.php
+config/db.php
+
+# Ignore environment files
+.env
+.env.local
+.env.production
+
+# Ignore log files
+*.log
+logs/
+error_log
+
+# Ignore vendor directory (composer packages)
+vendor/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore backup files
+*.bak
+*.backup
+*_backup
+
+# Ignore uploaded files (if any)
+uploads/
+tmp/
+temp/
+
+# Keep these files but ignore changes
+# (useful for config templates)
+# !config/payment_config.example.php
