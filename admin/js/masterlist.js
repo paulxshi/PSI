@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadCsvBtn = document.getElementById('uploadCsvBtn');
     const csvFileInput = document.getElementById('csvFileInput');
     const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
+    const dateFilter = document.getElementById('dateFilter');
     const searchBtn = document.getElementById('searchBtn');
     const createExamineeForm = document.getElementById('createExamineeForm');
     const tableContainer = document.getElementById('tableContainer');
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     let currentSearch = '';
     let currentStatus = '';
+    let currentDate = '';
     let deleteTargetId = null;
     let deleteTargetName = '';
 
@@ -62,6 +63,29 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
     // Initialize
     loadMasterlistData();
 
+    // Status filter - Click on stat cards
+    document.getElementById('totalUploaded').parentElement.parentElement.parentElement.style.cursor = 'pointer';
+    document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
+    document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
+
+    document.getElementById('totalUploaded').parentElement.parentElement.parentElement.addEventListener('click', function() {
+        currentStatus = currentStatus === '' ? '' : '';
+        currentPage = 1;
+        loadMasterlistData();
+    });
+
+    document.getElementById('totalRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
+        currentStatus = currentStatus === '1' ? '' : '1';
+        currentPage = 1;
+        loadMasterlistData();
+    });
+
+    document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
+        currentStatus = currentStatus === '0' ? '' : '0';
+        currentPage = 1;
+        loadMasterlistData();
+    });
+
     // CSV Upload button
     uploadCsvBtn.addEventListener('click', function() {
         csvFileInput.click();
@@ -74,7 +98,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
     // Search button
     searchBtn.addEventListener('click', function() {
         currentSearch = searchInput.value.trim();
-        currentStatus = statusFilter.value;
+        currentDate = dateFilter.value;
         currentPage = 1;
         loadMasterlistData();
     });
@@ -86,10 +110,10 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         }
     });
 
-    // Status filter change
-    statusFilter.addEventListener('change', function() {
+    // Date filter change
+    dateFilter.addEventListener('change', function() {
         currentSearch = searchInput.value.trim();
-        currentStatus = this.value;
+        currentDate = this.value;
         currentPage = 1;
         loadMasterlistData();
     });
@@ -108,7 +132,10 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         params.append('search', currentSearch);
         if (currentStatus) {
             params.append('status', currentStatus);
-        } 
+        }
+        if (currentDate) {
+            params.append('date', currentDate);
+        }
         params.append('page', currentPage);
 
         fetch(`../php/get_examinee_masterlist.php?${params.toString()}`, {

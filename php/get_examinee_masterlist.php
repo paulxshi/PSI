@@ -15,6 +15,7 @@ require_once __DIR__ . '/../config/db.php';
 // Get parameters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $status = isset($_GET['status']) ? $_GET['status'] : ''; // 'all', '0', '1'
+$date = isset($_GET['date']) ? $_GET['date'] : ''; // Date filter
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $limit = 10; // Records per page
 $offset = ($page - 1) * $limit;
@@ -34,6 +35,12 @@ try {
     if ($status !== '' && ($status === '0' || $status === '1')) {
         $whereConditions[] = "used = :status";
         $params[':status'] = (int)$status;
+    }
+
+    // Date filter
+    if (!empty($date)) {
+        $whereConditions[] = "DATE(uploaded_at) = :date";
+        $params[':date'] = $date;
     }
 
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
