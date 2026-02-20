@@ -3,11 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const activityTypeFilter = document.getElementById('activityTypeFilter');
     const roleFilter = document.getElementById('roleFilter');
-    const severityFilter = document.getElementById('severityFilter');
     const dateFilter = document.getElementById('dateFilter');
-    const refreshBtn = document.getElementById('refreshBtn');
     const exportCsvBtn = document.getElementById('exportCsvBtn');
-    const exportPdfBtn = document.getElementById('exportPdfBtn');
     const tableContainer = document.getElementById('tableContainer');
     const tableBody = document.getElementById('tableBody');
     const paginationContainer = document.getElementById('paginationContainer');
@@ -19,18 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentSearch = '';
     let currentActivityType = '';
     let currentRole = '';
-    let currentSeverity = '';
     let currentDateFilter = 'week';
     let searchTimeout = null;
 
     // Initialize - Load data immediately
     loadActivityData();
-
-    // Refresh button
-    refreshBtn.addEventListener('click', function() {
-        currentPage = 1;
-        loadActivityData();
-    });
 
     // Search on input with debounce
     searchInput.addEventListener('input', function() {
@@ -56,13 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadActivityData();
     });
 
-    // Severity filter change
-    severityFilter.addEventListener('change', function() {
-        currentSeverity = this.value;
-        currentPage = 1;
-        loadActivityData();
-    });
-
     // Date filter change
     dateFilter.addEventListener('change', function() {
         currentDateFilter = this.value;
@@ -73,11 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Export CSV button
     exportCsvBtn.addEventListener('click', function() {
         exportData('csv');
-    });
-
-    // Export PDF button
-    exportPdfBtn.addEventListener('click', function() {
-        exportData('pdf');
     });
 
     // Load activity log data
@@ -96,9 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (currentRole) {
             params.append('role', currentRole);
-        }
-        if (currentSeverity) {
-            params.append('severity', currentSeverity);
         }
 
         fetch(`php/get_activity_logs.php?${params.toString()}`, {
@@ -119,12 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Activity Log Data:', data);
                     
                     if (data.success) {
-                        // Update stats
-                        document.getElementById('todayTotal').textContent = data.summary.today_total;
-                        document.getElementById('successLogins').textContent = data.summary.success_logins;
-                        document.getElementById('failedLogins').textContent = data.summary.failed_logins;
-                        document.getElementById('lockouts').textContent = data.summary.lockouts;
-
                         // Populate table
                         populateTable(data.data);
 
@@ -264,9 +233,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (currentRole) {
             params.append('role', currentRole);
-        }
-        if (currentSeverity) {
-            params.append('severity', currentSeverity);
         }
 
         // Open in new window to trigger download

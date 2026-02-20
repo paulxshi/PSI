@@ -210,85 +210,6 @@
                 </p>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="row g-4 mb-5">
-                <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
-                                        Today's Activities
-                                    </div>
-                                    <div class="fw-bold fs-2" id="todayTotal">0</div>
-                                </div>
-                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:56px;height:56px;">
-                                    <i class="bx bx-calendar-alt fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
-                                        Successful Logins
-                                    </div>
-                                    <div class="fw-bold fs-2" id="successLogins">0</div>
-                                </div>
-                                <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:56px;height:56px;">
-                                    <i class="bx bx-check-circle fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
-                                        Failed Logins
-                                    </div>
-                                    <div class="fw-bold fs-2" id="failedLogins">0</div>
-                                </div>
-                                <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:56px;height:56px;">
-                                    <i class="bx bx-x-circle fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
-                                        Account Lockouts
-                                    </div>
-                                    <div class="fw-bold fs-2" id="lockouts">0</div>
-                                </div>
-                                <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
-                                    style="width:56px;height:56px;">
-                                    <i class="bx bx-lock-alt fs-2"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Activity Log Container -->
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
@@ -342,24 +263,6 @@
                                 <option value="system">System</option>
                             </select>
                         </div>
-
-                        <!-- Severity Filter -->
-                        <div class="col-md-6 col-lg-2">
-                            <select class="form-select" id="severityFilter">
-                                <option value="">All Severity</option>
-                                <option value="info">Info</option>
-                                <option value="warning">Warning</option>
-                                <option value="error">Error</option>
-                                <option value="critical">Critical</option>
-                            </select>
-                        </div>
-
-                        <!-- Refresh Button -->
-                        <div class="col-md-12 col-lg-1">
-                            <button class="btn btn-primary w-100" id="refreshBtn" title="Refresh">
-                                <i class="bx bx-refresh"></i>
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Second Row: Date Filter & Export Buttons -->
@@ -379,9 +282,6 @@
                         <div class="col-md-6 col-lg-9 text-end">
                             <button class="btn btn-outline-success" id="exportCsvBtn">
                                 <i class="bx bx-table"></i> Export CSV
-                            </button>
-                            <button class="btn btn-outline-danger ms-2" id="exportPdfBtn">
-                                <i class="bx bxs-file-pdf"></i> Export PDF
                             </button>
                         </div>
                     </div>
