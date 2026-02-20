@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once "../../config/db.php";
+require_once "../../php/log_activity.php";
 
 header('Content-Type: application/json');
 
@@ -106,6 +107,27 @@ try {
     ]);
     
     $pdo->commit();
+    
+    // Log activity
+    $metadata = [
+        'schedule_id' => $schedule_id,
+        'venue' => $venue_name,
+        'region' => $region,
+        'date' => $scheduled_date,
+        'capacity' => $capacity,
+        'price' => $price,
+        'status' => $status
+    ];
+    logActivity(
+        'admin_schedule_edited',
+        "Admin edited schedule #{$schedule_id}: {$venue_name}, {$region} on {$scheduled_date}",
+        $_SESSION['user_id'],
+        $_SESSION['username'] ?? 'Admin',
+        $_SESSION['email'] ?? '',
+        'admin',
+        'info',
+        $metadata
+    );
     
     echo json_encode([
         'success' => true,

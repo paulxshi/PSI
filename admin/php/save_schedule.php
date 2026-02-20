@@ -1,5 +1,7 @@
 <?php
 require_once "../../config/db.php";
+require_once "../../php/log_activity.php";
+session_start();
 
 header('Content-Type: application/json');
 
@@ -49,6 +51,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Commit transaction
         $pdo->commit();
+
+        // Log activity
+        if (isset($_SESSION['user_id'])) {
+            $metadata = [
+                'schedule_id' => $pdo->lastInsertId(),
+                'venue' => $venue_name,
+                'region' => $region,
+                'date' => $scheduled_date,
+                'capacity' => $exam_limit,
+                'price' => $exam_price
+            ];
+            logActivity(
+                'admin_schedule_created',
+                "Admin created new schedule for {$venue_name}, {$region} on {$scheduled_date}",
+                $_SESSION['user_id'],
+                $_SESSION['username'] ?? 'Admin',
+                $_SESSION['email'] ?? '',
+                'admin',
+                'info',
+                $metadata
+            );
+        }
 
         echo json_encode([
             'success' => true,

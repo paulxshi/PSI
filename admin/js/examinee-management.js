@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeFilterBadge = document.getElementById('activeFilterBadge');
     const filterText = document.getElementById('filterText');
     const clearFilterBtn = document.getElementById('clearFilterBtn');
+    const filterRegion = document.getElementById('filterRegion');
 
     let currentPage = 1;
     let currentSearch = '';
@@ -30,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSummaryStats(); // Load stats only on page load
     showLoading(false); // Hide loading spinner initially
     showInitialMessage(); // Show instruction to select a status
+
+    filterRegion.addEventListener('change', renderFilteredSchedules);
 
     // Status filter - Click on stat cards
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
@@ -112,6 +115,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+        function populateScheduleFilters() {
+            const regions = [...new Set(availableSchedules.map(s => s.region))];
+
+            filterRegion.innerHTML = '<option value="">All Regions</option>';
+
+            regions.forEach(r => {
+                filterRegion.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+        }
+        function renderFilteredSchedules() {
+            const region = filterRegion.value;
+
+            const filtered = availableSchedules.filter(s => {
+                if (region && s.region !== region) return false;
+                return true;
+            });
+
+            rescheduleScheduleSelect.innerHTML =
+                '<option value="">-- Choose a schedule --</option>';
+
+            filtered.forEach(s => {
+                const dateStr = new Date(s.scheduled_date + 'T00:00:00')
+                    .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                rescheduleScheduleSelect.innerHTML += `
+                    <option value="${s.schedule_id}">
+                        ${s.venue_name} (${s.region}) - ${dateStr} [${s.available_slots || 0} slots]
+                    </option>
+                `;
+            });
+        }
+
     // Reschedule form submission
     rescheduleForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -128,31 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success && data.data.length > 0) {
                     availableSchedules = data.data;
-                    // Clear existing options except the placeholder
-                    rescheduleScheduleSelect.innerHTML = '<option value="">-- Choose an available schedule --</option>';
                     
-                    // Add each schedule as an option
-                    data.data.forEach(schedule => {
-                        const dateObj = new Date(schedule.scheduled_date + 'T00:00:00');
-                        const dateStr = dateObj.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                        });
-                        
-                        const slots = schedule.available_slots || 0;
-                        
-                        const option = document.createElement('option');
-                        option.value = schedule.schedule_id;
-                        option.textContent = `${schedule.venue_name} (${schedule.region}) - ${dateStr} [${slots} slots left]`;
-                        rescheduleScheduleSelect.appendChild(option);
-                    });
+                    // Populate filter dropdowns with unique regions and venues
+                    populateScheduleFilters();
+                    
+                    // Render all schedules initially (no filter applied)
+                    renderFilteredSchedules();
                 } else {
+                    availableSchedules = [];
                     rescheduleScheduleSelect.innerHTML = '<option value="">No available schedules</option>';
                 }
             })
             .catch(error => {
                 console.error('Error loading schedules:', error);
+                availableSchedules = [];
                 rescheduleScheduleSelect.innerHTML = '<option value="">Error loading schedules</option>';
             });
     }
@@ -392,51 +416,83 @@ document.addEventListener('DOMContentLoaded', function() {
             day: 'numeric'
         }) : 'Not Set';
 
+        const statusClass =
+        record.status === 'Completed'
+            ? 'completed'
+            : 'registered';
+
         const profileHTML = `
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <p><strong>Test Permit:</strong> ${escapeHtml(record.test_permit)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Status:</strong> <span class="badge bg-success-subtle text-success">${escapeHtml(record.status)}</span></p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>First Name:</strong> ${escapeHtml(record.first_name)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Last Name:</strong> ${escapeHtml(record.last_name)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Email:</strong> ${escapeHtml(record.email)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Contact:</strong> ${escapeHtml(record.contact_number)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Date of Birth:</strong> ${birthDate}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Age:</strong> ${record.age}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Gender:</strong> ${escapeHtml(record.gender)}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>School:</strong> ${escapeHtml(record.school)}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Region:</strong> ${escapeHtml(record.region)}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Exam Venue:</strong> ${escapeHtml(record.exam_venue || 'Not Set')}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Exam Date:</strong> ${examDate}</p>
-                </div>
-                <div class="col-12">
-                    <p><strong>Registration Date:</strong> ${registrationDate}</p>
-                </div>
+        <div class="compact-profile">
+
+        <!-- Header -->
+        <div class="compact-header">
+            <div class="avatar">
+            ${escapeHtml(record.first_name.charAt(0))}
             </div>
+
+            <div class="header-text">
+            <div class="name">${escapeHtml(record.full_name)}</div>
+            <div class="meta">${escapeHtml(record.test_permit)} · ${escapeHtml(record.email)}</div>
+            </div>
+
+            <span class="status-pill ${statusClass}">
+            ${escapeHtml(record.status)}
+            </span>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-card">
+            <div class="info-grid">
+
+            <div>
+                <label>Exam</label>
+                <span>${escapeHtml(record.exam_venue || 'Not Set')}</span>
+            </div>
+
+            <div>
+                <label>Date</label>
+                <span>${examDate}</span>
+            </div>
+
+            <div>
+                <label>Region</label>
+                <span>${escapeHtml(record.region)}</span>
+            </div>
+
+            <div>
+                <label>Registered</label>
+                <span>${registrationDate}</span>
+            </div>
+
+            <div>
+                <label>DOB</label>
+                <span>${birthDate}</span>
+            </div>
+
+            <div>
+                <label>Age</label>
+                <span>${record.age}</span>
+            </div>
+
+            <div>
+                <label>Gender</label>
+                <span>${escapeHtml(record.gender)}</span>
+            </div>
+
+            <div>
+                <label>Contact</label>
+                <span>${escapeHtml(record.contact_number)}</span>
+            </div>
+
+            <div>
+                <label>School</label>
+                <span>${escapeHtml(record.school || '—')}</span>
+            </div>
+
+            </div>
+        </div>
+
+        </div>
         `;
 
         document.getElementById('profileContent').innerHTML = profileHTML;
@@ -444,16 +500,17 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Open reschedule modal (global function)
-    window.openRescheduleModal = function(userId) {
-        const record = currentData[userId];
-        if (!record) return;
+        window.openRescheduleModal = function(userId) {
+            document.getElementById('rescheduleUserId').value = userId;
 
-        document.getElementById('rescheduleUserId').value = userId;
-        rescheduleScheduleSelect.value = ''; // Reset to placeholder
-        schedulePreview.style.display = 'none'; // Hide preview initially
+            filterRegion.value = '';
 
-        rescheduleModal.show();
-    };
+            schedulePreview.style.display = 'none';
+            renderFilteredSchedules();
+
+            rescheduleModal.show();
+        };
+
 
     // Reschedule exam
     function rescheduleExam() {

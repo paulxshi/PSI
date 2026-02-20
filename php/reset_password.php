@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 
 require_once '../config/db.php';
+require_once 'log_activity.php';
 
 error_log("=== RESET PASSWORD DEBUG ===");
 error_log("Input: " . file_get_contents('php://input'));
@@ -105,6 +106,9 @@ try {
         $pdo->commit();
 
         error_log("Password reset completed successfully");
+        
+        // Log password reset activity
+        logActivity('password_reset', 'User reset their password via email link', $user_id, null, $email, 'examinee', 'info');
 
         echo json_encode([
             'success' => true,

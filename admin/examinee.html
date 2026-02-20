@@ -12,6 +12,262 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+.reschedule-modal {
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.15);
+}
+
+.filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.filter-bar .form-select,
+.filter-bar .form-control {
+    font-size: 0.8rem;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        grid-template-columns: 1fr;
+    }
+}
+
+#profileModal .modal-dialog {
+    max-width: 600px;
+}
+
+#profileModal .modal-content {
+    max-height: 90vh;
+}
+
+#profileModal .modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Enlarge profile content */
+#profileModal .compact-profile {
+    font-size: 1rem; 
+}
+
+/* Header */
+#profileModal .avatar {
+    width: 44px;   
+    height: 44px;
+    font-size: 1.1rem;
+}
+
+#profileModal .name {
+    font-size: 1.3rem;
+}
+
+#profileModal .meta {
+    font-size: 0.8rem;
+}
+
+#profileModal .status-pill {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+}
+
+#profileModal .info-grid label {
+    font-size: 12px; 
+}
+
+#profileModal .info-grid span {
+    font-size: 0.95rem;
+}
+
+
+#profileModal .info-card {
+    padding: 1.5rem; /* was 0.75rem */
+}
+
+.premium-modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(180deg, #ffffff, #f9fafb);
+}
+
+.title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.title-icon {
+    width: 38px;
+    height: 38px;
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.modal-title {
+    font-weight: 800;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.modal-subtitle {
+    font-size: 0.7rem;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Close button refinement */
+.modal-header .btn-close {
+    transform: scale(0.9);
+    opacity: 0.7;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+.modal-content {
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-body {
+    padding: 1.25rem 1.5rem;
+}
+
+
+.compact-profile {
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 0.85rem;
+}
+
+/* Header */
+.compact-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.name {
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.meta {
+    font-size: 0.7rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status */
+.status-pill {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+}
+
+.status-pill.completed {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.status-pill.registered {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+/* Card */
+.info-card {
+    margin-top: 0.75rem;
+    background: #f9fafb;
+    border-radius: 14px;
+    padding: 0.75rem;
+}
+
+/* Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem 1rem;
+}
+
+.info-grid label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #9ca3af;
+}
+
+.info-grid span {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #111827;
+    word-break: break-word;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.modal-content {
+    border-radius: 16px;
+    border: none;
+}
+
+.modal-body {
+    padding: 1rem 1.25rem;
+}
+
+.modal-header {
+    padding: 0.75rem 1.25rem;
+}
+
+
+
+
     .schedule-table tbody tr {
         transition: background-color 0.2s ease;
     }
@@ -152,12 +408,13 @@
                         <span class="text">Exam History</span>
                     </a>
                 </li> 
+
                 <li>
-                    <a href="scanner.html">
-                        <i class="bx bx-qr-scan"></i>
-                        <span class="text">QR Scan</span>
+                    <a href="activity_log.html">
+                        <i class="bx bx-notepad"></i>
+                        <span class="text">Activity Log</span>
                     </a>
-                </li> 
+                </li>
 
         </ul>
 
@@ -172,11 +429,6 @@
     </section>
 
     <section id="content">
-        <nav>
-            <div class="greeting">
-                <span>Admin</span>
-            </div>
-        </nav>
 
         <main class="p-4">
 
@@ -328,70 +580,106 @@
                 </div>
             </div>
 
-        </main>
+        <!-- View Profile Modal -->
+        <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header premium-modal-header">
+                    <div class="title-wrap">
+                        <div class="title-icon">
+                        <i class="bx bx-id-card"></i>
+                        </div>
+                        <div>
+                        <h5 class="modal-title mb-0" id="profileLabel">Examinee Profile</h5>
+                        <small class="modal-subtitle">Registered Examinee Information</small>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-3">
+                        <div id="profileContent" class="profile-form-modal">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
     </section>
 
-    <!-- View Profile Modal -->
-    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="profileLabel">Examinee Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="profileContent">
-                        <!-- Populated by JS -->
+    <!-- Reschedule Modal -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content reschedule-modal">
+
+            <!-- Header -->
+            <div class="modal-header premium-modal-header">
+                <div class="title-wrap">
+                    <div class="title-icon bg-warning-subtle text-warning">
+                        <i class="bx bx-calendar-edit"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title mb-0">Reschedule Exam</h5>
+                        <small class="modal-subtitle">Select a new available schedule</small>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-        </div>
-    </div>
 
-    <!-- Reschedule Modal -->
-    <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rescheduleLabel">Reschedule Exam</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="rescheduleForm">
-                    <div class="modal-body">
-                        <input type="hidden" id="rescheduleUserId">
+            <form id="rescheduleForm">
+                <div class="modal-body">
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Select Schedule <span class="text-danger">*</span></label>
-                            <select class="form-control" id="rescheduleSchedule" required>
-                                <option value="">-- Choose an available schedule --</option>
-                            </select>
-                            <small class="text-muted d-block mt-2">Selected schedule will update: Date, Venue, and Region.</small>
-                        </div>
+                    <input type="hidden" id="rescheduleUserId">
 
-                        <!-- Schedule Preview -->
-                        <div id="schedulePreview" style="display:none;">
-                            <div class="alert alert-info mb-0">
-                                <p class="mb-2"><strong>Selected Schedule Details:</strong></p>
-                                <p class="mb-1"><small>📍 Venue: <span id="previewVenue"></span></small></p>
-                                <p class="mb-1"><small>📍 Region: <span id="previewRegion"></span></small></p>
-                                <p class="mb-1"><small>📅 Date: <span id="previewDate"></span></small></p>
-                                <p class="mb-1"><small>👥 Capacity: <span id="previewCapacity"></span></small></p>
-                                <p class="mb-0"><small>✅ Available Slots: <span id="previewSlots" class="text-success fw-bold"></span></small></p>
+                    <!-- Filters -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small mb-2">Filter by Region</label>
+                        <select id="filterRegion" class="form-select form-select-sm">
+                            <option value="">All Regions</option>
+                        </select>
+                    </div>
+
+                    <!-- Schedule Select -->
+                    <label class="form-label fw-semibold small mb-2">
+                        Available Schedules <span class="text-danger">*</span>
+                    </label>
+
+                    <select class="form-select" id="rescheduleSchedule" required>
+                        <option value="">-- Choose a schedule --</option>
+                    </select>
+
+                    <!-- Preview -->
+                    <div id="schedulePreview" class="mt-3" style="display:none;">
+                        <div class="alert alert-info mb-0">
+                            <div class="small fw-semibold mb-2">Selected Schedule</div>
+                            <div class="small">📍 <span id="previewVenue"></span></div>
+                            <div class="small">🌍 <span id="previewRegion"></span></div>
+                            <div class="small">📅 <span id="previewDate"></span></div>
+                            <div class="small">👥 Capacity: <span id="previewCapacity"></span></div>
+                            <div class="small fw-bold text-success">
+                                Slots Left: <span id="previewSlots"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Reschedule Exam</button>
-                    </div>
-                </form>
-            </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        Confirm Reschedule
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
+</div>
+
+
 
     <!-- Logout Modal -->
 <!-- Logout Modal -->
@@ -429,7 +717,7 @@
 
                 <!-- FUNCTION RETAINED -->
                 <a
-                    href="../php/logout.php"
+                    href="../php/adminlogout.php"
                     class="btn btn-danger rounded-pill px-4"
                 >
                     Logout

@@ -141,12 +141,13 @@
                         <span class="text">Exam History</span>
                     </a>
                 </li> 
+                
                 <li>
-                    <a href="scanner.html">
-                        <i class="bx bx-qr-scan"></i>
-                        <span class="text">QR Scan</span>
+                    <a href="activity_log.html">
+                        <i class="bx bx-notepad"></i>
+                        <span class="text">Activity Log</span>
                     </a>
-                </li>         
+                </li>
           
         </ul>
         <ul class="side-menu">
@@ -160,11 +161,6 @@
   </section>
 
 	<section id="content">
-		<nav>
-      	<div class="greeting">
-            <span>Admin</span>
-        </div>
-		</nav>
 
 
 <main>
@@ -309,29 +305,6 @@
              <h6 class="fw-semibold mb-0">
                <span id="currentDate" class="mb-0 ms-2"> </span>
             </h6>
-
-            <!-- RIGHT GROUP (HORIZONTAL, NO WRAP) -->
-            <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap">
-
-              <!-- Search -->
-              <input type="search"
-                    class="form-control form-control-sm"
-                    style="width:260px;"
-                    placeholder="Search test permit, name, or email">
-
-              <!-- Date -->
-              <input type="date"
-                    class="form-control form-control-sm"
-                    style="width:150px;">
-
-              <!-- Download -->
-              <button id="downloadCsvBtn"
-                      class="btn btn-outline-dark d-flex align-items-center gap-2">
-                <i class="bx bx-download"></i>
-                Download CSV
-              </button>
-
-            </div>
 
           </div>
         </div>
@@ -488,7 +461,7 @@
                     Cancel
                 </button>
                 <a
-                    href="../php/logout.php"
+                    href="../php/adminlogout.php"
                     class="btn btn-danger rounded-pill px-4"
                 >
                     Logout
@@ -636,57 +609,6 @@ function formatDate(date) {
         day: 'numeric'
     });
 }
-</script>
-<script>
-document.getElementById("downloadCsvBtn").addEventListener("click", downloadTableAsCSV);
-
-function downloadTableAsCSV() {
-
-    const table = document.querySelector("table"); // your table
-    let csv = [];
-
-    // Get all rows (header + body)
-    const rows = table.querySelectorAll("tr");
-
-    rows.forEach(row => {
-        let cols = row.querySelectorAll("th, td");
-        let rowData = [];
-
-        cols.forEach(col => {
-            // Clean text (remove line breaks/extra spaces/commas issues)
-            let text = col.innerText.replace(/\n/g, " ").trim();
-
-            // Escape quotes for CSV format
-            text = `"${text.replace(/"/g, '""')}"`;
-
-            rowData.push(text);
-        });
-
-        csv.push(rowData.join(","));
-    });
-
-    // Convert to CSV string
-    const csvString = csv.join("\n");
-
-    // Create downloadable file
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-
-const link = document.createElement("a");
-const url = URL.createObjectURL(blob);
-
-link.setAttribute("href", url);
-
-// Add date to filename
-const today = new Date().toISOString().slice(0,10);
-link.setAttribute("download", `completed_examinees_${today}.csv`);
-
-    link.style.display = "none";
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
 </script>
 
 

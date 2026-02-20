@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Log</title>
+    <link rel="icon" href="../imgs/PSI.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashstyle.css">
+</head>
+<style>
+    .activity-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .activity-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    .activity-table td {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .page-header {
+        padding: 15px 24px;
+        border-bottom: 3px solid #acacac;
+        max-width: 70%;
+    }
+
+    .page-title {
+        font-weight: 800;
+        font-size: 2rem;
+        color: #000;
+        margin-bottom: 0.75rem;
+    }
+
+    .page-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #4b5563;
+        margin: 0;
+    }
+
+    .activity-table tbody td {
+        font-size: 0.875rem;
+        color: #374151;
+    }
+
+    .activity-table thead th {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .badge-activity {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.65rem;
+        font-weight: 600;
+    }
+
+    .stat-card {
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1f2937;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+</style>
+<body>
+
+    <!-- Sidebar Section -->
+    <section id="sidebar">
+        <a href="#" class="brand d-flex align-items-center">
+            <img src="../imgs/PSI.png" alt="PSI Logo" class="logo">
+            <span class="text">PSI-ADMIN Portal</span>
+        </a>
+
+        <ul class="side-menu top">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bx bxs-dashboard"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="schedule.html">
+                    <i class="bx bx-calendar-check"></i>
+                    <span class="text">Create Schedule</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="managesched.html">
+                    <i class="bx bx-edit"></i>
+                    <span class="text">Schedule Management</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="examinee.html">
+                    <i class="bx bx-group"></i>
+                    <span class="text">Examinee Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="examhistory.html">
+                    <i class="bx bx-history"></i>
+                    <span class="text">Exam History</span>
+                </a>
+            </li> 
+            <li class="active">
+                <a href="activity_log.html">
+                    <i class="bx bx-notepad"></i>
+                    <span class="text">Activity Log</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="side-menu">
+            <li>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="bx bxs-log-out-circle"></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section id="content">
+
+        <main class="p-4">
+
+            <div class="page-header mb-4">
+                <h1 class="page-title">Activity Log</h1>
+                <p class="page-description">
+                    Comprehensive system activity monitoring including authentication events, login attempts, 
+                    password changes, account lockouts, and other critical security events.
+                </p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Today's Activities
+                                    </div>
+                                    <div class="fw-bold fs-2" id="todayTotal">0</div>
+                                </div>
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-calendar-alt fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Successful Logins
+                                    </div>
+                                    <div class="fw-bold fs-2" id="successLogins">0</div>
+                                </div>
+                                <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-check-circle fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Failed Logins
+                                    </div>
+                                    <div class="fw-bold fs-2" id="failedLogins">0</div>
+                                </div>
+                                <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-x-circle fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm rounded-3 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small text-uppercase fw-semibold mb-1">
+                                        Account Lockouts
+                                    </div>
+                                    <div class="fw-bold fs-2" id="lockouts">0</div>
+                                </div>
+                                <div class="bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width:56px;height:56px;">
+                                    <i class="bx bx-lock-alt fs-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Log Container -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Status Alert -->
+                    <div id="statusAlert" class="alert" style="display:none;" role="alert"></div>
+
+                    <!-- Top Controls -->
+                    <h6 class="fw-semibold mb-4 text-muted">System Activities</h6>
+
+                    <div class="row g-3 align-items-center mb-4">
+                        <!-- Search -->
+                        <div class="col-md-6 col-lg-4">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                class="form-control"
+                                placeholder="Search by user, email, or IP..."
+                            >
+                        </div>
+
+                        <!-- Activity Type Filter -->
+                        <div class="col-md-6 col-lg-3">
+                            <select class="form-select" id="activityTypeFilter">
+                                <option value="">All Activities</option>
+                                <option value="login_success">Successful Login</option>
+                                <option value="login_failed">Failed Login</option>
+                                <option value="logout">Logout</option>
+                                <option value="password_change">Password Change</option>
+                                <option value="password_reset">Password Reset</option>
+                                <option value="account_lockout">Account Lockout</option>
+                                <option value="otp_verified">OTP Verified</option>
+                                <option value="otp_failed">OTP Failed</option>
+                                <option value="registration_completed">Registration</option>
+                                <option value="payment_completed">Payment Success</option>
+                                <option value="payment_failed">Payment Failed</option>
+                                <option value="schedule_changed">Schedule Changed</option>
+                                <option value="admin_schedule_created">Schedule Created</option>
+                                <option value="admin_schedule_edited">Schedule Edited</option>
+                                <option value="admin_schedule_deleted">Schedule Deleted</option>
+                                <option value="admin_examinee_updated">Examinee Updated</option>
+                            </select>
+                        </div>
+
+                        <!-- Role Filter -->
+                        <div class="col-md-6 col-lg-2">
+                            <select class="form-select" id="roleFilter">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="examinee">Examinee</option>
+                                <option value="system">System</option>
+                            </select>
+                        </div>
+
+                        <!-- Severity Filter -->
+                        <div class="col-md-6 col-lg-2">
+                            <select class="form-select" id="severityFilter">
+                                <option value="">All Severity</option>
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <!-- Refresh Button -->
+                        <div class="col-md-12 col-lg-1">
+                            <button class="btn btn-primary w-100" id="refreshBtn" title="Refresh">
+                                <i class="bx bx-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Second Row: Date Filter & Export Buttons -->
+                    <div class="row g-3 align-items-center mb-4">
+                        <!-- Date Filter -->
+                        <div class="col-md-6 col-lg-3">
+                            <select class="form-select" id="dateFilter">
+                                <option value="today">Today</option>
+                                <option value="yesterday">Yesterday</option>
+                                <option value="week">Last 7 Days</option>
+                                <option value="month">Last 30 Days</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+
+                        <!-- Export Buttons -->
+                        <div class="col-md-6 col-lg-9 text-end">
+                            <button class="btn btn-outline-success" id="exportCsvBtn">
+                                <i class="bx bx-table"></i> Export CSV
+                            </button>
+                            <button class="btn btn-outline-danger ms-2" id="exportPdfBtn">
+                                <i class="bx bxs-file-pdf"></i> Export PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Activity Table Container -->
+                    <div id="tableContainer" style="display:none;">
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle activity-table mb-0">
+                                <thead>
+                                    <tr class="text-uppercase text-muted border-bottom">
+                                        <th>Timestamp</th>
+                                        <th>User</th>
+                                        <th>Role</th>
+                                        <th>Activity</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <!-- Populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div id="paginationContainer" style="display:none;" class="mt-4">
+                        <nav aria-label="Pagination">
+                            <ul id="pagination" class="pagination justify-content-end">
+                                <!-- Populated by JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+    </section>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1"
+         aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 justify-content-center pb-0">
+                    <h5 class="modal-title fw-semibold" id="logoutModalLabel">
+                        Confirm Logout
+                    </h5>
+                    <button type="button" class="btn-close position-absolute end-0 me-3"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-4 text-center">
+                    <i class="bx bx-log-out-circle fs-1 text-danger mb-3"></i>
+                    <p class="mb-0 text-muted">
+                        Are you sure you want to log out of your account?
+                    </p>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <a href="../php/adminlogout.php" class="btn btn-danger rounded-pill px-4">
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/activity_log.js"></script>
+</body>
+</html>

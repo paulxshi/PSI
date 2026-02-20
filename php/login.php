@@ -4,6 +4,7 @@ header("Content-Type: application/json");
 
 require_once "../config/db.php";
 require_once "RateLimiter.php";
+require_once "log_activity.php";
 
 // Initialize rate limiter
 $rateLimiter = new RateLimiter($pdo);
@@ -59,12 +60,18 @@ $stmt->execute([
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
+    // Log failed login attempt
+    logActivity('login_failed', 'Invalid email or test permit', null, null, $email, 'examinee', 'warning');
+    
     echo json_encode(["success" => false, "message" => "Invalid email or test permit"]);
     exit;
 }
 
 /* Verify password */
 if (!password_verify($password, $user['password'])) {
+    // Log failed login attempt
+    logActivity('login_failed', 'Incorrect password', $user['user_id'], $user['first_name'] . ' ' . $user['last_name'], $user['email'], 'examinee', 'warning');
+    
     echo json_encode(["success" => false, "message" => "Incorrect password"]);
     exit;
 }
@@ -163,6 +170,9 @@ $_SESSION['email'] = $user['email'];
 $_SESSION['first_name'] = $user['first_name'];
 $_SESSION['last_name'] = $user['last_name'];
 $_SESSION['role'] = $user['role'];
+
+// Log successful login
+logActivity('login_success', 'User logged in successfully', $user['user_id'], $user['first_name'] . ' ' . $user['last_name'], $user['email'], 'examinee', 'info');
 
 echo json_encode([
     "success" => true,

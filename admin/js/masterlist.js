@@ -16,7 +16,48 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     let currentSearch = '';
     let currentStatus = '';
-    let recordToDelete = null;
+    let deleteTargetId = null;
+    let deleteTargetName = '';
+
+
+
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (!deleteTargetId) return;
+
+    this.disabled = true;
+    this.textContent = 'Deleting...';
+
+    const formData = new FormData();
+    formData.append('id', deleteTargetId);
+
+    fetch('../php/delete_examinee_masterlist.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showStatus('Examinee record deleted successfully', 'success');
+                loadMasterlistData();
+            } else {
+                showStatus(data.message || 'Failed to delete record', 'danger');
+            }
+        })
+        .catch(() => {
+            showStatus('Network error deleting record', 'danger');
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.textContent = 'Delete Examinee';
+            deleteTargetId = null;
+
+            bootstrap.Modal.getInstance(
+                document.getElementById('deleteExamineeModal')
+            ).hide();
+        });
+});
 
     // Initialize
     loadMasterlistData();
@@ -140,81 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const fullName = record.full_name || escapeHtml(record.first_name + ' ' + record.last_name);
 
             const deleteBtn = record.used == 0
-            ? `<button class="btn btn-light text-danger"
-                onclick="openDeleteModal(${record.id})"
-                <i class="bx bx-trash"></i>
-                </button>`
-            : '';
-
-            window.openDeleteModal = function(id) {
-                recordToDelete = id;
-
-                const modal = new bootstrap.Modal(
-                    document.getElementById('confirmDeleteModal')
-                );
-                modal.show();
-            };
-
-
-            document.getElementById('confirmDeleteBtn')
-                .addEventListener('click', function () {
-
-                if (!recordToDelete) return;
-
-                const formData = new FormData();
-                formData.append('id', recordToDelete);
-
-                fetch('../php/delete_examinee_masterlist.php', {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'same-origin'
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showStatus('Record deleted successfully', 'success');
-                        loadMasterlistData();
-                    } else {
-                        showStatus(data.message || 'Failed to delete record', 'danger');
-                    }
-                });
-
-                recordToDelete = null;
-                bootstrap.Modal.getInstance(
-                    document.getElementById('confirmDeleteModal')
-                ).hide();
-            });
-            
-            document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-                if (!recordToDelete) return;
-
-                const formData = new FormData();
-                formData.append('id', recordToDelete);
-
-                fetch('../php/delete_examinee_masterlist.php', {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'same-origin'
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        showStatus('Record deleted successfully', 'success');
-                        loadMasterlistData();
-                    } else {
-                        showStatus(data.message || 'Failed to delete record', 'danger');
-                    }
-                })
-                .catch(() => {
-                    showStatus('Network error deleting record', 'danger');
-                });
-
-                recordToDelete = null;
-
-                bootstrap.Modal.getInstance(
-                    document.getElementById('confirmDeleteModal')
-                ).hide();
-            });
+                ? `<button class="btn btn-light text-danger" onclick="deleteRecord(${record.id})" title="Delete">
+                        <i class="bx bx-trash"></i>
+                      </button>`
+                : '';
 
             const row = `
                 <tr class="border-bottom">
@@ -353,6 +323,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Delete record (global function)
+        window.deleteRecord = function(id) {
+            deleteTargetId = id;
+
+            // Get name from row (safe + simple)
+            const row = event.target.closest('tr');
+            deleteTargetName = row.children[1].textContent;
+
+            document.getElementById('deleteExamineeName').textContent = deleteTargetName;
+
+            new bootstrap.Modal(
+                document.getElementById('deleteExamineeModal')
+            ).show();
+        };
 
     // Upload CSV file
     function uploadCsvFile(file) {

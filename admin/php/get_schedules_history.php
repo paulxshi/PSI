@@ -8,12 +8,14 @@ try {
     $sql = "SELECT 
                 s.schedule_id,
                 s.scheduled_date,
-                s.num_registered,
-                s.num_completed,
                 v.venue_name,
-                v.region
+                v.region,
+                s.num_registered,
+                COUNT(CASE WHEN e.examinee_status = 'Completed' THEN 1 END) as num_completed
             FROM schedules s
             INNER JOIN venue v ON s.venue_id = v.venue_id
+            LEFT JOIN examinees e ON s.schedule_id = e.schedule_id
+            GROUP BY s.schedule_id, s.scheduled_date, v.venue_name, v.region, s.num_registered
             ORDER BY s.scheduled_date ASC";
 
     $stmt = $pdo->prepare($sql);
