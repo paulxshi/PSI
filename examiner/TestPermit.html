@@ -8,243 +8,11 @@
 	<link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="../css/dashstyle.css">
   <link rel="stylesheet" href="../css/permitpdf.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 	<title>Test Permit</title>
 </head>
-
-<style>
-.permit-note {
-  font-weight: 800;
-  font-size: 14px;
-  text-transform: uppercase;
-  color: #ef0707;
-  line-height: 1.4;
-  margin-top: 50px;
-  font-style: italic;
-}
-
-.photo-box {
-  cursor: pointer;
-}
-
-.upload-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.photo-box:hover .upload-overlay {
-  opacity: 1;
-}
-
-#permitPDF {
-  color: #000;
-  padding: 30px;
-  max-width: 800px;
-  margin: auto;
-}
-
-.permit-title {
-  font-size: 18px;
-  font-weight: bold;
-  text-transform: uppercase;
-  border: 2px solid #000;
-  display: inline-block;
-  padding: 6px 18px;
-  margin-top: 15px;
-}
-
-body.print-mode .print-signature {
-  display: block !important;
-}
-
-body.print-mode #permitPDF {
-  max-width: 210mm;
-  min-height: 297mm;
-  padding: 15mm 14mm;
-  font-size: 12px;
-  line-height: 1.3;
-
-}
-
-@media print {
-  .photo-box {
-    width: 80px !important;
-  }
-}
-
-body.print-mode .photo-box {
-  width: 85px !important;
-}
-
-@media print {
-
-  #sidebar,
-  nav,
-  .btn {
-    display: none !important;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-  }
-
-  main {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  @page {
-    size: Letter landscape;
-    margin: 8mm;
-  }
-
-  #permitPDF {
-    width: 100%;
-    padding: 8mm;
-    font-size: 10px;
-    line-height: 1.15;
-    box-shadow: none !important;
-  }
-
-  hr {
-    margin: 4px 0 !important;
-  }
-
-  .row {
-    margin-bottom: 2px !important;
-  }
-
-  .mb-4 {
-    margin-bottom: 6px !important;
-  }
-
-  h6 {
-    font-size: 11px;
-    margin-bottom: 3px !important;
-  }
-
-  small {
-    font-size: 8.5px;
-  }
-
-  .fw-semibold {
-    font-size: 9.8px;
-  }
-
-  .col-md-6 {
-    width: 33.333% !important;
-  }
-
-  .col-md-4 {
-    width: 25% !important;
-  }
-
-  #permitPDF img {
-    max-height: 50px !important;
-  }
-
-  .photo-box {
-    width: 85px !important;
-  }
-
-  .permit-note {
-    font-size: 9px;
-    margin-top: 8px;
-  }
-
-  ol {
-    font-size: 8.5px;
-    padding-left: 10px;
-  }
-
-  li {
-    margin-bottom: 1px;
-  }
-
-  .print-signature {
-    display: block !important;
-    margin-top: 6px;
-  }
-}
-
-#permitPDF ol {
-  margin-top: 4px;
-  margin-bottom: 0;
-}
-
-#permitPDF li {
-  margin-bottom: 1px;
-  line-height: 1.2;
-}
-
-
-#permitPDF h6 {
-  margin-bottom: 6px !important;
-  padding-bottom: 3px;
-  letter-spacing: 0.3px;
-}
-
-#permitPDF .row {
-  margin-bottom: 2px !important;
-}
-
-#permitPDF .fw-semibold {
-  line-height: 1.15;
-}
-
-#permitPDF .mb-4 {
-  margin-bottom: 6px !important;
-}
-
-body.print-mode #permitPDF {
-  width: 100% !important;
-  padding: 0.35in !important;
-
-  font-size: 9.5px !important;
-  line-height: 1.1 !important;
-
-  box-shadow: none !important;
-}
-body.print-mode h6 {
-  font-size: 10px !important;
-  margin-bottom: 2px !important;
-}
-
-body.print-mode hr {
-  margin: 3px 0 !important;
-}
-
-body.print-mode .row {
-  margin-bottom: 1px !important;
-}
-
-body.print-mode .mb-4 {
-  margin-bottom: 4px !important;
-}
-
-body.print-mode small {
-  font-size: 8px !important;
-}
-
-body.print-mode .fw-semibold {
-  font-size: 9px !important;
-}
-
-.btn-close:focus,
-.no-focus:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-</style>
-
-
 <body>
 	<!-- Sidebar Section -->
 		<section id="sidebar">
@@ -260,12 +28,12 @@ body.print-mode .fw-semibold {
 				</a>
 			</li>
 
-			<li class="active">
-				<a href="TestPermit.html">
-				<i class="bx bx-pencil" /></i>
-					<span class="text">Test Permit</span>
-				</a>
-			</li>
+      <li class="active">
+        <a href="accountsettings.html">
+          <i class="bx bx-cog ms-1"></i>
+          <span class="text">Account Settings</span>
+        </a>
+      </li>
 		</ul>
 
 		<ul class="side-menu">
@@ -309,8 +77,18 @@ body.print-mode .fw-semibold {
 
     <hr>
 
+<!-- QR Code Container Below Header -->
+<div class="text-center mb-4">
+  <div class="qr-code-square-container">
+    <img id="qrCode" src="path_to_your_qr_code_image.png" alt="QR Code">
+  </div>
+</div>
+
 <!-- NOTE + PHOTO ROW -->
 <div class="row align-items-start mb-3">
+
+  
+
 
   <!-- NOTE (LEFT) -->
   <div class="col-8">
@@ -558,7 +336,7 @@ document.getElementById('generatePDF').addEventListener('click', async () => {
     jsPDF: {
       unit: 'in',
       format: 'letter',    
-      orientation: 'landscape'
+      orientation: 'portrait'
     },
     pagebreak: { mode: ['avoid-all'] }
   }).from(permit).save();
