@@ -17,6 +17,19 @@
 
 
 <style>
+
+.status-badge {
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.status-badge.completed {
+  color: #198754;               
+  background-color: #e9f7ef;    
+}
 @media print {
   body {
     background: #fff !important;
@@ -318,6 +331,7 @@
         <th>Name</th>
         <th>Email</th>
         <th>Date of Examination</th>
+        <th>Time</th>
         <th>Status</th>
       </tr>
     </thead>
