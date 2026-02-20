@@ -17,8 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterText = document.getElementById('filterText');
     const clearFilterBtn = document.getElementById('clearFilterBtn');
     const filterRegion = document.getElementById('filterRegion');
-    const filterVenue = document.getElementById('filterVenue');
-    const filterDate = document.getElementById('filterDate');
 
     let currentPage = 1;
     let currentSearch = '';
@@ -35,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
     showInitialMessage(); // Show instruction to select a status
 
     filterRegion.addEventListener('change', renderFilteredSchedules);
-    filterVenue.addEventListener('change', renderFilteredSchedules);
-    filterDate.addEventListener('change', renderFilteredSchedules);
 
     // Status filter - Click on stat cards
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
@@ -121,28 +117,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function populateScheduleFilters() {
             const regions = [...new Set(availableSchedules.map(s => s.region))];
-            const venues = [...new Set(availableSchedules.map(s => s.venue_name))];
 
             filterRegion.innerHTML = '<option value="">All Regions</option>';
-            filterVenue.innerHTML = '<option value="">All Venues</option>';
 
             regions.forEach(r => {
                 filterRegion.innerHTML += `<option value="${r}">${r}</option>`;
             });
-
-            venues.forEach(v => {
-                filterVenue.innerHTML += `<option value="${v}">${v}</option>`;
-            });
         }
         function renderFilteredSchedules() {
             const region = filterRegion.value;
-            const venue = filterVenue.value;
-            const date = filterDate.value;
 
             const filtered = availableSchedules.filter(s => {
                 if (region && s.region !== region) return false;
-                if (venue && s.venue_name !== venue) return false;
-                if (date && s.scheduled_date !== date) return false;
                 return true;
             });
 
@@ -177,31 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success && data.data.length > 0) {
                     availableSchedules = data.data;
-                    // Clear existing options except the placeholder
-                    rescheduleScheduleSelect.innerHTML = '<option value="">-- Choose an available schedule --</option>';
                     
-                    // Add each schedule as an option
-                    data.data.forEach(schedule => {
-                        const dateObj = new Date(schedule.scheduled_date + 'T00:00:00');
-                        const dateStr = dateObj.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric'
-                        });
-                        
-                        const slots = schedule.available_slots || 0;
-                        
-                        const option = document.createElement('option');
-                        option.value = schedule.schedule_id;
-                        option.textContent = `${schedule.venue_name} (${schedule.region}) - ${dateStr} [${slots} slots left]`;
-                        rescheduleScheduleSelect.appendChild(option);
-                    });
+                    // Populate filter dropdowns with unique regions and venues
+                    populateScheduleFilters();
+                    
+                    // Render all schedules initially (no filter applied)
+                    renderFilteredSchedules();
                 } else {
+                    availableSchedules = [];
                     rescheduleScheduleSelect.innerHTML = '<option value="">No available schedules</option>';
                 }
             })
             .catch(error => {
                 console.error('Error loading schedules:', error);
+                availableSchedules = [];
                 rescheduleScheduleSelect.innerHTML = '<option value="">Error loading schedules</option>';
             });
     }
@@ -529,8 +504,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('rescheduleUserId').value = userId;
 
             filterRegion.value = '';
-            filterVenue.value = '';
-            filterDate.value = '';
 
             schedulePreview.style.display = 'none';
             renderFilteredSchedules();
