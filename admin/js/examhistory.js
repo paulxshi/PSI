@@ -1,96 +1,155 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+    const tableBody = document.getElementById("examTableBody");
+    const pagination = document.getElementById("pagination");
+    const paginationInfo = document.getElementById("paginationInfo");
+
+    const ROWS_PER_PAGE = 8;
+    let currentPage = 1;
+    let examData = [];
+
     fetch("php/get_schedules_history.php")
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            let tableBody = document.getElementById("examTableBody");
-            tableBody.innerHTML = "";
 
-            // Check if data is an error object
-            if (data.error) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-danger py-4">
-                            Error loading data: ${data.error}
-                        </td>
-                    </tr>
-                `;
+            if (data?.error) {
+                tableBody.innerHTML = errorRow(data.error);
                 return;
             }
 
-            // Check if data is an array
-            if (!Array.isArray(data)) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-danger py-4">
-                            Invalid data format received
-                        </td>
-                    </tr>
-                `;
+            if (!Array.isArray(data) || data.length === 0) {
+                tableBody.innerHTML = emptyRow("No exam history found");
                 return;
             }
 
-            // Check if data is empty
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            No exam history found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            data.forEach((row, index) => {
-
-                let dateObj = new Date(row.scheduled_date);
-                let formattedDate = dateObj.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric"
-                });
-
-                let dayName = dateObj.toLocaleDateString("en-US", {
-                    weekday: "long"
-                });
-
-                let regionClass = row.region.toLowerCase();
-
-                let tr = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <span class="region-pill ${regionClass}">
-                                ${row.region}
-                            </span>
-                        </td>
-                        <td>${row.venue_name}</td>
-                        <td>
-                            <div class="fw-semibold">${formattedDate}</div>
-                            <div class="text-muted small">${dayName}</div>
-                        </td>
-                        <td>
-                            <strong>${row.num_registered}</strong> examinees
-                        </td>
-                       
-                        <td>
-                            <strong>${row.num_completed}</strong> attended
-                        </td>
-                    </tr>
-                `;
-
-                tableBody.innerHTML += tr;
-            });
+            examData = data;
+            renderTable();
+            renderPagination();
         })
-        .catch(error => {
-            console.error("Error:", error);
-            let tableBody = document.getElementById("examTableBody");
-            tableBody.innerHTML = `
+        .catch(() => {
+            tableBody.innerHTML = errorRow(
+                "Failed to load exam history. Please try again later."
+            );
+        });
+
+    /* ---------- Render Table ---------- */
+    function renderTable() {
+        tableBody.innerHTML = "";
+
+        const start = (currentPage - 1) * ROWS_PER_PAGE;
+        const end = start + ROWS_PER_PAGE;
+        const pageData = examData.slice(start, end);
+
+        pageData.forEach((row, index) => {
+            const dateObj = new Date(row.scheduled_date);
+            const formattedDate = dateObj.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+            const dayName = dateObj.toLocaleDateString("en-US", {
+                weekday: "long"
+            });
+
+            tableBody.innerHTML += `
                 <tr>
-                    <td colspan="6" class="text-center text-danger py-4">
-                        Failed to load exam history. Please try again later.
+                    <td>${start + index + 1}</td>
+                    <td>
+                        <span class="region-pill ${mapRegionClass(row.region)}">
+                            ${row.region}
+                        </span>
                     </td>
+                    <td>${row.venue_name ?? "—"}</td>
+                    <td>
+                        <div class="fw-semibold">${formattedDate}</div>
+                        <div class="text-muted small">${dayName}</div>
+                    </td>
+                    <td><strong>${row.num_registered ?? 0}</strong> examinees</td>
+                    <td><strong>${row.num_completed ?? 0}</strong> attended</td>
                 </tr>
             `;
         });
+
+        const total = examData.length;
+        paginationInfo.textContent = 
+            `Showing ${start + 1}–${Math.min(end, total)} of ${total} records`;
+    }
+
+    /* ---------- Pagination ---------- */
+    function renderPagination() {
+        pagination.innerHTML = "";
+        const totalPages = Math.ceil(examData.length / ROWS_PER_PAGE);
+
+
+        pagination.appendChild(pageItem("‹", currentPage === 1, () => {
+            currentPage--;
+            update();
+        }));
+
+        for (let i = 1; i <= totalPages; i++) {
+            pagination.appendChild(pageItem(i, false, () => {
+                currentPage = i;
+                update();
+            }, i === currentPage));
+        }
+
+        pagination.appendChild(pageItem("›", currentPage === totalPages, () => {
+            currentPage++;
+            update();
+        }));
+    }
+
+    function update() {
+        renderTable();
+        renderPagination();
+    }
 });
+
+/* ---------- Helpers ---------- */
+
+function pageItem(label, disabled, onClick, active = false) {
+    const li = document.createElement("li");
+    li.className = `page-item ${disabled ? "disabled" : ""} ${active ? "active" : ""}`;
+
+    const a = document.createElement("a");
+    a.className = "page-link";
+    a.href = "#";
+    a.innerHTML = label;
+    a.setAttribute(
+    "aria-label",
+    label === "‹" ? "Previous" :
+    label === "›" ? "Next" :
+    `Page ${label}`
+    );
+
+    a.addEventListener("click", e => {
+        e.preventDefault();
+        if (!disabled) onClick();
+    });
+
+    li.appendChild(a);
+    return li;
+}
+
+function mapRegionClass(region = "") {
+    const r = region.toLowerCase();
+    if (r.includes("luzon")) return "luzon";
+    if (r.includes("visayas")) return "visayas";
+    if (r.includes("mindanao")) return "mindanao";
+    return "default";
+}
+
+function errorRow(message) {
+    return `
+        <tr>
+            <td colspan="6" class="text-center text-danger py-4">${message}</td>
+        </tr>
+    `;
+}
+
+function emptyRow(message) {
+    return `
+        <tr>
+            <td colspan="6" class="text-center text-muted py-4">${message}</td>
+        </tr>
+    `;
+}

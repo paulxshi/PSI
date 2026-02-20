@@ -357,6 +357,62 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     }
+
+    /* Pagination styles */
+    .pagination {
+        margin-top: 20px;
+        gap: 6px;
+    }
+
+    .pagination .page-link {
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        color: #374151;
+        background-color: transparent;
+        transition: all 0.15s ease;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #111827;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #9ca3af;
+        pointer-events: none;
+        background-color: transparent;
+    }
+
+    .pagination .page-link i {
+        font-size: 1rem;
+    }
+
+    .pagination .page-link {
+        min-width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pagination .page-link:focus,
+    .pagination .page-link:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .pagination .page-link:focus-visible {
+        box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.25); 
+        border-radius: 8px;
+    }
 </style>
 <body>
 
@@ -557,7 +613,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Venue</th>
-                                        <th>Exam Date</th>
+                                        <th id="dateColumnHeader">Exam Date</th>
                                         <th class="text-end">Actions</th>
                                     </tr>
                                 </thead>
@@ -569,13 +625,11 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div id="paginationContainer" style="display:none;" class="mt-4">
-                        <nav aria-label="Pagination">
-                            <ul id="pagination" class="pagination justify-content-end">
-                                <!-- Populated by JavaScript -->
-                            </ul>
-                        </nav>
-                    </div>
+                    <nav id="paginationContainer" style="display:none;">
+                        <ul id="pagination" class="pagination justify-content-center">
+                            <!-- Pagination buttons populated by JS -->
+                        </ul>
+                    </nav>
 
                 </div>
             </div>
@@ -591,7 +645,7 @@
                         </div>
                         <div>
                         <h5 class="modal-title mb-0" id="profileLabel">Examinee Profile</h5>
-                        <small class="modal-subtitle">Registered Examinee Information</small>
+                        <small class="modal-subtitle" id="profileModalSubtitle">Registered Examinee Information</small>
                         </div>
                     </div>
 

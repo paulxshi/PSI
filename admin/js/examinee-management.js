@@ -20,17 +20,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentPage = 1;
     let currentSearch = '';
-    let currentStatus = ''; // Filter by examinee status
+    let currentStatus = ''; // Filter by examinee_status: '' = all Scheduled, 'Completed' = only completed
     let currentRegion = ''; // Filter by region
     let currentData = {}; // Store for quick access
     let availableSchedules = []; // Store schedules for selection
     let searchTimeout = null;
 
+
     // Initialize
     loadSchedules();
     loadSummaryStats(); // Load stats only on page load
-    showLoading(false); // Hide loading spinner initially
-    showInitialMessage(); // Show instruction to select a status
+    updateCardHighlights(); // Highlight Total Registered card
+    updateFilterBadge(); // Show "All Registered Examinees"
+    loadExamineeData(); // Load all registered examinees by default
 
     filterRegion.addEventListener('change', renderFilteredSchedules);
 
@@ -38,14 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
     document.getElementById('totalCompleted').parentElement.parentElement.parentElement.style.cursor = 'pointer';
 
+    // Total Registered: Show examinees with status='Scheduled' EXCLUDING completed (can be rescheduled)
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
-        currentStatus = currentStatus === 'Registered' ? '' : 'Registered';
+        currentStatus = ''; // Shows registered examinees (excludes completed)
         currentPage = 1;
         updateCardHighlights();
         updateFilterBadge();
         loadExamineeData();
     });
 
+    // Completed: Show only examinees with examinee_status='Completed' (cannot be rescheduled)
     document.getElementById('totalCompleted').parentElement.parentElement.parentElement.addEventListener('click', function() {
         currentStatus = currentStatus === 'Completed' ? '' : 'Completed';
         currentPage = 1;
@@ -187,14 +191,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const completedCard = document.getElementById('totalCompleted').parentElement.parentElement.parentElement;
 
         // Remove all highlights
-        registeredCard.classList.remove('border-primary', 'shadow');
-        completedCard.classList.remove('border-success', 'shadow');
+        registeredCard.classList.remove('border-primary', 'shadow', 'border-3');
+        completedCard.classList.remove('border-success', 'shadow', 'border-3');
 
         // Add highlight to active filter
-        if (currentStatus === 'Registered') {
-            registeredCard.classList.add('border-primary', 'border-3', 'shadow');
-        } else if (currentStatus === 'Completed') {
+        if (currentStatus === 'Completed') {
             completedCard.classList.add('border-success', 'border-3', 'shadow');
+        } else if (currentStatus === '' || !currentStatus) {
+            // When showing all, highlight Total Registered
+            registeredCard.classList.add('border-primary', 'border-3', 'shadow');
         }
     }
 
@@ -208,7 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
             filterText.textContent = `Showing: ${filters.join(' - ')} Examinees`;
             activeFilterBadge.style.display = 'block';
         } else {
-            activeFilterBadge.style.display = 'none';
+            filterText.textContent = 'Showing: All Registered Examinees';
+            activeFilterBadge.style.display = 'block';
         }
     }
 
@@ -237,12 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load examinee data
     function loadExamineeData() {
-        // If no status is selected, show initial message
-        if (!currentStatus) {
-            showInitialMessage();
-            return;
-        }
-
         showLoading(true);
 
         const params = new URLSearchParams();
@@ -300,9 +300,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Update table header based on current filter
+    function updateTableHeader() {
+        const dateHeader = document.getElementById('dateColumnHeader');
+        if (dateHeader) {
+            dateHeader.textContent = currentStatus === 'Completed' ? 'Scanned Date' : 'Exam Date';
+        }
+    }
+
     // Populate table rows
     function populateTable(records) {
         tableBody.innerHTML = '';
+        updateTableHeader(); // Update column header based on filter
 
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No registered examinees found</td></tr>';
@@ -310,11 +319,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         records.forEach(record => {
-            const examDate = new Date(record.exam_date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+            // Use completed_date (scanned_at) for completed examinees, exam_date otherwise
+            let displayDate;
+            if (currentStatus === 'Completed' && record.completed_date) {
+                const completedDateTime = new Date(record.completed_date);
+                displayDate = completedDateTime.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else {
+                displayDate = record.exam_date ? new Date(record.exam_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'Not Set';
+            }
+
+            // Show reschedule button only if examinee_status is NOT 'Completed'
+            const isCompleted = record.examinee_status === 'Completed';
+            const rescheduleBtn = !isCompleted 
+                ? `<button class="btn btn-light" onclick="openRescheduleModal(${record.user_id})" title="Reschedule">
+                        <i class="bx bx-calendar-edit"></i>
+                   </button>`
+                : '';
 
             const row = `
                 <tr class="border-bottom">
@@ -326,15 +356,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                     </td>
                     <td>${escapeHtml(record.exam_venue || 'Not Set')}</td>
-                    <td>${record.exam_date ? examDate : 'Not Set'}</td>
+                    <td>${displayDate}</td>
                     <td class="text-end table-actions">
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-light" onclick="viewProfile(${record.user_id})" title="View Profile">
                                 <i class="bx bx-show"></i>
                             </button>
-                            <button class="btn btn-light" onclick="openRescheduleModal(${record.user_id})" title="Reschedule">
-                                <i class="bx bx-calendar-edit"></i>
-                            </button>
+                            ${rescheduleBtn}
                         </div>
                     </td>
                 </tr>
@@ -350,40 +378,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const { current_page, total_pages } = paginationData;
 
-        // Previous button
-        if (current_page > 1) {
-            pagination.innerHTML += `
-                <li class="page-item">
-                    <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
-                        <i class="bx bx-left-arrow"></i>
-                    </a>
-                </li>
-            `;
-        }
+        // Previous
+        pagination.innerHTML += `
+            <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
+                    <i class="bx bx-chevron-left"></i>
+                </a>
+            </li>
+        `;
 
         // Page numbers
         for (let i = 1; i <= total_pages; i++) {
-            if (i === current_page) {
-                pagination.innerHTML += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
-            } else {
-                pagination.innerHTML += `
-                    <li class="page-item">
-                        <a class="page-link" href="#" onclick="goToPage(${i}); return false;">${i}</a>
-                    </li>
-                `;
-            }
-        }
-
-        // Next button
-        if (current_page < total_pages) {
             pagination.innerHTML += `
-                <li class="page-item">
-                    <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
-                        <i class="bx bx-right-arrow"></i>
+                <li class="page-item ${i === current_page ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${i}); return false;">
+                        ${i}
                     </a>
                 </li>
             `;
         }
+
+        // Next
+        pagination.innerHTML += `
+            <li class="page-item ${current_page === total_pages ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
+                    <i class="bx bx-chevron-right"></i>
+                </a>
+            </li>
+        `;
     }
 
     // Go to page (global function)
@@ -416,10 +438,16 @@ document.addEventListener('DOMContentLoaded', function() {
             day: 'numeric'
         }) : 'Not Set';
 
-        const statusClass =
-        record.status === 'Completed'
-            ? 'completed'
-            : 'registered';
+        // Determine status based on examinee_status
+        const isCompleted = record.examinee_status === 'Completed';
+        const statusClass = isCompleted ? 'completed' : 'registered';
+        const statusLabel = isCompleted ? 'Completed' : record.status;
+
+        // Update modal subtitle based on completion status
+        const modalSubtitle = document.getElementById('profileModalSubtitle');
+        if (modalSubtitle) {
+            modalSubtitle.textContent = isCompleted ? 'Completed Examinee Information' : 'Registered Examinee Information';
+        }
 
         const profileHTML = `
         <div class="compact-profile">
@@ -436,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <span class="status-pill ${statusClass}">
-            ${escapeHtml(record.status)}
+            ${escapeHtml(statusLabel)}
             </span>
         </div>
 

@@ -25,13 +25,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!existingIds.has(examinee.examinee_id)) {
                         existingIds.add(examinee.examinee_id);
 
-const formattedDate = examinee.scheduled_date
-    ? new Date(examinee.scheduled_date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-    : "Not Scheduled";
+                        const formattedDate = examinee.scheduled_date
+                            ? new Date(examinee.scheduled_date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })
+                            : "Not Scheduled";
+                            
+                        const formattedTime = examinee.scheduled_time
+                        ? new Date(`1970-01-01T${examinee.scheduled_time}`).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                            })
+                        : "—";
 
                         const row = document.createElement("tr");
                         row.innerHTML = `
@@ -39,7 +47,12 @@ const formattedDate = examinee.scheduled_date
                             <td>${examinee.full_name}</td>
                             <td>${examinee.email}</td>
                             <td>${formattedDate}</td>
-                            <td>${examinee.examinee_status}</td>
+                            <td>${formattedTime}</td>
+                            <td>
+                                <span class="status-badge completed">
+                                ${examinee.examinee_status}
+                                </span>
+                            </td>
                         `;
 
                         // Insert at the top
@@ -66,7 +79,7 @@ const formattedDate = examinee.scheduled_date
     let completedCount = 0;
 
     rows.forEach(row => {
-        const statusCell = row.cells[4]; // Assuming Status is the 5th column (index 4)
+        const statusCell = row.cells[5];// Assuming Status is the 5th column (index 4)
         if (statusCell && statusCell.textContent.trim().toLowerCase() === 'completed') {
             completedCount++;
         }

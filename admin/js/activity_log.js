@@ -87,7 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const params = new URLSearchParams();
         params.append('search', currentSearch);
         params.append('page', currentPage);
+        params.append('limit', 10);
         params.append('date_filter', currentDateFilter);
+
+        
         if (currentActivityType) {
             params.append('activity_type', currentActivityType);
         }
@@ -279,12 +282,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (total_pages <= 1) return;
 
         // Previous button
-        const prevDisabled = current_page === 1 ? 'disabled' : '';
-        pagination.insertAdjacentHTML('beforeend', `
-            <li class="page-item ${prevDisabled}">
-                <a class="page-link" href="#" data-page="${current_page - 1}">&laquo; Previous</a>
-            </li>
-        `);
+            const prevDisabled = current_page === 1 ? 'disabled' : '';
+            pagination.insertAdjacentHTML('beforeend', `
+                <li class="page-item ${prevDisabled}">
+                    <a class="page-link" href="#" data-page="${current_page - 1}" aria-label="Previous">&lt;</a>
+                </li>
+            `);
 
         // Page numbers
         let startPage = Math.max(1, current_page - 2);
@@ -318,12 +321,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Next button
-        const nextDisabled = current_page === total_pages ? 'disabled' : '';
-        pagination.insertAdjacentHTML('beforeend', `
-            <li class="page-item ${nextDisabled}">
-                <a class="page-link" href="#" data-page="${current_page + 1}">Next &raquo;</a>
-            </li>
-        `);
+            const nextDisabled = current_page === total_pages ? 'disabled' : '';
+            pagination.insertAdjacentHTML('beforeend', `
+                <li class="page-item ${nextDisabled}">
+                    <a class="page-link" href="#" data-page="${current_page + 1}" aria-label="Next">&gt;</a>
+                </li>
+            `);
 
         // Add click handlers
         pagination.querySelectorAll('.page-link').forEach(link => {

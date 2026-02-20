@@ -13,6 +13,55 @@
 </head>
 <style>
     /* Table */
+/* ===== Premium Pagination Style ===== */
+
+.pagination {
+  gap: 6px;
+}
+
+.pagination .page-item {
+  margin: 0;
+}
+
+.pagination .page-link {
+  border: none;
+  border-radius: 12px;
+  min-width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f172a;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+  background: #f1f5f9;
+}
+
+/* Active Page */
+.pagination .page-item.active .page-link {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+/* Disabled */
+.pagination .page-item.disabled .page-link {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Arrow buttons slightly muted */
+.pagination .page-link[aria-label="Previous"],
+.pagination .page-link[aria-label="Next"] {
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
 .exam-table th {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
@@ -193,21 +242,20 @@
                 </p>
             </div>
 
+
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
+            <input
+                type="search"
+                class="form-control rounded-pill"
+                style="max-width: 260px;"
+                placeholder="Search by venue or date..."
+            >
+        </div>
+
+
   <!-- Table Card -->
-  <div class="card border-0 shadow-sm rounded-4">
-    
-    <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
-    <input
-        type="search"
-        class="form-control rounded-pill"
-        style="max-width: 260px;"
-        placeholder="Search by venue or date..."
-    >
-    </div>
-
-
-
-    <!-- Table -->
+<div class="card border-0 shadow-sm rounded-4">
+        <!-- Table -->
 <table class="table align-middle exam-table">
   <thead>
     <tr>
@@ -221,16 +269,18 @@
     </tr>
   </thead>
 
-<tbody id="examTableBody">
-</tbody>
+    <tbody id="examTableBody">
+    </tbody>
 
 </table>
+        <nav class="w-100 d-flex justify-content-center">
+            <ul class="pagination mb-0" id="pagination"></ul>
+        </nav>
 
-
-
-
-  </div>
-
+</div>
+    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+        <div class="text-muted small" id="paginationInfo"></div>
+    </div>
 </main>
 
     </section>
