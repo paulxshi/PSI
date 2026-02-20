@@ -26,13 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let availableSchedules = []; // Store schedules for selection
     let searchTimeout = null;
 
-    /**
-     * Business Logic:
-     * - Total Registered: All examinees with status='Scheduled' (can be rescheduled)
-     * - Completed: Filter by examinee_status='Completed' (cannot be rescheduled, view only)
-     * - Base query always filters by status='Scheduled'
-     * - currentStatus controls optional examinee_status filter
-     */
 
     // Initialize
     loadSchedules();
@@ -47,9 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
     document.getElementById('totalCompleted').parentElement.parentElement.parentElement.style.cursor = 'pointer';
 
-    // Total Registered: Show all examinees with status='Scheduled' (can be rescheduled)
+    // Total Registered: Show examinees with status='Scheduled' EXCLUDING completed (can be rescheduled)
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
-        currentStatus = ''; // No examinee_status filter, shows all status='Scheduled'
+        currentStatus = ''; // Shows registered examinees (excludes completed)
         currentPage = 1;
         updateCardHighlights();
         updateFilterBadge();
@@ -307,9 +300,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
+    // Update table header based on current filter
+    function updateTableHeader() {
+        const dateHeader = document.getElementById('dateColumnHeader');
+        if (dateHeader) {
+            dateHeader.textContent = currentStatus === 'Completed' ? 'Scanned Date' : 'Exam Date';
+        }
+    }
+
     // Populate table rows
     function populateTable(records) {
         tableBody.innerHTML = '';
+        updateTableHeader(); // Update column header based on filter
 
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No registered examinees found</td></tr>';
@@ -317,11 +319,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         records.forEach(record => {
-            const examDate = new Date(record.exam_date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+            // Use completed_date (scanned_at) for completed examinees, exam_date otherwise
+            let displayDate;
+            if (currentStatus === 'Completed' && record.completed_date) {
+                const completedDateTime = new Date(record.completed_date);
+                displayDate = completedDateTime.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } else {
+                displayDate = record.exam_date ? new Date(record.exam_date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'Not Set';
+            }
 
             // Show reschedule button only if examinee_status is NOT 'Completed'
             const isCompleted = record.examinee_status === 'Completed';
@@ -341,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>
                     </td>
                     <td>${escapeHtml(record.exam_venue || 'Not Set')}</td>
-                    <td>${record.exam_date ? examDate : 'Not Set'}</td>
+                    <td>${displayDate}</td>
                     <td class="text-end table-actions">
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-light" onclick="viewProfile(${record.user_id})" title="View Profile">
@@ -423,10 +438,16 @@ document.addEventListener('DOMContentLoaded', function() {
             day: 'numeric'
         }) : 'Not Set';
 
-        const statusClass =
-        record.status === 'Completed'
-            ? 'completed'
-            : 'registered';
+        // Determine status based on examinee_status
+        const isCompleted = record.examinee_status === 'Completed';
+        const statusClass = isCompleted ? 'completed' : 'registered';
+        const statusLabel = isCompleted ? 'Completed' : record.status;
+
+        // Update modal subtitle based on completion status
+        const modalSubtitle = document.getElementById('profileModalSubtitle');
+        if (modalSubtitle) {
+            modalSubtitle.textContent = isCompleted ? 'Completed Examinee Information' : 'Registered Examinee Information';
+        }
 
         const profileHTML = `
         <div class="compact-profile">
@@ -443,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <span class="status-pill ${statusClass}">
-            ${escapeHtml(record.status)}
+            ${escapeHtml(statusLabel)}
             </span>
         </div>
 

@@ -23,10 +23,11 @@ $offset = ($page - 1) * $limit;
 try {
     /**
      * Business Logic:
-     * - Base query: status = 'Scheduled' (all registered examinees who can be rescheduled)
-     * - Optional filter: examinee_status (e.g., 'Completed' for those who finished exam)
-     * - Total Registered count: All with status='Scheduled'
-     * - Completed count: Those with examinee_status='Completed'
+     * - Total Registered: status='Scheduled' AND examinee_status != 'Completed' (can be rescheduled)
+     * - Completed: status='Scheduled' AND examinee_status='Completed' (view only, cannot reschedule)
+     * - Base query always: status='Scheduled'
+     * - When no filter (Total Registered view): exclude completed examinees
+     * - When Completed filter: show only completed examinees
      */
     
     // Build base query - Join examinees with users and schedules
@@ -35,8 +36,12 @@ try {
 
     // Status filter (examinee_status)
     if (!empty($status)) {
+        // Show only examinees with specified examinee_status (e.g., 'Completed')
         $whereConditions[] = "e.examinee_status = :status";
         $params[':status'] = $status;
+    } else {
+        // Default view (Total Registered): EXCLUDE completed examinees
+        $whereConditions[] = "(e.examinee_status IS NULL OR e.examinee_status != 'Completed')";
     }
 
     // Region filter
@@ -86,7 +91,8 @@ try {
             e.status,
             e.examinee_status,
             e.schedule_id,
-            e.date_of_registration
+            e.date_of_registration,
+            e.scanned_at as completed_date
         FROM examinees e
         INNER JOIN users u ON e.user_id = u.user_id
         LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
@@ -113,7 +119,7 @@ try {
     // Get summary counts
     $summaryStmt = $pdo->prepare("
         SELECT 
-            COUNT(*) as total_registered,
+            SUM(CASE WHEN (examinee_status IS NULL OR examinee_status != 'Completed') THEN 1 ELSE 0 END) as total_registered,
             SUM(CASE WHEN examinee_status = 'Completed' THEN 1 ELSE 0 END) as completed,
             SUM(CASE WHEN examinee_status = 'Absent' THEN 1 ELSE 0 END) as absent,
             SUM(CASE WHEN examinee_status = 'Registered' THEN 1 ELSE 0 END) as registered
