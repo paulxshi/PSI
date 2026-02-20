@@ -128,8 +128,20 @@
   color: #16a34a;
 }
 
+/* Edit Button Style */
+.btn-link {
+  color: #3b82f6;  
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0;
+  margin-top: 4px;
+}
+
+.btn-link:hover {
+  color: #2563eb;  
+}
+
 /* ===== Avatar Panel ===== */
-/* ===== Upload Card ===== */
 .upload-card {
   max-width: 200px;
   margin: 0 auto;
@@ -420,71 +432,84 @@
 
           <!-- FULL NAME -->
           <div class="row g-4 mt-4">
-
+            <!-- Last Name -->
             <div class="col-md-4">
               <div class="field-group">
                 <label>Last Name</label>
                 <div class="field-value" id="lname">
                   Dela Cruz
                 </div>
+                <!-- Edit Button for Last Name -->
+                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
 
+            <!-- First Name -->
             <div class="col-md-4">
               <div class="field-group">
                 <label>First Name</label>
                 <div class="field-value" id="fname">
                   Juan
                 </div>
+                <!-- Edit Button for First Name -->
+                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
 
+            <!-- Middle Name -->
             <div class="col-md-4">
               <div class="field-group">
                 <label>Middle Name</label>
                 <div class="field-value" id="mname">
                   M.
                 </div>
+                <!-- Edit Button for Middle Name -->
+                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
-
           </div>
 
           <!-- CONTACT DETAILS -->
           <div class="row g-4 mt-4">
-
+            <!-- Email Address -->
             <div class="col-md-6">
               <div class="field-group">
                 <label>Email Address</label>
                 <div class="field-value" id="email">
                   user@email.com
                 </div>
+                <!-- Edit Button for Email Address -->
               </div>
             </div>
 
+            <!-- Contact Number -->
             <div class="col-md-6">
               <div class="field-group">
                 <label>Contact Number</label>
                 <div class="field-value" id="contact">
                   09XXXXXXXXX
                 </div>
+                <!-- Edit Button for Contact Number -->
+                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
-
           </div>
 
           <!-- BIRTHDAY & AGE -->
           <div class="row g-4 mt-2">
-
+            <!-- Birthday -->
             <div class="col-md-6">
               <div class="field-group">
                 <label>Birthday</label>
                 <div class="field-value" id="birthday">
                   January 01, 2000
                 </div>
+                <!-- Edit Button for Birthday -->
+                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
 
+            <!-- Age -->
             <div class="col-md-6">
               <div class="field-group">
                 <label>Age</label>
@@ -493,7 +518,6 @@
                 </div>
               </div>
             </div>
-
           </div>
 
           <!-- SCHOOL -->
@@ -668,6 +692,31 @@ document.addEventListener("DOMContentLoaded", () => {
       icon.style.display = "none";
     };
     reader.readAsDataURL(file);
+  });
+});
+
+document.querySelectorAll('.btn-link').forEach(button => {
+  button.addEventListener('click', (e) => {
+    const fieldGroup = e.target.closest('.field-group');
+    const fieldValue = fieldGroup.querySelector('.field-value');
+    const originalText = fieldValue.textContent;
+
+    // Change the text field into an editable input
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = originalText;
+    fieldValue.innerHTML = '';
+    fieldValue.appendChild(input);
+
+    // Change button text to 'Save'
+    e.target.textContent = 'Save';
+
+    // Update button event listener to save changes
+    e.target.addEventListener('click', () => {
+      const newValue = input.value;
+      fieldValue.innerHTML = newValue;
+      e.target.textContent = 'Edit';
+    });
   });
 });
 </script> 
