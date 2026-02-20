@@ -144,10 +144,10 @@ fetch("php/get_transaction.php?user_id=" + userId)
     maskButton.addEventListener("click", () => {
       if (qrText.style.filter === "blur(5px)") {
         qrText.style.filter = "none";  // Unblur the QR value
-        maskButton.textContent = "Mask QR Value";  // Update button text
+        maskButton.textContent = "HIDE";  // Update button text
       } else {
         qrText.style.filter = "blur(5px)";  // Blur the QR value
-        maskButton.textContent = "Unmask QR Value";  // Update button text
+        maskButton.textContent = "VIEW";  // Update button text
       }
     });
 
