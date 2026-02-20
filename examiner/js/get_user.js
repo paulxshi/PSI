@@ -46,8 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <!-- Header -->
             <div class="user-card-header">
-              <div class="avatar">
-                ${user.first_name.charAt(0)}${user.last_name.charAt(0)}
+              <div class="avatar" style="background: ${user.profile_picture ? 'transparent' : ''}; padding: 0;">
+                ${user.profile_picture ? 
+                  `<img src="../${user.profile_picture}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
+                  `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`
+                }
               </div>
 
               <h5 class="user-name">
@@ -270,4 +273,22 @@ document.querySelectorAll('.faq-toggle').forEach(toggle => {
     row.classList.toggle('active');
     content.classList.toggle('open');
   });
+});
+
+// Listen for profile picture updates
+window.addEventListener('storage', (e) => {
+  if (e.key === 'profilePictureUpdated') {
+    // Reload the page to show updated profile picture
+    location.reload();
+  }
+});
+
+// Check on focus (when returning from account settings page)
+let lastPictureCheck = localStorage.getItem('profilePictureUpdated');
+window.addEventListener('focus', () => {
+  const currentCheck = localStorage.getItem('profilePictureUpdated');
+  if (currentCheck && currentCheck !== lastPictureCheck) {
+    lastPictureCheck = currentCheck;
+    location.reload();
+  }
 });
