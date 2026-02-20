@@ -353,6 +353,13 @@
     margin-bottom: 20px;
   }
 }
+
+/* ===== Shake Animation ===== */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
 </style>
 
 
@@ -411,7 +418,7 @@
       <!-- Compressed and Enhanced Global Edit Button -->
       <button type="button" id="globalEditButton" class="btn btn-link text-primary p-0 mt-2" style="font-size: 1rem; display: flex; align-items: center;">
         <i class="bx bx-edit me-2"></i> 
-        <span class="d-none d-sm-inline">Edit All</span>
+        <span class="d-none d-sm-inline">Edit Information</span>
         <span class="d-sm-none">Edit</span> <!-- Text for smaller screens -->
       </button>
     </div>
@@ -559,7 +566,7 @@
           </div>
 
             <!-- ACTIONS INSIDE CONTAINER -->
-            <div class="form-actions">
+            <div class="form-actions" style="display: none;">
             <button type="button" class="btn btn-cancel">
                 Cancel
             </button>
@@ -597,6 +604,10 @@
         <h6 class="reminders-title">Important Reminders</h6>
 
         <ul class="reminders-list">
+            <li>
+            <i class="bx bx-check-circle"></i>
+            A profile picture is required to save any changes.
+            </li>
             <li>
             <i class="bx bx-check-circle"></i>
             Ensure your personal details are correct.
@@ -688,66 +699,7 @@
   </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("avatarInput");
-  const img = document.getElementById("avatarPreview");
-  const icon = document.getElementById("avatarIcon");
-
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-    if (!file || !file.type.startsWith("image/")) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      img.src = e.target.result;
-      img.style.display = "block";
-      icon.style.display = "none";
-    };
-    reader.readAsDataURL(file);
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const globalEditButton = document.getElementById("globalEditButton");
-
-  // Fields that should be editable
-  const editableFields = [
-    "#lname",
-    "#fname",
-    "#mname",
-    "#contact",
-    "#birthday"
-  ];
-
-  globalEditButton.addEventListener("click", () => {
-    const isEditing = globalEditButton.textContent === "Save All";
-    
-    // Toggle between Edit and Save modes
-    if (isEditing) {
-      // Collect all edited fields
-      editableFields.forEach(fieldSelector => {
-        const field = document.querySelector(fieldSelector);
-        const input = field.querySelector('input');
-        if (input) {
-          // Save new values back to the field
-          field.innerHTML = input.value;
-        }
-      });
-      globalEditButton.textContent = "Edit All";
-    } else {
-      // Enable editing for specific fields
-      editableFields.forEach(fieldSelector => {
-        const field = document.querySelector(fieldSelector);
-        const currentText = field.innerText;
-        field.innerHTML = `<input type="text" value="${currentText}">`;
-      });
-      globalEditButton.textContent = "Save All";
-    }
-  });
-});
-</script> 
-
+<script src="js/accountsettings.js"></script>
 </body>
 </html>
 
