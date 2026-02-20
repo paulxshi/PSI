@@ -11,6 +11,48 @@
     <link rel="stylesheet" href="../css/dashstyle.css">
 </head>
 <style>
+    /* ===== Premium Pagination (Shared Across Pages) ===== */
+
+    .pagination {
+    gap: 6px;
+    }
+
+    .pagination .page-item {
+    margin: 0;
+    }
+
+    .pagination .page-link {
+    border: none;
+    border-radius: 12px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #0f172a;
+    background: transparent;
+    transition: all 0.2s ease;
+    }
+
+    .pagination .page-link:hover {
+    background: #f1f5f9;
+    }
+
+    /* Active page */
+    .pagination .page-item.active .page-link {
+    background: #0f172a;
+    color: #ffffff;
+    }
+
+    /* Disabled */
+    .pagination .page-item.disabled .page-link {
+    opacity: 0.35;
+    pointer-events: none;
+    }
+
     .activity-table tbody tr {
         transition: background-color 0.2s ease;
     }
@@ -373,8 +415,8 @@
 
                     <!-- Pagination -->
                     <div id="paginationContainer" style="display:none;" class="mt-4">
-                        <nav aria-label="Pagination">
-                            <ul id="pagination" class="pagination justify-content-end">
+                        <nav aria-label="Pagination" class="w-100 d-flex justify-content-center">
+                            <ul id="pagination" class="pagination mb-0">
                                 <!-- Populated by JavaScript -->
                             </ul>
                         </nav>
