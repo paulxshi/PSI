@@ -11,6 +11,7 @@ $sql = "SELECT
                    IFNULL(u.middle_name, ''), ' ', 
                    u.last_name) AS full_name,
             e.examinee_status,
+            e.scanned_at,
             u.email,
             s.scheduled_date
         FROM examinees e

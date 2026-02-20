@@ -44,11 +44,11 @@ $stmt = $pdo->prepare("SELECT * FROM payments WHERE external_id = ?");
 $stmt->execute([$invoiceNo]);
 $payment = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$payment) {
+if (!$payment || $payment['status'] !== 'PAID') {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Payment not found.",
-        "debug" => "No record in payments table"
+        "status_message" => !$payment ? "Payment not found." : "Payment not paid yet.",
+        "debug" => !$payment ? "No record in payments table" : "Payment status is not PAID"
     ]);
     exit;
 }
