@@ -14,6 +14,21 @@
 
 <style>
 
+#globalEditButton {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  text-decoration: none;
+  color: #2563eb; /* Blue color */
+}
+
+#globalEditButton:hover {
+  color: #1e40af;
+}
+
+#globalEditButton i {
+  margin-right: 5px;
+}
 /* ===== Field Group ===== */
 .field-group {
   display: flex;
@@ -387,12 +402,20 @@
   <div class="account-shell mx-auto">
 
     <!-- Header -->
-    <div class="account-header mb-4">
-      <h3 class="fw-semibold mb-1">Account Settings</h3>
-      <p class="text-muted small mb-0">
-        Manage your personal and examination information
-      </p>
+    <div class="account-header mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3 class="fw-semibold mb-1">Account Settings</h3>
+        <p class="text-muted small mb-0">Manage your personal and examination information</p>
+      </div>
+      
+      <!-- Compressed and Enhanced Global Edit Button -->
+      <button type="button" id="globalEditButton" class="btn btn-link text-primary p-0 mt-2" style="font-size: 1rem; display: flex; align-items: center;">
+        <i class="bx bx-edit me-2"></i> 
+        <span class="d-none d-sm-inline">Edit All</span>
+        <span class="d-sm-none">Edit</span> <!-- Text for smaller screens -->
+      </button>
     </div>
+
 
     <div class="row g-5 align-items-start">
 
@@ -439,11 +462,8 @@
                 <div class="field-value" id="lname">
                   Dela Cruz
                 </div>
-                <!-- Edit Button for Last Name -->
-                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
-
             <!-- First Name -->
             <div class="col-md-4">
               <div class="field-group">
@@ -451,11 +471,8 @@
                 <div class="field-value" id="fname">
                   Juan
                 </div>
-                <!-- Edit Button for First Name -->
-                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
-
             <!-- Middle Name -->
             <div class="col-md-4">
               <div class="field-group">
@@ -463,8 +480,6 @@
                 <div class="field-value" id="mname">
                   M.
                 </div>
-                <!-- Edit Button for Middle Name -->
-                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
           </div>
@@ -489,8 +504,6 @@
                 <div class="field-value" id="contact">
                   09XXXXXXXXX
                 </div>
-                <!-- Edit Button for Contact Number -->
-                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
           </div>
@@ -504,8 +517,6 @@
                 <div class="field-value" id="birthday">
                   January 01, 2000
                 </div>
-                <!-- Edit Button for Birthday -->
-                <button type="button" class="btn btn-link text-primary p-0 mt-2">Edit</button>
               </div>
             </div>
 
@@ -523,6 +534,7 @@
           <!-- SCHOOL -->
           <div class="row g-4 mt-2">
 
+          <div class="row g-4 mt-2">
             <div class="col-12">
               <div class="field-group">
                 <label>School</label>
@@ -531,6 +543,7 @@
                 </div>
               </div>
             </div>
+          </div>
 
           </div>
 
@@ -695,28 +708,42 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-document.querySelectorAll('.btn-link').forEach(button => {
-  button.addEventListener('click', (e) => {
-    const fieldGroup = e.target.closest('.field-group');
-    const fieldValue = fieldGroup.querySelector('.field-value');
-    const originalText = fieldValue.textContent;
+document.addEventListener("DOMContentLoaded", () => {
+  const globalEditButton = document.getElementById("globalEditButton");
 
-    // Change the text field into an editable input
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = originalText;
-    fieldValue.innerHTML = '';
-    fieldValue.appendChild(input);
+  // Fields that should be editable
+  const editableFields = [
+    "#lname",
+    "#fname",
+    "#mname",
+    "#contact",
+    "#birthday"
+  ];
 
-    // Change button text to 'Save'
-    e.target.textContent = 'Save';
-
-    // Update button event listener to save changes
-    e.target.addEventListener('click', () => {
-      const newValue = input.value;
-      fieldValue.innerHTML = newValue;
-      e.target.textContent = 'Edit';
-    });
+  globalEditButton.addEventListener("click", () => {
+    const isEditing = globalEditButton.textContent === "Save All";
+    
+    // Toggle between Edit and Save modes
+    if (isEditing) {
+      // Collect all edited fields
+      editableFields.forEach(fieldSelector => {
+        const field = document.querySelector(fieldSelector);
+        const input = field.querySelector('input');
+        if (input) {
+          // Save new values back to the field
+          field.innerHTML = input.value;
+        }
+      });
+      globalEditButton.textContent = "Edit All";
+    } else {
+      // Enable editing for specific fields
+      editableFields.forEach(fieldSelector => {
+        const field = document.querySelector(fieldSelector);
+        const currentText = field.innerText;
+        field.innerHTML = `<input type="text" value="${currentText}">`;
+      });
+      globalEditButton.textContent = "Save All";
+    }
   });
 });
 </script> 
