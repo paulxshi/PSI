@@ -270,7 +270,7 @@
                         <!-- Search -->
                         <div class="col-md-4">
                             <input
-                                type="text"
+                                type="search"
                                 id="searchInput"
                                 class="form-control"
                                 placeholder="Search by name, email, or test permit..."
@@ -440,6 +440,21 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        
+    const searchInput = document.querySelector('input[type="search"]');
+    searchInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#examineeTableBody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const text = (cells[0].textContent + cells[1].textContent + cells[2].textContent).toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    });
+});
+</script>
 <script src="js/examinee-management.js"></script>
 </body>
 </html>
