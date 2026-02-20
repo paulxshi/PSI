@@ -56,7 +56,7 @@ const formattedDate = examinee.scheduled_date
     fetchCompletedExaminees();
 
     // Poll server every 5 seconds for new completed examinees
-    setInterval(fetchCompletedExaminees, 1000);
+    setInterval(fetchCompletedExaminees, 500);
 
 
 

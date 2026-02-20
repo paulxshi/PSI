@@ -140,6 +140,28 @@ if (!$venue) {
     exit;
 }
 
+
+/* --------------------------------------------------
+   STEP 6: Update scanned_at timestamp
+-------------------------------------------------- */
+
+// Double-check if already scanned (extra safety)
+/*
+if (!empty($examinee['scanned_at'])) {
+    echo json_encode([
+        "status_class" => "already_used",
+        "status_message" => "⚠ QR ALREADY SCANNED",
+        "scanned_at" => $examinee['scanned_at'],
+        "examinee_id" => $examinee['examinee_id']
+    ]);
+    exit;
+} */
+
+// Get updated timestamp
+$scannedTime = date("Y-m-d H:i:s");
+
+
+
 /* --------------------------------------------------
    SUCCESS
 -------------------------------------------------- */
@@ -151,7 +173,10 @@ echo json_encode([
 
     "name" => $fullName,
     "test_permit" => $user['test_permit'],
-    "exam_date" => date("F d, Y", strtotime($schedule['scheduled_date'])),
+
+    "exam_date" => $schedule['scheduled_date'],
+    "exam_date_display" => date("F d, Y", strtotime($schedule['scheduled_date'])),
+
     "venue" => $venue['venue_name'],
     "examinee_id" => $examinee['examinee_id'],
     "invoice_no" => $payment['external_id'],
@@ -159,5 +184,7 @@ echo json_encode([
     "payment_date" => $payment['payment_date'],
     "amount" => "₱" . number_format($payment['amount'], 2),
 
-    "debug" => "All joins successful"
+    "scanned_at" => $scannedTime,
+
+    "debug" => "Scan recorded successfully"
 ]);

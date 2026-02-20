@@ -84,11 +84,10 @@
     transform 0.15s ease;
 }
 
-.region-table-row:hover {
-  background-color: #f8f9fa;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transform: translateY(-1px);
-  cursor: pointer;
+.region-table-row.selected {
+  background-color: #e0ffda !important;
+  border: 2px solid #6bff8e;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3) !important;
 }
 
 </style>
@@ -213,17 +212,15 @@
             placeholder="Enter QR value"
           >
 
-          <button
-            class="btn btn-primary px-3"
-            onclick="simulateScan()"
-          >
-            Scan
-          </button>
+<button id="scanBtn" class="btn btn-primary px-3">
+  Scan
+</button>
 
         </div>
 
         <small class="text-muted d-block mt-2">
-          Simulates QR validation using live scanner logic.
+          Manual QR validation through direct entry of the QR code value.
+
         </small>
       </div>
 
@@ -232,10 +229,13 @@
 </div>
 
   <div class="container-fluid mt-4">
-   <div class="row g-3 justify-content-start region-row-wrapper">
 
+   <div class="row g-3 justify-content-start region-row-wrapper">
+ 
   <div class="container-fluid mt-4">
     <div class="card border-0 shadow-sm rounded-4 p-4">
+      
+         <h6 class="mb-0 fw-semibold">Please Select Schedule For Scanning:</h6> <br>
       <div class="row g-4" id="regionsContainer">
         <!-- JS injects regions as columns -->
       </div>
@@ -401,6 +401,13 @@
 
       </div>
 
+        <!-- AUTO COMPLETE TIMER -->
+        <div id="autoCompleteTimer" class="alert alert-success text-center mb-3" style="display: none;">
+          <i class="bx bx-check-circle fs-4 me-2"></i>
+          Auto-completing in <span id="timerCount" class="fw-bold">5</span> seconds...
+          <button id="cancelAutoComplete" class="btn btn-outline-secondary btn-sm ms-2">Cancel</button>
+        </div>
+
       <!-- FOOTER ACTIONS -->
       <div class="modal-footer">
         <button class="btn btn-danger" id="rejectBtn">REJECT</button>
@@ -476,6 +483,17 @@
 <script>
 
 
+
+  const btn = document.getElementById("scanBtn");
+
+  btn.addEventListener("click", simulateScan);
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      btn.click();
+    }
+  });
 
 function simulateScan() {
 
@@ -579,7 +597,11 @@ function renderRegions(data) {
 
         regionHTML += `
           <div class="region-table-row"
-               style="grid-template-columns: 2fr 1fr 1fr 1fr;">
+               style="grid-template-columns: 2fr 1fr 1fr 1fr;"
+               data-region="${region}"
+               data-venue="${venue}"
+               data-date="${sched.date}"
+               onclick="selectSchedule('${region}', '${venue}', '${sched.date}', this)">
             <span>${formatDate(sched.date)}</span>
             <span class="fw-semibold">${sched.registered}</span>
             <span class="fw-semibold text-danger">${sched.limit}</span>
@@ -608,6 +630,32 @@ function formatDate(date) {
         month: 'long',
         day: 'numeric'
     });
+}
+
+function selectSchedule(region, venue, date, element) {
+    if (element.classList.contains('selected')) {
+        // Unselect
+        element.classList.remove('selected');
+        window.selectedRegion = null;
+        window.selectedVenue = null;
+        window.selectedDate = null;
+        console.log("Unselected schedule");
+    } else {
+        // Remove selected class from all rows
+        document.querySelectorAll('.region-table-row.selected').forEach(row => {
+            row.classList.remove('selected');
+        });
+
+        // Add selected class to clicked row
+        element.classList.add('selected');
+
+        // Store selected values globally
+        window.selectedRegion = region;
+        window.selectedVenue = venue;
+        window.selectedDate = date;
+
+        console.log(`Selected: Region=${region}, Venue=${venue}, Date=${date}`);
+    }
 }
 </script>
 
