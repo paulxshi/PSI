@@ -6,7 +6,8 @@ require_once "../../php/log_activity.php";
 header('Content-Type: application/json');
 
 // Check if admin is logged in
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    http_response_code(403);
     echo json_encode([
         'success' => false,
         'message' => 'Unauthorized access'

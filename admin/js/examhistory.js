@@ -65,6 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     </td>
                     <td><strong>${row.num_registered ?? 0}</strong> examinees</td>
                     <td><strong>${row.num_completed ?? 0}</strong> attended</td>
+                    <td class="text-end">
+                        <button 
+                            class="btn btn-sm btn-outline-success rounded-pill px-3" 
+                            onclick="exportExamHistory(${row.schedule_id})"
+                            title="Export as CSV"
+                        >
+                            <i class="bx bx-download"></i> Export CSV
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -141,7 +150,7 @@ function mapRegionClass(region = "") {
 function errorRow(message) {
     return `
         <tr>
-            <td colspan="6" class="text-center text-danger py-4">${message}</td>
+            <td colspan="7" class="text-center text-danger py-4">${message}</td>
         </tr>
     `;
 }
@@ -149,7 +158,19 @@ function errorRow(message) {
 function emptyRow(message) {
     return `
         <tr>
-            <td colspan="6" class="text-center text-muted py-4">${message}</td>
+            <td colspan="7" class="text-center text-muted py-4">${message}</td>
         </tr>
     `;
+}
+
+/* ---------- Export Function ---------- */
+function exportExamHistory(scheduleId) {
+    if (!scheduleId) {
+        alert('Invalid schedule ID');
+        return;
+    }
+
+    // Create and trigger download
+    const exportUrl = `php/export_exam_history.php?schedule_id=${scheduleId}`;
+    window.location.href = exportUrl;
 }
