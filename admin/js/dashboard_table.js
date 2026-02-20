@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchCompletedExaminees();
 
     // Poll server every 5 seconds for new completed examinees
-    setInterval(fetchCompletedExaminees, 1000);
+    setInterval(fetchCompletedExaminees, 500);
 
 
 
