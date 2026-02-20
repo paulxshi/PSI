@@ -21,6 +21,14 @@ $limit = 10; // Records per page
 $offset = ($page - 1) * $limit;
 
 try {
+    /**
+     * Business Logic:
+     * - Base query: status = 'Scheduled' (all registered examinees who can be rescheduled)
+     * - Optional filter: examinee_status (e.g., 'Completed' for those who finished exam)
+     * - Total Registered count: All with status='Scheduled'
+     * - Completed count: Those with examinee_status='Completed'
+     */
+    
     // Build base query - Join examinees with users and schedules
     $whereConditions = ["e.status = 'Scheduled'"]; // Only those who have paid and confirmed
     $params = [];
