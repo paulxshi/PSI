@@ -5,6 +5,42 @@ document.addEventListener("DOMContentLoaded", function () {
             let tableBody = document.getElementById("examTableBody");
             tableBody.innerHTML = "";
 
+            // Check if data is an error object
+            if (data.error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            Error loading data: ${data.error}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Check if data is an array
+            if (!Array.isArray(data)) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            Invalid data format received
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Check if data is empty
+            if (data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No exam history found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
             data.forEach((row, index) => {
 
                 let dateObj = new Date(row.scheduled_date);
@@ -46,5 +82,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableBody.innerHTML += tr;
             });
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error("Error:", error);
+            let tableBody = document.getElementById("examTableBody");
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-danger py-4">
+                        Failed to load exam history. Please try again later.
+                    </td>
+                </tr>
+            `;
+        });
 });
