@@ -135,6 +135,22 @@ fetch("php/get_transaction.php?user_id=" + userId)
       height: 180,
     });
 
+ const maskButton = document.getElementById("maskButton");
+    const qrText = document.getElementById("qrText");
+
+    maskButton.addEventListener("click", () => {
+      if (qrText.style.filter === "blur(5px)") {
+        qrText.style.filter = "none";  // Unblur the QR value
+        maskButton.textContent = "Mask QR Value";  // Update button text
+      } else {
+        qrText.style.filter = "blur(5px)";  // Blur the QR value
+        maskButton.textContent = "Unmask QR Value";  // Update button text
+      }
+    });
+
+    // Initially, don't apply blur to the QR value
+    qrText.style.filter = "none";
+    
     // Download Function
 document.getElementById("downloadQR").addEventListener("click", () => {
   const canvas = document.querySelector("#qrContainer canvas");

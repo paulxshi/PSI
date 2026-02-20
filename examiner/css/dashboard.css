@@ -332,6 +332,8 @@
 .faq-row.active .faq-chevron {
   transform: rotate(180deg);
 }
+
+
 /* =========================
    MOBILE RESPONSIVENESS
 ========================= */
