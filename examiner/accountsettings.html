@@ -13,22 +13,179 @@
 </head>
 
 <style>
-  .info-tile {
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 12px 14px;
+
+/* ===== Field Group ===== */
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-group label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a8f98;
+  margin-bottom: 4px;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2e2f33;
+}
+
+/* Status Pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.status-issued {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+/* ===== Status Pills ===== */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.status-issued {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+
+/* Optional states */
+.status-pending {
+  background: rgba(234, 179, 8, 0.18);
+  color: #92400e;
+}
+
+.status-none {
+  background: rgba(239, 68, 68, 0.15);
+  color: #991b1b;
+}
+
+/* ===== Name Emphasis ===== */
+.field-group .fw-semibold {
+  font-size: 1rem;
+  letter-spacing: -0.2px;
+}
+
+.account-shell {
+  max-width: 980px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 36px;
+}
+
+/* ===== Header ===== */
+.account-header h3 {
+  letter-spacing: -0.3px;
+}
+
+/* ===== Info Panel ===== */
+.account-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.field-group label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8a8f98;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.field-value {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2e2f33;
+}
+
+/* ===== Status Pill ===== */
+.status-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+}
+
+/* ===== Avatar Panel ===== */
+.avatar-panel {
+  background: linear-gradient(180deg, #f9fafc, #f1f4f9);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.avatar-ring {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.avatar-ring img {
+  width: 100%;
   height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-.reminder-list li {
-  font-size: 0.9rem;
+.avatar-ring i {
+  font-size: 44px;
+  color: #9aa1ad;
 }
 
+/* ===== Buttons ===== */
+.btn-soft {
+  background: #ffffff;
+  border: 1px solid #e3e6ee;
+  color: #3a3f45;
+  border-radius: 12px;
+}
+
+.btn-soft:hover {
+  background: #f4f6fb;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+}
+
+.account-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ===== Mobile ===== */
 @media (max-width: 768px) {
-  .info-tile {
-    padding: 10px 12px;
+  .account-shell {
+    padding: 24px;
   }
-}
+} 
 </style>
 
 
@@ -80,125 +237,196 @@
             </div>
 		</nav>
 
-<main class="container-fluid p-4">
+<main class="container py-5">
 
-  <!-- PAGE HEADER -->
-  <div class="mb-4">
-    <h4 class="fw-bold mb-1">Account Overview</h4>
-    <p class="text-muted" style="font-size: 0.9rem;">
-      Review your personal information and examination status.
-    </p>
-  </div>
+  <div class="account-shell mx-auto">
 
-  <div class="row g-4">
+    <!-- Header -->
+    <div class="account-header mb-4">
+      <h3 class="fw-semibold mb-1">Account Settings</h3>
+      <p class="text-muted small mb-0">
+        Manage your personal and examination information
+      </p>
+    </div>
 
-    <!-- LEFT: ACCOUNT SUMMARY -->
-    <div class="col-12 col-lg-7">
-      <div class="content-box h-100">
+    <div class="row g-5 align-items-start">
 
-        <h6 class="fw-semibold mb-3">Personal & Exam Information</h6>
+      <!-- LEFT: DETAILS -->
+      <div class="col-lg-8">
+        <div class="account-panel">
 
-        <div class="row g-3">
+          <!-- TOP ROW: ACCOUNT TYPE - TEST PERIT - STATUS -->
+          <div class="row g-4 align-items-center">
 
-          <div class="col-6 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Account Type</small>
-              <div class="fw-semibold">Examinee</div>
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>Account Type</label>
+                <div class="field-value">Examinee</div>
+              </div>
             </div>
-          </div>
 
-          <div class="col-6 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Account Status</small>
-              <div>
-                <span class="badge bg-success bg-opacity-10 text-success">
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>Test Permit</label>
+                <div class="field-value" id="account-test-permit">
+                  TP-2026-00123
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>Status</label>
+                <span class="status-pill status-issued">
                   Active
                 </span>
               </div>
             </div>
+
           </div>
 
-          <div class="col-12 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Test Permit</small>
-              <div class="fw-semibold" id="account-test-permit">
-                --
+          <!-- FULL NAME -->
+          <div class="row g-4 mt-4">
+
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>Last Name</label>
+                <div class="field-value" id="lname">
+                  Dela Cruz
+                </div>
               </div>
             </div>
+
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>First Name</label>
+                <div class="field-value" id="fname">
+                  Juan
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="field-group">
+                <label>Middle Name</label>
+                <div class="field-value" id="mname">
+                  M.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CONTACT DETAILS -->
+          <div class="row g-4 mt-4">
+
+            <div class="col-md-6">
+              <div class="field-group">
+                <label>Email Address</label>
+                <div class="field-value" id="email">
+                  user@email.com
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="field-group">
+                <label>Contact Number</label>
+                <div class="field-value" id="contact">
+                  09XXXXXXXXX
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BIRTHDAY & AGE -->
+          <div class="row g-4 mt-2">
+
+            <div class="col-md-6">
+              <div class="field-group">
+                <label>Birthday</label>
+                <div class="field-value" id="birthday">
+                  January 01, 2000
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="field-group">
+                <label>Age</label>
+                <div class="field-value" id="age">
+                  24
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SCHOOL -->
+          <div class="row g-4 mt-2">
+
+            <div class="col-12">
+              <div class="field-group">
+                <label>School</label>
+                <div class="field-value" id="school">
+                  Philippine Maritime Institute
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- OTHER DETAILS -->
+          <div class="field-group">
+            <label>Exam Date</label>
+            <div class="field-value" id="account-exam-date">—</div>
+          </div>
+
+          <div class="field-group">
+            <label>Exam Venue</label>
+            <div class="field-value" id="account-exam-venue">—</div>
           </div>
 
         </div>
-
-        <hr class="my-4">
-
-        <div class="row g-3">
-
-          <div class="col-6 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Registration Date</small>
-              <div class="fw-semibold" id="account-registration-date">
-                --
-              </div>
-            </div>
-          </div>
-
-          <div class="col-6 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Exam Date</small>
-              <div class="fw-semibold" id="account-exam-date">
-                --
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-4">
-            <div class="info-tile">
-              <small class="text-muted">Exam Venue</small>
-              <div class="fw-semibold" id="account-exam-venue">
-                --
-              </div>
-            </div>
-          </div>
-
-        </div>
-
       </div>
+
+      <!-- RIGHT: AVATAR -->
+      <div class="col-lg-4">
+        <div class="avatar-panel text-center">
+          <div class="avatar-ring mb-3">
+            <img 
+              id="avatarPreview"
+              src=""
+              alt="Profile Picture"
+              style="display:none;"
+            />
+            <i class="bx bx-user" id="avatarIcon"></i>
+          </div>
+          </div>
+              <input 
+                type="file" 
+                id="avatarInput" 
+                accept="image/*" 
+                hidden
+              />
+
+              <button 
+                class="btn btn-soft w-100" 
+                id="uploadAvatarBtn"
+                type="button"
+              >
+                Upload picture
+              </button>
+        </div>
+      </div>
+
     </div>
 
-    <!-- RIGHT: REMINDERS & ACTIONS -->
-    <div class="col-12 col-lg-5">
-      <div class="content-box h-100">
-
-        <h6 class="fw-semibold mb-3">Important Reminders</h6>
-
-        <ul class="list-unstyled reminder-list mb-4">
-          <li class="d-flex gap-2 mb-2">
-            <i class="bx bx-check-circle text-success mt-1"></i>
-            <span>Ensure your personal details are correct.</span>
-          </li>
-          <li class="d-flex gap-2 mb-2">
-            <i class="bx bx-check-circle text-success mt-1"></i>
-            <span>Bring a valid ID on examination day.</span>
-          </li>
-          <li class="d-flex gap-2 mb-2">
-            <i class="bx bx-check-circle text-success mt-1"></i>
-            <span>Arrive at the venue at least 30 minutes early.</span>
-          </li>
-        </ul>
-
-        <h6 class="fw-semibold mb-3">Quick Actions</h6>
-
-        <div class="d-grid gap-2">
-          <a href="accountsettings.html" class="btn btn-outline-primary">
-            Update Account Information
-          </a>
-
-          <a href="TestPermit.html" class="btn btn-outline-secondary">
-            View Test Permit
-          </a>
-        </div>
-
-      </div>
+    <!-- FOOTER ACTIONS -->
+    <div class="account-actions mt-5">
+      <button class="btn btn-ghost">Cancel</button>
+      <button class="btn btn-primary px-4">Save changes</button>
     </div>
 
   </div>
@@ -263,7 +491,40 @@
     </div>
   </div>
 </div>
-<script src="js/get_user.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const uploadBtn = document.getElementById("uploadAvatarBtn");
+  const fileInput = document.getElementById("avatarInput");
+  const avatarImg = document.getElementById("avatarPreview");
+  const avatarIcon = document.getElementById("avatarIcon");
+
+  uploadBtn.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file.");
+      fileInput.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      avatarImg.src = e.target.result;
+      avatarImg.style.display = "block";
+      avatarIcon.style.display = "none";
+    };
+
+    reader.readAsDataURL(file);
+  });
+});
+</script>
+
 </body>
 </html>
 
