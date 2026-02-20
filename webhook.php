@@ -5,6 +5,7 @@
 header('Content-Type: application/json');
 
 require_once('config/db.php');
+require_once('config/payment_config.php');
 
 // Get the raw POST data
 $rawPayload = file_get_contents('php://input');
@@ -12,23 +13,33 @@ $data = json_decode($rawPayload, true);
 
 // Enhanced logging for debugging
 error_log("====== XENDIT WEBHOOK RECEIVED ======");
+error_log("Mode: " . getPaymentModeDisplay());
 error_log("Timestamp: " . date('Y-m-d H:i:s'));
 error_log("Raw Payload: " . $rawPayload);
 error_log("Parsed Data: " . print_r($data, true));
 error_log("Headers: " . print_r(getallheaders(), true));
 error_log("=====================================");
 
-// Verify webhook authenticity (optional but recommended)
-// You can verify the X-CALLBACK-TOKEN header matches your webhook verification token
+// Verify webhook authenticity
+// ⚠️ IMPORTANT: This is automatically enabled in production mode for security
 $callbackToken = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
-$expectedToken = 'your_webhook_verification_token_here'; // Set this in Xendit dashboard
 
-// For development, we'll skip token verification, but enable in production
-// if ($callbackToken !== $expectedToken) {
-//     http_response_code(403);
-//     echo json_encode(['error' => 'Invalid callback token']);
-//     exit;
-// }
+// In production mode, ALWAYS verify the webhook token
+if (PAYMENT_MODE === 'production') {
+    if (empty($callbackToken) || $callbackToken !== XENDIT_WEBHOOK_TOKEN) {
+        error_log('[WEBHOOK SECURITY] Invalid callback token in production mode');
+        http_response_code(403);
+        echo json_encode(['error' => 'Invalid callback token']);
+        exit;
+    }
+}
+
+// In test mode, log if token doesn't match (but still allow for testing)
+if (PAYMENT_MODE === 'test' && !empty($callbackToken)) {
+    if ($callbackToken !== XENDIT_WEBHOOK_TOKEN) {
+        error_log('[WEBHOOK WARNING] Callback token mismatch in test mode (Token: ' . $callbackToken . ')');
+    }
+}
 
 // Validate required fields
 if (!isset($data['id']) || !isset($data['status']) || !isset($data['external_id'])) {

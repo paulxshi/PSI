@@ -23,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 require_once('../config/db.php');
-// Note: Using cURL for Xendit API, no SDK needed
+require_once('../config/payment_config.php');
 
 // Get POST data
 $input = json_decode(file_get_contents('php://input'), true);
@@ -114,9 +114,12 @@ try {
         exit;
     }
     
-    // Xendit API Configuration
-    $xenditApiKey = 'xnd_development_LkvLnIqM2G6qlGDFyMtdBUlpUI5Pr2SiZHhz4qRtp6QAkya4ME9Q6rvyIL150t'; 
-    $xenditUrl = 'https://api.xendit.co/v2/invoices';
+    // Log current payment mode for tracking
+    error_log('[CREATE PAYMENT] Processing payment in ' . getPaymentModeDisplay() . ' mode for user_id: ' . $user_id);
+    
+    // Use configuration from payment_config.php
+    $xenditApiKey = XENDIT_API_KEY;
+    $xenditUrl = XENDIT_INVOICE_URL;
     
     // Generate unique external_id
     $external_id = 'PMMA_' . $user['test_permit'] . '_' . time();
@@ -142,9 +145,9 @@ try {
             'invoice_reminder' => ['email'],
             'invoice_paid' => ['email']
         ],
-        'success_redirect_url' => 'http://localhost/PSI/payment_success.html',
-        'failure_redirect_url' => 'http://localhost/PSI/payment_failed.html',
-        'currency' => 'PHP',
+        'success_redirect_url' => SUCCESS_REDIRECT_URL,
+        'failure_redirect_url' => FAILURE_REDIRECT_URL,
+        'currency' => CURRENCY,
         'items' => [
             [
                 'name' => 'PMMA Examination Fee',
