@@ -100,7 +100,7 @@
         <div class="row g-4">
             <!--USER CARD -->
 
-            <div class="col-12 col-lg-5">
+            <div class="col-12 col-lg-7">
                 <div id="userCard" class="content-box">
                   <!-- USER INFO -->
                 </div>
@@ -143,69 +143,9 @@
                         These are the most common questions about the examination process.
                       </p>
 
-                      <div class="faq-ui">
-
-                        <div class="faq-row">
-                          <button class="faq-toggle">
-                            <div class="faq-left">
-                              <div class="faq-icon"><i class="bx bx-info-circle"></i></div>
-                              <span>What happens after I complete the online registration?</span>
-                            </div>
-                            <i class="bx bx-chevron-down faq-chevron"></i>
-                          </button>
-                          <div class="faq-content-wrapper open">
-                            <div class="faq-content">
-                              Once your online registration is confirmed, you will receive a registration confirmation and via email, which serves as your entry pass for the onsite examination.
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="faq-row">
-                          <button class="faq-toggle">
-                            <div class="faq-left">
-                              <div class="faq-icon"><i class="bx bx-edit"></i></div>
-                              <span>Do I need to bring anything for the onsite exam?</span>
-                            </div>
-                            <i class="bx bx-chevron-down faq-chevron"></i>
-                          </button>
-                          <div class="faq-content-wrapper">
-                            <div class="faq-content">
-                              Yes. Bring a pen, your ID, your confirmation email and the QR code provided after registration. These will be scanned at the entrance to verify your registration.
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="faq-row">
-                          <button class="faq-toggle">
-                            <div class="faq-left">
-                              <div class="faq-icon"><i class="bx bx-calendar"></i></div>
-                              <span>Can I reschedule my onsite examination?</span>
-                            </div>
-                            <i class="bx bx-chevron-down faq-chevron"></i>
-                          </button>
-                          <div class="faq-content-wrapper">
-                            <div class="faq-content">
-                              Rescheduling depends on availability. Contact the site administrator for assistance. Any rescheduling fees, if applicable, will be clearly indicated.
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="faq-row">
-                          <button class="faq-toggle">
-                            <div class="faq-left">
-                              <div class="faq-icon"><i class="bx bx-qr"></i></div>
-                              <span>What if I lose my QR code or confirmation?</span>
-                            </div>
-                            <i class="bx bx-chevron-down faq-chevron"></i>
-                          </button>
-                          <div class="faq-content-wrapper">
-                            <div class="faq-content">
-                              You can log in to your account at any time to download your QR code or confirmation slip again. If you encounter issues, contact the support team before your exam date.
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
+                    <div class="faq-ui" id="faqContainer">
+                      <!-- FAQs will be loaded here dynamically -->
+                    </div>
                   </div>
               </div>
           </div>
@@ -274,6 +214,7 @@
 
 
 <script src="js/get_user.js"></script>
+<script src="js/get_faq.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
