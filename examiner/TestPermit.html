@@ -73,16 +73,15 @@
       </div>
 
       <h6 class="fw-bold text-uppercase mt-3">Test Permit</h6>
-    </div>
+    </div>  
 
     <hr>
 
-<!-- QR Code Container Below Header -->
-<div class="text-center mb-4">
-  <div class="qr-code-square-container">
-    <img id="qrCode" src="path_to_your_qr_code_image.png" alt="QR Code">
-  </div>
-</div>
+        <div class="text-center mb-4">
+          <div class="qr-code-square-container">
+            <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
+          </div>
+        </div>
 
 <!-- NOTE + PHOTO ROW -->
 <div class="row align-items-start mb-3">
@@ -98,28 +97,13 @@
   </div>
 
   <!-- PHOTO (RIGHT) -->
-  <div class="col-4 d-flex justify-content-end">
-    <div style="width:130px">
-      <div class="border rounded ratio ratio-1x1 position-relative photo-box">
-
-        <img id="photoPreview" class="img-fluid d-none w-100 h-100 object-fit-cover">
-
-        <div id="photoPlaceholder"
-             class="d-flex flex-column justify-content-center align-items-center small text-muted text-center h-100">
-          <strong>2 × 2 Picture</strong>
-          <span>white background wearing white shirt</span>
-        </div>
-
-        <div class="upload-overlay d-flex justify-content-center align-items-center">
-          <label for="photoInput" class="btn btn-sm btn-outline-light">
-            Upload Photo
-          </label>
-        </div>
-      </div>
-
-      <input type="file" id="photoInput" accept="image/*" hidden>
+<div class="col-4 d-flex justify-content-end">
+  <div style="width:150px">
+    <div class="border rounded ratio ratio-1x1 position-relative photo-box">
+      <img class="img-fluid w-100 h-100 object-fit-cover" src="../imgs/avatar.png" alt="Examinee Photo">
     </div>
   </div>
+</div>
 
 </div>
 
@@ -301,23 +285,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="js/testPermit.js"></script>
 <script>
-  // PHOTO UPLOAD
-  const photoInput = document.getElementById('photoInput');
-  const photoPreview = document.getElementById('photoPreview');
-  const photoPlaceholder = document.getElementById('photoPlaceholder');
-
-  photoInput.addEventListener('change', () => {
-    const file = photoInput.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-      photoPreview.src = e.target.result;
-      photoPreview.classList.remove('d-none');
-      photoPlaceholder.classList.add('d-none');
-    };
-    reader.readAsDataURL(file);
-  });
 
 document.getElementById('generatePDF').addEventListener('click', async () => {
   const permit = document.getElementById('permitPDF');
