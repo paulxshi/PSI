@@ -61,6 +61,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 });
 
     // Initialize
+    updateCardHighlights(); // Highlight Total Uploaded card by default
     loadMasterlistData();
 
     // Status filter - Click on stat cards
@@ -69,20 +70,23 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
     document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
 
     document.getElementById('totalUploaded').parentElement.parentElement.parentElement.addEventListener('click', function() {
-        currentStatus = currentStatus === '' ? '' : '';
+        currentStatus = '';
         currentPage = 1;
+        updateCardHighlights();
         loadMasterlistData();
     });
 
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
         currentStatus = currentStatus === '1' ? '' : '1';
         currentPage = 1;
+        updateCardHighlights();
         loadMasterlistData();
     });
 
     document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement.addEventListener('click', function() {
         currentStatus = currentStatus === '0' ? '' : '0';
         currentPage = 1;
+        updateCardHighlights();
         loadMasterlistData();
     });
 
@@ -123,6 +127,28 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         e.preventDefault();
         createExaminee();
     });
+
+    // Update card highlights based on current filter
+    function updateCardHighlights() {
+        const uploadedCard = document.getElementById('totalUploaded').parentElement.parentElement.parentElement;
+        const registeredCard = document.getElementById('totalRegistered').parentElement.parentElement.parentElement;
+        const notRegisteredCard = document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement;
+
+        // Remove all highlights
+        uploadedCard.classList.remove('border-primary', 'shadow', 'border-3');
+        registeredCard.classList.remove('border-success', 'shadow', 'border-3');
+        notRegisteredCard.classList.remove('border-warning', 'shadow', 'border-3');
+
+        // Add highlight to active filter
+        if (currentStatus === '1') {
+            registeredCard.classList.add('border-success', 'border-3', 'shadow');
+        } else if (currentStatus === '0') {
+            notRegisteredCard.classList.add('border-warning', 'border-3', 'shadow');
+        } else {
+            // When showing all, highlight Total Uploaded
+            uploadedCard.classList.add('border-primary', 'border-3', 'shadow');
+        }
+    }
 
     // Load masterlist data
     function loadMasterlistData() {
