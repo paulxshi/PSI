@@ -219,8 +219,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 
         records.forEach(record => {
             const statusBadge = record.used == 1
-                ? '<span class="badge bg-success-subtle text-success">Registered</span>'
-                : '<span class="badge bg-secondary-subtle text-secondary">Not Registered</span>';
+                ? '<span class="text-success fw-semibold">Registered</span>'
+                : '<span class="text-secondary fw-semibold">Not Registered</span>';
 
             const uploadedDate = new Date(record.uploaded_at).toLocaleDateString('en-US', {
                 year: 'numeric',
