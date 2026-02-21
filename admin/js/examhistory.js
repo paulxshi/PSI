@@ -84,28 +84,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ---------- Pagination ---------- */
-    function renderPagination() {
-        pagination.innerHTML = "";
-        const totalPages = Math.ceil(examData.length / ROWS_PER_PAGE);
+/* ---------- Pagination ---------- */
+function renderPagination() {
+    pagination.innerHTML = "";
+    const totalPages = Math.ceil(examData.length / ROWS_PER_PAGE);
 
+    pagination.appendChild(pageItem("‹", currentPage === 1, () => {
+        currentPage--;
+        update();
+    }));
 
-        pagination.appendChild(pageItem("‹", currentPage === 1, () => {
-            currentPage--;
+    // Limit the number of page numbers to 3
+    const startPage = Math.max(1, currentPage - 1);
+    const endPage = Math.min(totalPages, currentPage + 1);
+
+    // Add page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        pagination.appendChild(pageItem(i, false, () => {
+            currentPage = i;
             update();
-        }));
-
-        for (let i = 1; i <= totalPages; i++) {
-            pagination.appendChild(pageItem(i, false, () => {
-                currentPage = i;
-                update();
-            }, i === currentPage));
-        }
-
-        pagination.appendChild(pageItem("›", currentPage === totalPages, () => {
-            currentPage++;
-            update();
-        }));
+        }, i === currentPage));
     }
+
+    pagination.appendChild(pageItem("›", currentPage === totalPages, () => {
+        currentPage++;
+        update();
+    }));
+}
 
     function update() {
         renderTable();

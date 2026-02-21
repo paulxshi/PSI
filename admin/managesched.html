@@ -77,28 +77,40 @@
 .custom-pagination .page-link:hover {
   background-color: #f3f4f6;
   color: #111827;
+  border: none;
 }
 
-/* Active page */
 .custom-pagination .page-item.active .page-link {
-  background-color: #0f172a; /* dark navy */
-  color: #ffffff;
-  font-weight: 600;
+    background-color: #0f172a; 
+    color: #ffffff;
+    border: none;
 }
 
-/* Disabled arrows */
 .custom-pagination .page-item.disabled .page-link {
-  color: #9ca3af;
-  pointer-events: none;
+    color: #9ca3af;
+    pointer-events: none;
+    border: none;
 }
 
-/* Arrow buttons */
 .custom-pagination .page-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-  height: 38px;
+    border: none !important;
+    background: transparent;
+    color: #374151;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.custom-pagination .page-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.custom-pagination .page-link:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+    border: none;
 }
 
 .schedule-table tbody tr {

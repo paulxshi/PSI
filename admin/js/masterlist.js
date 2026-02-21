@@ -263,40 +263,50 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
     }
 
     // Populate pagination
- function populatePagination(paginationData) {
-    pagination.innerHTML = '';
+    function populatePagination(paginationData) {
+        pagination.innerHTML = '';
 
-    const { current_page, total_pages } = paginationData;
+        const { current_page, total_pages } = paginationData;
+        const maxPagesToShow = 3;
 
-    // Previous
-    pagination.innerHTML += `
-        <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
-                <i class="bx bx-chevron-left"></i>
-            </a>
-        </li>
-    `;
+        // Determine the range of pages to show
+        let startPage = Math.max(1, current_page - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(total_pages, startPage + maxPagesToShow - 1);
 
-    // Page numbers
-    for (let i = 1; i <= total_pages; i++) {
+        // Adjust the start page if the end page is close to total pages
+        if (endPage - startPage + 1 < maxPagesToShow) {
+            startPage = Math.max(1, endPage - maxPagesToShow + 1);
+        }
+
+        // Previous
         pagination.innerHTML += `
-            <li class="page-item ${i === current_page ? 'active' : ''}">
-                <a class="page-link" href="#" onclick="goToPage(${i}); return false;">
-                    ${i}
+            <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
+                    <i class="bx bx-chevron-left"></i>
+                </a>
+            </li>
+        `;
+
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            pagination.innerHTML += `
+                <li class="page-item ${i === current_page ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="goToPage(${i}); return false;">
+                        ${i}
+                    </a>
+                </li>
+            `;
+        }
+
+        // Next
+        pagination.innerHTML += `
+            <li class="page-item ${current_page === total_pages ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
+                    <i class="bx bx-chevron-right"></i>
                 </a>
             </li>
         `;
     }
-
-    // Next
-    pagination.innerHTML += `
-        <li class="page-item ${current_page === total_pages ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="goToPage(${current_page + 1}); return false;">
-                <i class="bx bx-chevron-right"></i>
-            </a>
-        </li>
-    `;
-}
 
 
     // Go to page (global function)
