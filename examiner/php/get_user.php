@@ -20,12 +20,16 @@ try {
 
     // Get user data directly from users table
     $stmt = $pdo->prepare("
-        SELECT user_id, first_name, middle_name, last_name, email, contact_number, 
-               date_of_birth, age, test_permit, role, status, school,
-               gender, address, nationality,
-               date_of_registration
-        FROM users
-        WHERE user_id = ?
+        SELECT u.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.contact_number, 
+               u.date_of_birth, u.age, u.test_permit, u.role, u.status, u.school,
+               u.gender, u.address, u.nationality, u.profile_picture, u.last_profile_update,
+               u.date_of_registration,
+               s.scheduled_date as exam_date, v.venue_name as exam_venue, v.region
+        FROM users u
+        LEFT JOIN examinees e ON u.user_id = e.user_id
+        LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
+        LEFT JOIN venue v ON s.venue_id = v.venue_id
+        WHERE u.user_id = ?
         LIMIT 1
     ");
     $stmt->execute([$user_id]);
@@ -38,6 +42,24 @@ try {
     }
 
     error_log("User found: " . json_encode($user));
+
+    // Check if user can edit (once per week restriction)
+    $can_edit = true;
+    $days_remaining = 0;
+    
+    if ($user['last_profile_update']) {
+        $last_update_time = strtotime($user['last_profile_update']);
+        $current_time = time();
+        $one_week = 7 * 24 * 60 * 60;
+        
+        if (($current_time - $last_update_time) < $one_week) {
+            $can_edit = false;
+            $days_remaining = ceil(($one_week - ($current_time - $last_update_time)) / (24 * 60 * 60));
+        }
+    }
+    
+    $user['can_edit'] = $can_edit;
+    $user['days_remaining'] = $days_remaining;
 
  
 

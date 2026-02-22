@@ -103,6 +103,7 @@ function displaySchedules() {
 
     renderPagination();
 }
+
 function renderPagination() {
     const paginationContainer = document.getElementById('pagination');
     if (!paginationContainer) return;
@@ -122,7 +123,12 @@ function renderPagination() {
         </li>
     `;
 
-    for (let i = 1; i <= totalPages; i++) {
+    // Limit the number of page numbers to 3
+    const startPage = Math.max(1, currentPage - 1); 
+    const endPage = Math.min(totalPages, currentPage + 1); 
+
+    // Add page numbers
+    for (let i = startPage; i <= endPage; i++) {
         buttons += `
             <li class="page-item ${i === currentPage ? 'active' : ''}">
                 <button class="page-link" onclick="changePage(${i})">
@@ -135,7 +141,7 @@ function renderPagination() {
     buttons += `
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
             <button class="page-link" onclick="changePage(${currentPage + 1})">
-               <i class="bx bx-chevron-right"></i>
+                <i class="bx bx-chevron-right"></i>
             </button>
         </li>
     `;
@@ -148,6 +154,7 @@ function renderPagination() {
         </nav>
     `;
 }
+
 function changePage(page) {
     const totalPages = Math.ceil(filteredSchedules.length / rowsPerPage);
     if (page < 1 || page > totalPages) return;
@@ -158,10 +165,10 @@ function changePage(page) {
 
 function getStatusBadge(status) {
     switch (status.toLowerCase()) {
-        case 'incoming': return 'bg-info text-dark';
-        case 'closed': return 'bg-warning text-dark';
-        case 'completed': return 'bg-success';
-        default: return 'bg-secondary';
+        case 'incoming': return 'text-primary fs-7 fw-bold';
+        case 'closed': return 'text-danger fs-7 fw-bold';  
+        case 'completed': return 'text-success fs-7 fw-bold';
+        default: return 'bg-secondary fs-7 fw-bold'; 
     }
 }
 

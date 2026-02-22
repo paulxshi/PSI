@@ -100,7 +100,7 @@
         <div class="row g-4">
             <!--USER CARD -->
 
-            <div class="col-12 col-lg-5">
+            <div class="col-12 col-lg-7">
                 <div id="userCard" class="content-box">
                   <!-- USER INFO -->
                 </div>
@@ -115,18 +115,22 @@
                   </p>
 
                   <!-- QR Box -->
-                  <div class="qr-box">
+                  <div class="qr-box" style="margin-top: 20px;">
                     <div id="qrContainer"></div>
-                      <img
-                        src="../imgs/PSI.png"
-                        alt="PSI Logo"
-                        class="qr-logo"
-                      />
+                    <img
+                      src="../imgs/PSI.png"
+                      alt="PSI Logo"
+                      class="qr-logo"
+                    />
                   </div>
 
                   <!-- QR Text -->
-                  <p class="qr-code-text" id="qrText"></p>
+                  <p class="qr-code-text" id="qrText" style="margin-top: 25px;"> </p>
 
+                  <!-- Mask Button -->
+                  <button id="maskButton" style="margin-top: 15px;">
+                    VIEW
+                  </button>
                   <!-- Actions -->
                 <button id="downloadQR" class="btn btn-primary w-100 mt-3 d-flex align-items-center justify-content-center gap-2">
                   <i class="bx bx-download"></i>
@@ -143,9 +147,9 @@
                         These are the most common questions about the examination process.
                       </p>
 
- <div class="faq-ui" id="faqContainer">
-  <!-- FAQs will be loaded here dynamically -->
-</div>
+                    <div class="faq-ui" id="faqContainer">
+                      <!-- FAQs will be loaded here dynamically -->
+                    </div>
                   </div>
               </div>
           </div>

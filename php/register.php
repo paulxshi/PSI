@@ -195,7 +195,7 @@ try {
         $gender !== '' ? $gender : '',
         $school,
         $address !== '' ? $address : '',
-        $nationality !== '' ? $nationality : '',
+        $nationality !== '' ? $nationality : 'Filipino', // Default to Filipino if not provided
         'incomplete', // User cannot login until payment is confirmed
         'examinee'
     ]);
