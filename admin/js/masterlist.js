@@ -324,12 +324,12 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         const middleName = document.getElementById('middleNameInput').value.trim();
         const email = document.getElementById('emailInput').value.trim();
 
-        // Clear errors
-        document.getElementById('testPermitError').style.display = 'none';
-        document.getElementById('lastNameError').style.display = 'none';
-        document.getElementById('firstNameError').style.display = 'none';
-        document.getElementById('middleNameError').style.display = 'none';
-        document.getElementById('emailError').style.display = 'none';
+        // Clear errors (check if elements exist first)
+        const errors = ['testPermitError', 'lastNameError', 'firstNameError', 'middleNameError', 'emailError'];
+        errors.forEach(errorId => {
+            const element = document.getElementById(errorId);
+            if (element) element.style.display = 'none';
+        });
 
         const formData = new FormData();
         formData.append('test_permit', testPermit);
@@ -348,15 +348,21 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 console.log('Create Examinee Response:', data);
                 
                 if (data.success) {
-                    showStatus('Examinee record created successfully', 'success');
+                    // Update modal with created test permit
+                    document.getElementById('createdTestPermit').textContent = testPermit;
                     
-                    // Close modal
+                    // Close create modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('createExamineeModal'));
                     if (modal) modal.hide();
                     
                     // Reset form
                     createExamineeForm.reset();
-                    document.getElementById('testPermitInput').focus();
+                    
+                    // Show success modal
+                    setTimeout(() => {
+                        const successModal = new bootstrap.Modal(document.getElementById('createExamineeSuccessModal'));
+                        successModal.show();
+                    }, 300);
                     
                     // Reload data
                     currentPage = 1;
@@ -387,14 +393,23 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                             );
                         }, 300);
                     } else if (data.message.includes('Last name')) {
-                        document.getElementById('lastNameError').textContent = data.message;
-                        document.getElementById('lastNameError').style.display = 'block';
+                        const el = document.getElementById('lastNameError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
                     } else if (data.message.includes('First name')) {
-                        document.getElementById('firstNameError').textContent = data.message;
-                        document.getElementById('firstNameError').style.display = 'block';
+                        const el = document.getElementById('firstNameError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
                     } else if (data.message.includes('Invalid email')) {
-                        document.getElementById('emailError').textContent = data.message;
-                        document.getElementById('emailError').style.display = 'block';
+                        const el = document.getElementById('emailError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
                     } else {
                         showStatus(data.message || 'Failed to create record', 'danger');
                     }
@@ -446,8 +461,13 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 console.log('CSV Upload Response:', data);
                 
                 if (data.success) {
-                    const message = `CSV uploaded successfully! Processed: ${data.successCount} records. Errors: ${data.errorCount}`;
-                    showStatus(message, 'success');
+                    // Update modal with upload results
+                    document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
+                    document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
+                    
+                    // Show success modal
+                    const modal = new bootstrap.Modal(document.getElementById('csvSuccessModal'));
+                    modal.show();
                     
                     // Reset file input
                     csvFileInput.value = '';

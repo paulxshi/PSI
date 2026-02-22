@@ -607,7 +607,7 @@
                         <input type="text"
                                class="form-control form-control-lg"
                                id="middleNameInput"
-                               name="middle_name"
+                               name="middle_name">
                         <small id="middleNameError" class="text-danger d-none"></small>
                     </div>
 
@@ -631,7 +631,7 @@
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-primary px-4">
-                        Create Record
+                        Upload
                     </button>
                 </div>
             </form>
@@ -692,6 +692,106 @@
                         class="btn btn-primary rounded-pill px-4" 
                         data-bs-dismiss="modal">
                     <i class="bx bx-check me-1"></i> Understood
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Create Examinee Success Modal -->
+<div class="modal fade" id="createExamineeSuccessModal" tabindex="-1" 
+     aria-labelledby="createExamineeSuccessLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal Header -->
+            <div class="modal-header border-0 justify-content-center pb-2">
+                <h5 class="modal-title fw-semibold" id="createExamineeSuccessLabel">
+                    Examinee Created Successfully
+                </h5>
+                <button type="button" class="btn-close position-absolute end-0 me-3" 
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <div class="rounded-circle bg-success-subtle text-success mx-auto mb-3
+                            d-flex align-items-center justify-content-center"
+                     style="width:64px;height:64px;">
+                    <i class="bx bx-check-circle fs-1"></i>
+                </div>
+                
+                <p class="mb-3 text-muted">
+                    The examinee record has been successfully created and added to the masterlist.
+                </p>
+                
+                <div class="border rounded-3 p-3 bg-light">
+                    <div class="text-muted small mb-1">Test Permit</div>
+                    <div class="fw-bold fs-5" id="createdTestPermit"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                <button type="button" 
+                        class="btn btn-success rounded-pill px-4" 
+                        data-bs-dismiss="modal">
+                    <i class="bx bx-check me-1"></i> Done
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- CSV Upload Success Modal -->
+<div class="modal fade" id="csvSuccessModal" tabindex="-1" 
+     aria-labelledby="csvSuccessLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <!-- Modal Header -->
+            <div class="modal-header border-0 justify-content-center pb-2">
+                <h5 class="modal-title fw-semibold" id="csvSuccessLabel">
+                    CSV Upload Successful
+                </h5>
+                <button type="button" class="btn-close position-absolute end-0 me-3" 
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body px-4 py-4 text-center">
+                <div class="rounded-circle bg-success-subtle text-success mx-auto mb-3
+                            d-flex align-items-center justify-content-center"
+                     style="width:64px;height:64px;">
+                    <i class="bx bx-cloud-upload fs-1"></i>
+                </div>
+                
+                <p class="mb-3 text-muted">
+                    Your CSV file has been successfully uploaded and processed.
+                </p>
+                
+                <div class="border rounded-3 p-3 bg-light">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="text-muted small">Processed Records</div>
+                            <div class="fw-bold fs-5 text-success" id="csvSuccessCount">0</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted small">Errors</div>
+                            <div class="fw-bold fs-5 text-danger" id="csvErrorCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                <button type="button" 
+                        class="btn btn-success rounded-pill px-4" 
+                        data-bs-dismiss="modal">
+                    <i class="bx bx-check me-1"></i> Done
                 </button>
             </div>
 
