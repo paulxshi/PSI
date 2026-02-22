@@ -17,20 +17,92 @@
 
 
 <style>
-#qrResultModal .modal-content {
-  border-radius: 1rem;
+#qrResultModal .modal-dialog {
+  max-width: 420px;
 }
 
-#qrResultModal .modal-header {
-  border-bottom: 0;
+.verification-icon i {
+  font-size: 4.5rem;
 }
 
-#qrResultModal .modal-body {
-  min-height: 320px;
+.status-box {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  font-size: .9rem;
+  margin-bottom: 10px;
 }
 
-.bg-success-subtle {
-  background-color: #e9f9ef;
+/* STATES */
+.status-box.valid {
+  background: #e7f8ee;
+  color: #0f5132;
+}
+.status-box.warning {
+  background: #fff3cd;
+  color: #856404;
+}
+.status-box.invalid,
+.status-box.rejected,
+.status-box.already_used {
+  background: #f8d7da;
+  color: #842029;
+}
+
+/* DETAILS CARD */
+.verify-card {
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: left;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.verify-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: .9rem;
+  border-bottom: 1px dashed #dee2e6;
+}
+
+.verify-row:last-child {
+  border-bottom: none;
+}
+
+/* TIMER */
+.auto-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e9f9ef;
+  color: #198754;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: .85rem;
+}
+
+/* MODAL BUTTONS */
+.modal-footer .btn {
+  border-radius: 999px;
+  padding: 8px 22px;
+  font-weight: 500;
+}
+
+/* ICON COLORS */
+.modal-valid .verification-icon i {
+  color: #198754;
+}
+.modal-warning .verification-icon i {
+  color: #ffc107;
+}
+.modal-invalid .verification-icon i,
+.modal-rejected .verification-icon i,
+.modal-already_used .verification-icon i {
+  color: #dc3545;
 }
 
 .dropdown-menu {
@@ -421,7 +493,7 @@
 
 <!-- QR RESULT MODAL -->
 <div class="modal fade" id="qrResultModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+ <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
 
       <!-- HEADER -->
@@ -431,16 +503,19 @@
       </div>
 
       <!-- BODY -->
-    <div class="modal-body text-center py-5">
+      <div class="modal-body px-6 py-4 text-center">
 
-      <!-- BIG SUCCESS ICON -->
-      <div class="mb-3">
-        <i class="bx bx-check-circle text-success" style="font-size: 6rem;"></i>
-      </div>
+        <!-- STATUS ICON -->
+          <div class="verification-icon mb-3">
+            <div class="icon-3d">
+              <i id="statusIcon" class="bx bxs-check-circle"></i>
+            </div>
+          </div>
 
-        <h5 id="verificationStatus" class="fw-semibold text-success mb-4">
-          Allowed to enter
-        </h5>
+        <!-- STATUS TEXT -->
+        <div id="verificationStatus" class="status-box valid">
+
+        </div>
 
 
         <!-- ✅ EXAMINEE INFORMATION    -->
@@ -492,24 +567,15 @@
       </div>
 
               <!-- AUTO COMPLETE TIMER -->
-        <div id="autoCompleteTimer"
-            class="d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill bg-success-subtle text-success">
-          
-          <i class="bx bx-time-five"></i>
-          <span>
-            Auto-completing in
-            <strong id="timerCount">5</strong>s
-          </span>
-
-          <!-- OPTIONAL cancel -->
-          <button id="cancelAutoComplete"
-                  class="btn btn-sm btn-outline-success rounded-pill ms-2">
-            Cancel
-          </button>
+          <div id="autoCompleteTimer" class="auto-timer mt-3">
+            <i class="bx bx-time-five"></i>
+            Auto completing in <strong id="timerCount">5</strong>s
+            <button id="cancelAutoComplete" class="btn btn-sm btn-outline-success ms-2">Cancel</button>
+          </div>
         </div>
 
       <!-- FOOTER ACTIONS -->
-      <div class="modal-footer">
+      <div class="modal-footer" hidden>
         <button class="btn btn-danger" id="rejectBtn">REJECT</button>
         <button class="btn btn-success" id="completeBtn">MARK AS COMPLETED</button>
         <button class="btn btn-secondary" data-bs-dismiss="modal">SCAN NEXT</button>

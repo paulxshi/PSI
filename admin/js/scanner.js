@@ -191,6 +191,14 @@ window.currentExamineeId =
     statusBox.className = "status text-center mb-4 " + statusClass;
     statusBox.textContent = statusMessage;
 
+
+    const icon = document.getElementById("statusIcon");
+    icon.className = "bx";
+
+    if (statusClass === "valid") icon.classList.add("bx-check-circle");
+    else if (statusClass === "warning") icon.classList.add("bx-error-circle");
+    else icon.classList.add("bx-x-circle");
+
     /* -----------------------------
        Update modal color class
     ------------------------------*/
