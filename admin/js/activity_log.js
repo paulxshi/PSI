@@ -247,27 +247,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (total_pages <= 1) return;
 
-        // Previous button
-            const prevDisabled = current_page === 1 ? 'disabled' : '';
-            pagination.insertAdjacentHTML('beforeend', `
-                <li class="page-item ${prevDisabled}">
-                    <a class="page-link" href="#" data-page="${current_page - 1}" aria-label="Previous">&lt;</a>
-                </li>
-            `);
+        const maxPagesToShow = 3;
 
-        // Page numbers
-        let startPage = Math.max(1, current_page - 2);
-        let endPage = Math.min(total_pages, current_page + 2);
+        // Determine the range of pages to show
+        let startPage = Math.max(1, current_page - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(total_pages, startPage + maxPagesToShow - 1);
 
-        if (startPage > 1) {
-            pagination.insertAdjacentHTML('beforeend', `
-                <li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>
-            `);
-            if (startPage > 2) {
-                pagination.insertAdjacentHTML('beforeend', `<li class="page-item disabled"><span class="page-link">...</span></li>`);
-            }
+        // Adjust the start page if the end page is close to total pages
+        if (endPage - startPage + 1 < maxPagesToShow) {
+            startPage = Math.max(1, endPage - maxPagesToShow + 1);
         }
 
+        // Previous button
+        const prevDisabled = current_page === 1 ? 'disabled' : '';
+        pagination.insertAdjacentHTML('beforeend', `
+            <li class="page-item ${prevDisabled}">
+                <a class="page-link" href="#" data-page="${current_page - 1}" aria-label="Previous">
+                    <i class="bx bx-chevron-left"></i>
+                </a>
+            </li>
+        `);
+
+        // Page numbers
         for (let i = startPage; i <= endPage; i++) {
             const active = i === current_page ? 'active' : '';
             pagination.insertAdjacentHTML('beforeend', `
@@ -277,22 +278,15 @@ document.addEventListener('DOMContentLoaded', function() {
             `);
         }
 
-        if (endPage < total_pages) {
-            if (endPage < total_pages - 1) {
-                pagination.insertAdjacentHTML('beforeend', `<li class="page-item disabled"><span class="page-link">...</span></li>`);
-            }
-            pagination.insertAdjacentHTML('beforeend', `
-                <li class="page-item"><a class="page-link" href="#" data-page="${total_pages}">${total_pages}</a></li>
-            `);
-        }
-
         // Next button
-            const nextDisabled = current_page === total_pages ? 'disabled' : '';
-            pagination.insertAdjacentHTML('beforeend', `
-                <li class="page-item ${nextDisabled}">
-                    <a class="page-link" href="#" data-page="${current_page + 1}" aria-label="Next">&gt;</a>
-                </li>
-            `);
+        const nextDisabled = current_page === total_pages ? 'disabled' : '';
+        pagination.insertAdjacentHTML('beforeend', `
+            <li class="page-item ${nextDisabled}">
+                <a class="page-link" href="#" data-page="${current_page + 1}" aria-label="Next">
+                    <i class="bx bx-chevron-right"></i>
+                </a>
+            </li>
+        `);
 
         // Add click handlers
         pagination.querySelectorAll('.page-link').forEach(link => {

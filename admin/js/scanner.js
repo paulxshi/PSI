@@ -208,6 +208,7 @@ window.currentExamineeId =
        Apply correct button state
     ------------------------------*/
 if (statusClass === "already_used") {
+    document.getElementById("exam_sched").style.display = "none";
     applyActionState("completed");
 }
 else if (statusClass === "rejected") {

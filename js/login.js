@@ -18,12 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
 
-      msg.style.display = "block";
-      msg.textContent = data.message;
-      msg.className = "mt-3 text-center " + 
-        (data.success ? "text-success" : "text-danger");
-
       if (data.success) {
+        // Show success modal
+        const successModal = new bootstrap.Modal(document.getElementById('loginSuccessModal'));
+        successModal.show();
+        
         // Redirect based on user role
         setTimeout(() => {
           if (data.role === 'admin') {
@@ -31,19 +30,28 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             window.location.href = "examiner/dashboard.html";
           }
-        }, 800); 
+        }, 1500); 
       } else if (data.redirect) {
         // If login failed but redirect is provided (incomplete registration)
+        msg.style.display = "block";
+        msg.textContent = data.message;
+        msg.className = "mt-3 text-center text-warning";
+        
         setTimeout(() => {
           window.location.href = data.redirect;
         }, 1500);
+      } else {
+        // Show error modal
+        document.getElementById('loginErrorMessage').textContent = data.message;
+        const errorModal = new bootstrap.Modal(document.getElementById('loginErrorModal'));
+        errorModal.show();
       }
 
     })
     .catch(err => {
-      msg.style.display = "block";
-      msg.textContent = "Something went wrong. Please try again.";
-      msg.className = "mt-3 text-center text-danger";
+      document.getElementById('loginErrorMessage').textContent = "Something went wrong. Please try again.";
+      const errorModal = new bootstrap.Modal(document.getElementById('loginErrorModal'));
+      errorModal.show();
       console.error(err);
     });
   });

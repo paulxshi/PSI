@@ -324,12 +324,12 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         const middleName = document.getElementById('middleNameInput').value.trim();
         const email = document.getElementById('emailInput').value.trim();
 
-        // Clear errors
-        document.getElementById('testPermitError').style.display = 'none';
-        document.getElementById('lastNameError').style.display = 'none';
-        document.getElementById('firstNameError').style.display = 'none';
-        document.getElementById('middleNameError').style.display = 'none';
-        document.getElementById('emailError').style.display = 'none';
+        // Clear errors (check if elements exist first)
+        const errors = ['testPermitError', 'lastNameError', 'firstNameError', 'middleNameError', 'emailError'];
+        errors.forEach(errorId => {
+            const element = document.getElementById(errorId);
+            if (element) element.style.display = 'none';
+        });
 
         const formData = new FormData();
         formData.append('test_permit', testPermit);
@@ -348,33 +348,68 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 console.log('Create Examinee Response:', data);
                 
                 if (data.success) {
-                    showStatus('Examinee record created successfully', 'success');
+                    // Update modal with created test permit
+                    document.getElementById('createdTestPermit').textContent = testPermit;
                     
-                    // Close modal
+                    // Close create modal
                     const modal = bootstrap.Modal.getInstance(document.getElementById('createExamineeModal'));
                     if (modal) modal.hide();
                     
                     // Reset form
                     createExamineeForm.reset();
-                    document.getElementById('testPermitInput').focus();
+                    
+                    // Show success modal
+                    setTimeout(() => {
+                        const successModal = new bootstrap.Modal(document.getElementById('createExamineeSuccessModal'));
+                        successModal.show();
+                    }, 300);
                     
                     // Reload data
                     currentPage = 1;
                     loadMasterlistData();
                 } else {
-                    // Show field-specific errors
-                    if (data.message.includes('Test permit')) {
-                        document.getElementById('testPermitError').textContent = data.message;
-                        document.getElementById('testPermitError').style.display = 'block';
+                    console.log('Error detected:', data.message);
+                    console.log('Duplicate type:', data.duplicate_type);
+                    console.log('Existing data:', data.existing_data);
+                    
+                    // Check if it's a duplicate error with existing data
+                    if (data.duplicate_type && data.existing_data) {
+                        console.log('Showing duplicate alert modal...');
+                        // Close create modal
+                        const createModal = bootstrap.Modal.getInstance(document.getElementById('createExamineeModal'));
+                        if (createModal) {
+                            createModal.hide();
+                        }
+                        
+                        // Reset form
+                        createExamineeForm.reset();
+                        
+                        // Show duplicate alert modal with a small delay to allow first modal to close
+                        setTimeout(() => {
+                            showDuplicateAlert(
+                                data.duplicate_type === 'test_permit' ? 'test_permit' : 'email',
+                                data.duplicate_type === 'test_permit' ? testPermit : email,
+                                data.existing_data
+                            );
+                        }, 300);
                     } else if (data.message.includes('Last name')) {
-                        document.getElementById('lastNameError').textContent = data.message;
-                        document.getElementById('lastNameError').style.display = 'block';
+                        const el = document.getElementById('lastNameError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
                     } else if (data.message.includes('First name')) {
-                        document.getElementById('firstNameError').textContent = data.message;
-                        document.getElementById('firstNameError').style.display = 'block';
-                    } else if (data.message.includes('Email')) {
-                        document.getElementById('emailError').textContent = data.message;
-                        document.getElementById('emailError').style.display = 'block';
+                        const el = document.getElementById('firstNameError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
+                    } else if (data.message.includes('Invalid email')) {
+                        const el = document.getElementById('emailError');
+                        if (el) {
+                            el.textContent = data.message;
+                            el.style.display = 'block';
+                        }
                     } else {
                         showStatus(data.message || 'Failed to create record', 'danger');
                     }
@@ -426,8 +461,13 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 console.log('CSV Upload Response:', data);
                 
                 if (data.success) {
-                    const message = `CSV uploaded successfully! Processed: ${data.successCount} records. Errors: ${data.errorCount}`;
-                    showStatus(message, 'success');
+                    // Update modal with upload results
+                    document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
+                    document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
+                    
+                    // Show success modal
+                    const modal = new bootstrap.Modal(document.getElementById('csvSuccessModal'));
+                    modal.show();
                     
                     // Reset file input
                     csvFileInput.value = '';
@@ -480,5 +520,60 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             "'": '&#039;'
         };
         return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Show duplicate alert modal
+    function showDuplicateAlert(type, value, existingData = {}) {
+        console.log('showDuplicateAlert called with:', { type, value, existingData });
+        
+        const modal = new bootstrap.Modal(document.getElementById('duplicateAlertModal'));
+        const messageEl = document.getElementById('duplicateMessage');
+        const detailsEl = document.getElementById('duplicateDetails');
+        
+        console.log('Modal elements:', { modal, messageEl, detailsEl });
+        
+        let message = '';
+        let details = '';
+        
+        if (type === 'email') {
+            message = `The email address <strong>${escapeHtml(value)}</strong> is already registered in the system.`;
+            if (existingData.test_permit || existingData.full_name) {
+                details = `
+                    <div class="mb-2"><strong>Existing Record:</strong></div>
+                    ${existingData.test_permit ? `<div><span class="text-muted">Test Permit:</span> <strong>${escapeHtml(existingData.test_permit)}</strong></div>` : ''}
+                    ${existingData.full_name ? `<div><span class="text-muted">Name:</span> ${escapeHtml(existingData.full_name)}</div>` : ''}
+                    ${existingData.email ? `<div><span class="text-muted">Email:</span> ${escapeHtml(existingData.email)}</div>` : ''}
+                `;
+            }
+        } else if (type === 'test_permit') {
+            message = `The test permit <strong>${escapeHtml(value)}</strong> is already registered in the system.`;
+            if (existingData.email || existingData.full_name) {
+                details = `
+                    <div class="mb-2"><strong>Existing Record:</strong></div>
+                    ${existingData.test_permit ? `<div><span class="text-muted">Test Permit:</span> <strong>${escapeHtml(existingData.test_permit)}</strong></div>` : ''}
+                    ${existingData.full_name ? `<div><span class="text-muted">Name:</span> ${escapeHtml(existingData.full_name)}</div>` : ''}
+                    ${existingData.email ? `<div><span class="text-muted">Email:</span> ${escapeHtml(existingData.email)}</div>` : ''}
+                `;
+            }
+        } else if (type === 'both') {
+            message = `Both the email and test permit are already registered in the system.`;
+            if (existingData.email || existingData.test_permit) {
+                details = `
+                    <div class="mb-2"><strong>Existing Record:</strong></div>
+                    ${existingData.test_permit ? `<div><span class="text-muted">Test Permit:</span> <strong>${escapeHtml(existingData.test_permit)}</strong></div>` : ''}
+                    ${existingData.full_name ? `<div><span class="text-muted">Name:</span> ${escapeHtml(existingData.full_name)}</div>` : ''}
+                    ${existingData.email ? `<div><span class="text-muted">Email:</span> ${escapeHtml(existingData.email)}</div>` : ''}
+                `;
+            }
+        }
+        
+        console.log('Populated message and details:', { message, details });
+        
+        messageEl.innerHTML = message;
+        detailsEl.innerHTML = details || '<div class="text-muted text-center">No additional details available</div>';
+        
+        console.log('About to show modal...');
+        modal.show();
+        console.log('Modal.show() called');
     }
 });
