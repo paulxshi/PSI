@@ -13,8 +13,8 @@ $email = trim($input['email'] ?? '');
 $otp = trim($input['otp'] ?? '');
 $purpose = $input['purpose'] ?? 'registration';
  
-error_log("Received email: $email");
-error_log("Received OTP: $otp");
+error_log("Received email: '$email' (length: " . strlen($email) . ")");
+error_log("Received OTP: '$otp' (length: " . strlen($otp) . ")");
 error_log("Received purpose: $purpose");
 
 if (empty($email) || empty($otp)) {
@@ -49,6 +49,7 @@ try {
 
     $verification_id = $verification['verification_id'];
     error_log("Verification record found: verification_id = $verification_id");
+    error_log("Database OTP: '{$verification['otp']}' | Received OTP: '$otp' | Match: " . ($otp === $verification['otp'] ? 'YES' : 'NO'));
 
     // Check if OTP has expired
     $expiresAt = strtotime($verification['expires_at']);
