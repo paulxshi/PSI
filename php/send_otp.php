@@ -82,12 +82,11 @@ try {
 
     error_log("OTP email sent successfully");
 
-    // Return success
+    // Return success (DO NOT send OTP to frontend for security)
     echo json_encode([
         'success' => true, 
         'message' => 'OTP sent successfully! Please check your email.',
-        'expires_in' => 600,
-        'otp' => $otp
+        'expires_in' => 600
     ]);
 
 } catch (PDOException $e) {

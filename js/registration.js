@@ -158,6 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Send OTP function - backend generates OTP and sends email
     function sendOtp(email) {
+        // Extra safety: trim email
+        email = String(email).trim();
+        
         showOtpStatus('Sending OTP...', 'info');
         sendOtpBtn.disabled = true;
 
@@ -179,14 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
             sendOtpBtn.disabled = false;
             
             if (data.success) {
-                // Backend generated OTP - store in sessionStorage for verification
-                if (data.otp) {
-                    console.log('Storing OTP in sessionStorage:', data.otp);
-                    sessionStorage.setItem('reg_otp', data.otp);
-                    sessionStorage.setItem('reg_email', email);
-                    console.log('Verified stored OTP:', sessionStorage.getItem('reg_otp'));
-                }
-                
                 showOtpStatus('OTP sent! Check your email. Spam folder too.', 'success');
                 
                 // Show OTP input and verify button
@@ -202,20 +197,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Clear any previous OTP input
                 otpInput.value = '';
             } else {
-                // Clear stored OTP if email send fails
-                sessionStorage.removeItem('reg_otp');
-                sessionStorage.removeItem('reg_email');
-                
                 showOtpStatus(data.message || 'Failed to send OTP. Please try again.', 'danger');
                 resetOtpState();
                 sendOtpBtn.disabled = false;
             }
         })
         .catch(error => {
-            // Clear stored OTP if network error occurs
-            sessionStorage.removeItem('reg_otp');
-            sessionStorage.removeItem('reg_email');
-            
             sendOtpBtn.disabled = false;
             console.error('Error sending OTP:', error);
             showOtpStatus('Network error. Please try again.', 'danger');
@@ -223,8 +210,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Verify OTP function - browser-side verification only
+    // Verify OTP function - server-side verification
     function verifyOtp(email, otp) {
+        // Extra safety: trim inputs
+        email = String(email).trim();
+        otp = String(otp).trim();
+        
         console.log('Verify OTP called - Email:', email, 'Entered OTP:', otp);
         
         if (!otp || otp.length !== 6) {
@@ -232,72 +223,88 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get stored OTP from sessionStorage
-        const storedOtp = sessionStorage.getItem('reg_otp');
-        const storedEmail = sessionStorage.getItem('reg_email');
-        
-        console.log('Stored OTP:', storedOtp);
-        console.log('Stored Email:', storedEmail);
-        console.log('Comparison:', {
-            storedOtpExists: !!storedOtp,
-            emailsMatch: storedEmail === email,
-            otpMatch: storedOtp === otp,
-            enteredOtp: otp,
-            enteredEmail: email
-        });
-        
-        // Verify OTP matches stored value
-        if (storedOtp && storedEmail === email && storedOtp === otp) {
-            // OTP verified successfully
-            isOtpVerified = true;
-            
-            // Clear sessionStorage
-            sessionStorage.removeItem('reg_otp');
-            sessionStorage.removeItem('reg_email');
-            
-            showOtpStatus('OTP verified successfully!', 'success');
-            
-            // Hide OTP section and show success
-            otpContainer.style.display = 'none';
-            resendOtpBtn.style.display = 'none';
-            
-            // Disable OTP button but keep it visible
-            sendOtpBtn.disabled = true;
-            sendOtpBtn.style.opacity = '0.6';
-            sendOtpBtn.style.cursor = 'not-allowed';
-            
-            // Show OTP verified badge
-            otpVerifiedBadge.style.display = 'inline';
-            
-            // Stop cooldown timer
-            if (cooldownTimer) {
-                clearInterval(cooldownTimer);
-            }
-            
-            // Lock email field after verification to prevent changes
-            emailInput.readOnly = true;
-            emailInput.classList.add('bg-light');
-            emailInput.title = 'Email locked after verification';
+        // Disable verify button while processing
+        verifyOtpBtn.disabled = true;
+        verifyOtpBtn.textContent = 'Verifying...';
+        showOtpStatus('Verifying OTP...', 'info');
 
-            // Show password section
-            passwordSection.style.display = 'block';
+        // Call backend to verify OTP
+        fetch('php/verify_otp.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                otp: otp,
+                purpose: 'registration'
+            }),
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Verify OTP Response:', data);
             
-            // ENABLE password fields
-            passwordInput.disabled = false;
-            confirmPasswordInput.disabled = false;
-            
-            // Focus on password input
-            passwordInput.focus();
-            
-            // Validate form
-            validateForm();
-        } else {
-            // OTP does not match
-            console.log('OTP verification failed');
-            showOtpStatus('Invalid OTP. Please try again.', 'danger');
-            otpInput.value = '';
-            otpInput.focus();
-        }
+            if (data.success) {
+                // OTP verified successfully on server
+                isOtpVerified = true;
+                
+                // Clear sessionStorage
+                sessionStorage.removeItem('reg_otp');
+                sessionStorage.removeItem('reg_email');
+                
+                showOtpStatus('OTP verified successfully!', 'success');
+                
+                // Hide OTP section and show success
+                otpContainer.style.display = 'none';
+                resendOtpBtn.style.display = 'none';
+                
+                // Disable OTP button but keep it visible
+                sendOtpBtn.disabled = true;
+                sendOtpBtn.style.opacity = '0.6';
+                sendOtpBtn.style.cursor = 'not-allowed';
+                
+                // Show OTP verified badge
+                otpVerifiedBadge.style.display = 'inline';
+                
+                // Stop cooldown timer
+                if (cooldownTimer) {
+                    clearInterval(cooldownTimer);
+                }
+                
+                // Lock email field after verification to prevent changes
+                emailInput.readOnly = true;
+                emailInput.classList.add('bg-light');
+                emailInput.title = 'Email locked after verification';
+
+                // Show password section
+                passwordSection.style.display = 'block';
+                
+                // ENABLE password fields
+                passwordInput.disabled = false;
+                confirmPasswordInput.disabled = false;
+                
+                // Focus on password input
+                passwordInput.focus();
+                
+                // Validate form
+                validateForm();
+            } else {
+                // OTP verification failed
+                console.log('OTP verification failed:', data.message);
+                showOtpStatus(data.message || 'Invalid OTP. Please try again.', 'danger');
+                otpInput.value = '';
+                otpInput.focus();
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.textContent = 'Verify OTP';
+            }
+        })
+        .catch(error => {
+            console.error('Error verifying OTP:', error);
+            showOtpStatus('Network error. Please try again.', 'danger');
+            verifyOtpBtn.disabled = false;
+            verifyOtpBtn.textContent = 'Verify OTP';
+        });
     }
 
     // Start cooldown timer
@@ -456,7 +463,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('gender').disabled = false;
                 document.getElementById('contactNumber').disabled = false;
                 document.getElementById('school').disabled = false;
-                document.getElementById('email').disabled = false;
+                
+                // Make email read-only (locked after test permit verification)
+                emailInput.disabled = false;
+                emailInput.readOnly = true;
+                emailInput.classList.add('bg-light');
+                emailInput.style.cursor = 'not-allowed';
+                emailInput.title = 'Email is locked after test permit verification';
 
                 // Show OTP button (keep it visible)
                 sendOtpBtn.style.display = 'inline';
