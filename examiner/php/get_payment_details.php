@@ -16,7 +16,7 @@ try {
         exit;
     }
 
-    // Get the latest successful payment of the user
+     // Get the latest successful payment of the user
     // Use COALESCE to handle NULL paid_at values, fallback to created_at or payment_date
     $stmt = $pdo->prepare("
         SELECT 
