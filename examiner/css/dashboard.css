@@ -1,6 +1,49 @@
  /* ============
      USER CARD
 =============== */
+/* ============
+   USER CARD
+=============== */
+
+#maskButton {
+  border: none;               
+  background: none;           
+  color: #0050fd;            
+  font-size: 12px;           
+  font-weight: 600;          
+  cursor: pointer;          
+  text-transform: uppercase;  
+  letter-spacing: 1px;        
+  transition: all 0.3s ease;  
+  padding: 0;              
+}
+
+#maskButton:hover {
+  transform: translateY(-2px);
+}
+
+#maskButton:focus {
+  outline: none;
+}
+
+.qr-code-text {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 16px;
+  display: inline-flex;
+  align-items: center; /* Align text and icon vertically */
+}
+
+.qr-code-text i {
+  margin-left: 10px; /* Space between text and icon */
+  cursor: pointer;  /* Show pointer on hover */
+}
+
+/* Hover effect for the view icon */
+#maskButton:hover {
+  color: #2563eb;  /* Change icon color on hover */
+  transform: scale(1.1);  /* Slight scaling effect */
+}
 .user-card-header {
   text-align: center;
   padding: 28px 24px 24px;
@@ -332,6 +375,8 @@
 .faq-row.active .faq-chevron {
   transform: rotate(180deg);
 }
+
+
 /* =========================
    MOBILE RESPONSIVENESS
 ========================= */
