@@ -17,6 +17,21 @@
 
 
 <style>
+#qrResultModal .modal-content {
+  border-radius: 1rem;
+}
+
+#qrResultModal .modal-header {
+  border-bottom: 0;
+}
+
+#qrResultModal .modal-body {
+  min-height: 320px;
+}
+
+.bg-success-subtle {
+  background-color: #e9f9ef;
+}
 
 .dropdown-menu {
   border-radius: 12px;
@@ -411,12 +426,16 @@
       </div>
 
       <!-- BODY -->
-      <div class="modal-body">
+    <div class="modal-body text-center py-5">
 
-        <!-- ✅ VERIFICATION STATUS -->
-        <div id="verificationStatus" class="status valid text-center mb-4">
-          ✔ VALID – ALLOWED TO ENTER
-        </div>
+      <!-- BIG SUCCESS ICON -->
+      <div class="mb-3">
+        <i class="bx bx-check-circle text-success" style="font-size: 6rem;"></i>
+      </div>
+
+        <h5 id="verificationStatus" class="fw-semibold text-success mb-4">
+          Allowed to enter
+        </h5>
 
 
         <!-- ✅ EXAMINEE INFORMATION    -->
@@ -467,11 +486,21 @@
 
       </div>
 
-        <!-- AUTO COMPLETE TIMER -->
-        <div id="autoCompleteTimer" class="alert alert-success text-center mb-3" style="display: none;">
-          <i class="bx bx-check-circle fs-4 me-2"></i>
-          Auto-completing in <span id="timerCount" class="fw-bold">5</span> seconds...
-          <button id="cancelAutoComplete" class="btn btn-outline-secondary btn-sm ms-2">Cancel</button>
+              <!-- AUTO COMPLETE TIMER -->
+        <div id="autoCompleteTimer"
+            class="d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill bg-success-subtle text-success">
+          
+          <i class="bx bx-time-five"></i>
+          <span>
+            Auto-completing in
+            <strong id="timerCount">5</strong>s
+          </span>
+
+          <!-- OPTIONAL cancel -->
+          <button id="cancelAutoComplete"
+                  class="btn btn-sm btn-outline-success rounded-pill ms-2">
+            Cancel
+          </button>
         </div>
 
       <!-- FOOTER ACTIONS -->
