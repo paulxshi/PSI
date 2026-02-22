@@ -3,7 +3,7 @@ require "../../config/db.php";
 
 header('Content-Type: application/json');
 
-$sql = "SELECT
+$sql = "SELECT 
             v.region,
             v.venue_id,
             v.venue_name,
@@ -12,6 +12,7 @@ $sql = "SELECT
             s.num_of_examinees
         FROM venue v
         LEFT JOIN schedules s ON s.venue_id = v.venue_id
+        WHERE s.scheduled_date >= CURDATE()
         ORDER BY v.region, v.venue_name, s.scheduled_date";
 
 $stmt = $pdo->prepare($sql);
