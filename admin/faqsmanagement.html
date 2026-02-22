@@ -11,11 +11,42 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="../css/dashstyle.css">
   <link rel="stylesheet" href="../css/style.css">
+
 	<title>Dashboard</title>
 </head>
 
 
 <style>
+
+.dropdown-menu {
+  border-radius: 12px;
+  min-width: 180px;
+}
+
+.dropdown-item {
+  font-size: 14px;
+  padding: 10px 14px;
+}
+
+.dropdown-item i {
+  font-size: 18px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.status-badge {
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.status-badge.completed {
+  color: #198754;                 
+}
 @media print {
   body {
     background: #fff !important;
@@ -23,7 +54,7 @@
 
   .table-card {
     box-shadow: none !important;
-    border: 1px solid #dee2e6;
+    border: 1px solid #c2c2c2;
   }
 }
 .btn-close:focus,
@@ -31,28 +62,64 @@
     outline: none;
     box-shadow: none;
 }
-
+/* Status box base */
 .status {
-  padding: 15px;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 6px;
+    font-size: 22px;
+    font-weight: 600;
+    padding: 15px;
+    border-radius: 8px;
 }
 
-.valid {
-  background: #e6ffed;
-  color: #1e7e34;
+/* 🟢 VALID */
+.status.valid {
+    color: #0885f2;
+    background-color: #dbffe3;
 }
 
-.invalid {
-  background: #ffe6e6;
-  color: #c82333;
+/* 🔴 INVALID */
+.status.invalid {
+    color: #c82333;
+    background-color: #f8d7da;
 }
 
-.warning {
-  background: #fff3cd;
-  color: #856404;
+/* 🟡 WARNING */
+.status.warning {
+    color: #a07800;
+    background-color: #fff3cd;
 }
+
+
+@media (min-width: 992px) {
+  .region-divider {
+    border-right: 1px solid #e9ecef;
+  }
+}
+.input-group-text {
+  border-right: 0;
+}
+
+.input-group .form-control:focus {
+  box-shadow: none;
+}
+
+.input-group:focus-within {
+  box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+}
+
+.region-table-row {
+  border-radius: 0.5rem;
+  transition: 
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.region-table-row.selected {
+  background-color: rgba(93, 226, 253, 0.2); 
+  border: 2px solid #9a7bff; 
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.2), 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 </style>
 <body>
 
@@ -63,7 +130,7 @@
           <span class="text">PSI-ADMIN Portal</span>
         </a>
         <ul class="side-menu top">
-          <li class="active">
+          <li>
             <a href="dashboard.html">
               <i class="bx bxs-dashboard"></i>
               <span class="text">Dashboard</span>
@@ -96,41 +163,69 @@
                     <i class="bx bx-group"></i>
                     <span class="text">Examinee Management</span>
                 </a>
-            </li>
-            <li>
-                <a href="examhistory.html">
-                    <i class="bx bx-history"></i>
-                    <span class="text">Exam History</span>
-                </a>
-            </li>
-            <li>
-                <a href="scanner.html">
-                    <i class="bx bx-qr-scan"></i>
-                    <span class="text">QR Scan</span>
-                </a>
-            </li>
-            <li>
-                <a href="activity_log.html">
-                    <i class="bx bx-notepad"></i>
-                    <span class="text">Activity Log</span>
-                </a>
-            </li>
+            </li>  
+                            <li>
+                    <a href="examhistory.html">
+                        <i class="bx bx-history"></i>
+                        <span class="text">Exam History</span>
+                    </a>
+                </li> 
+                
+                <li>
+                    <a href="activity_log.html">
+                        <i class="bx bx-notepad"></i>
+                        <span class="text">Activity Log</span>
+                    </a>
+                </li>
+
+                <li  class="active">
+                    <a href="faqsmanagement.html">
+                       <i class="bx bx-task"></i>
+                        <span class="text">FAQs Management </span>
+                    </a>
+                </li>
           
         </ul>
-        <ul class="side-menu">
-      <li>
-          <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-            <i class="bx bxs-log-out-circle"></i>
-            <span class="text">Logout</span>
-          </a>
-    </li>
     </ul>		
   </section>
 
 	<section id="content">
+<nav class="d-flex justify-content-end align-items-center px-4">
+  
+  <div class="dropdown">
+    <!-- Admin Icon -->
+    <a href="#"
+       class="d-flex align-items-center text-decoration-none"
+       id="adminDropdown"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
+       
+      <i class="bx bxs-user-circle fs-2 text-primary"></i>
+      <i class="bx bx-chevron-down ms-1 text-muted"></i>
+    </a>
 
+    <!-- Dropdown Menu -->
+    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+      <li class="dropdown-header small text-muted">
+        Administrator
+      </li>
+
+      <li><hr class="dropdown-divider"></li>
+
+      <li>
+        <a class="dropdown-item d-flex align-items-center text-danger"
+           href="#"
+           data-bs-toggle="modal"
+           data-bs-target="#logoutModal">
+          <i class="bx bxs-log-out-circle me-2"></i>
+          Logout
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</nav>
 <main>
-
 
 </main>
 
@@ -180,7 +275,7 @@
                     Cancel
                 </button>
                 <a
-                    href="../php/logout.php"
+                    href="../php/adminlogout.php"
                     class="btn btn-danger rounded-pill px-4"
                 >
                     Logout
@@ -191,9 +286,5 @@
     </div>
 </div>
 
-
 </body>
 </html>
-
-
-

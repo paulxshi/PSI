@@ -32,53 +32,53 @@ try {
 
     // Activity type filter
     if (!empty($activityType)) {
-        $whereConditions[] = "activity_type = :activity_type";
+        $whereConditions[] = "a.activity_type = :activity_type";
         $params[':activity_type'] = $activityType;
     }
 
     // Role filter
     if (!empty($role)) {
-        $whereConditions[] = "role = :role";
+        $whereConditions[] = "a.role = :role";
         $params[':role'] = $role;
     }
 
     // Severity filter
     if (!empty($severity)) {
-        $whereConditions[] = "severity = :severity";
+        $whereConditions[] = "a.severity = :severity";
         $params[':severity'] = $severity;
     }
 
     // Date filter
     switch ($dateFilter) {
         case 'today':
-            $whereConditions[] = "DATE(created_at) = CURDATE()";
+            $whereConditions[] = "DATE(a.created_at) = CURDATE()";
             break;
         case 'yesterday':
-            $whereConditions[] = "DATE(created_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+            $whereConditions[] = "DATE(a.created_at) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
             break;
         case 'week':
-            $whereConditions[] = "created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            $whereConditions[] = "a.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
             break;
         case 'month':
-            $whereConditions[] = "created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+            $whereConditions[] = "a.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
             break;
         case 'all':
             // No date filter
             break;
         default:
-            $whereConditions[] = "created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            $whereConditions[] = "a.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
     }
 
     // Search condition
     if (!empty($search)) {
-        $whereConditions[] = "(username LIKE :search OR email LIKE :search OR ip_address LIKE :search OR description LIKE :search)";
+        $whereConditions[] = "(a.username LIKE :search OR a.email LIKE :search OR a.ip_address LIKE :search OR a.description LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
 
     // Get total count
-    $countQuery = "SELECT COUNT(*) as total FROM activity_logs $whereClause";
+    $countQuery = "SELECT COUNT(*) as total FROM activity_logs a $whereClause";
     $countStmt = $pdo->prepare($countQuery);
     $countStmt->execute($params);
     $totalRecords = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
