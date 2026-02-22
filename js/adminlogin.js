@@ -36,17 +36,20 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(res => res.json())
     .then(data => {
-      msg.style.display = "block";
-      msg.textContent = data.message;
-      msg.className = "mb-3 text-center " + 
-        (data.success ? "text-success" : "text-danger");
-
       if (data.success) {
+        // Show success modal
+        const successModal = new bootstrap.Modal(document.getElementById('adminLoginSuccessModal'));
+        successModal.show();
+        
         // Redirect to admin dashboard after successful login
         setTimeout(() => {
           window.location.href = "admin/dashboard.html";
-        }, 800);
+        }, 1500);
       } else {
+        // Show error modal
+        document.getElementById('adminLoginErrorMessage').textContent = data.message;
+        const errorModal = new bootstrap.Modal(document.getElementById('adminLoginErrorModal'));
+        errorModal.show();
         // Re-enable button on failure
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
@@ -54,9 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => {
       console.error("Error:", err);
-      msg.style.display = "block";
-      msg.textContent = "Something went wrong. Please try again.";
-      msg.className = "mb-3 text-center text-danger";
+      document.getElementById('adminLoginErrorMessage').textContent = "Something went wrong. Please try again.";
+      const errorModal = new bootstrap.Modal(document.getElementById('adminLoginErrorModal'));
+      errorModal.show();
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
     });
