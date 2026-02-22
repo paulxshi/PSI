@@ -59,22 +59,46 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     // Check if test_permit already exists
-    $checkStmt = $pdo->prepare("SELECT id FROM examinee_masterlist WHERE test_permit = :test_permit LIMIT 1");
+    $checkStmt = $pdo->prepare("SELECT id, test_permit, last_name, first_name, middle_name, email FROM examinee_masterlist WHERE test_permit = :test_permit LIMIT 1");
     $checkStmt->execute([':test_permit' => $testPermit]);
     
     if ($checkStmt->rowCount() > 0) {
+        $existingRecord = $checkStmt->fetch(PDO::FETCH_ASSOC);
+        $fullName = trim($existingRecord['first_name'] . ' ' . ($existingRecord['middle_name'] ? $existingRecord['middle_name'] . ' ' : '') . $existingRecord['last_name']);
+        
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Test permit already exists']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Test permit already exists',
+            'duplicate_type' => 'test_permit',
+            'existing_data' => [
+                'test_permit' => $existingRecord['test_permit'],
+                'full_name' => $fullName,
+                'email' => $existingRecord['email']
+            ]
+        ]);
         exit;
     }
 
     // Check if email already exists
-    $checkEmailStmt = $pdo->prepare("SELECT id FROM examinee_masterlist WHERE email = :email LIMIT 1");
+    $checkEmailStmt = $pdo->prepare("SELECT id, test_permit, last_name, first_name, middle_name, email FROM examinee_masterlist WHERE email = :email LIMIT 1");
     $checkEmailStmt->execute([':email' => $email]);
     
     if ($checkEmailStmt->rowCount() > 0) {
+        $existingRecord = $checkEmailStmt->fetch(PDO::FETCH_ASSOC);
+        $fullName = trim($existingRecord['first_name'] . ' ' . ($existingRecord['middle_name'] ? $existingRecord['middle_name'] . ' ' : '') . $existingRecord['last_name']);
+        
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Email already exists']);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Email already exists',
+            'duplicate_type' => 'email',
+            'existing_data' => [
+                'test_permit' => $existingRecord['test_permit'],
+                'full_name' => $fullName,
+                'email' => $existingRecord['email']
+            ]
+        ]);
         exit;
     }
 

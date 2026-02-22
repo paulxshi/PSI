@@ -300,24 +300,32 @@
 
         <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmScheduleModal" tabindex="-1" aria-labelledby="confirmScheduleLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
       
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmScheduleLabel">Confirm Schedule Creation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <!-- Modal Header -->
+      <div class="modal-header border-0 justify-content-center pb-0">
+        <h5 class="modal-title fw-semibold" id="confirmScheduleLabel">
+          Confirm Schedule Creation
+        </h5>
+        <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
-      <div class="modal-body">
-        Are you sure you want to create this schedule?
+      <!-- Modal Body -->
+      <div class="modal-body px-4 py-4 text-center">
+        <i class="bx bx-calendar-check fs-1 text-primary mb-3"></i>
+        <p class="mb-0 text-muted">
+          Are you sure you want to publish this schedule?
+        </p>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
           Cancel
         </button>
-        <button type="button" class="btn btn-dark" id="confirmCreateBtn">
-          Yes, Create
+        <button type="button" class="btn btn-primary rounded-pill px-4" id="confirmCreateBtn">
+          <i class="bx bx-check me-1"></i> Yes, Create
         </button>
       </div>
       
