@@ -69,9 +69,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button 
                             class="btn btn-sm btn-outline-success rounded-pill px-3" 
                             onclick="exportExamHistory(${row.schedule_id})"
-                            title="Export as CSV"
+                            title=" CSV"
                         >
-                            <i class="bx bx-download"></i> Export CSV
+                            <i class="bx bx-download"></i> CSV
                         </button>
                     </td>
                 </tr>
