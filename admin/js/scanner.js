@@ -154,8 +154,9 @@ function showQRResult(data) {
     let statusMessage = data.status_message;
 
     if (isScheduleSelected && !isMatchingSchedule && data.status_class === "valid") {
+        document.getElementById("exam_sched").style.display = "block";
         statusClass = "warning";
-        statusMessage = "⚠ WARNING – NOT SCHEDULED FOR SELECTED SLOT";
+        statusMessage = "⚠ WARNING – NOT SCHEDULED FOR SELECTED DATE OR VENUE";
     }
 
     /* -----------------------------

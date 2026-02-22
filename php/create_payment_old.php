@@ -13,19 +13,16 @@ register_shutdown_function(function() {
     if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
         ob_clean();
         header('Content-Type: application/json');
-        
-        $errorDetails = [
+        echo json_encode([
             'success' => false,
-            'message' => 'Server configuration error: ' . $error['message'],
-            'error_type' => 'PHP Fatal Error',
-            'error_details' => $error['message'],
-            'file' => basename($error['file']),
-            'line' => $error['line'],
-            'full_path' => $error['file'],
-            'suggestion' => 'Check if all PHP extensions are enabled (curl, json, pdo) and restart Apache'
-        ];
-        
-        echo json_encode($errorDetails, JSON_PRETTY_PRINT);
+            'message' => 'Server configuration error. Please contact support.',
+            'debug' => [
+                'error_type' => 'Fatal Error',
+                'message' => $error['message'],
+                'file' => $error['file'],
+                'line' => $error['line']
+            ]
+        ]);
         error_log('[PAYMENT FATAL ERROR] ' . print_r($error, true));
     }
 });

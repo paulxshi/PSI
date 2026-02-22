@@ -346,6 +346,7 @@ function initiatePayment() {
   .then(data => {
     console.log('Payment Creation Response:', data);
     
+
     // Log detailed error information if present
     if (!data.success) {
       console.error('❌ Payment Failed:', data.message);
@@ -359,7 +360,7 @@ function initiatePayment() {
       }
       
       if (data.file && data.line) {
-        console.error(`Location: ${data.file} (Line ${data.line})`);
+        console.error(Location: ${data.file} (Line ${data.line}));
       }
       
       if (data.full_path) {
@@ -376,7 +377,7 @@ function initiatePayment() {
       
       if (data.missing_extensions) {
         console.error('❌ Missing PHP Extensions:', data.missing_extensions);
-        alert(`Server Error: Missing PHP extensions: ${data.missing_extensions.join(', ')}\n\nPlease enable these in php.ini and restart Apache.`);
+        alert(Server Error: Missing PHP extensions: ${data.missing_extensions.join(', ')}\n\nPlease enable these in php.ini and restart Apache.);
       } else {
         alert(data.message || 'Failed to create payment invoice. Please try again.');
       }
@@ -385,8 +386,10 @@ function initiatePayment() {
       payNowBtn.innerHTML = 'Proceed to Payment <i class="bi bi-check ms-1"></i>';
       return;
     }
-    
+
     if (data.success && data.invoice_url) {
+
+      
       // Redirect to Xendit payment page
       window.location.href = data.invoice_url;
     } else {
