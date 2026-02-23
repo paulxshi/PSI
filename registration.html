@@ -995,19 +995,32 @@
       console.log('Registration Response:', data);
       
       if (data.success) {
-        // Registration successful - redirect to exam schedule
-        alert('Registration successful! Please proceed to schedule selection.');
-        window.location.href = 'examsched.html';
+        // Show success modal
+        const successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
+        successModal.show();
+        
+        // Redirect to exam schedule after short delay
+        setTimeout(() => {
+          window.location.href = 'examsched.html';
+        }, 1500);
       } else {
-        // Registration failed - show error
-        alert(data.message || 'Registration failed. Please try again.');
+        // Show error modal
+        document.getElementById('registrationErrorMessage').textContent = data.message || 'Registration failed. Please try again.';
+        const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
+        errorModal.show();
+        
         registerBtn.disabled = false;
         registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
       }
     })
     .catch(error => {
       console.error('Registration Error:', error);
-      alert('Network error. Please try again.');
+      
+      // Show error modal
+      document.getElementById('registrationErrorMessage').textContent = 'Network error. Please try again.';
+      const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
+      errorModal.show();
+      
       registerBtn.disabled = false;
       registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
     });
@@ -1147,6 +1160,72 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
+
+<!-- REGISTRATION SUCCESS MODAL -->
+<div class="modal fade" id="registrationSuccessModal" tabindex="-1" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      
+      <div class="modal-header border-0 justify-content-center pb-2">
+        <h5 class="modal-title fw-semibold">Registration Successful</h5>
+      </div>
+      
+      <div class="modal-body px-4 py-4 text-center">
+        <div class="rounded-circle bg-success-subtle text-success mx-auto mb-3
+                    d-flex align-items-center justify-content-center"
+             style="width:64px;height:64px;">
+          <i class="bi bi-check-circle fs-1"></i>
+        </div>
+        
+        <p class="mb-0 text-muted">
+          Your account has been created! Redirecting to exam schedule selection...
+        </p>
+        
+        <div class="mt-3">
+          <div class="spinner-border spinner-border-sm text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<!-- REGISTRATION ERROR MODAL -->
+<div class="modal fade" id="registrationErrorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      
+      <div class="modal-header border-0 justify-content-center pb-2">
+        <h5 class="modal-title fw-semibold">Registration Failed</h5>
+        <button type="button" class="btn-close position-absolute end-0 me-3" 
+                data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body px-4 py-4 text-center">
+        <div class="rounded-circle bg-danger-subtle text-danger mx-auto mb-3
+                    d-flex align-items-center justify-content-center"
+             style="width:64px;height:64px;">
+          <i class="bi bi-x-circle fs-1"></i>
+        </div>
+        
+        <p class="mb-0 text-muted" id="registrationErrorMessage">
+          <!-- Error message will be inserted here -->
+        </p>
+      </div>
+      
+      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+        <button type="button" class="btn btn-primary rounded-pill px-4" 
+                data-bs-dismiss="modal">
+          <i class="bi bi-arrow-left me-1"></i> Try Again
+        </button>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 <!-- INVALID TEST PERMIT MODAL -->
 <div class="modal fade" id="invalidTestPermitModal" tabindex="-1" aria-labelledby="invalidTestPermitLabel" aria-hidden="true">
