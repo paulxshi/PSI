@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getRoleText(role) {
         const labels = {
             'admin': 'Admin',
+            'accountant': 'Accountant',
             'examinee': 'Examinee',
             'system': 'System'
         };
