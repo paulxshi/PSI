@@ -13,7 +13,16 @@
 
 	<title>Test Permit</title>
 </head>
+<style>
+  .btn-light:hover {
+  background-color: #000000;
+  transform: translateX(-2px);
+  transition: 0.2s ease;
+  color: aliceblue;
+}
+</style>
 <body>
+
 	<!-- Sidebar Section -->
 		<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
@@ -50,12 +59,24 @@
 	<section id="content">
 		<nav>
       			<div class="greeting">
-                <span>User</span>
+                
             </div>
 		</nav>
 
 <!-- MAIN CONTENT -->
 <main class="container py-3">
+
+  <!-- Back Button -->
+  <div class="mb-3">
+    <a href="accountsettings.html" class="btn btn-light d-inline-flex align-items-center gap-2 shadow-sm rounded-pill px-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+        class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd"
+          d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5A.5.5 0 0 1 15 8z" />
+      </svg>
+      <span class="fw-semibold">Go back</span>
+    </a>
+  </div>
 
   <!-- PERMIT PDF AREA -->
   <div id="permitPDF" class="bg-white p-4 shadow-sm">
@@ -80,6 +101,12 @@
         <div class="text-center mb-4">
           <div class="qr-code-square-container">
             <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
+             <img
+                      src="../imgs/PSI.png"
+                      alt="PSI Logo"
+                      class="qr-logo"
+                    />
+                    
           </div>
         </div>
 
