@@ -4,12 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadFAQs() {
     fetch("php/get_faqs.php")
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+            return response.json();
+        })
         .then(data => {
             const container = document.getElementById("faqContainer");
             container.innerHTML = "";
 
-            if (!data.length) {
+            if (!Array.isArray(data) || !data.length) {
                 container.innerHTML = "<p class='text-muted'>No FAQs available.</p>";
                 return;
             }
@@ -41,10 +44,11 @@ function loadFAQs() {
         })
         .catch(error => {
             console.error("Error loading FAQs:", error);
+            document.getElementById("faqContainer").innerHTML =
+                "<p class='text-danger'>Failed to load FAQs. Please try again later.</p>";
         });
 }
 
-// Prevents HTML injection / formatting issues
 function escapeHTML(str) {
     if (!str) return "";
     return str.replace(/[&<>'"]/g, function(tag) {
@@ -59,15 +63,26 @@ function escapeHTML(str) {
     });
 }
 
-
 function activateFAQToggle() {
-    const toggles = document.querySelectorAll(".faq-toggle");
+    const container = document.getElementById("faqContainer");
 
-    toggles.forEach(toggle => {
-        toggle.addEventListener("click", function () {
-            const wrapper = this.nextElementSibling;
-            wrapper.classList.toggle("open");
-            this.querySelector(".faq-chevron").classList.toggle("rotate");
+    container.addEventListener("click", function (e) {
+        const toggle = e.target.closest(".faq-toggle");
+        if (!toggle) return;
+
+        const clickedWrapper = toggle.nextElementSibling;
+        const isAlreadyOpen = clickedWrapper.classList.contains("open");
+
+        // Collapse all open FAQs
+        container.querySelectorAll(".faq-content-wrapper.open").forEach(wrapper => {
+            wrapper.classList.remove("open");
+            wrapper.previousElementSibling.querySelector(".faq-chevron").classList.remove("rotate");
         });
+
+        // If the clicked one was not already open, open it
+        if (!isAlreadyOpen) {
+            clickedWrapper.classList.add("open");
+            toggle.querySelector(".faq-chevron").classList.add("rotate");
+        }
     });
 }
