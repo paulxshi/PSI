@@ -6,35 +6,265 @@
 	<link rel="icon" href="../imgs/PSI.png">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="../css/dashstyle.css">
 	<title>Dashboard</title>
 </head>
+
 <style>
+/* ── Dropdown ── */
 .dropdown-menu {
   border-radius: 12px;
   min-width: 180px;
 }
-
 .dropdown-item {
   font-size: 14px;
   padding: 10px 14px;
 }
-
 .dropdown-item i {
   font-size: 18px;
 }
-
 .dropdown-item:hover {
   background-color: #f8f9fa;
 }
+
+/* ── Premium Region Cards ── */
+.region-card {
+  position: relative;
+  background: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 28px 26px 22px;
+  width: 240px;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(.22,.68,0,1.2),
+              box-shadow 0.35s ease;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  cursor: default;
+  animation: fadeUp 0.55s ease both;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.region-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.13);
+}
+
+.region-card:nth-child(1) { animation-delay: 0.05s; }
+.region-card:nth-child(2) { animation-delay: 0.15s; }
+.region-card:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.region-card::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.08;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.region-card:hover::before {
+  opacity: 0.14;
+  transform: scale(1.15);
+}
+
+.card-luzon::before    { background: #0d6efd; }
+.card-visayas::before  { background: #e8612c; }
+.card-mindanao::before { background: #c49a00; }
+
+.card-accent-line {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  border-radius: 24px 24px 0 0;
+}
+.card-luzon    .card-accent-line { background: linear-gradient(90deg, #4f8ef7, #0d6efd); }
+.card-visayas  .card-accent-line { background: linear-gradient(90deg, #f7845a, #e8612c); }
+.card-mindanao .card-accent-line { background: linear-gradient(90deg, #f7d060, #c49a00); }
+
+.icon-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+.card-luzon    .icon-badge { background: linear-gradient(135deg, #4f8ef7, #0d6efd); }
+.card-visayas  .icon-badge { background: linear-gradient(135deg, #f7845a, #e8612c); }
+.card-mindanao .icon-badge { background: linear-gradient(135deg, #f7d060, #c49a00); }
+
+.region-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.change-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.change-up   { background: #ecfdf5; color: #16a34a; }
+.change-down { background: #fef2f2; color: #dc2626; }
+
+.region-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.card-divider {
+  height: 1px;
+  background: #f3f4f6;
+  border: none;
+  margin: 14px 0 12px;
+}
+
+.region-sub {
+  font-size: 11.5px;
+  color: #b0b7c3;
+  font-weight: 400;
+}
+
+.mini-progress {
+  height: 4px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.mini-progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(.22,.68,0,1.2);
+}
+.card-luzon    .mini-progress-fill { background: linear-gradient(90deg, #4f8ef7, #0d6efd); width: 100%; }
+.card-visayas  .mini-progress-fill { background: linear-gradient(90deg, #f7845a, #e8612c); width: 100%; }
+.card-mindanao .mini-progress-fill { background: linear-gradient(90deg, #f7d060, #c49a00); width: 100%; }
+
+/* ── Sales Table ── */
+.sales-table-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  animation: fadeUp 0.55s ease 0.35s both;
+}
+
+.sales-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 26px 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sales-table-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.2px;
+}
+
+.see-all-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d6efd;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.see-all-link:hover {
+  opacity: 0.7;
+}
+
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sales-table thead th {
+  font-size: 11.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #b0b7c3;
+  padding: 10px 26px;
+  background: #fafafa;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.sales-table tbody tr {
+  border-bottom: 1px solid #f9fafb;
+  transition: background 0.2s ease;
+}
+
+.sales-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.sales-table tbody tr:hover {
+  background: #f8faff;
+}
+
+.sales-table tbody td {
+  padding: 16px 26px;
+  font-size: 13.5px;
+  color: #374151;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.sales-table tbody td.product-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.sales-table tbody td.amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+.status-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.status-in    { background: #ecfdf5; color: #16a34a; }
+.status-out   { background: #fef2f2; color: #dc2626; }
+.status-low   { background: #fffbeb; color: #d97706; }
 </style>
+
 <body>
 
 	<!-- Sidebar Section -->
 	<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
 			<img src="../imgs/PSI.png" alt="RHULogo" class="logo">
-			<span class="text">PSI-PMMA Portal</span>
+			<span class="text">PSI Accountant Portal</span>
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
@@ -53,32 +283,23 @@
         </a>
       </li>
     </ul>
-		
 	</section>
 
 	<section id="content">
     <nav class="d-flex justify-content-end align-items-center px-4">
-      
       <div class="dropdown">
-        <!-- Admin Icon -->
         <a href="#"
           class="d-flex align-items-center text-decoration-none"
           id="accountantDropdown"
           data-bs-toggle="dropdown"
           aria-expanded="false">
-          
           <i class="bx bx-wallet fs-2 text-primary"></i>
           <i class="bx bx-chevron-down ms-1 text-muted"></i>
         </a>
 
-        <!-- Dropdown Menu -->
         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-          <li class="dropdown-header small text-muted">
-            Accountant
-          </li>
-
+          <li class="dropdown-header small text-muted">Accountant</li>
           <li><hr class="dropdown-divider"></li>
-
           <li>
             <a class="dropdown-item d-flex align-items-center text-danger"
               href="#"
@@ -90,63 +311,147 @@
           </li>
         </ul>
       </div>
-
     </nav>
 
     <main>
+
+      <!-- Region Cards -->
+      <div class="d-flex flex-wrap gap-4 p-4">
+
+        <!-- Luzon -->
+        <div class="region-card card-luzon">
+          <div class="card-accent-line"></div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="icon-badge">
+              <i class="bx bxs-map"></i>
+            </div>
+          </div>
+          <div class="region-label">Luzon</div>
+          <div class="region-value mt-1">₱75,487.40</div>
+          <hr class="card-divider">
+          <div class="region-sub">vs last year &nbsp;₱60,542.50</div>
+          <div class="mini-progress mt-2">
+            <div class="mini-progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Visayas -->
+        <div class="region-card card-visayas">
+          <div class="card-accent-line"></div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="icon-badge">
+              <i class="bx bxs-map"></i>
+            </div>
+          </div>
+          <div class="region-label">Visayas</div>
+          <div class="region-value mt-1">₱52,682</div>
+          <hr class="card-divider">
+          <div class="region-sub">vs last year &nbsp;₱33,754</div>
+          <div class="mini-progress mt-2">
+            <div class="mini-progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Mindanao -->
+        <div class="region-card card-mindanao">
+          <div class="card-accent-line"></div>
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="icon-badge">
+              <i class="bx bxs-been-here"></i>
+            </div>
+          </div>
+          <div class="region-label">Mindanao</div>
+          <div class="region-value mt-1">₱21,426</div>
+          <hr class="card-divider">
+          <div class="region-sub">vs last year &nbsp;₱33,754</div>
+          <div class="mini-progress mt-2">
+            <div class="mini-progress-fill"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Product Sales Table -->
+      <div class="px-4 pb-4">
+        <div class="sales-table-card">
+
+          <div class="sales-table-header">
+            <span class="sales-table-title">Luzon Sales</span>
+            <a href="#" class="see-all-link">See all</a>
+          </div>
+
+          <table class="sales-table">
+            <thead>
+              <tr>
+                <th>Venue</th>
+                <th>Total Schedule</th>
+                <th>Students Completed</th>
+                <th>Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="product-name">BICOL</td>
+                <td>3</td>
+                <td>987</td>
+                <td class="amount">₱540.00</td>
+              </tr>
+              <tr>
+                <td class="product-name">MANILA</td>
+                <td>2</td>
+                <td>987</td>
+                <td class="amount">₱540.00</td>
+              </tr>
+              <tr>
+                <td class="product-name">DAET</td>
+                <td>3</td>
+                <td>987</td>
+                <td class="amount">₱540.00</td>
+              </tr>
+              <tr>
+                <td class="product-name">VINZONS</td>
+                <td>1</td>
+                <td>214</td>
+                <td class="amount">₱780.00</td>
+              </tr>
+              <tr>
+                <td class="product-name">CAVITE</td>
+                <td>2</td>
+                <td>540</td>
+                <td class="amount">₱420.00</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
     </main>
 
-<div
-  class="modal fade"
-  id="logoutModal"
-  tabindex="-1"
-  aria-labelledby="logoutModalLabel"
-  aria-hidden="true"
->
+  </section>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered logout-modal">
     <div class="modal-content border-0 rounded-4 shadow">
 
-      <!-- Header -->
       <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
-        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
-          Confirm Logout
-        </h5>
-        <button
-          type="button"
-          class="btn-close no-focus"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="btn-close no-focus" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <!-- Divider -->
       <div class="px-4">
         <hr class="my-0">
       </div>
 
-      <!-- Body -->
       <div class="modal-body px-4 py-4 text-center">
         <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
-        <p class="mb-0 text-muted">
-          Are you sure you want to log out of your account?
-        </p>
+        <p class="mb-0 text-muted">Are you sure you want to log out of your account?</p>
       </div>
 
-      <!-- Footer -->
       <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-        <button
-          type="button"
-          class="btn btn-outline-secondary rounded-pill px-4"
-          data-bs-dismiss="modal"
-        >
-          Cancel
-        </button>
-        <a
-          href="../php/logout.php"
-          class="btn btn-danger rounded-pill px-4"
-        >
-          Logout
-        </a>
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+        <a href="../php/logout.php" class="btn btn-danger rounded-pill px-4">Logout</a>
       </div>
 
     </div>

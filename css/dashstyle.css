@@ -118,7 +118,7 @@ body {
 	align-items: center;
 	font-size: 14px;
 	color: var(--light);
-	border-radius: 12px;
+	border-radius: 25px;
 	transition: 0.2s ease;
 }
 
