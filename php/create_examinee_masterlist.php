@@ -102,6 +102,31 @@ try {
         exit;
     }
 
+    // Check if first_name + last_name combination already exists
+    $checkNameStmt = $pdo->prepare("SELECT id, test_permit, last_name, first_name, middle_name, email FROM examinee_masterlist WHERE first_name = :first_name AND last_name = :last_name LIMIT 1");
+    $checkNameStmt->execute([
+        ':first_name' => $firstName,
+        ':last_name' => $lastName
+    ]);
+    
+    if ($checkNameStmt->rowCount() > 0) {
+        $existingRecord = $checkNameStmt->fetch(PDO::FETCH_ASSOC);
+        $fullName = trim($existingRecord['first_name'] . ' ' . ($existingRecord['middle_name'] ? $existingRecord['middle_name'] . ' ' : '') . $existingRecord['last_name']);
+        
+        http_response_code(400);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'An examinee with this first name and last name already exists',
+            'duplicate_type' => 'name',
+            'existing_data' => [
+                'test_permit' => $existingRecord['test_permit'],
+                'full_name' => $fullName,
+                'email' => $existingRecord['email']
+            ]
+        ]);
+        exit;
+    }
+
     // Insert new record
     $insertStmt = $pdo->prepare("
         INSERT INTO examinee_masterlist (test_permit, last_name, first_name, middle_name, email, used)

@@ -191,6 +191,7 @@ try {
     $customerEmail = trim($user['email']);
     $customerFirstName = trim($user['first_name']) ?: 'Examinee';
     $customerLastName = trim($user['last_name']) ?: 'User';
+    $fullName = $customerFirstName . ' ' . $customerLastName;
     
     // Prepare invoice data
     $invoiceData = [
@@ -199,9 +200,9 @@ try {
         'description' => $description,
         'invoice_duration' => 86400, // 24 hours
         'customer' => [
-            'given_names' => $customerFirstName,
-            'surname' => $customerLastName,
+            'given_names' => $fullName, // Send full name instead of splitting
             'email' => $customerEmail
+            // Note: mobile_number and addresses omitted - Xendit doesn't accept empty values
         ],
         'customer_notification_preference' => [
             'invoice_created' => ['email'],

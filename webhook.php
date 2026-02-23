@@ -141,6 +141,74 @@ try {
     // Log success
     error_log("Payment processed successfully for user_id: $userId, invoice_id: $invoiceId");
     
+    // Send payment confirmation email with schedule details
+    try {
+        // Fetch user details and schedule information
+        $emailQuery = "
+            SELECT 
+                u.email,
+                u.first_name,
+                u.last_name,
+                u.test_permit,
+                s.scheduled_date,
+                v.venue_name,
+                v.region
+            FROM users u
+            INNER JOIN examinees e ON u.user_id = e.user_id
+            INNER JOIN schedules s ON e.schedule_id = s.schedule_id
+            INNER JOIN venue v ON s.venue_id = v.venue_id
+            WHERE u.user_id = :user_id
+        ";
+        
+        $emailStmt = $pdo->prepare($emailQuery);
+        $emailStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $emailStmt->execute();
+        $userDetails = $emailStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($userDetails && !empty($userDetails['email'])) {
+            // Format the date
+            $dateObj = new DateTime($userDetails['scheduled_date']);
+            $formattedDate = $dateObj->format('F j, Y'); // e.g., "March 15, 2026"
+            
+            // Prepare email data
+            $emailData = [
+                'email' => $userDetails['email'],
+                'first_name' => $userDetails['first_name'],
+                'last_name' => $userDetails['last_name'],
+                'test_permit' => $userDetails['test_permit'],
+                'scheduled_date' => $formattedDate,
+                'venue_name' => $userDetails['venue_name'],
+                'region' => $userDetails['region']
+            ];
+            
+            // Log the data being sent for debugging
+            error_log("Sending email data to n8n: " . json_encode($emailData));
+            
+            // Send email via n8n webhook
+            $n8nWebhookUrl = 'https://n8n.srv1069938.hstgr.cloud/webhook/payment-confirmation';
+            
+            $ch = curl_init($n8nWebhookUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            
+            $emailResponse = curl_exec($ch);
+            $emailHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            if ($emailHttpCode === 200) {
+                error_log("Payment confirmation email sent successfully to: {$userDetails['email']}");
+            } else {
+                error_log("Failed to send payment confirmation email to: {$userDetails['email']} (HTTP: $emailHttpCode)");
+            }
+        }
+    } catch (Exception $emailError) {
+        // Don't fail the webhook if email fails - just log it
+        error_log("Error sending payment confirmation email: " . $emailError->getMessage());
+    }
+    
     // Send success response to Xendit
     http_response_code(200);
     echo json_encode([

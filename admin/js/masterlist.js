@@ -386,9 +386,18 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                         
                         // Show duplicate alert modal with a small delay to allow first modal to close
                         setTimeout(() => {
+                            let duplicateValue = '';
+                            if (data.duplicate_type === 'test_permit') {
+                                duplicateValue = testPermit;
+                            } else if (data.duplicate_type === 'email') {
+                                duplicateValue = email;
+                            } else if (data.duplicate_type === 'name') {
+                                duplicateValue = firstName + ' ' + lastName;
+                            }
+                            
                             showDuplicateAlert(
-                                data.duplicate_type === 'test_permit' ? 'test_permit' : 'email',
-                                data.duplicate_type === 'test_permit' ? testPermit : email,
+                                data.duplicate_type,
+                                duplicateValue,
                                 data.existing_data
                             );
                         }, 300);
@@ -548,6 +557,16 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         } else if (type === 'test_permit') {
             message = `The test permit <strong>${escapeHtml(value)}</strong> is already registered in the system.`;
             if (existingData.email || existingData.full_name) {
+                details = `
+                    <div class="mb-2"><strong>Existing Record:</strong></div>
+                    ${existingData.test_permit ? `<div><span class="text-muted">Test Permit:</span> <strong>${escapeHtml(existingData.test_permit)}</strong></div>` : ''}
+                    ${existingData.full_name ? `<div><span class="text-muted">Name:</span> ${escapeHtml(existingData.full_name)}</div>` : ''}
+                    ${existingData.email ? `<div><span class="text-muted">Email:</span> ${escapeHtml(existingData.email)}</div>` : ''}
+                `;
+            }
+        } else if (type === 'name') {
+            message = `An examinee with the name <strong>${escapeHtml(existingData.full_name || value)}</strong> is already registered in the system.`;
+            if (existingData.test_permit || existingData.email) {
                 details = `
                     <div class="mb-2"><strong>Existing Record:</strong></div>
                     ${existingData.test_permit ? `<div><span class="text-muted">Test Permit:</span> <strong>${escapeHtml(existingData.test_permit)}</strong></div>` : ''}

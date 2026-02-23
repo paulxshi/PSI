@@ -139,6 +139,20 @@ try {
             continue;
         }
         
+        // Check if first_name + last_name combination already exists
+        $checkNameStmt = $pdo->prepare("SELECT test_permit FROM examinee_masterlist WHERE first_name = :first_name AND last_name = :last_name LIMIT 1");
+        $checkNameStmt->execute([
+            ':first_name' => $firstName,
+            ':last_name' => $lastName
+        ]);
+        
+        if ($checkNameStmt->rowCount() > 0) {
+            $existing = $checkNameStmt->fetch(PDO::FETCH_ASSOC);
+            $errorCount++;
+            $errors[] = "Row " . ($index + 2) . ": Duplicate name '$firstName $lastName' (existing test permit: {$existing['test_permit']})";
+            continue;
+        }
+        
         // Insert record
         try {
             $stmt->execute([
