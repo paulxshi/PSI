@@ -48,34 +48,40 @@ function applyActionState(state) {
     // Reset styles
     completeBtn.disabled = false;
     rejectBtn.disabled = false;
+    completeBtn.style.display = "inline-block";
+    rejectBtn.style.display = "inline-block";
 
-    completeBtn.classList.remove("btn-success", "btn-secondary");
-    rejectBtn.classList.remove("btn-danger", "btn-secondary");
+    completeBtn.classList.remove("btn-success", "btn-secondary", "btn-outline-success");
+    rejectBtn.classList.remove("btn-danger", "btn-secondary", "btn-outline-danger");
 
     if (state === "completed") {
-        completeBtn.textContent = "Completed";
+        completeBtn.textContent = "Accepted";
         rejectBtn.textContent = "Reject";
 
         completeBtn.disabled = true;
         rejectBtn.disabled = true;
 
-        completeBtn.classList.add("btn-secondary");
-        rejectBtn.classList.add("btn-secondary");
+        completeBtn.classList.add("btn-outline-secondary");
+        rejectBtn.classList.add("btn-outline-secondary");
     }
     else if (state === "rejected") {
-        completeBtn.textContent = "Complete";
+        completeBtn.textContent = "Accept";
         rejectBtn.textContent = "Rejected";
 
         completeBtn.disabled = true;
         rejectBtn.disabled = true;
 
-        completeBtn.classList.add("btn-secondary");
-        rejectBtn.classList.add("btn-secondary");
+        completeBtn.classList.add("btn-outline-secondary");
+        rejectBtn.classList.add("btn-outline-secondary");
+    }
+    else if (state === "hidden") {
+        completeBtn.style.display = "none";
+        rejectBtn.style.display = "none";
     }
     else {
         // Default usable state
-        completeBtn.textContent = "Mark as Complete";
-        rejectBtn.textContent = "Reject Entry";
+        completeBtn.textContent = "Accept";
+        rejectBtn.textContent = "Reject";
 
         completeBtn.classList.add("btn-success");
         rejectBtn.classList.add("btn-danger");
@@ -156,7 +162,7 @@ function showQRResult(data) {
     if (isScheduleSelected && !isMatchingSchedule && data.status_class === "valid") {
         document.getElementById("exam_sched").style.display = "block";
         statusClass = "warning";
-        statusMessage = "⚠ WARNING – NOT SCHEDULED FOR SELECTED DATE OR VENUE";
+        statusMessage = "Schedule Mismatch";
     }
 
     /* -----------------------------
@@ -188,16 +194,16 @@ window.currentExamineeId =
        Update verification status box
     ------------------------------*/
     const statusBox = document.getElementById("verificationStatus");
-    statusBox.className = "status text-center mb-4 " + statusClass;
+    statusBox.className = "status-box text-center mb-4 " + statusClass;
     statusBox.textContent = statusMessage;
 
 
     const icon = document.getElementById("statusIcon");
-    icon.className = "bx";
+    icon.className = "fa-solid";
 
-    if (statusClass === "valid") icon.classList.add("bx-check-circle");
-    else if (statusClass === "warning") icon.classList.add("bx-error-circle");
-    else icon.classList.add("bx-x-circle");
+    if (statusClass === "valid") icon.classList.add("fa-circle-check");
+    else if (statusClass === "warning") icon.classList.add("fa-triangle-exclamation");
+    else icon.classList.add("fa-circle-xmark");
 
     /* -----------------------------
        Update modal color class
@@ -218,16 +224,36 @@ window.currentExamineeId =
 if (statusClass === "already_used") {
     document.getElementById("exam_sched").style.display = "none";
     applyActionState("completed");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for already used
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("rejectBtn").style.display = "none";
 }
 else if (statusClass === "rejected") {
     applyActionState("rejected");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for rejected
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("rejectBtn").style.display = "none";
 }
-else if (statusClass === "valid" || statusClass === "warning") {
-    // ⚠ Allow interaction even if mismatched
+else if (statusClass === "valid") {
+    // For verified examinees - hide buttons, auto accept only
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("rejectBtn").style.display = "none";
     applyActionState("default");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+}
+else if (statusClass === "warning") {
+    // For schedule mismatch - show buttons for manual decision
+    applyActionState("default");
+    document.getElementById("autoCompleteTimer").style.display = "none";
 }
 else {
     applyActionState("completed"); // truly invalid only
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for invalid
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("rejectBtn").style.display = "none";
 }
     /* -----------------------------
        Handle auto-complete for valid scans
@@ -240,7 +266,6 @@ else {
         startAutoComplete(modal, examineeId);
     } else {
         document.getElementById("autoCompleteTimer").style.display = "none";
-        document.getElementById("completeBtn").style.display = "inline-block";
     }
 
     /* -----------------------------
@@ -291,7 +316,7 @@ function startAutoComplete(modal, examineeId) {
             if (window.currentAutoCompleteRun !== runId) return;
 
             timerDiv.innerHTML =
-                '<i class="bx bx-check-circle fs-4 me-2"></i> Completed!';
+                '<span class="text-success fw-semibold"><i class="fa-solid fa-check me-1"></i> Accepted</span>';
 
             // ✅ Only executes if NOT cancelled
             updateStatusWithId("complete", examineeId);

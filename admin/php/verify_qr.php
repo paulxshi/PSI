@@ -20,7 +20,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 if (json_last_error() !== JSON_ERROR_NONE) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Invalid JSON received."
+        "status_message" => "Invalid Request"
     ]);
     exit;
 }
@@ -31,7 +31,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 if (!isset($data['external_id'])) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "No transaction number received."
+        "status_message" => "Missing Transaction Number"
     ]);
     exit;
 }
@@ -47,7 +47,7 @@ $payment = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$payment || $payment['status'] !== 'PAID') {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => !$payment ? "Payment not found." : "Payment not paid yet.",
+        "status_message" => !$payment ? "Payment Not Found" : "Payment Pending",
         "debug" => !$payment ? "No record in payments table" : "Payment status is not PAID"
     ]);
     exit;
@@ -63,7 +63,7 @@ $examinee = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$examinee) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Examinee record missing.",
+        "status_message" => "Record Not Found",
         "debug" => "Invalid examinee_id: " . $payment['examinee_id']
     ]);
     exit;
@@ -77,7 +77,7 @@ $status = strtolower($examinee['examinee_status']);
 if ($status === 'completed') {
     echo json_encode([
         "status_class" => "already_used",
-        "status_message" => "⚠ EXAMINEE ALREADY MARKED COMPLETED",
+        "status_message" => "Already Completed",
         "examinee_id" => $examinee['examinee_id']
     ]);
     exit;
@@ -86,7 +86,7 @@ if ($status === 'completed') {
 if ($status === 'rejected') {
     echo json_encode([
         "status_class" => "rejected",
-        "status_message" => "❌ EXAMINEE ENTRY WAS REJECTED",
+        "status_message" => "Entry Rejected",
         "examinee_id" => $examinee['examinee_id']
     ]);
     exit;
@@ -102,7 +102,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$user) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "User record missing.",
+        "status_message" => "User Not Found",
         "debug" => "Invalid user_id: " . $payment['user_id']
     ]);
     exit;
@@ -118,7 +118,7 @@ $schedule = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$schedule) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Schedule not found.",
+        "status_message" => "Schedule Not Found",
         "debug" => "Invalid schedule_id: " . $examinee['schedule_id']
     ]);
     exit;
@@ -134,7 +134,7 @@ $venue = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$venue) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Venue missing.",
+        "status_message" => "Venue Not Found",
         "debug" => "Invalid venue_id: " . $schedule['venue_id']
     ]);
     exit;
@@ -169,7 +169,7 @@ $fullName = $user['first_name'] . " " . $user['middle_name'] . ". " . $user['las
 
 echo json_encode([
     "status_class" => "valid",
-    "status_message" => "✔ VALID – ALLOWED TO ENTER",
+    "status_message" => "Verified - Proceed",
 
     "name" => $fullName,
     "test_permit" => $user['test_permit'],
@@ -184,7 +184,5 @@ echo json_encode([
     "payment_date" => $payment['payment_date'],
     "amount" => "₱" . number_format($payment['amount'], 2),
 
-    "scanned_at" => $scannedTime,
-
-    "debug" => "Scan recorded successfully"
+    "scanned_at" => $scannedTime
 ]);
