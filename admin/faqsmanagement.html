@@ -11,280 +11,633 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="../css/dashstyle.css">
   <link rel="stylesheet" href="../css/style.css">
-
-	<title>Dashboard</title>
+	<title>FAQs Management</title>
 </head>
 
-
 <style>
+.page-header {
+  padding: 15px 24px;
+  border-bottom: 3px solid #acacac;
+  max-width: 60%;
+}
+
+.page-title {
+  font-weight: 800;
+  font-size: 2rem;
+  color: #000;
+  margin-bottom: 0.75rem;
+}
+
+.page-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin: 0;
+}
 
 .dropdown-menu {
   border-radius: 12px;
   min-width: 180px;
 }
-
 .dropdown-item {
   font-size: 14px;
   padding: 10px 14px;
 }
-
 .dropdown-item i {
   font-size: 18px;
 }
-
 .dropdown-item:hover {
   background-color: #f8f9fa;
 }
-
-.status-badge {
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  display: inline-block;
-}
-
-.status-badge.completed {
-  color: #198754;                 
-}
-@media print {
-  body {
-    background: #fff !important;
-  }
-
-  .table-card {
-    box-shadow: none !important;
-    border: 1px solid #c2c2c2;
-  }
-}
 .btn-close:focus,
 .no-focus:focus {
-    outline: none;
-    box-shadow: none;
-}
-/* Status box base */
-.status {
-    font-size: 22px;
-    font-weight: 600;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-/* 🟢 VALID */
-.status.valid {
-    color: #0885f2;
-    background-color: #dbffe3;
-}
-
-/* 🔴 INVALID */
-.status.invalid {
-    color: #c82333;
-    background-color: #f8d7da;
-}
-
-/* 🟡 WARNING */
-.status.warning {
-    color: #a07800;
-    background-color: #fff3cd;
-}
-
-
-@media (min-width: 992px) {
-  .region-divider {
-    border-right: 1px solid #e9ecef;
-  }
-}
-.input-group-text {
-  border-right: 0;
-}
-
-.input-group .form-control:focus {
+  outline: none;
   box-shadow: none;
 }
 
-.input-group:focus-within {
+/* ── Main FAQ Page Layout ── */
+.faq-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #1a1a2e;
+}
+
+/* ── FAQ Card Container ── */
+.faq-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 1.5rem 1.5rem 2rem;
+  height: 100%;
+}
+
+.faq-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  border-left: 4px solid #0d6efd;
+  padding-left: 0.75rem;
+  line-height: 1.4;
+}
+
+/* ── Accordion Styles ── */
+.faq-accordion .accordion-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px !important;
+  margin-bottom: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s ease;
+}
+.faq-accordion .accordion-item:hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.09);
+}
+.faq-accordion .accordion-button {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a2e;
+  background-color: #ffffff;
+  padding: 0.85rem 1rem;
+  border-radius: 10px !important;
+  gap: 0.6rem;
+}
+.faq-accordion .accordion-button:not(.collapsed) {
+  background-color: #ffffff;
+  color: #c0392b;
+  box-shadow: none;
+}
+.faq-accordion .accordion-button:focus {
+  box-shadow: none;
+}
+.faq-accordion .accordion-button::after {
+  display: none;
+}
+.faq-icon {
+  font-size: 1.2rem;
+  min-width: 20px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+.accordion-button.collapsed .faq-icon {
+  color: #444;
+}
+.accordion-button:not(.collapsed) .faq-icon {
+  color: #c0392b;
+}
+.faq-accordion .accordion-body {
+  font-size: 0.88rem;
+  color: #555;
+  background-color: #ffffff;
+  padding: 0.2rem 1rem 1rem 2.8rem;
+  line-height: 1.7;
+}
+
+/* ── Action Buttons ── */
+.faq-actions .btn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+/* ── Add FAQ button per card ── */
+.btn-add-faq {
+  font-size: 0.82rem;
+  padding: 4px 14px;
+}
+
+/* ── Modals ── */
+.modal-content {
+  border-radius: 14px !important;
+  border: 0 !important;
+}
+.modal-header {
+  border-radius: 14px 14px 0 0 !important;
+}
+.form-control:focus {
   box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
 }
-
-.region-table-row {
-  border-radius: 0.5rem;
-  transition: 
-    background-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.15s ease;
-}
-
-.region-table-row.selected {
-  background-color: rgba(93, 226, 253, 0.2); 
-  border: 2px solid #9a7bff; 
-  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.2), 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
 </style>
+
 <body>
 
-	<!-- Sidebar Section -->
-    <section id="sidebar">
-        <a href="#" class="brand" style="display: flex; align-items: center;">
-          <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
-          <span class="text">PSI-ADMIN Portal</span>
-        </a>
-        <ul class="side-menu top">
-          <li>
-            <a href="dashboard.html">
-              <i class="bx bxs-dashboard"></i>
-              <span class="text">Dashboard</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="schedule.html">
-              <i class="bx bx-calendar-check"></i>
-              <span class="text">Create Schedule</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="managesched.html">
-              <i class="bx bx-edit"></i>
-              <span class="text">Schedule Management</span>
-            </a>
-          </li>
-
-            <li>
-                <a href="masterlist.html">
-                    <i class="bx bx-list-ul"></i>
-                    <span class="text">Examinee Masterlist</span>
-                </a>
-            </li>
-         
-            <li>
-                <a href="examinee.html">
-                    <i class="bx bx-group"></i>
-                    <span class="text">Examinee Management</span>
-                </a>
-            </li>  
-                            <li>
-                    <a href="examhistory.html">
-                        <i class="bx bx-history"></i>
-                        <span class="text">Exam History</span>
-                    </a>
-                </li> 
-                
-                <li>
-                    <a href="activity_log.html">
-                        <i class="bx bx-notepad"></i>
-                        <span class="text">Activity Log</span>
-                    </a>
-                </li>
-
-                <li  class="active">
-                    <a href="faqsmanagement.html">
-                       <i class="bx bx-task"></i>
-                        <span class="text">FAQs Management </span>
-                    </a>
-                </li>
-          
-        </ul>
-    </ul>		
+  <!-- Sidebar -->
+  <section id="sidebar">
+    <a href="#" class="brand" style="display:flex;align-items:center;">
+      <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
+      <span class="text">PSI-ADMIN Portal</span>
+    </a>
+    <ul class="side-menu top">
+      <li><a href="dashboard.html"><i class="bx bxs-dashboard"></i><span class="text">Dashboard</span></a></li>
+      <li><a href="schedule.html"><i class="bx bx-calendar-check"></i><span class="text">Create Schedule</span></a></li>
+      <li><a href="managesched.html"><i class="bx bx-edit"></i><span class="text">Schedule Management</span></a></li>
+      <li><a href="masterlist.html"><i class="bx bx-list-ul"></i><span class="text">Examinee Masterlist</span></a></li>
+      <li><a href="examinee.html"><i class="bx bx-group"></i><span class="text">Examinee Management</span></a></li>
+      <li><a href="examhistory.html"><i class="bx bx-history"></i><span class="text">Exam History</span></a></li>
+      <li><a href="activity_log.html"><i class="bx bx-notepad"></i><span class="text">Activity Log</span></a></li>
+      <li class="active"><a href="faqsmanagement.html"><i class="bx bx-task"></i><span class="text">FAQs Management</span></a></li>
+    </ul>
   </section>
 
-	<section id="content">
-<nav class="d-flex justify-content-end align-items-center px-4">
-  
-  <div class="dropdown">
-    <!-- Admin Icon -->
-    <a href="#"
-       class="d-flex align-items-center text-decoration-none"
-       id="adminDropdown"
-       data-bs-toggle="dropdown"
-       aria-expanded="false">
-       
-      <i class="bx bxs-user-circle fs-2 text-primary"></i>
-      <i class="bx bx-chevron-down ms-1 text-muted"></i>
-    </a>
-
-    <!-- Dropdown Menu -->
-    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-      <li class="dropdown-header small text-muted">
-        Administrator
-      </li>
-
-      <li><hr class="dropdown-divider"></li>
-
-      <li>
-        <a class="dropdown-item d-flex align-items-center text-danger"
-           href="#"
-           data-bs-toggle="modal"
-           data-bs-target="#logoutModal">
-          <i class="bx bxs-log-out-circle me-2"></i>
-          Logout
+  <section id="content">
+    <nav class="d-flex justify-content-end align-items-center px-4">
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-decoration-none"
+           id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bx bxs-user-circle fs-2 text-primary"></i>
+          <i class="bx bx-chevron-down ms-1 text-muted"></i>
         </a>
-      </li>
-    </ul>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+          <li class="dropdown-header small text-muted">Administrator</li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center text-danger" href="#"
+               data-bs-toggle="modal" data-bs-target="#logoutModal">
+              <i class="bx bxs-log-out-circle me-2"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="py-3 px-3 px-md-4">
+      <div class="page-header mb-4">
+          <h1 class="page-title">Frequently Asked Questions Management</h1>
+          <p class="page-description">
+              Administrative interface for creating, editing, organizing, and managing frequently asked questions 
+              to ensure users have accurate and up-to-date information.
+          </p>
+      </div>     
+
+      <!-- Two FAQ Columns -->
+      <div class="row g-4 align-items-start">
+
+        <!-- ── LEFT: Examination Process ── -->
+        <div class="col-12 col-lg-6">
+          <div class="faq-card">
+
+            <!-- Card Header -->
+            <div class="d-flex align-items-start justify-content-between mb-3 gap-2">
+              <h6 class="faq-card-title mb-0">FAQs about the examination process.</h6>
+              <button class="btn btn-primary btn-sm rounded-pill btn-add-faq flex-shrink-0"
+                      onclick="openAddModal('exam')" >
+                <i class="bx bx-plus me-1"></i>Add FAQ
+              </button>
+            </div>
+
+            <!-- Accordion -->
+            <div class="accordion faq-accordion" id="examAccordion">
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#exam1">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">What are the requirements to take the exam?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'exam',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="exam1" class="accordion-collapse collapse" data-bs-parent="#examAccordion">
+                  <div class="accordion-body">Applicants must present a valid ID, their examination permit, and two 1x1 ID photos on the day of the examination.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#exam2">
+                    <span class="faq-icon me-2"><i class="bx bx-minus-circle"></i></span>
+                    <span class="flex-grow-1">How long does the examination take?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'exam',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="exam2" class="accordion-collapse collapse show" data-bs-parent="#examAccordion">
+                  <div class="accordion-body">The examination typically lasts between 3 to 4 hours depending on the type of exam. Examinees are advised to arrive 30 minutes before the scheduled time.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#exam3">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">Where will the examination be held?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'exam',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="exam3" class="accordion-collapse collapse" data-bs-parent="#examAccordion">
+                  <div class="accordion-body">The examination venue will be specified in your examination permit. Please check it carefully and plan your route in advance.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#exam4">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">When will the results be released?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'exam',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="exam4" class="accordion-collapse collapse" data-bs-parent="#examAccordion">
+                  <div class="accordion-body">Examination results are usually released within 2 to 4 weeks after the exam date. You will be notified via email and through the portal.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#exam5">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">Can I reschedule my examination?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'exam',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="exam5" class="accordion-collapse collapse" data-bs-parent="#examAccordion">
+                  <div class="accordion-body">Rescheduling requests must be submitted at least 5 business days before the examination date. Late requests will not be accommodated.</div>
+                </div>
+              </div>
+
+            </div><!-- end examAccordion -->
+          </div><!-- end faq-card -->
+        </div>
+
+        <!-- ── RIGHT: PMMA Registration Portal ── -->
+        <div class="col-12 col-lg-6">
+          <div class="faq-card">
+
+            <!-- Card Header -->
+            <div class="d-flex align-items-start justify-content-between mb-3 gap-2">
+              <h6 class="faq-card-title mb-0">FAQs about the PMMA Registration Portal.</h6>
+              <button class="btn btn-primary btn-sm rounded-pill btn-add-faq flex-shrink-0"
+                      onclick="openAddModal('pmma')">
+                <i class="bx bx-plus me-1"></i>Add FAQ
+              </button>
+            </div>
+
+            <!-- Accordion -->
+            <div class="accordion faq-accordion" id="pmmaAccordion">
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#pmma1">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">How do I create an account on the portal?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'pmma',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="pmma1" class="accordion-collapse collapse" data-bs-parent="#pmmaAccordion">
+                  <div class="accordion-body">Visit the PMMA Registration Portal homepage and click "Register". Fill in the required personal information and verify your email to activate your account.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#pmma2">
+                    <span class="faq-icon me-2"><i class="bx bx-minus-circle"></i></span>
+                    <span class="flex-grow-1">I forgot my password. How can I recover it?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'pmma',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="pmma2" class="accordion-collapse collapse show" data-bs-parent="#pmmaAccordion">
+                  <div class="accordion-body">Click "Forgot Password" on the login page and enter your registered email. A password reset link will be sent to your inbox within a few minutes.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#pmma3">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">How do I upload my documents on the portal?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'pmma',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="pmma3" class="accordion-collapse collapse" data-bs-parent="#pmmaAccordion">
+                  <div class="accordion-body">After logging in, navigate to "My Documents" in your profile dashboard. Click "Upload" and select files in PDF or JPG format. Maximum file size is 5MB per document.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#pmma4">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">Can I update my personal information on the portal?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'pmma',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="pmma4" class="accordion-collapse collapse" data-bs-parent="#pmmaAccordion">
+                  <div class="accordion-body">Yes. Go to "Profile Settings" and click "Edit Information". Some fields may require admin approval before changes take effect.</div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#pmma5">
+                    <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+                    <span class="flex-grow-1">Who do I contact for technical support?</span>
+                    <span class="faq-actions ms-2 d-flex gap-1">
+                      <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'pmma',event)"><i class="bx bx-edit-alt" style="font-size:13px;"></i></button>
+                      <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)"><i class="bx bx-trash" style="font-size:13px;"></i></button>
+                    </span>
+                  </button>
+                </h2>
+                <div id="pmma5" class="accordion-collapse collapse" data-bs-parent="#pmmaAccordion">
+                  <div class="accordion-body">For technical issues, please email support@pmma.edu.ph or call our helpdesk at (02) 123-4567 during office hours, Monday to Friday, 8AM–5PM.</div>
+                </div>
+              </div>
+
+            </div><!-- end pmmaAccordion -->
+          </div><!-- end faq-card -->
+        </div>
+
+      </div><!-- end row -->
+    </main>
+
+    <!-- ── Add FAQ Modal ── -->
+    <div class="modal fade" id="addFaqModal" tabindex="-1" aria-labelledby="addFaqModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-light border-0 px-4 py-3">
+            <h5 class="modal-title fw-bold" id="addFaqModalLabel">Add New FAQ</h5>
+            <button type="button" class="btn-close no-focus" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="px-4"><hr class="my-0"></div>
+          <div class="modal-body px-4 py-4">
+            <input type="hidden" id="addFaqTarget">
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Question</label>
+              <input type="text" class="form-control" id="faqQuestion" placeholder="Enter FAQ question...">
+            </div>
+            <div class="mb-1">
+              <label class="form-label fw-semibold small">Answer</label>
+              <textarea class="form-control" id="faqAnswer" rows="4" placeholder="Enter FAQ answer..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-0 px-4 pb-4 pt-0">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary rounded-pill px-4" onclick="addFaq()">Save FAQ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Edit FAQ Modal ── -->
+    <div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+          <div class="modal-header bg-light border-0 px-4 py-3">
+            <h5 class="modal-title fw-bold" id="editFaqModalLabel">Edit FAQ</h5>
+            <button type="button" class="btn-close no-focus" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="px-4"><hr class="my-0"></div>
+          <div class="modal-body px-4 py-4">
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Question</label>
+              <input type="text" class="form-control" id="editFaqQuestion">
+            </div>
+            <div class="mb-1">
+              <label class="form-label fw-semibold small">Answer</label>
+              <textarea class="form-control" id="editFaqAnswer" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-0 px-4 pb-4 pt-0">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary rounded-pill px-4" onclick="saveEditFaq()">Update FAQ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Delete Confirm Modal ── -->
+    <div class="modal fade" id="deleteFaqModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content shadow">
+          <div class="modal-body px-4 py-4 text-center">
+            <i class="bx bx-trash fs-1 text-danger mb-2 d-block"></i>
+            <p class="mb-0 fw-semibold">Delete this FAQ?</p>
+            <p class="text-muted small mt-1">This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer border-0 pt-0 justify-content-center pb-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger rounded-pill px-3" onclick="confirmDelete()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Logout Modal -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+          <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">Confirm Logout</h5>
+          <button type="button" class="btn-close no-focus" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="px-4"><hr class="my-0"></div>
+        <div class="modal-body px-4 py-4 text-center">
+          <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+          <p class="mb-0 text-muted">Are you sure you want to log out of your account?</p>
+        </div>
+        <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+          <a href="../php/adminlogout.php" class="btn btn-danger rounded-pill px-4">Logout</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-</nav>
-<main>
+<script>
+  // ── Icon toggle helper ──
+  function attachIconToggle(btn) {
+    btn.addEventListener('click', function () {
+      const icon = this.querySelector('.faq-icon i');
+      setTimeout(() => {
+        icon.className = this.classList.contains('collapsed') ? 'bx bx-plus-circle' : 'bx bx-minus-circle';
+      }, 10);
+    });
+  }
 
-</main>
+  document.querySelectorAll('.faq-accordion .accordion-button').forEach(attachIconToggle);
 
-<div
-    class="modal fade"
-    id="logoutModal"
-    tabindex="-1"
-    aria-labelledby="logoutModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow">
+  // ── Counters per accordion ──
+  const counters = { exam: 5, pmma: 5 };
 
-            <!-- Modal Header -->
-            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
-                <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
-                    Confirm Logout
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close no-focus"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-            </div>
+  // ── OPEN ADD MODAL ──
+  function openAddModal(target) {
+    document.getElementById('addFaqTarget').value = target;
+    document.getElementById('faqQuestion').value  = '';
+    document.getElementById('faqAnswer').value    = '';
+    new bootstrap.Modal(document.getElementById('addFaqModal')).show();
+  }
 
-            <!-- Divider -->
-            <div class="px-4">
-                <hr class="my-0">
-            </div>
+  // ── ADD FAQ ──
+  function addFaq() {
+    const question = document.getElementById('faqQuestion').value.trim();
+    const answer   = document.getElementById('faqAnswer').value.trim();
+    const target   = document.getElementById('addFaqTarget').value;
 
-            <!-- Modal Body -->
-            <div class="modal-body px-4 py-4 text-center">
-                <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
-                <p class="mb-0 text-muted">
-                    Are you sure you want to log out of your account?
-                </p>
-            </div>
+    if (!question || !answer) {
+      alert('Please fill in both the question and the answer.');
+      return;
+    }
 
-            <!-- Modal Footer -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary rounded-pill px-4"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-                <a
-                    href="../php/adminlogout.php"
-                    class="btn btn-danger rounded-pill px-4"
-                >
-                    Logout
-                </a>
-            </div>
+    counters[target]++;
+    const id         = `${target}${counters[target]}`;
+    const accordionId = target === 'exam' ? 'examAccordion' : 'pmmaAccordion';
 
-        </div>
-    </div>
-</div>
+    const item = document.createElement('div');
+    item.className = 'accordion-item';
+    item.innerHTML = `
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed d-flex align-items-center" type="button"
+                data-bs-toggle="collapse" data-bs-target="#${id}">
+          <span class="faq-icon me-2"><i class="bx bx-plus-circle"></i></span>
+          <span class="flex-grow-1">${escapeHtml(question)}</span>
+          <span class="faq-actions ms-2 d-flex gap-1">
+            <button class="btn btn-sm btn-light rounded-circle edit-faq-btn" title="Edit" onclick="editFaq(this,'${target}',event)">
+              <i class="bx bx-edit-alt" style="font-size:13px;"></i>
+            </button>
+            <button class="btn btn-sm btn-light rounded-circle text-danger delete-faq-btn" title="Delete" onclick="deleteFaq(this,event)">
+              <i class="bx bx-trash" style="font-size:13px;"></i>
+            </button>
+          </span>
+        </button>
+      </h2>
+      <div id="${id}" class="accordion-collapse collapse" data-bs-parent="#${accordionId}">
+        <div class="accordion-body">${escapeHtml(answer)}</div>
+      </div>`;
+
+    attachIconToggle(item.querySelector('.accordion-button'));
+    document.getElementById(accordionId).appendChild(item);
+    bootstrap.Modal.getInstance(document.getElementById('addFaqModal')).hide();
+  }
+
+  // ── EDIT FAQ ──
+  let currentEditBtn = null;
+
+  function editFaq(btn, target, event) {
+    event.stopPropagation();
+    currentEditBtn = btn;
+    const item     = btn.closest('.accordion-item');
+    document.getElementById('editFaqQuestion').value = item.querySelector('.flex-grow-1').textContent.trim();
+    document.getElementById('editFaqAnswer').value   = item.querySelector('.accordion-body').textContent.trim();
+    new bootstrap.Modal(document.getElementById('editFaqModal')).show();
+  }
+
+  function saveEditFaq() {
+    const question = document.getElementById('editFaqQuestion').value.trim();
+    const answer   = document.getElementById('editFaqAnswer').value.trim();
+    if (!question || !answer) { alert('Please fill in both fields.'); return; }
+
+    const item = currentEditBtn.closest('.accordion-item');
+    item.querySelector('.flex-grow-1').textContent   = question;
+    item.querySelector('.accordion-body').textContent = answer;
+    bootstrap.Modal.getInstance(document.getElementById('editFaqModal')).hide();
+  }
+
+  // ── DELETE FAQ ──
+  let currentDeleteBtn = null;
+
+  function deleteFaq(btn, event) {
+    event.stopPropagation();
+    currentDeleteBtn = btn;
+    new bootstrap.Modal(document.getElementById('deleteFaqModal')).show();
+  }
+
+  function confirmDelete() {
+    if (currentDeleteBtn) {
+      currentDeleteBtn.closest('.accordion-item').remove();
+      currentDeleteBtn = null;
+    }
+    bootstrap.Modal.getInstance(document.getElementById('deleteFaqModal')).hide();
+  }
+
+  // ── Utility ──
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+  }
+</script>
 
 </body>
 </html>
