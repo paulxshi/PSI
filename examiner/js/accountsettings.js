@@ -118,6 +118,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (greetingSpan) {
             greetingSpan.textContent = `${user.first_name} ${user.last_name}`;
         }
+        
+        // Check if profile picture exists and update View Permit button
+        const viewPermitBtn = document.getElementById('btnViewPermit');
+        if (viewPermitBtn) {
+            const hasProfilePicture = user.profile_picture && user.profile_picture.trim() !== '';
+            viewPermitBtn.disabled = !hasProfilePicture;
+            viewPermitBtn.style.opacity = hasProfilePicture ? '1' : '0.5';
+            viewPermitBtn.style.cursor = hasProfilePicture ? 'pointer' : 'not-allowed';
+        }
     }
 
     // Check if user can edit (RESTRICTION TEMPORARILY DISABLED)
@@ -267,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     uploadArea.style.border = '2px dashed #dc3545';
                     const uploadText = uploadArea.querySelector('.upload-text');
                     if (uploadText) {
-                        uploadText.innerHTML = 'Upload picture <span style=\"color: #dc3545; font-weight: 600;\">(Required)</span>';
+                        uploadText.textContent = 'Upload picture';
                     }
                 }
             }
@@ -376,23 +385,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Check if profile picture exists (either already uploaded or uploaded during this session)
-        const hasProfilePicture = (userData && userData.profile_picture && userData.profile_picture.trim() !== '') || profilePictureUploaded;
-        
-        if (!hasProfilePicture) {
-            showNotification('Please upload a profile picture before saving your information', 'error');
-            // Highlight the upload area
-            const uploadArea = document.querySelector('.upload-area');
-            if (uploadArea) {
-                uploadArea.style.border = '2px solid #dc3545';
-                uploadArea.style.animation = 'shake 0.5s';
-                setTimeout(() => {
-                    uploadArea.style.border = '';
-                    uploadArea.style.animation = '';
-                }, 500);
-            }
-            return;
-        }
+        // Profile picture is NOT required to save/edit - users can edit without uploading
+        // View Test Permit requires profile picture, but editing is allowed without it
 
         // Disable save button
         btnSave.disabled = true;

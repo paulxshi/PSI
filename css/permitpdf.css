@@ -270,6 +270,14 @@ body.print-mode .qr-code-square-container {
   margin: 3px auto !important;
 }
 
+/* Print mode - header QR code */
+body.print-mode #permitPDF > div:first-child .qr-code-square-container {
+  width: 50px !important;
+  height: 50px !important;
+  top: 2px !important;
+  right: 2px !important;
+}
+
 body.print-mode .qr-logo {
   max-width: 25px !important;
   max-height: 25px !important;
@@ -322,7 +330,36 @@ body.print-mode .fw-semibold {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px auto;  
+}
+
+/* QR code in header - top right positioning */
+#permitPDF > div:first-child .qr-code-square-container {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 80px;
+  height: 80px;
+  margin: 0;
+}
+
+#permitPDF > div:first-child .qr-code-square-container .qr-logo {
+  max-width: 20px;
+  max-height: 20px;
+}
+
+/* Header logo styling */
+.header-logo {
+  max-height: 80px;
+  margin-bottom: 8px;
+}
+
+/* Header title styling */
+.header-title {
+  font-size: 14px;
+}
+
+.header-subtitle {
+  font-size: 13px;
 }
 
 #qrCode {
