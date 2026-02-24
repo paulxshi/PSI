@@ -247,10 +247,10 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 
             // Edit and delete buttons only for non-registered users
             const actionButtons = record.used == 0
-                ? `<button class="btn btn-light text-primary me-1" onclick="editRecord(${record.id})" title="Edit">
+                ? `<button class="btn fw-bold" style="color: #111827;" onclick="editRecord(${record.id})" title="Edit">
                         <i class="bx bx-edit"></i>
                       </button>
-                   <button class="btn btn-light text-danger" onclick="deleteRecord(${record.id})" title="Delete">
+                   <button class="btn fw-bold" style="color: #111827;" onclick="deleteRecord(${record.id})" title="Delete">
                         <i class="bx bx-trash"></i>
                       </button>`
                 : '';

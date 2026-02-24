@@ -13,9 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const rescheduleForm = document.getElementById('rescheduleForm');
     const rescheduleScheduleSelect = document.getElementById('rescheduleSchedule');
     const schedulePreview = document.getElementById('schedulePreview');
-    const activeFilterBadge = document.getElementById('activeFilterBadge');
-    const filterText = document.getElementById('filterText');
-    const clearFilterBtn = document.getElementById('clearFilterBtn');
     const filterRegion = document.getElementById('filterRegion');
 
     let currentPage = 1;
@@ -30,8 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize
     loadSchedules();
     loadSummaryStats(); // Load stats only on page load
-    updateCardHighlights(); // Highlight Total Registered card
-    updateFilterBadge(); // Show "All Registered Examinees"
+    updateCardHighlights(); // Highlight Total Registered card by default
     loadExamineeData(); // Load all registered examinees by default
 
     filterRegion.addEventListener('change', renderFilteredSchedules);
@@ -45,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentStatus = ''; // Shows registered examinees (excludes completed)
         currentPage = 1;
         updateCardHighlights();
-        updateFilterBadge();
         loadExamineeData();
     });
 
@@ -54,18 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentStatus = currentStatus === 'Completed' ? '' : 'Completed';
         currentPage = 1;
         updateCardHighlights();
-        updateFilterBadge();
-        loadExamineeData();
-    });
-
-    // Clear filter button
-    clearFilterBtn.addEventListener('click', function() {
-        currentStatus = '';
-        currentRegion = '';
-        regionFilter.value = '';
-        currentPage = 1;
-        updateCardHighlights();
-        updateFilterBadge();
         loadExamineeData();
     });
 
@@ -93,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
     regionFilter.addEventListener('change', function() {
         currentRegion = this.value;
         currentPage = 1;
-        updateFilterBadge();
         loadExamineeData();
     });
 
@@ -203,19 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update filter badge display
+    // Update filter badge display (no longer used, function kept for compatibility)
     function updateFilterBadge() {
-        const filters = [];
-        if (currentStatus) filters.push(currentStatus);
-        if (currentRegion) filters.push(currentRegion);
-        
-        if (filters.length > 0) {
-            filterText.textContent = `Showing: ${filters.join(' - ')} Examinees`;
-            activeFilterBadge.style.display = 'block';
-        } else {
-            filterText.textContent = 'Showing: All Registered Examinees';
-            activeFilterBadge.style.display = 'block';
-        }
+        // Function removed - filter badge no longer displayed
     }
 
     // Load summary statistics only (without loading table data)

@@ -88,11 +88,13 @@ function displaySchedules() {
             </td>
             <td data-label="Actions" class="text-end">
                 <div class="btn-group btn-group-sm">
-                    <button class="btn btn-light"
+                    <button class="btn fw-bold"
+                        style="color: #111827;"
                         onclick="editSchedule(${schedule.schedule_id})">
                         <i class="bx bx-edit"></i>
                     </button>
-                    <button class="btn btn-light text-danger"
+                    <button class="btn fw-bold"
+                        style="color: #111827;"
                         onclick="confirmDelete(${schedule.schedule_id}, '${schedule.venue_name.replace(/'/g, "\\'")}')">
                         <i class="bx bx-trash"></i>
                     </button>
