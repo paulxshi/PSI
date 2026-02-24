@@ -40,32 +40,32 @@ try {
         exit;
     }
 
-    // Get all registered examinees for this schedule (status = 'Scheduled')
+    // Get all examinees for this schedule with status 'Registered' or 'Completed'
     $examineesStmt = $pdo->prepare("
         SELECT 
             u.test_permit,
             CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) as full_name,
             u.email,
             u.contact_number,
-            e.status as registration_status,
-            e.examinee_status as completion_status,
+            e.examinee_status,
+            e.scanned_at,
             e.updated_at
         FROM examinees e
         INNER JOIN users u ON e.user_id = u.user_id
         WHERE e.schedule_id = :schedule_id 
-            AND e.status = 'Scheduled'
+            AND e.examinee_status IN ('Registered', 'Completed')
         ORDER BY u.last_name ASC, u.first_name ASC
     ");
     $examineesStmt->execute([':schedule_id' => $schedule_id]);
     $allExaminees = $examineesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Separate examinees into two groups
+    // Separate examinees into two groups based on examinee_status
     $registeredExaminees = array_filter($allExaminees, function($e) {
-        return empty($e['completion_status']) || $e['completion_status'] !== 'Completed';
+        return $e['examinee_status'] === 'Registered';
     });
     
     $completedExaminees = array_filter($allExaminees, function($e) {
-        return $e['completion_status'] === 'Completed';
+        return $e['examinee_status'] === 'Completed';
     });
 
     // Set headers for CSV download
@@ -96,8 +96,9 @@ try {
     fputcsv($output, ['Region:', $schedule['region']]);
     fputcsv($output, ['Venue:', $schedule['venue_name']]);
     fputcsv($output, ['Exam Date:', date('F d, Y', strtotime($schedule['scheduled_date']))]);
-    fputcsv($output, ['Total Registered:', count($allExaminees)]);
-    fputcsv($output, ['Total Completed:', count($completedExaminees)]);
+    fputcsv($output, ['Total Examinees:', count($allExaminees)]);
+    fputcsv($output, ['Registered Only:', count($registeredExaminees)]);
+    fputcsv($output, ['Completed (Attended):', count($completedExaminees)]);
     fputcsv($output, ['Report Generated:', date('F d, Y h:i A')]);
     fputcsv($output, ['']);
     fputcsv($output, ['']);
@@ -130,13 +131,13 @@ try {
             ]);
         }
     } else {
-        fputcsv($output, ['', 'No registered examinees found (not yet completed)']);
+        fputcsv($output, ['', 'No registered examinees (waiting to be scanned)']);
     }
 
     fputcsv($output, ['']);
     fputcsv($output, ['']);
 
-    // ========== SECTION 2: COMPLETED EXAMINEES ==========
+    // ========== SECTION 2: COMPLETED EXAMINEES (ATTENDED) ==========
     fputcsv($output, ['========== COMPLETED EXAMINEES (' . count($completedExaminees) . ') ==========']);
     fputcsv($output, ['']);
     
@@ -147,7 +148,7 @@ try {
         'Full Name',
         'Email',
         'Contact Number',
-        'Completion Date'
+        'Scanned At'
     ]);
 
     // Add completed examinee data
@@ -160,7 +161,7 @@ try {
                 $examinee['full_name'] ?? '',
                 $examinee['email'] ?? '',
                 $examinee['contact_number'] ?? '',
-                $examinee['updated_at'] ? date('M d, Y h:i A', strtotime($examinee['updated_at'])) : ''
+                $examinee['scanned_at'] ? date('M d, Y h:i A', strtotime($examinee['scanned_at'])) : 'Not scanned'
             ]);
         }
     } else {
