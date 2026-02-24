@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load statistics and paid examinees on page load
     loadPaymentStatistics();
     loadPaidExaminees();
+    loadVenues(); // Load venues for filter dropdown
     
     // Setup filter event listeners
     setupFilters();
@@ -246,6 +247,7 @@ function initializeDatePickers() {
 // Apply filters function (can be called from multiple places)
 function applyFilters() {
     const regionFilter = document.querySelector('#region-filter');
+    const venueFilter = document.querySelector('#venue-filter');
     const searchInput = document.querySelector('#search-input');
     const dateFromInput = document.querySelector('#date-from');
     const dateToInput = document.querySelector('#date-to');
@@ -254,6 +256,10 @@ function applyFilters() {
     
     if (regionFilter && regionFilter.value) {
         filters.region = regionFilter.value;
+    }
+    
+    if (venueFilter && venueFilter.value) {
+        filters.venue = venueFilter.value;
     }
     
     if (searchInput && searchInput.value.trim()) {
@@ -274,6 +280,7 @@ function applyFilters() {
 // Setup filter event listeners
 function setupFilters() {
     const regionFilter = document.querySelector('#region-filter');
+    const venueFilter = document.querySelector('#venue-filter');
     const searchInput = document.querySelector('#search-input');
     const dateFromInput = document.querySelector('#date-from');
     const dateToInput = document.querySelector('#date-to');
@@ -283,6 +290,15 @@ function setupFilters() {
     // Auto-apply region filter when changed
     if (regionFilter) {
         regionFilter.addEventListener('change', function() {
+            // When region changes, filter venues
+            filterVenuesByRegion(regionFilter.value);
+            applyFilters();
+        });
+    }
+    
+    // Auto-apply venue filter when changed
+    if (venueFilter) {
+        venueFilter.addEventListener('change', function() {
             applyFilters();
         });
     }
@@ -298,6 +314,10 @@ function setupFilters() {
     if (resetFilterBtn) {
         resetFilterBtn.addEventListener('click', function() {
             if (regionFilter) regionFilter.value = '';
+            if (venueFilter) {
+                venueFilter.value = '';
+                loadVenues(); // Reload all venues
+            }
             if (searchInput) searchInput.value = '';
             if (dateFromInput) {
                 dateFromInput.value = '';
@@ -375,6 +395,54 @@ function downloadCSV(data) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+}
+
+// Load venues for filter dropdown
+let allVenues = [];
+
+function loadVenues() {
+    fetch('php/get_venues.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                allVenues = data.venues;
+                populateVenueDropdown(allVenues);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading venues:', error);
+        });
+}
+
+function populateVenueDropdown(venues) {
+    const venueFilter = document.querySelector('#venue-filter');
+    if (!venueFilter) return;
+    
+    // Keep "All Venues" option and add venues
+    venueFilter.innerHTML = '<option value="">All Venues</option>';
+    
+    venues.forEach(venue => {
+        const option = document.createElement('option');
+        option.value = venue.venue_name;
+        option.textContent = `${venue.venue_name} (${venue.region})`;
+        venueFilter.appendChild(option);
+    });
+}
+
+function filterVenuesByRegion(region) {
+    if (!region) {
+        populateVenueDropdown(allVenues);
+        return;
+    }
+    
+    const filteredVenues = allVenues.filter(v => v.region === region);
+    populateVenueDropdown(filteredVenues);
+    
+    // Reset venue selection when region changes
+    const venueFilter = document.querySelector('#venue-filter');
+    if (venueFilter) {
+        venueFilter.value = '';
+    }
 }
 
 // View payment details in modal

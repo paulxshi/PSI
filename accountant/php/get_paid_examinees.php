@@ -20,6 +20,7 @@ require_once('../../config/db.php');
 try {
     // Get filter parameters
     $region = isset($_GET['region']) ? $_GET['region'] : '';
+    $venue = isset($_GET['venue']) ? $_GET['venue'] : '';
     $dateFrom = isset($_GET['dateFrom']) ? $_GET['dateFrom'] : '';
     $dateTo = isset($_GET['dateTo']) ? $_GET['dateTo'] : '';
     $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -51,6 +52,12 @@ try {
     if (!empty($region)) {
         $query .= " AND v.region = :region";
         $params[':region'] = $region;
+    }
+    
+    // Add venue filter
+    if (!empty($venue)) {
+        $query .= " AND v.venue_name = :venue";
+        $params[':venue'] = $venue;
     }
     
     // Add date range filter
