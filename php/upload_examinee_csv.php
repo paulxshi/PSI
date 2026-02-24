@@ -90,6 +90,7 @@ if (($handle = fopen($file['tmp_name'], 'r')) !== false) {
 $successCount = 0;
 $errorCount = 0;
 $errors = [];
+$detailedResults = []; // Store detailed results per row
 
 try {
     $pdo->beginTransaction();
@@ -107,6 +108,8 @@ try {
     ");
     
     foreach ($csvData as $index => $record) {
+        $rowNumber = $index + 2; // +2 because index starts at 0 and row 1 is header
+        
         // Extract fields with case-insensitive mapping
         $testPermit = $record['test_permit'] ?? $record['testpermit'] ?? $record['permit'] ?? '';
         $lastName = $record['last_name'] ?? $record['lastname'] ?? '';
@@ -114,28 +117,52 @@ try {
         $middleName = $record['middle_name'] ?? $record['middlename'] ?? '';
         $email = $record['email'] ?? '';
         
+        // Initialize row result
+        $rowResult = [
+            'row' => $rowNumber,
+            'test_permit' => $testPermit,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'middle_name' => $middleName,
+            'email' => $email,
+            'status' => 'success',
+            'error' => null
+        ];
+        
         // Validate required fields
         if (empty($testPermit)) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Missing test permit number";
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = 'Missing test permit number';
+            $errors[] = "Row $rowNumber: Missing test permit number";
+            $detailedResults[] = $rowResult;
             continue;
         }
         
         if (empty($lastName)) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Missing last name";
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = 'Missing last name';
+            $errors[] = "Row $rowNumber: Missing last name";
+            $detailedResults[] = $rowResult;
             continue;
         }
         
         if (empty($firstName)) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Missing first name";
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = 'Missing first name';
+            $errors[] = "Row $rowNumber: Missing first name";
+            $detailedResults[] = $rowResult;
             continue;
         }
         
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Invalid or missing email";
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = 'Invalid or missing email';
+            $errors[] = "Row $rowNumber: Invalid or missing email";
+            $detailedResults[] = $rowResult;
             continue;
         }
         
@@ -149,7 +176,10 @@ try {
         if ($checkNameStmt->rowCount() > 0) {
             $existing = $checkNameStmt->fetch(PDO::FETCH_ASSOC);
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": Duplicate name '$firstName $lastName' (existing test permit: {$existing['test_permit']})";
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = "Duplicate name (existing test permit: {$existing['test_permit']})";
+            $errors[] = "Row $rowNumber: Duplicate name '$firstName $lastName' (existing test permit: {$existing['test_permit']})";
+            $detailedResults[] = $rowResult;
             continue;
         }
         
@@ -163,9 +193,13 @@ try {
                 ':email' => $email
             ]);
             $successCount++;
+            $detailedResults[] = $rowResult; // Success
         } catch (PDOException $e) {
             $errorCount++;
-            $errors[] = "Row " . ($index + 2) . ": " . $e->getMessage();
+            $rowResult['status'] = 'error';
+            $rowResult['error'] = $e->getMessage();
+            $errors[] = "Row $rowNumber: " . $e->getMessage();
+            $detailedResults[] = $rowResult;
         }
     }
     
@@ -177,6 +211,7 @@ try {
         'successCount' => $successCount,
         'errorCount' => $errorCount,
         'errors' => $errors,
+        'detailedResults' => $detailedResults,
         'totalRows' => count($csvData)
     ]);
     

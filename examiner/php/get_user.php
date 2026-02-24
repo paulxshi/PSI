@@ -43,10 +43,12 @@ try {
 
     error_log("User found: " . json_encode($user));
 
-    // Check if user can edit (once per week restriction)
+    // 7-DAY RESTRICTION TEMPORARILY DISABLED
+    // Always allow editing
     $can_edit = true;
     $days_remaining = 0;
     
+    /* ORIGINAL 7-DAY RESTRICTION CODE (COMMENTED OUT)
     if ($user['last_profile_update']) {
         $last_update_time = strtotime($user['last_profile_update']);
         $current_time = time();
@@ -57,6 +59,7 @@ try {
             $days_remaining = ceil(($one_week - ($current_time - $last_update_time)) / (24 * 60 * 60));
         }
     }
+    */
     
     $user['can_edit'] = $can_edit;
     $user['days_remaining'] = $days_remaining;

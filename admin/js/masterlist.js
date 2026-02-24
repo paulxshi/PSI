@@ -214,7 +214,19 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No records found</td></tr>';
+            // Hide actions column when no records
+            const actionsHeader = document.getElementById('actionsHeader');
+            if (actionsHeader) actionsHeader.style.display = 'none';
             return;
+        }
+
+        // Check if any record is not registered (used = 0)
+        const hasNonRegistered = records.some(record => record.used == 0);
+        const actionsHeader = document.getElementById('actionsHeader');
+        
+        // Show/hide actions column based on whether there are non-registered users
+        if (actionsHeader) {
+            actionsHeader.style.display = hasNonRegistered ? '' : 'none';
         }
 
         records.forEach(record => {
@@ -233,13 +245,18 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             // Use full_name if available (from CONCAT in query), otherwise build from parts
             const fullName = record.full_name || escapeHtml(record.first_name + ' ' + record.last_name);
 
-            const deleteBtn = record.used == 0
-                ? `<button class="btn btn-light text-danger" onclick="deleteRecord(${record.id})" title="Delete">
+            // Edit and delete buttons only for non-registered users
+            const actionButtons = record.used == 0
+                ? `<button class="btn btn-light text-primary me-1" onclick="editRecord(${record.id})" title="Edit">
+                        <i class="bx bx-edit"></i>
+                      </button>
+                   <button class="btn btn-light text-danger" onclick="deleteRecord(${record.id})" title="Delete">
                         <i class="bx bx-trash"></i>
                       </button>`
                 : '';
 
-            const row = `
+            // Build row with conditional actions column
+            let row = `
                 <tr class="border-bottom">
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
                     <td>${fullName}</td>
@@ -249,12 +266,19 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                         </a>
                     </td>
                     <td>${statusBadge}</td>
-                    <td>${uploadedDate}</td>
+                    <td>${uploadedDate}</td>`;
+            
+            // Only add actions column if there are non-registered users
+            if (hasNonRegistered) {
+                row += `
                     <td class="text-end table-actions">
                         <div class="btn-group btn-group-sm">
-                            ${deleteBtn}
+                            ${actionButtons}
                         </div>
-                    </td>
+                    </td>`;
+            }
+            
+            row += `
                 </tr>
             `;
 
@@ -474,6 +498,11 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
                     document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
                     
+                    // Show detailed results if available
+                    if (data.detailedResults && data.detailedResults.length > 0) {
+                        displayDetailedResults(data.detailedResults);
+                    }
+                    
                     // Show success modal
                     const modal = new bootstrap.Modal(document.getElementById('csvSuccessModal'));
                     modal.show();
@@ -529,6 +558,49 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             "'": '&#039;'
         };
         return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Display detailed CSV results
+    function displayDetailedResults(results) {
+        const container = document.getElementById('csvDetailedResultsContainer');
+        const tbody = document.getElementById('csvDetailedResultsBody');
+        
+        if (!results || results.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        results.forEach(result => {
+            const statusBadge = result.status === 'success'
+                ? '<span class="badge bg-success">Success</span>'
+                : '<span class="badge bg-danger">Error</span>';
+            
+            const fullName = `${result.first_name} ${result.last_name}`;
+            
+            const errorTooltip = result.error 
+                ? `<div class="text-danger small mt-1"><i class="bx bx-error-circle"></i> ${escapeHtml(result.error)}</div>`
+                : '';
+            
+            const rowClass = result.status === 'error' ? 'table-danger' : '';
+            
+            const row = `
+                <tr class="${rowClass}">
+                    <td>${result.row}</td>
+                    <td>${escapeHtml(result.test_permit)}</td>
+                    <td>${escapeHtml(fullName)}</td>
+                    <td>
+                        ${escapeHtml(result.email)}
+                        ${errorTooltip}
+                    </td>
+                    <td>${statusBadge}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+        
+        container.style.display = 'block';
     }
 
     // Show duplicate alert modal
@@ -595,4 +667,103 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         modal.show();
         console.log('Modal.show() called');
     }
+
+    // Handle edit button click - Store examinee data
+    let editingRecord = null;
+
+    window.editRecord = function(id) {
+        // Find the record in current data
+        fetch(`../php/get_examinee_masterlist.php?id=${id}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.record) {
+                editingRecord = data.record;
+                
+                // Populate modal fields
+                document.getElementById('editExamineeId').value = data.record.id;
+                document.getElementById('editTestPermit').value = data.record.test_permit;
+                document.getElementById('editFirstName').value = data.record.first_name;
+                document.getElementById('editLastName').value = data.record.last_name;
+                document.getElementById('editMiddleName').value = data.record.middle_name || '';
+                document.getElementById('editEmail').value = data.record.email;
+                
+                // Hide error alert
+                document.getElementById('editErrorAlert').classList.add('d-none');
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('editExamineeModal'));
+                modal.show();
+            } else {
+                showStatus('Failed to load record details', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showStatus('Network error loading record', 'danger');
+        });
+    };
+
+    // Handle save edit
+    document.getElementById('saveEditBtn').addEventListener('click', function() {
+        const form = document.getElementById('editExamineeForm');
+        
+        // Basic validation
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+        
+        const id = document.getElementById('editExamineeId').value;
+        const firstName = document.getElementById('editFirstName').value.trim();
+        const lastName = document.getElementById('editLastName').value.trim();
+        const middleName = document.getElementById('editMiddleName').value.trim();
+        const email = document.getElementById('editEmail').value.trim();
+        
+        // Disable button
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+        
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('first_name', firstName);
+        formData.append('last_name', lastName);
+        formData.append('middle_name', middleName);
+        formData.append('email', email);
+        
+        fetch('../php/update_examinee_masterlist.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hide edit modal
+                bootstrap.Modal.getInstance(document.getElementById('editExamineeModal')).hide();
+                
+                // Show success modal
+                const successModal = new bootstrap.Modal(document.getElementById('editSuccessModal'));
+                successModal.show();
+                
+                // Reload data
+                loadMasterlistData();
+            } else {
+                // Show error in modal
+                document.getElementById('editErrorMessage').textContent = data.message || 'Failed to update record';
+                document.getElementById('editErrorAlert').classList.remove('d-none');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('editErrorMessage').textContent = 'Network error. Please try again.';
+            document.getElementById('editErrorAlert').classList.remove('d-none');
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.innerHTML = '<i class="bx bx-save me-1"></i> Save Changes';
+        });
+    });
 });

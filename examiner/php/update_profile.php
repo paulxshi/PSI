@@ -21,6 +21,8 @@ try {
         exit;
     }
 
+    // 7-DAY RESTRICTION TEMPORARILY DISABLED
+    /* ORIGINAL 7-DAY RESTRICTION CODE (COMMENTED OUT)
     // Check if user can edit (last_profile_update restriction - once per week)
     $stmt = $pdo->prepare("SELECT last_profile_update FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
@@ -42,6 +44,7 @@ try {
             exit;
         }
     }
+    */
 
     // Validate and prepare updatable fields
     $allowed_fields = ['first_name', 'middle_name', 'last_name', 'contact_number', 'date_of_birth', 'school'];
@@ -101,8 +104,9 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Profile updated successfully. You can edit again in 7 days.",
-        "can_edit_again_at" => date('Y-m-d H:i:s', strtotime('+7 days'))
+        "message" => "Profile updated successfully."
+        // Note: 7-day restriction temporarily disabled
+        // "can_edit_again_at" => date('Y-m-d H:i:s', strtotime('+7 days'))
     ]);
 
 } catch (PDOException $e) {

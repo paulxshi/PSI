@@ -13,6 +13,8 @@ try {
 
     $user_id = $_SESSION['user_id'];
 
+    // 7-DAY RESTRICTION TEMPORARILY DISABLED
+    /* ORIGINAL 7-DAY RESTRICTION CODE (COMMENTED OUT)
     // Check if user can upload (1-week restriction)
     $stmt = $pdo->prepare("SELECT last_profile_update FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
@@ -34,6 +36,7 @@ try {
             exit;
         }
     }
+    */
 
     // Check if file was uploaded
     if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
@@ -108,9 +111,10 @@ try {
 
     echo json_encode([
         "success" => true,
-        "message" => "Profile picture updated successfully. You can change it again in 7 days.",
-        "profile_picture" => $relative_path,
-        "can_upload_again_at" => date('Y-m-d H:i:s', strtotime('+7 days'))
+        "message" => "Profile picture updated successfully.",
+        "profile_picture" => $relative_path
+        // Note: 7-day restriction temporarily disabled
+        // "can_upload_again_at" => date('Y-m-d H:i:s', strtotime('+7 days'))
     ]);
 
 } catch (PDOException $e) {

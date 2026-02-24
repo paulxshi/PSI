@@ -1,5 +1,6 @@
 <?php
 // Get examinee masterlist with search, filter, and pagination
+// OR get a single record by ID
 header('Content-Type: application/json');
 session_start();
 
@@ -12,7 +13,51 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 
 require_once __DIR__ . '/../config/db.php';
 
-// Get parameters
+// Check if requesting a single record by ID
+if (isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    
+    try {
+        $stmt = $pdo->prepare("
+            SELECT 
+                id, 
+                test_permit, 
+                last_name, 
+                first_name, 
+                middle_name,
+                email, 
+                used, 
+                uploaded_at
+            FROM examinee_masterlist
+            WHERE id = :id
+            LIMIT 1
+        ");
+        $stmt->execute([':id' => $id]);
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($record) {
+            echo json_encode([
+                'success' => true,
+                'record' => $record
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Record not found'
+            ]);
+        }
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
+// Get parameters for list view
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $status = isset($_GET['status']) ? $_GET['status'] : ''; // 'all', '0', '1'
 $date = isset($_GET['date']) ? $_GET['date'] : ''; // Date filter

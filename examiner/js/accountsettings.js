@@ -120,8 +120,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Check if user can edit
+    // Check if user can edit (RESTRICTION TEMPORARILY DISABLED)
     function checkEditPermission(user) {
+        // 7-day restriction is currently disabled
+        // Users can always edit their profile
+        
+        /* ORIGINAL RESTRICTION CODE (COMMENTED OUT)
         if (!user.can_edit) {
             globalEditButton.disabled = true;
             globalEditButton.title = `You can edit again in ${user.days_remaining} day(s)`;
@@ -137,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 uploadArea.title = `You can upload a new picture in ${user.days_remaining} day(s)`;
             }
         }
+        */
     }
 
     // Handle avatar upload
@@ -144,12 +149,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // 7-DAY RESTRICTION TEMPORARILY DISABLED
+        /* ORIGINAL RESTRICTION CHECK (COMMENTED OUT)
         // Check if user can upload (same restriction as profile edit)
         if (!userData || !userData.can_edit) {
             showNotification(`You can upload a new profile picture in ${userData.days_remaining} day(s)`, 'warning');
             avatarInput.value = ''; // Reset file input
             return;
         }
+        */
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
@@ -234,10 +242,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Toggle edit mode
     function toggleEditMode() {
+        // 7-DAY RESTRICTION TEMPORARILY DISABLED
+        /* ORIGINAL RESTRICTION CHECK (COMMENTED OUT)
         if (!userData || !userData.can_edit) {
             showNotification(`You can edit your profile again in ${userData.days_remaining} day(s)`, 'warning');
             return;
         }
+        */
 
         isEditMode = !isEditMode;
 
