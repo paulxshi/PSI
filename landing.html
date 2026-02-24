@@ -330,137 +330,17 @@
         <!-- INFO PANELS -->
         <div class="container position-fixed top-0 start-50 translate-middle-x pt-5 mt-5"
             style="z-index:1050; max-width:900px;">
+<!-- FAQ PANEL -->
+<div id="faqPanel" class="collapse glass-card mb-3">
+    <div class="p-4">
+        <h5 class="fw-bold mb-3">Frequently Asked Questions</h5>
 
-        <!-- FAQ PANEL -->
-        <div id="faqPanel" class="collapse glass-card mb-3">
-        <div class="p-4">
-            <h5 class="fw-bold mb-3">Frequently Asked Questions</h5>
-
-            <div class="accordion accordion-flush" id="faqAccordion">
-
-            <!-- FAQ 1 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq1">
-                    Who can access this portal?
-                </button>
-                </h2>
-                <div id="faq1" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    Only officially registered PMMA examination applicants with a valid test permit
-                    and registered email address may access this portal.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 2 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq2">
-                    What credentials are required to log in?
-                </button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    You must use your registered email address and official test permit number
-                    provided during your application process.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 3 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq3">
-                    Is my personal data secure?
-                </button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    Yes. All personal information is securely stored and processed in compliance
-                    with applicable data privacy and protection laws.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 4 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq4">
-                    I forgot my test permit number. What should I do?
-                </button>
-                </h2>
-                <div id="faq4" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    If you have forgotten your test permit number, please contact the admissions
-                    or examination office using the Contact Us section for verification assistance.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 5 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq5">
-                    Can I access the portal using a mobile device?
-                </button>
-                </h2>
-                <div id="faq5" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    Yes. The portal is fully responsive and can be accessed using mobile phones,
-                    tablets, or desktop computers with an internet connection.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 6 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq7">
-                    Can I update my personal information after registration?
-                </button>
-                </h2>
-                <div id="faq7" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    Some personal information may be restricted from editing after submission.
-                    For corrections, please coordinate with the examination administration office.
-                </div>
-                </div>
-            </div>
-
-            <!-- FAQ 7 -->
-            <div class="accordion-item bg-transparent">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed bg-transparent text-white"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#faq8">
-                    Is there a deadline for portal access?
-                </button>
-                </h2>
-                <div id="faq8" class="accordion-collapse collapse">
-                <div class="accordion-body text-white opacity-75">
-                    Yes. Portal access is only available within the official examination schedule.
-                    Access may be disabled once the examination period has ended.
-                </div>
-                </div>
-            </div>
-
-            </div>
-        </div>
+        <div class="accordion accordion-flush" id="faqAccordion">
+            <!-- FAQs will be loaded here dynamically -->
         </div>
 
+    </div>
+</div>
         <!-- CONTACT PANEL -->
         <div id="contactPanel" class="collapse glass-card">
             <div class="p-4">
@@ -528,6 +408,7 @@
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/get_faq.js"></script>
 
 <script>
   const logos = document.querySelectorAll('.logo-glow');
