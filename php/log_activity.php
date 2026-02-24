@@ -93,7 +93,8 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
         $data['description'] ?? null,
         $data['user_id'] ?? null,
         $data['username'] ?? null,
-        $data['email'] ?? null
+        $data['email'] ?? null,
+        $data['role'] ?? null
     );
     
     if ($result) {
