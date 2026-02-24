@@ -26,7 +26,7 @@
 	<!-- Sidebar Section -->
 		<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
-			<img src="../imgs/PSI.png" alt="RHULogo" class="logo">
+			<img src="../imgs/PSI.png" alt="PSILogo" class="logo">
 			<span class="text">PSI-PMMA Portal</span>
 		</a>
 		<ul class="side-menu top">
@@ -82,21 +82,30 @@
   <div id="permitPDF" class="bg-white p-4 shadow-sm">
 
     <!-- HEADER -->
-    <div class="text-center mb-4">
-      <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
-        <img src="../imgs/PSI.png" style="max-height:80px">
-        <div>
-          <h6 class="fw-bold text-uppercase mb-1">PSY Systems and Innovation, OPC</h6>
-          <div class="small text-muted text-uppercase">Philippine Merchant Marine Academy</div>
-          <div class="small text-muted text-uppercase">Psychological Evaluation</div>
-        </div>
-        <img src="../imgs/PMMA.png" style="max-height:80px">
-      </div>
-
-      <h6 class="fw-bold text-uppercase mt-3">Test Permit</h6>
+    <div class="text-center mb-3">
+      <!-- PSI Logo at very top -->
+      <img src="../imgs/PSI.png" style="max-height:80px; margin-bottom: 8px;">
+      
+      <!-- Compressed Title Section -->
+      <h6 class="fw-bold text-uppercase mb-0" style="font-size: 14px;">PSY Systems and Innovation, OPC</h6>
+      <h6 class="fw-bold text-uppercase mb-2" style="font-size: 13px;">Test Permit</h6>
     </div>  
 
-    <hr>
+    <hr style="margin: 8px 0;">
+    
+    <div class="text-center mb-5" style="margin-top: 18px;">
+      <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
+        <div>
+          <div class="text-uppercase">Philippine Merchant Marine Academy</div>
+          <div class="text-uppercase">Psychological Evaluation</div>
+        </div>
+      </div>
+    </div>  
+
+    <!-- PERMIT NOTE AT THE VERY TOP -->
+    <div class="permit-note mb-4" style="margin-top: 15px;">
+      PLEASE BRING THIS TEST PERMIT ON EXAMINATION DAY.
+    </div>
 
         <div class="text-center mb-4">
           <div class="qr-code-square-container">
@@ -110,125 +119,117 @@
           </div>
         </div>
 
-<!-- NOTE + PHOTO ROW -->
-<div class="row align-items-start mb-3">
-
-  
-
-
-  <!-- NOTE (LEFT) -->
-  <div class="col-8">
-    <div class="permit-note">
-      PLEASE BRING THIS TEST PERMIT ON EXAMINATION DAY.
-    </div>
-  </div>
-
-  <!-- PHOTO (RIGHT) -->
-<div class="col-4 d-flex justify-content-end">
-  <div style="width:150px">
-    <div class="rounded ratio ratio-1x1 position-relative photo-box">
-      <img class="img-fluid w-100 h-100 object-fit-cover" src="../imgs/avatar.png" alt="Examinee Photo">
-    </div>
-  </div>
-</div>
-
-</div>
-
-
     <!-- PERSONAL INFORMATION -->
 
-    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Personal Information</h6>
+    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Personal Information</h6>
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
-        <small class="text-muted">Test Permit No.</small>
-        <div class="fw-semibold" id="testPermit">050-2018</div>
+    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
+      <!-- PERSONAL INFO FIELDS -->
+      <div class="col-md-9">
+        <div class="row g-3">
+          <div class="col-md-6" style="margin-bottom: 8px;">
+            <small class="text-muted">Test Permit No.</small>
+            <div class="fw-semibold" id="testPermit">050-2018</div>
+          </div>
+          <div class="col-md-6" style="margin-bottom: 8px;">
+            <small class="text-muted">Status</small>
+            <div class="fw-semibold text-success" id="status">Detected</div>
+          </div>
+          <div class="col-md-6" style="margin-bottom: 8px;">
+            <small class="text-muted">Name of Examinee</small>
+            <div class="fw-semibold" id="fullName">User</div>
+          </div>
+          <div class="col-md-6" style="margin-bottom: 8px;">
+            <small class="text-muted">Date of Birth</small>
+            <div class="fw-semibold" id="dob">02/11/2026</div>
+          </div>
+          <div class="col-md-4" style="margin-bottom: 8px;">
+            <small class="text-muted">Age</small>
+            <div class="fw-semibold" id="age">18</div>
+          </div>
+          <div class="col-md-4" style="margin-bottom: 8px;">
+            <small class="text-muted">Gender</small>
+            <div class="fw-semibold" id="gender">Male</div>
+          </div>
+          <div class="col-md-4" style="margin-bottom: 8px;">
+            <small class="text-muted">Nationality</small>
+            <div class="fw-semibold" id="nationality">Filipino</div>
+          </div>
+          <div class="col-md-4" style="margin-bottom: 8px;">
+            <small class="text-muted">Contact Number</small>
+            <div class="fw-semibold" id="contact">09123456789</div>
+          </div>
+          <div class="col-md-4" style="margin-bottom: 8px;">
+            <small class="text-muted">Email Address</small>
+            <div class="fw-semibold" id="email">example@gmail.com</div>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
-        <small class="text-muted">Status</small>
-        <div class="fw-semibold text-success" id="status">Detected</div>
-      </div>
-      <div class="col-md-6">
-        <small class="text-muted">Name of Examinee</small>
-        <div class="fw-semibold" id="fullName">User</div>
-      </div>
-      <div class="col-md-6">
-        <small class="text-muted">Date of Birth</small>
-        <div class="fw-semibold" id="dob">02/11/2026</div>
-      </div>
-      <div class="col-md-4">
-        <small class="text-muted">Age</small>
-        <div class="fw-semibold" id="age">18</div>
-      </div>
-      <div class="col-md-4">
-        <small class="text-muted">Gender</small>
-        <div class="fw-semibold" id="gender">Male</div>
-      </div>
-      <div class="col-md-4">
-        <small class="text-muted">Nationality</small>
-        <div class="fw-semibold" id="nationality">Filipino</div>
-      </div>
-      <div class="col-md-4">
-        <small class="text-muted">Contact Number</small>
-        <div class="fw-semibold" id="contact">09123456789</div>
-      </div>
-      <div class="col-md-4">
-        <small class="text-muted">Email Address</small>
-        <div class="fw-semibold" id="email">example@gmail.com</div>
+      <!-- PHOTO -->
+      <div class="col-md-3">
+        <div style="width:120px; margin-bottom: 10px;">
+          <div class="rounded ratio ratio-1x1 position-relative photo-box">
+            <img class="img-fluid w-100 h-100 object-fit-cover" src="../imgs/avatar.png" alt="Examinee Photo">
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- SCHEDULE -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Schedule of Examination</h6>
+    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Schedule of Examination</h6>
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-6">
+    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
+      <div class="col-md-6" style="margin-bottom: 8px;">
         <small class="text-muted">Date of Testing</small>
         <div class="fw-semibold" id="dateOfTest">05/27/2025</div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" style="margin-bottom: 8px;">
         <small class="text-muted">Venue</small>
         <div class="fw-semibold" id="venue">Manila</div>
       </div>
     </div>
 
     <!-- PAYMENT -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Payment Details</h6>
+    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Payment Details</h6>
 
-    <div class="row g-3 mb-4">
-      <div class="col-md-4">
+    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
+      <div class="col-md-4" style="margin-bottom: 8px;">
         <small class="text-muted">Transaction No.</small>
         <div class="fw-semibold" id="transactionNo">123456789</div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" style="margin-bottom: 8px;">
         <small class="text-muted">Payment Date</small>
         <div class="fw-semibold" id="paymentDate">02/11/2026</div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4" style="margin-bottom: 8px;">
         <small class="text-muted">Amount</small>
         <div class="fw-semibold" id="amount">₱100.00</div>
+      </div>
+      <div class="col-md-4" style="margin-bottom: 8px;">
+        <small class="text-muted">Payment Method</small>
+        <div class="fw-semibold" id="paymentMethod">Gcash</div>
       </div>
     </div>
 
     <!-- GUIDELINES -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-2 mb-3">Guidelines</h6>
+    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Guidelines</h6>
 
-    <ol class="small text-muted">
-      <li><strong>Examination fees are non-refundable under any circumstances.</strong></li>
-      <li>Attach 2×2 ID picture with name tag in white background.</li>
-      <li>Wear white shirt, maong pants, and rubber shoes on examination day.</li>
-      <li>Bring a valid ID for verification purposes.</li>
-      <li>Bring 2 pencils, eraser, sharpener.</li>
-      <li>Bring snacks (to be consumed outside the testing room).</li>
-      <li>Cellphones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
+    <ol class="small text-muted mb-5" style="padding-left: 20px;">
+      <li style="margin-bottom: 12px;"><strong>Examination fees are non-refundable under any circumstances.</strong></li>
+      <li style="margin-bottom: 12px;">Upload your recent 2×2 picture in a white background.</li>
+      <li style="margin-bottom: 12px;">Wear white shirt, maong pants, and rubber shoes on examination day.</li>
+      <li style="margin-bottom: 12px;">Bring a valid ID for verification purposes.</li>
+      <li style="margin-bottom: 12px;">Bring 2 pencils, eraser, sharpener.</li>
+      <li style="margin-bottom: 12px;">Bring snacks (to be consumed outside the testing room).</li>
+      <li style="margin-bottom: 12px;">Cellphones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
     </ol>
 
     <!-- PRINT-ONLY SIGNATURE -->
-<div class="print-signature mt-4 d-none">
-  <p class="fst-italic mb-4">Verified by:</p>
+<div class="print-signature mt-5 d-none">
+  <p class="fst-italic mb-5">Verified by:</p>
 
-  <div style="margin-top:40px; width:260px;">
-    <div style="border-bottom:1px solid #000; height:30px;"></div>
+  <div style="margin-top:50px; width:280px;"> 
+    <div style="border-bottom:1px solid #000; height:35px;"></div>
     <div class="small text-center mt-1">
       Signature over Printed Name
     </div>

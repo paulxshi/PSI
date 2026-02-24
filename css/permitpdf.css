@@ -11,12 +11,14 @@ body.print-mode #permitPDF {
 
 .permit-note {
   font-weight: 800;
-  font-size: 14px;
+  font-size: 16px;
   text-transform: uppercase;
   color: #ef0707;
   line-height: 1.4;
-  margin-top: 50px;
+  margin-top: 15px;
+  margin-bottom: 20px;
   font-style: italic;
+  text-align: center;
 }
 
 .photo-box {
@@ -78,6 +80,8 @@ body.print-mode #permitPDF {
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   main {
@@ -86,41 +90,46 @@ body.print-mode #permitPDF {
   }
 
   @page {
-    size: Letter landscape;
-    margin: 8mm;
+    size: A4 portrait;
+    margin: 4mm;
   }
 
   #permitPDF {
     width: 100%;
-    padding: 8mm;
-    font-size: 10px;
-    line-height: 1.15;
+    padding: 3mm;
+    font-size: 8px;
+    line-height: 1.0;
     box-shadow: none !important;
   }
 
   hr {
-    margin: 4px 0 !important;
+    margin: 2px 0 !important;
   }
 
   .row {
-    margin-bottom: 2px !important;
+    margin-bottom: 1px !important;
   }
 
   .mb-4 {
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
   }
 
   h6 {
-    font-size: 11px;
+    font-size: 9px;
     margin-bottom: 3px !important;
+    padding: 3px 5px !important;
+  }
+
+  #permitPDF h6 {
+    font-size: 8px !important;
   }
 
   small {
-    font-size: 8.5px;
+    font-size: 7px;
   }
 
   .fw-semibold {
-    font-size: 9.8px;
+    font-size: 8px;
   }
 
   .col-md-6 {
@@ -131,49 +140,59 @@ body.print-mode #permitPDF {
     width: 25% !important;
   }
 
+  .col-md-3 {
+    width: 18% !important;
+  }
+
+  .col-md-9 {
+    width: 82% !important;
+  }
+
   #permitPDF img {
-    max-height: 70px !important;
+    max-height: 35px !important;
   }
 
   .photo-box {
-       width: 100px !important;
-    height: 100px !important; 
+    width: 40px !important;
+    height: 40px !important; 
   }
 
   .permit-note {
-    font-size: 9px;
-    margin-top: 8px;
+    font-size: 8px;
+    margin-top: 3px;
+    margin-bottom: 4px;
   }
 
   ol {
-    font-size: 8.5px;
+    font-size: 7px;
     padding-left: 10px;
   }
 
   li {
-    margin-bottom: 1px;
+    margin-bottom: 1px !important;
   }
 
   .print-signature {
     display: block !important;
-    margin-top: 6px;
+    margin-top: 8px;
   }
 }
 
 #permitPDF ol {
-  margin-top: 4px;
-  margin-bottom: 0;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-left: 20px;
 }
 
 #permitPDF li {
-  margin-bottom: 1px;
-  line-height: 1.2;
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
 
 
 #permitPDF h6 {
-  margin-bottom: 6px !important;
-  padding-bottom: 3px;
+  margin-bottom: 10px !important;
+  padding-bottom: 5px;
   letter-spacing: 0.3px;
 }
 
@@ -191,16 +210,100 @@ body.print-mode #permitPDF {
 
 body.print-mode #permitPDF {
   width: 100% !important;
-  padding: 0.35in !important;
+  padding: 0.2in !important;
 
-  font-size: 9.5px !important;
-  line-height: 1.1 !important;
+  font-size: 7px !important;
+  line-height: 0.9 !important;
 
   box-shadow: none !important;
 }
-body.print-mode h6 {
-  font-size: 10px !important;
+
+body.print-mode #permitPDF h6 {
+  font-size: 7px !important;
+  margin-bottom: 1px !important;
+  padding: 2px 3px !important;
+}
+
+body.print-mode #permitPDF hr {
+  margin: 1px 0 !important;
+}
+
+body.print-mode #permitPDF .row {
+  margin-bottom: 0px !important;
+}
+
+body.print-mode #permitPDF .mb-4 {
   margin-bottom: 2px !important;
+}
+
+body.print-mode #permitPDF .mb-5 {
+  margin-bottom: 2px !important;
+}
+
+body.print-mode #permitPDF small {
+  font-size: 6px !important;
+}
+
+body.print-mode #permitPDF .fw-semibold {
+  font-size: 7px !important;
+}
+
+body.print-mode .qr-code-square-container {
+  width: 90px !important;  
+  height: 90px !important;
+  margin: 5px auto !important;  
+}
+
+body.print-mode #permitPDF .permit-note {
+  font-size: 7px !important;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+body.print-mode #permitPDF ol {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+body.print-mode #permitPDF li {
+  margin-bottom: 0px !important;
+  line-height: 1.0;
+}
+
+body.print-mode #permitPDF .row {
+  margin-bottom: 1px !important;
+}
+
+body.print-mode #permitPDF .mb-4 {
+  margin-bottom: 3px !important;
+}
+
+body.print-mode #permitPDF .mb-5 {
+  margin-bottom: 4px !important;
+}
+
+body.print-mode #permitPDF small {
+  font-size: 7px !important;
+}
+
+body.print-mode #permitPDF .fw-semibold {
+  font-size: 8px !important;
+}
+
+body.print-mode #permitPDF .permit-note {
+  font-size: 8px !important;
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+body.print-mode #permitPDF ol {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+body.print-mode #permitPDF li {
+  margin-bottom: 1px !important;
+  line-height: 1.1;
 }
 
 body.print-mode hr {
@@ -212,7 +315,7 @@ body.print-mode .row {
 }
 
 body.print-mode .mb-4 {
-  margin-bottom: 4px !important;
+  margin-bottom: 8px !important;
 }
 
 body.print-mode small {
@@ -247,7 +350,7 @@ body.print-mode .fw-semibold {
 
 #permitPDF .col-md-6,
 #permitPDF .col-md-4 {
-  padding: 4px 5px; 
+  padding: 8px 10px; 
 }
 
 #permitPDF .fw-semibold {
@@ -278,6 +381,14 @@ body.print-mode .fw-semibold {
     width: 25% !important; 
   }
 
+  #permitPDF .col-md-3 {
+    width: 25% !important;
+  }
+
+  #permitPDF .col-md-9 {
+    width: 75% !important;
+  }
+
   #permitPDF .fw-semibold {
     font-size: 10px !important; 
     line-height: 1.3;
@@ -288,6 +399,6 @@ body.print-mode .fw-semibold {
   }
 
   .mb-4, .mb-3 {
-    margin-bottom: 5px !important;
+    margin-bottom: 10px !important;
   }
 }
