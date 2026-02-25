@@ -205,6 +205,18 @@ function loadPaymentDetails(userId) {
                     console.warn('No amount value in payment data');
                     document.getElementById('amount').textContent = 'N/A';
                 }
+
+                // Channel
+                if (payment.channel) {
+                    console.log('Setting channel to:', payment.channel);
+                    document.getElementById('paymentMethod').textContent = payment.channel;
+                }  
+                    else {
+                    console.warn('No channel value in payment data');
+                    document.getElementById('paymentMethod').textContent = 'N/A';
+                }
+
+
             } else {
                 console.warn('Payment details not found or unsuccessful response');
                 if (data.error_detail) {

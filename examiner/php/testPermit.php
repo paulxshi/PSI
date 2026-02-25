@@ -34,7 +34,8 @@ try {
 
             p.transaction_no,
             p.payment_date,
-            p.payment_amount
+            p.payment_amount,
+            p.channel
 
         FROM users u
         LEFT JOIN examinees e ON u.user_id = e.user_id
