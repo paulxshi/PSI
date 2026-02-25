@@ -216,7 +216,7 @@
       </div>
 
       <div class="row">
-        <div class="col text-muted small">Transaction ID</div>
+        <div class="col text-muted small">Reference No.</div>
         <div class="col text-end fw-semibold">
           <span id="invoiceText">Loading Invoice...</span>
         </div>
@@ -272,8 +272,7 @@ fetch('php/check_payment_status.php', {
     
     if (data.payment.status === 'PAID') {
       document.getElementById('invoiceText').innerHTML = 
-        '<span class="text-success">✓ Payment Confirmed</span><br>' +
-        '<small class="text-muted">Invoice: ' + data.payment.external_id + '</small>';
+        '<small class="text-muted">' + data.payment.external_id + '</small>';
     } else if (data.payment.status === 'PENDING') {
       // Redirect to complete_payment.html for pending payments
       console.log('Payment still pending, redirecting to complete payment page...');
@@ -296,6 +295,27 @@ fetch('php/check_payment_status.php', {
 function login() {
   window.location.href = "login.html";
 }
+</script>
+
+<script>
+// Check user session on page load
+(function() {
+    fetch('php/check_session.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.authenticated) {
+            // Redirect to login if not authenticated
+            window.location.href = 'login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Session check failed:', error);
+        window.location.href = 'login.html';
+    });
+})();
 </script>
 
 </body>
