@@ -13,8 +13,6 @@ try {
 
     $user_id = $_SESSION['user_id'];
 
-    // 7-DAY RESTRICTION TEMPORARILY DISABLED
-    /* ORIGINAL 7-DAY RESTRICTION CODE (COMMENTED OUT)
     // Check if user can upload (1-week restriction)
     $stmt = $pdo->prepare("SELECT last_profile_update FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
@@ -29,14 +27,13 @@ try {
             $days_left = ceil(($one_week - ($current_time - $last_update_time)) / (24 * 60 * 60));
             echo json_encode([
                 "success" => false,
-                "message" => "You can upload a new profile picture in $days_left day(s)",
+                "message" => "You can upload a new profile picture in $days_left day(s).",
                 "can_upload" => false,
                 "days_remaining" => $days_left
             ]);
             exit;
         }
     }
-    */
 
     // Check if file was uploaded
     if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
