@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const avatarInput = document.getElementById("avatarInput");
     const avatarPreview = document.getElementById("avatarPreview");
     const avatarIcon = document.getElementById("avatarIcon");
+    const avatarOverlay = document.getElementById("avatarOverlay");
     const globalEditButton = document.getElementById("globalEditButton");
     const formActions = document.querySelector(".form-actions");
     const btnCancel = document.querySelector(".btn-cancel");
@@ -57,18 +58,21 @@ document.addEventListener("DOMContentLoaded", () => {
             avatarPreview.src = `../${user.profile_picture}`;
             avatarPreview.style.display = 'block';
             avatarIcon.style.display = 'none';
+            avatarOverlay.style.display = 'none'; // Hide overlay when picture exists
             
             // Add error handler to show placeholder icon if image fails to load
             avatarPreview.onerror = function() {
                 console.warn('Failed to load profile picture, showing placeholder');
                 avatarPreview.style.display = 'none';
                 avatarIcon.style.display = 'block';
+                avatarOverlay.style.display = 'flex'; // Show overlay when picture fails
                 avatarPreview.onerror = null; // Prevent infinite loop
             };
         } else {
             // Show placeholder icon if no profile picture
             avatarPreview.style.display = 'none';
             avatarIcon.style.display = 'block';
+            avatarOverlay.style.display = 'flex'; // Show overlay when no picture
         }
 
         // Personal information
@@ -120,28 +124,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Check if user can edit (RESTRICTION TEMPORARILY DISABLED)
+    // Check if user can upload profile picture (7-day restriction)
     function checkEditPermission(user) {
-        // 7-day restriction is currently disabled
-        // Users can always edit their profile
+        // Edit button is always enabled - only photo upload has 7-day restriction
+        globalEditButton.disabled = false;
+        globalEditButton.style.opacity = '1';
+        globalEditButton.style.cursor = 'pointer';
         
-        /* ORIGINAL RESTRICTION CODE (COMMENTED OUT)
-        if (!user.can_edit) {
-            globalEditButton.disabled = true;
-            globalEditButton.title = `You can edit again in ${user.days_remaining} day(s)`;
-            globalEditButton.style.opacity = '0.5';
-            globalEditButton.style.cursor = 'not-allowed';
-            
-            // Also disable avatar upload if can't edit
+        // Only check 7-day restriction for profile picture upload
+        if (user.can_upload_picture === false) {
+            // Keep edit button enabled but disable avatar upload
             avatarInput.disabled = true;
             const uploadArea = document.querySelector('.upload-area');
             if (uploadArea) {
                 uploadArea.style.cursor = 'not-allowed';
                 uploadArea.style.opacity = '0.6';
-                uploadArea.title = `You can upload a new picture in ${user.days_remaining} day(s)`;
+                uploadArea.style.pointerEvents = 'none';
+                uploadArea.title = `You can upload a new picture in ${user.upload_days_remaining} day(s)`;
+            }
+        } else {
+            // Reset avatar upload area if user can upload
+            avatarInput.disabled = false;
+            const uploadArea = document.querySelector('.upload-area');
+            if (uploadArea) {
+                uploadArea.style.cursor = 'pointer';
+                uploadArea.style.opacity = '1';
+                uploadArea.style.pointerEvents = 'auto';
+                uploadArea.title = '';
             }
         }
-        */
     }
 
     // Handle avatar upload
@@ -149,15 +160,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // 7-DAY RESTRICTION TEMPORARILY DISABLED
-        /* ORIGINAL RESTRICTION CHECK (COMMENTED OUT)
-        // Check if user can upload (same restriction as profile edit)
-        if (!userData || !userData.can_edit) {
-            showNotification(`You can upload a new profile picture in ${userData.days_remaining} day(s)`, 'warning');
+        // Check if user can upload (7-day restriction)
+        if (userData && userData.can_upload_picture === false) {
+            showNotification(`You can upload a new profile picture in ${userData.upload_days_remaining} day(s).`, 'warning');
             avatarInput.value = ''; // Reset file input
             return;
         }
-        */
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
@@ -179,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
             avatarPreview.src = e.target.result;
             avatarPreview.style.display = 'block';
             avatarIcon.style.display = 'none';
+            avatarOverlay.style.display = 'none'; // Hide overlay when preview is shown
         };
         reader.readAsDataURL(file);
 
@@ -195,7 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             if (data.success) {
                 profilePictureUploaded = true; // Mark that picture was uploaded successfully
-                showNotification(data.message || 'Profile picture updated successfully', 'success');
+                
+                // Show professional success notification with redirect option
+                showProfileUpdateSuccess();
+                
                 // Reload user data to get updated profile picture and restrictions
                 loadUserData();
                 // Update local storage to trigger other pages to refresh
@@ -242,19 +254,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Toggle edit mode
     function toggleEditMode() {
-        // 7-DAY RESTRICTION TEMPORARILY DISABLED
-        /* ORIGINAL RESTRICTION CHECK (COMMENTED OUT)
-        if (!userData || !userData.can_edit) {
-            showNotification(`You can edit your profile again in ${userData.days_remaining} day(s)`, 'warning');
-            return;
-        }
-        */
-
+        // Edit information is always allowed - only photo upload has 7-day restriction
         isEditMode = !isEditMode;
 
         if (isEditMode) {
             enableEditMode();
-            globalEditButton.innerHTML = '<i class="bx bx-x me-2"></i> <span>Cancel Edit</span>';
+            globalEditButton.innerHTML = '<i class="bx bx-x"></i> <span>Cancel Edit</span>';
             formActions.style.display = 'flex';
             
             // Reset profile picture uploaded flag when entering edit mode
@@ -435,5 +440,38 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             notification.remove();
         }, 5000);
+    }
+
+    // Show professional success notification for profile picture upload
+    function showProfileUpdateSuccess() {
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '380px';
+        notification.style.borderLeft = '4px solid #15803d';
+        notification.innerHTML = `
+            <div class="d-flex align-items-start">
+                <i class="bx bx-check-circle fs-4 me-2" style="color: #15803d;"></i>
+                <div class="flex-grow-1">
+                    <strong style="color: #15803d;">Profile Picture Updated Successfully</strong>
+                    <p class="mb-2 mt-1" style="font-size: 0.85rem; color: #4b5563;">
+                        Your profile picture has been uploaded. You may now proceed to the dashboard to view your Test Permit.
+                    </p>
+                    <a href="dashboard.html" class="btn btn-sm" style="background: #15803d; color: white; padding: 6px 16px; font-size: 0.8rem; border-radius: 6px; text-decoration: none;">
+                        Go to Dashboard <i class="bx bx-arrow-from-left ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            <button type="button" class="btn-close position-absolute" style="top: 10px; right: 10px;" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 10 seconds (longer for this important message)
+        setTimeout(() => {
+            notification.remove();
+        }, 10000);
     }
 });
