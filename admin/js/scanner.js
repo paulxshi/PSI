@@ -361,6 +361,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             applyActionState("completed");
             updateStatus("complete");
+                setTimeout(() => {
+                const modalElement = document.getElementById("qrResultModal");
+                const activeModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                activeModal.hide();
+            }, 1000);
         });
     }
 
@@ -374,6 +379,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             applyActionState("rejected");
             updateStatus("reject");
+                setTimeout(() => {
+                const modalElement = document.getElementById("qrResultModal");
+                const activeModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                activeModal.hide();
+            }, 1000);
+
         });
     }
 
@@ -486,4 +497,9 @@ function updateStatusWithId(action, examineeId) {
         alert("Error updating status: " + err);
         applyActionState("default");
     });
+}
+
+function closeModal() {
+    // Hide or remove modal
+    document.getElementById('qrResultModal').style.display = 'none';
 }

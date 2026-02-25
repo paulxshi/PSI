@@ -205,8 +205,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.success) {
                 profilePictureUploaded = true; // Mark that picture was uploaded successfully
                 
-                // Show professional success notification with redirect option
-                showProfileUpdateSuccess();
+                // Show success modal for profile picture upload
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
                 
                 // Reload user data to get updated profile picture and restrictions
                 loadUserData();
@@ -223,7 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             } else {
-                showNotification(data.message || 'Failed to upload image', 'error');
+                // Show error modal for profile picture upload
+                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                errorModal.show();
+                
                 // Revert to previous image on error
                 if (userData && userData.profile_picture) {
                     avatarPreview.src = `../${userData.profile_picture}`;
@@ -238,7 +242,11 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => {
             console.error('Error uploading image:', error);
-            showNotification('Error uploading image', 'error');
+            
+            // Show error modal for profile picture upload
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+            
             // Revert to previous image on error
             if (userData && userData.profile_picture) {
                 avatarPreview.src = `../${userData.profile_picture}`;
@@ -400,19 +408,27 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showNotification(data.message, 'success');
+                // Show success modal for personal information update
+                const infoSuccessModal = new bootstrap.Modal(document.getElementById('infoSuccessModal'));
+                infoSuccessModal.show();
+                
                 // Reload user data
                 loadUserData();
                 // Exit edit mode
                 isEditMode = true; // Set to true so toggleEditMode will disable it
                 toggleEditMode();
             } else {
-                showNotification(data.message || 'Failed to update profile', 'error');
+                // Show error modal for personal information update
+                const infoErrorModal = new bootstrap.Modal(document.getElementById('infoErrorModal'));
+                infoErrorModal.show();
             }
         })
         .catch(error => {
             console.error('Error updating profile:', error);
-            showNotification('Error updating profile', 'error');
+            
+            // Show error modal for personal information update
+            const infoErrorModal = new bootstrap.Modal(document.getElementById('infoErrorModal'));
+            infoErrorModal.show();
         })
         .finally(() => {
             btnSave.disabled = false;
