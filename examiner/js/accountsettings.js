@@ -124,14 +124,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Check if user can upload profile picture (7-day restriction)
+    // Check if user can upload profile picture (3-attempt limit)
     function checkEditPermission(user) {
-        // Edit button is always enabled - only photo upload has 7-day restriction
+        // Edit button is always enabled - only photo upload has 3-attempt limit
         globalEditButton.disabled = false;
         globalEditButton.style.opacity = '1';
         globalEditButton.style.cursor = 'pointer';
         
-        // Only check 7-day restriction for profile picture upload
+        const attemptsUsed = user.upload_attempts_used || 0;
+        const attemptsRemaining = user.upload_attempts_remaining || 3;
+        
+        // Display attempts used/remaining
+        const uploadText = document.querySelector('.upload-text');
+        if (uploadText) {
+            if (attemptsUsed === 0) {
+                uploadText.textContent = 'Upload picture (0/3 used)';
+            } else {
+                uploadText.textContent = `Upload picture (${attemptsUsed}/3 used)`;
+            }
+        }
+        
+        // Only check 3-attempt restriction for profile picture upload
         if (user.can_upload_picture === false) {
             // Keep edit button enabled but disable avatar upload
             avatarInput.disabled = true;
@@ -140,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 uploadArea.style.cursor = 'not-allowed';
                 uploadArea.style.opacity = '0.6';
                 uploadArea.style.pointerEvents = 'none';
-                uploadArea.title = `You can upload a new picture in ${user.upload_days_remaining} day(s)`;
+                uploadArea.title = 'You have reached the maximum limit of 3 profile picture uploads';
             }
         } else {
             // Reset avatar upload area if user can upload
@@ -160,9 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Check if user can upload (7-day restriction)
+        // Check if user can upload (3-attempt restriction)
         if (userData && userData.can_upload_picture === false) {
-            showNotification(`You can upload a new profile picture in ${userData.upload_days_remaining} day(s).`, 'warning');
+            showNotification('You have reached the maximum limit of 3 profile picture uploads.', 'warning');
             avatarInput.value = ''; // Reset file input
             return;
         }
