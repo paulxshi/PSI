@@ -118,15 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (greetingSpan) {
             greetingSpan.textContent = `${user.first_name} ${user.last_name}`;
         }
-        
-        // Check if profile picture exists and update View Permit button
-        const viewPermitBtn = document.getElementById('btnViewPermit');
-        if (viewPermitBtn) {
-            const hasProfilePicture = user.profile_picture && user.profile_picture.trim() !== '';
-            viewPermitBtn.disabled = !hasProfilePicture;
-            viewPermitBtn.style.opacity = hasProfilePicture ? '1' : '0.5';
-            viewPermitBtn.style.cursor = hasProfilePicture ? 'pointer' : 'not-allowed';
-        }
     }
 
     // Check if user can edit (RESTRICTION TEMPORARILY DISABLED)
@@ -445,51 +436,4 @@ document.addEventListener("DOMContentLoaded", () => {
             notification.remove();
         }, 5000);
     }
-});
-const avatarInput = document.getElementById('avatarInput');
-const avatarPreview = document.getElementById('avatarPreview');
-const avatarIcon = document.getElementById('avatarIcon');
-const viewPermitBtn = document.getElementById('btnViewPermit');
-
-let hasUploadedImage = false;
-
-// Show image preview and enable button
-avatarInput.addEventListener('change', function () {
-  const file = this.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      avatarPreview.src = e.target.result;
-      avatarPreview.style.display = 'block';
-      avatarIcon.style.display = 'none';
-      hasUploadedImage = true;
-
-      // Enable the View Test Permit button
-      viewPermitBtn.disabled = false;
-      viewPermitBtn.style.opacity = 1; // Optional: visually indicate active
-      viewPermitBtn.style.cursor = 'pointer';
-    }
-    reader.readAsDataURL(file);
-  }
-});
-
-avatarInput.addEventListener('change', function () {
-  const file = this.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      avatarPreview.src = e.target.result;
-      avatarPreview.style.display = 'block';
-      avatarIcon.style.display = 'none';
-
-      // Hide overlay
-      document.getElementById('avatarOverlay').style.display = 'none';
-
-      hasUploadedImage = true;
-      viewPermitBtn.disabled = false;
-      viewPermitBtn.style.opacity = 1;
-      viewPermitBtn.style.cursor = 'pointer';
-    }
-    reader.readAsDataURL(file);
-  }
 });
