@@ -13,26 +13,21 @@ try {
 
     $user_id = $_SESSION['user_id'];
 
-    // Check if user can upload (1-week restriction)
-    $stmt = $pdo->prepare("SELECT last_profile_update FROM users WHERE user_id = ?");
+    // Check if user has reached the 3-attempt limit
+    $stmt = $pdo->prepare("SELECT profile_upload_attempts FROM users WHERE user_id = ?");
     $stmt->execute([$user_id]);
-    $last_update = $stmt->fetchColumn();
+    $upload_attempts = $stmt->fetchColumn();
 
-    if ($last_update) {
-        $last_update_time = strtotime($last_update);
-        $current_time = time();
-        $one_week = 7 * 24 * 60 * 60;
-
-        if (($current_time - $last_update_time) < $one_week) {
-            $days_left = ceil(($one_week - ($current_time - $last_update_time)) / (24 * 60 * 60));
-            echo json_encode([
-                "success" => false,
-                "message" => "You can upload a new profile picture in $days_left day(s).",
-                "can_upload" => false,
-                "days_remaining" => $days_left
-            ]);
-            exit;
-        }
+    // Maximum 3 attempts allowed
+    if ($upload_attempts >= 3) {
+        echo json_encode([
+            "success" => false,
+            "message" => "You have reached the maximum limit of 3 profile picture uploads.",
+            "can_upload" => false,
+            "attempts_used" => $upload_attempts,
+            "attempts_remaining" => 0
+        ]);
+        exit;
     }
 
     // Check if file was uploaded
@@ -79,9 +74,15 @@ try {
         exit;
     }
 
-    // Update database with new picture and timestamp
+    // Update database with new picture, timestamp, and increment attempts
     $relative_path = "uploads/profile_pictures/" . $filename;
-    $stmt = $pdo->prepare("UPDATE users SET profile_picture = ?, last_profile_update = NOW() WHERE user_id = ?");
+    $stmt = $pdo->prepare("
+        UPDATE users 
+        SET profile_picture = ?, 
+            last_profile_update = NOW(),
+            profile_upload_attempts = profile_upload_attempts + 1
+        WHERE user_id = ?
+    ");
     $stmt->execute([$relative_path, $user_id]);
 
     // Delete old profile picture if exists
@@ -106,12 +107,17 @@ try {
     ");
     $stmt->execute([$_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $user_id]);
 
+    // Get updated attempts count
+    $stmt = $pdo->prepare("SELECT profile_upload_attempts FROM users WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $current_attempts = $stmt->fetchColumn();
+
     echo json_encode([
         "success" => true,
         "message" => "Profile picture updated successfully.",
-        "profile_picture" => $relative_path
-        // Note: 7-day restriction temporarily disabled
-        // "can_upload_again_at" => date('Y-m-d H:i:s', strtotime('+7 days'))
+        "profile_picture" => $relative_path,
+        "attempts_used" => $current_attempts,
+        "attempts_remaining" => 3 - $current_attempts
     ]);
 
 } catch (PDOException $e) {
