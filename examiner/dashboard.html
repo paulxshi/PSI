@@ -11,6 +11,7 @@
 	<title>Dashboard</title>
 </head>
 
+
 <body>
 
 	<!-- Sidebar Section -->
@@ -101,36 +102,103 @@
             </div>
 
             <div class="col-12 col-lg-4">
-                <div id="qrCode" class="qr-card">
-                  <h5 class="qr-title fw-bold text-primary">Download This Qr</h5>
+              <div class="profile-card">
 
-                  <p class="qr-subtitle">
-                    Download and present this QR code at the examination site for verification.
-                  </p>
+                <!-- ── background graphics ── -->
+                <div class="card-bg-graphics">
+                  <div class="orb-tr"></div>
+                  <div class="orb-bl"></div>
+                  <div class="grid-lines"></div>
+                  <div class="diag-rule"></div>
+                </div>
 
-                  <!-- QR Box -->
-                  <div class="qr-box" style="margin-top: 20px;">
-                    <div id="qrContainer"></div>
-                    <img
-                      src="../imgs/PSI.png"
-                      alt="PSI Logo"
-                      class="qr-logo"
-                    />
+                <!-- corner accents -->
+                <div class="corner-tl"></div>
+                <div class="corner-tr"></div>
+                <div class="corner-bl"></div>
+                <div class="corner-br"></div>
+                <div class="footer-rule"></div>
+
+                <!-- ── all original content ── -->
+                <div class="card-content">
+
+                  <!-- portal badge (new) -->
+                  <div class="portal-badge">
+                    <div class="badge-dot"></div>
+                    <span class="badge-label">Student Portal</span>
                   </div>
 
-                  <!-- QR Text -->
-                  <p class="qr-code-text" id="qrText" style="margin-top: 25px;"> </p>
+                  <!-- ORIGINAL -->
+                  <h5 class="profile-title fw-bold text-primary">User Profile</h5>
 
-                  <!-- Mask Button -->
-                  <button id="maskButton" style="margin-top: 15px;">
-                    VIEW
-                  </button>
-                  <!-- Actions -->
-                <button id="downloadQR" class="btn btn-primary w-100 mt-3 d-flex align-items-center justify-content-center gap-2">
-                  <i class="bx bx-download"></i>
-                  Download QR Code
-                </button>
-                </div>
+                  <!-- gold divider (new) -->
+                  <div class="gold-divider">
+                    <div class="gold-divider-line"></div>
+                    <div class="gold-divider-diamond"></div>
+                    <div class="gold-divider-line"></div>
+                  </div>
+
+                  <!-- ORIGINAL -->
+                  <p class="profile-subtitle">
+                    Uploading a photo is required to access your test permit.
+                    You can upload your photo in the Account Settings section.
+                  </p>
+
+                  <!-- ORIGINAL: Image Preview Box wrapper -->
+                  <div style="margin-top: 20px; display:flex; flex-direction:column; align-items:center;">
+
+                    <div class="spinning-ring-wrap">
+
+                      <!-- ORIGINAL id="imagePreviewContainer" -->
+                      <div id="imagePreviewContainer" class="image-preview-container">
+                        <!-- ORIGINAL id="imagePreview" -->
+                        <img id="imagePreview" src="../imgs/avatar.png" alt="Profile Preview" class="img-fluid" style="display: none;" />
+                        <!-- ORIGINAL id="uploadPlaceholder" -->
+                        <div id="uploadPlaceholder" class="upload-placeholder">
+                          <i class="bx bx-image" style="font-size: 48px;"></i>
+                          <p class="mt-2">No photo uploaded</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <span class="photo-sublabel">Official Photo</span>
+                  </div>
+
+                  <!-- ORIGINAL id="imageText" -->
+                  <p class="profile-text" id="imageText" style="margin-top: 25px;"> </p>
+
+                  <!-- ORIGINAL: anchor + button -->
+                  <a href="testpermit.html" id="permitLink">
+                    <button id="btnViewPermit" class="btn-view-permit" disabled>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                      </svg>
+                      View Test Permit
+                    </button>
+                  </a>
+
+                  <!-- lock hint (new) -->
+                  <div class="lock-hint" id="lockHint">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    Locked until photo is uploaded
+                  </div>
+
+                  <!-- settings link (new) -->
+                  <a href="accountsettings.html" class="settings-link">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    Account Settings
+                  </a>
+
+                </div><!-- /card-content -->
+              </div><!-- /profile-card -->
             </div>
           
             <div class="row g-4">
@@ -150,6 +218,7 @@
 
      </div>
   </div>
+
 </main>
 
 <div
@@ -209,11 +278,24 @@
   </div>
 </div>
 
+<script>
+  const btn      = document.getElementById('btnViewPermit');
+  const link     = document.getElementById('permitLink');
+  const lockHint = document.getElementById('lockHint');
 
+  function syncLink() {
+    const isDisabled = btn.disabled;
+    link.style.pointerEvents = isDisabled ? 'none' : 'auto';
+    lockHint.style.display   = isDisabled ? 'flex'  : 'none';
+  }
+
+  const observer = new MutationObserver(syncLink);
+  observer.observe(btn, { attributes: true, attributeFilter: ['disabled'] });
+  syncLink();
+</script>
 
 <script src="js/get_user.js"></script>
 <script src="js/get_faq.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

@@ -43,12 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = `
         <div class="user-card">
           <div class="user-card-header">
-            <div class="avatar" style="background: ${user.profile_picture ? 'transparent' : ''}; padding: 0;">
-              ${user.profile_picture ? 
-                `<img src="../${user.profile_picture}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` :
-                `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`
-              }
-            </div>
             <h5 class="user-name">
               ${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}
             </h5>
@@ -94,6 +88,30 @@ document.addEventListener("DOMContentLoaded", () => {
       container.insertAdjacentHTML("beforeend", card);
 
       const userId = document.getElementById("user_id").value;
+
+      // Display profile picture in the qr-card upload area
+      const profileImageInput = document.getElementById("profileImageInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const uploadPlaceholder = document.getElementById("uploadPlaceholder");
+      const imageText = document.getElementById("imageText");
+
+      // Check if user has a profile picture and display it
+      if (user.profile_picture) {
+        imagePreview.src = "../" + user.profile_picture;
+        imagePreview.style.display = "block";
+        if (uploadPlaceholder) {
+          uploadPlaceholder.style.display = "none";
+        }
+      }
+
+      // Update View Permit button based on profile picture
+      const viewPermitBtn = document.getElementById('btnViewPermit');
+      if (viewPermitBtn) {
+        const hasProfilePicture = user.profile_picture && user.profile_picture.trim() !== '';
+        viewPermitBtn.disabled = !hasProfilePicture;
+        viewPermitBtn.style.opacity = hasProfilePicture ? '1' : '0.5';
+        viewPermitBtn.style.cursor = hasProfilePicture ? 'pointer' : 'not-allowed';
+      }
 
       // Fetch transaction number from PHP
       fetch("php/get_transaction.php?user_id=" + userId)
