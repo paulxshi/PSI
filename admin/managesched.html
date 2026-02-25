@@ -587,6 +587,58 @@ padding-bottom: 1rem;
   </div>
 </div>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+
+      <!-- Modal Body -->
+      <div class="modal-body px-4 py-5 text-center">
+        <div class="mb-3">
+          <i class="bx bx-check-circle fs-1 text-success"></i>
+        </div>
+        
+        <h5 class="fw-bold mb-2">Update Successful!</h5>
+        
+        <p class="text-muted mb-4" id="successMessage">
+          Schedule status has been updated successfully.
+        </p>
+        
+        <button type="button" class="btn btn-success rounded-pill px-5" data-bs-dismiss="modal">
+          Done
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+
+      <!-- Modal Body -->
+      <div class="modal-body px-4 py-5 text-center">
+        <div class="mb-3">
+          <i class="bx bx-error-circle fs-1 text-danger"></i>
+        </div>
+        
+        <h5 class="fw-bold mb-2">Update Failed</h5>
+        
+        <p class="text-muted mb-4" id="errorMessage">
+          There was an error updating the schedule. Please try again.
+        </p>
+        
+        <button type="button" class="btn btn-outline-secondary rounded-pill px-5" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 // Initialize flatpickr for Edit Schedule modal
@@ -599,6 +651,27 @@ document.addEventListener('DOMContentLoaded', function() {
         allowInput: true
     });
 });
+</script>
+
+<script>
+// Check admin session on page load
+(function() {
+    fetch('php/check_session.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.authenticated) {
+            // Redirect to admin login if not authenticated
+            window.location.href = '../adminlogin.html';
+        }
+    })
+    .catch(error => {
+        console.error('Session check failed:', error);
+        window.location.href = '../adminlogin.html';
+    });
+})();
 </script>
 
 </body>

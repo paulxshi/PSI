@@ -27,7 +27,8 @@ try {
             paid_at,
             payment_date,
             created_at,
-            xendit_invoice_id
+            xendit_invoice_id,
+            channel
         FROM payments
         WHERE user_id = ?
           AND status = 'paid'

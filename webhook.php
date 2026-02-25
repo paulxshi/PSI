@@ -7,9 +7,28 @@ header('Content-Type: application/json');
 require_once('config/db.php');
 require_once('config/payment_config.php');
 
+// Check request method
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Method not allowed. Use POST.']);
+    exit;
+}
+
 // Get the raw POST data
 $rawPayload = file_get_contents('php://input');
 $data = json_decode($rawPayload, true);
+
+// Log request method
+error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
+
+// Check if JSON decoding failed
+if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+    $jsonError = json_last_error_msg();
+    error_log('[WEBHOOK ERROR] Invalid JSON payload: ' . $jsonError . ' | Raw: ' . substr($rawPayload, 0, 500));
+    http_response_code(400);
+    echo json_encode(['error' => 'Invalid JSON payload', 'details' => $jsonError]);
+    exit;
+}
 
 // Enhanced logging for debugging
 error_log("====== XENDIT WEBHOOK RECEIVED ======");
@@ -47,7 +66,10 @@ if (!isset($data['id']) || !isset($data['status']) || !isset($data['external_id'
     echo json_encode(['error' => 'Invalid webhook data']);
     exit;
 }
-
+$paymentMethod = null;
+if (isset($data['payments']) && is_array($data['payments']) && !empty($data['payments'])) {
+    $paymentMethod = $data['payments'][0]['payment_method'] ?? null;
+}
 $invoiceId = $data['id'];
 $status = strtoupper($data['status']);
 $externalId = $data['external_id'];
@@ -56,10 +78,11 @@ try {
     // Only process PAID status
     if ($status !== 'PAID') {
         // Update payment status for other statuses (EXPIRED, CANCELLED, etc.)
-        $updateQuery = "UPDATE payments SET status = :status, updated_at = NOW() 
+        $updateQuery = "UPDATE payments SET status = :status, updated_at = NOW(), channel = :payment_method 
                         WHERE xendit_invoice_id = :invoice_id";
         $stmt = $pdo->prepare($updateQuery);
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->bindParam(':payment_method', $paymentMethod, PDO::PARAM_STR);
         $stmt->bindParam(':invoice_id', $invoiceId, PDO::PARAM_STR);
         $stmt->execute();
         
@@ -70,20 +93,95 @@ try {
     
     // Begin transaction for atomicity
     $pdo->beginTransaction();
+
+
+
+/* =====================================================
+   STEP 2: FETCH FULL INVOICE FROM XENDIT API
+===================================================== */
+
+// Fetch full invoice details from Xendit
+$invoiceUrl = XENDIT_INVOICE_URL . '/' . $invoiceId;
+
+$ch = curl_init($invoiceUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Basic ' . base64_encode(XENDIT_API_KEY . ':')
+]);
+
+$invoiceResponse = curl_exec($ch);
+$invoiceHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+$invoiceData = json_decode($invoiceResponse, true);
+
+$paymentMethod = 'UNKNOWN';
+
+if ($invoiceHttpCode === 200 && is_array($invoiceData)) {
+
+    $payment = $invoiceData['payments'][0] ?? null;
+
+    if ($payment) {
+
+        // Waited invoice retrieval should contain the richest data
+        $method          = $payment['payment_method'] ?? null;
+        $methodId        = $payment['payment_method_id'] ?? null;
+        $ewalletType     = $payment['ewallet_type'] ?? null;
+        $channelCode     = $payment['channel_code'] ?? null;
+        $cardBrand       = $payment['card_brand'] ?? null;
+
+        /*
+         * PRIORITY ORDER (Most Specific → Least Specific)
+         */
+
+        // 1️⃣ payment_method_id (Most reliable in Xendit)
+        if (!empty($methodId)) {
+            $paymentMethod = strtoupper($methodId);
+        }
+
+        // 2️⃣ Ewallet subtype (GCASH, OVO, DANA, etc.)
+        elseif (!empty($ewalletType)) {
+            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($ewalletType);
+        }
+
+        // 3️⃣ Channel code (BCA, BNI, etc.)
+        elseif (!empty($channelCode)) {
+            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($channelCode);
+        }
+
+        // 4️⃣ Card brand (VISA, MASTERCARD)
+        elseif (!empty($cardBrand)) {
+            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($cardBrand);
+        }
+
+        // 5️⃣ Fallback to base method
+        elseif (!empty($method)) {
+            $paymentMethod = strtoupper($method);
+        }
+    }
+
+    // Root-level fallback
+    if ($paymentMethod === 'UNKNOWN' && !empty($invoiceData['payment_method'])) {
+        $paymentMethod = strtoupper($invoiceData['payment_method']);
+    }
+}
+
+error_log("Final Payment Method: " . $paymentMethod);
     
     // 1. Update payments table
-    $updatePaymentQuery = "UPDATE payments 
-                           SET status = 'PAID', 
-                               paid_at = NOW(), 
-                               updated_at = NOW(),
-                               xendit_response = :xendit_response
-                           WHERE xendit_invoice_id = :invoice_id 
-                           AND status != 'PAID'";
-    
-    $stmt = $pdo->prepare($updatePaymentQuery);
-    $stmt->bindParam(':xendit_response', $rawPayload, PDO::PARAM_STR);
-    $stmt->bindParam(':invoice_id', $invoiceId, PDO::PARAM_STR);
-    $stmt->execute();
+$updatePaymentQuery = "UPDATE payments 
+                       SET status = 'PAID', 
+                           paid_at = NOW(), 
+                           updated_at = NOW(),
+                           xendit_response = :xendit_response,
+                           channel = :payment_method
+                       WHERE xendit_invoice_id = :invoice_id";
+
+$stmt = $pdo->prepare($updatePaymentQuery);
+$stmt->bindParam(':xendit_response', $rawPayload, PDO::PARAM_STR);
+$stmt->bindParam(':payment_method', $paymentMethod, PDO::PARAM_STR);  // Add this line
+$stmt->bindParam(':invoice_id', $invoiceId, PDO::PARAM_STR);
+$stmt->execute();
     
     $rowsAffected = $stmt->rowCount();
     

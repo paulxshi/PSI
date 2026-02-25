@@ -94,7 +94,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 if (!isset($input['amount']) || !isset($input['description'])) {
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid payment data.'
+        'message' => 'Invalid payment data. Missing required fields.'
     ]);
     exit;
 }
@@ -102,6 +102,7 @@ if (!isset($input['amount']) || !isset($input['description'])) {
 $user_id = $_SESSION['user_id'];
 $amount = floatval($input['amount']);
 $description = $input['description'];
+$payment_method = isset($input['payment_method']) ? trim($input['payment_method']) : null;
 
 try {
     // Fetch user and examinee details
