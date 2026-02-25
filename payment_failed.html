@@ -117,5 +117,26 @@
   </div>
 </div>
 
+<script>
+// Check user session on page load
+(function() {
+    fetch('php/check_session.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.authenticated) {
+            // Redirect to login if not authenticated
+            window.location.href = 'login.html';
+        }
+    })
+    .catch(error => {
+        console.error('Session check failed:', error);
+        window.location.href = 'login.html';
+    });
+})();
+</script>
+
 </body>
 </html>
