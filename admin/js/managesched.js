@@ -37,6 +37,8 @@ async function loadSchedules() {
         
         if (data.success) {
             allSchedules = data.schedules;
+            // Sort by date in descending order (newest first)
+            allSchedules.sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
             filteredSchedules = [...allSchedules];
             displaySchedules();
             updateTotalCount();
@@ -76,7 +78,7 @@ function displaySchedules() {
             <td data-label="#">${start + index + 1}</td>
             <td data-label="Region">${schedule.region}</td>
             <td data-label="Venue">${schedule.venue_name}</td>
-            <td data-label="Date">${schedule.scheduled_date}</td>
+            <td data-label="Date">${formatLongDate(schedule.scheduled_date)}</td>
             <td data-label="Capacity">
                 ${schedule.num_registered} / ${schedule.capacity}
             </td>
@@ -166,14 +168,15 @@ function changePage(page) {
 }
 
 function getStatusBadge(status) {
-    switch (status.toLowerCase()) {
-        case 'incoming': return 'text-primary fs-7 fw-bold';
-        case 'closed': return 'text-danger fs-7 fw-bold';  
-        case 'completed': return 'text-success fs-7 fw-bold';
-        default: return 'bg-secondary fs-7 fw-bold'; 
-    }
+    return 'text-dark fs-7 fw-bold';
 }
 
+// Format date to long format
+function formatLongDate(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
 
 // Filter schedules
 function filterSchedules() {
@@ -254,20 +257,38 @@ async function saveScheduleChanges() {
         const data = await response.json();
         
         if (data.success) {
-            showAlert(data.message, 'success');
+            // Close edit modal
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editScheduleModal'));
+            editModal.hide();
             
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editScheduleModal'));
-            modal.hide();
+            // Show success modal
+            document.getElementById('successMessage').textContent = data.message || 'Schedule status has been updated successfully.';
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
             
             // Reload schedules
             await loadSchedules();
         } else {
-            showAlert(data.message, 'danger');
+            // Close edit modal
+            const editModal = bootstrap.Modal.getInstance(document.getElementById('editScheduleModal'));
+            editModal.hide();
+            
+            // Show error modal
+            document.getElementById('errorMessage').textContent = data.message || 'There was an error updating the schedule. Please try again.';
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Error updating schedule. Please try again.', 'danger');
+        
+        // Close edit modal
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editScheduleModal'));
+        if (editModal) editModal.hide();
+        
+        // Show error modal
+        document.getElementById('errorMessage').textContent = 'Error updating schedule. Please try again.';
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
     } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = 'Save Changes';
@@ -303,23 +324,41 @@ async function deleteSchedule() {
         const data = await response.json();
         
         if (data.success) {
-            showAlert(data.message, 'success');
+            // Close delete confirmation modal
+            const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+            deleteModal.hide();
             
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
-            modal.hide();
+            // Show success modal
+            document.getElementById('successMessage').textContent = data.message || 'Schedule has been deleted successfully.';
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
             
             // Reload schedules
             await loadSchedules();
         } else {
-            showAlert(data.message, 'danger');
+            // Close delete confirmation modal
+            const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+            deleteModal.hide();
+            
+            // Show error modal
+            document.getElementById('errorMessage').textContent = data.message || 'There was an error deleting the schedule. Please try again.';
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Error deleting schedule. Please try again.', 'danger');
+        
+        // Close delete confirmation modal
+        const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+        if (deleteModal) deleteModal.hide();
+        
+        // Show error modal
+        document.getElementById('errorMessage').textContent = 'Error deleting schedule. Please try again.';
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
     } finally {
         deleteBtn.disabled = false;
-        deleteBtn.innerHTML = 'Delete Schedule';
+        deleteBtn.innerHTML = '<i class="bx bx-trash me-1"></i> Delete';
     }
 }
 
