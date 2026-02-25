@@ -104,7 +104,7 @@ function completePendingPayment() {
         }
         
         const payment = data.payment;
-        statusText.textContent = 'Payment found! Triggering webhook...';
+        statusText.textContent = 'Payment found! Completing it now...';
         statusDetail.textContent = 'Invoice: ' + payment.external_id;
         
         // Now trigger the webhook
