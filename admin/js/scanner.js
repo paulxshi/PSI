@@ -475,10 +475,11 @@ function updateStatusWithId(action, examineeId) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            examinee_id: examineeId,
-            action: action
-        })
+body: JSON.stringify({
+    examinee_id: examineeId,
+    action: action,
+    attended_schedule_id: window.selectedScheduleId
+})
     })
     .then(res => res.json())
     .then(data => {
