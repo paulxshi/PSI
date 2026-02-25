@@ -168,7 +168,14 @@ function changePage(page) {
 }
 
 function getStatusBadge(status) {
-    return 'text-dark fs-7 fw-bold';
+    if (status === 'Incoming') {
+        return 'text-primary';
+    } else if (status === 'Completed') {
+        return 'text-success';
+    } else if (status === 'Closed') {
+        return 'text-danger';
+    }
+    return 'text-secondary';
 }
 
 // Format date to long format
