@@ -43,48 +43,40 @@ document.getElementById('qrResultModal')
 
 function applyActionState(state) {
     const completeBtn = document.getElementById("completeBtn");
-    const rejectBtn = document.getElementById("rejectBtn");
+    const cancelBtn1 = document.getElementById("cancelBtn1");
 
     // Reset styles
     completeBtn.disabled = false;
-    rejectBtn.disabled = false;
+   
+
     completeBtn.style.display = "inline-block";
-    rejectBtn.style.display = "inline-block";
+    cancelBtn1.style.display = "inline-block";
 
     completeBtn.classList.remove("btn-success", "btn-secondary", "btn-outline-success");
-    rejectBtn.classList.remove("btn-danger", "btn-secondary", "btn-outline-danger");
+    cancelBtn1.classList.remove("btn-danger", "btn-secondary", "btn-outline-danger");
 
     if (state === "completed") {
         completeBtn.textContent = "Accepted";
-        rejectBtn.textContent = "Reject";
+        cancelBtn1.textContent = "Cancel";
 
         completeBtn.disabled = true;
-        rejectBtn.disabled = true;
+        cancelBtn1.disabled = true;
 
         completeBtn.classList.add("btn-outline-secondary");
-        rejectBtn.classList.add("btn-outline-secondary");
+        cancelBtn1.classList.add("btn-outline-secondary");
     }
-    else if (state === "rejected") {
-        completeBtn.textContent = "Accept";
-        rejectBtn.textContent = "Rejected";
-
-        completeBtn.disabled = true;
-        rejectBtn.disabled = true;
-
-        completeBtn.classList.add("btn-outline-secondary");
-        rejectBtn.classList.add("btn-outline-secondary");
-    }
+  
     else if (state === "hidden") {
         completeBtn.style.display = "none";
-        rejectBtn.style.display = "none";
+        cancelBtn1.style.display = "none";
     }
     else {
         // Default usable state
         completeBtn.textContent = "Accept";
-        rejectBtn.textContent = "Reject";
+        cancelBtn1.textContent = "Cancel";
 
         completeBtn.classList.add("btn-success");
-        rejectBtn.classList.add("btn-danger");
+        cancelBtn1.classList.add("btn-danger");
     }
 }
 
@@ -227,19 +219,19 @@ if (statusClass === "already_used") {
     document.getElementById("autoCompleteTimer").style.display = "none";
     // Hide action buttons for already used
     document.getElementById("completeBtn").style.display = "none";
-    document.getElementById("rejectBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
 }
 else if (statusClass === "rejected") {
     applyActionState("rejected");
     document.getElementById("autoCompleteTimer").style.display = "none";
     // Hide action buttons for rejected
     document.getElementById("completeBtn").style.display = "none";
-    document.getElementById("rejectBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
 }
 else if (statusClass === "valid") {
     // For verified examinees - hide buttons, auto accept only
     document.getElementById("completeBtn").style.display = "none";
-    document.getElementById("rejectBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
     applyActionState("default");
     document.getElementById("autoCompleteTimer").style.display = "none";
 }
@@ -253,7 +245,7 @@ else {
     document.getElementById("autoCompleteTimer").style.display = "none";
     // Hide action buttons for invalid
     document.getElementById("completeBtn").style.display = "none";
-    document.getElementById("rejectBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
 }
     /* -----------------------------
        Handle auto-complete for valid scans
@@ -349,7 +341,7 @@ function startAutoComplete(modal, examineeId) {
 document.addEventListener("DOMContentLoaded", function () {
 
     const completeBtn = document.getElementById("completeBtn");
-    const rejectBtn = document.getElementById("rejectBtn");
+    const cancelBtn1 = document.getElementById("cancelBtn1");
 
     if (completeBtn) {
         completeBtn.addEventListener("click", function () {
@@ -369,24 +361,23 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    if (rejectBtn) {
-        rejectBtn.addEventListener("click", function () {
+ if (cancelBtn1) {
+    cancelBtn1.addEventListener("click", function () {
 
-            if (!window.currentExamineeId) {
-                alert("No examinee selected.");
-                return;
-            }
+        const modalElement = document.getElementById("qrResultModal");
 
-            applyActionState("rejected");
-            updateStatus("reject");
-                setTimeout(() => {
-                const modalElement = document.getElementById("qrResultModal");
-                const activeModal = bootstrap.Modal.getOrCreateInstance(modalElement);
-                activeModal.hide();
-            }, 1000);
+        if (!modalElement) {
+            console.log("Modal not found");
+            return;
+        }
 
-        });
-    }
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
+}
 
     // Keyboard shortcuts for modal buttons
     let lastEnterTime = 0;

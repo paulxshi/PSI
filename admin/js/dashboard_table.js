@@ -94,9 +94,10 @@ const formattedTime = examinee.scanned_at
                     }
 
                     row.appendChild(createCell(examinee.test_permit));
+                    row.appendChild(createCell(examinee.transaction_no));
                     row.appendChild(createCell(examinee.full_name));
-                    row.appendChild(createCell(examinee.email));
                     row.appendChild(createCell(formattedDate));
+                    row.appendChild(createCell(examinee.email));
                     row.appendChild(createCell(formattedTime));
 
                     // Status cell

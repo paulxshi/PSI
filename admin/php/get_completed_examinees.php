@@ -13,10 +13,12 @@ $sql = "SELECT
     e.examinee_status,
     e.scanned_at,
     u.email,
-    s.scheduled_date
+    s.scheduled_date,
+    p.external_id AS transaction_no
 FROM examinees e
 INNER JOIN users u ON e.user_id = u.user_id
 LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
+LEFT JOIN payments p ON e.examinee_id = p.examinee_id   
 WHERE e.examinee_status = :status
 AND e.scanned_at >= CURRENT_DATE()
 AND e.scanned_at < CURRENT_DATE() + INTERVAL 1 DAY
