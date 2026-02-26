@@ -23,7 +23,7 @@ class RateLimiter {
             first_attempt DATETIME NOT NULL,
             last_attempt DATETIME NOT NULL,
             blocked_until DATETIME DEFAULT NULL,
-            INDEX idx_action_identifier (action_type, identifier),
+            UNIQUE KEY unique_action_identifier (action_type, identifier),
             INDEX idx_blocked_until (blocked_until)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
         
@@ -43,11 +43,33 @@ class RateLimiter {
      * @return bool True if within limit, false if exceeded
      */
     public function checkLimit($actionType, $identifier, $maxAttempts = 5, $timeWindow = 60) {
-        // Clean up old records first
+        // Clean up expired blocks first
         $this->cleanup();
         
+        // First, check if currently blocked (priority check)
+        $blockStmt = $this->pdo->prepare("
+            SELECT blocked_until
+            FROM rate_limits
+            WHERE action_type = ? AND identifier = ? AND blocked_until IS NOT NULL
+            LIMIT 1
+        ");
+        $blockStmt->execute([$actionType, $identifier]);
+        $blockRecord = $blockStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($blockRecord && $blockRecord['blocked_until']) {
+            $blockedUntil = new DateTime($blockRecord['blocked_until']);
+            $now = new DateTime();
+            if ($now < $blockedUntil) {
+                return false; // Still blocked
+            } else {
+                // Block expired, reset for fresh start
+                $this->resetLimit($actionType, $identifier);
+            }
+        }
+        
+        // Get or create attempt record
         $stmt = $this->pdo->prepare("
-            SELECT attempts, first_attempt, blocked_until
+            SELECT id, attempts, first_attempt
             FROM rate_limits
             WHERE action_type = ? AND identifier = ?
             LIMIT 1
@@ -57,20 +79,8 @@ class RateLimiter {
         
         $now = new DateTime();
         
-        // Check if currently blocked
-        if ($record && $record['blocked_until']) {
-            $blockedUntil = new DateTime($record['blocked_until']);
-            if ($now < $blockedUntil) {
-                return false; // Still blocked
-            } else {
-                // Block expired, reset
-                $this->resetLimit($actionType, $identifier);
-                return true;
-            }
-        }
-        
         if (!$record) {
-            // First attempt - allow and record
+            // First attempt - record and allow
             $this->recordAttempt($actionType, $identifier, true);
             return true;
         }
@@ -78,23 +88,32 @@ class RateLimiter {
         $firstAttempt = new DateTime($record['first_attempt']);
         $timeElapsed = $now->getTimestamp() - $firstAttempt->getTimestamp();
         
+        // Check if time window has expired
         if ($timeElapsed > $timeWindow) {
-            // Time window expired, reset counter and allow
+            // Time window expired, reset and start fresh
             $this->resetLimit($actionType, $identifier);
             $this->recordAttempt($actionType, $identifier, true);
             return true;
         }
         
-        // Within time window - check attempt count
-        if ($record['attempts'] >= $maxAttempts) {
-            // Limit exceeded, block for the remaining time window
-            $blockDuration = $timeWindow - $timeElapsed;
-            $this->blockIdentifier($actionType, $identifier, max(60, $blockDuration));
+        // Within time window - increment attempt first, then check
+        $newAttempts = $record['attempts'] + 1;
+        
+        // Update attempts count
+        $updateStmt = $this->pdo->prepare("
+            UPDATE rate_limits 
+            SET attempts = ?, last_attempt = NOW()
+            WHERE action_type = ? AND identifier = ?
+        ");
+        $updateStmt->execute([$newAttempts, $actionType, $identifier]);
+        
+        // Check if this attempt exceeds the limit
+        if ($newAttempts >= $maxAttempts) {
+            // Block for the full time window duration
+            $this->blockIdentifier($actionType, $identifier, $timeWindow);
             return false;
         }
         
-        // Increment attempt counter and allow
-        $this->recordAttempt($actionType, $identifier, false);
         return true;
     }
     
@@ -153,21 +172,18 @@ class RateLimiter {
     }
     
     /**
-     * Record an attempt
+     * Record an attempt (using INSERT ... ON DUPLICATE KEY UPDATE for atomicity)
      */
     private function recordAttempt($actionType, $identifier, $isFirst = false) {
-        if ($isFirst) {
-            $sql = "INSERT INTO rate_limits (action_type, identifier, attempts, first_attempt, last_attempt)
-                    VALUES (?, ?, 1, NOW(), NOW())";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$actionType, $identifier]);
-        } else {
-            $sql = "UPDATE rate_limits 
-                    SET attempts = attempts + 1, last_attempt = NOW()
-                    WHERE action_type = ? AND identifier = ?";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$actionType, $identifier]);
-        }
+        $sql = "INSERT INTO rate_limits (action_type, identifier, attempts, first_attempt, last_attempt)
+                VALUES (?, ?, 1, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE 
+                    attempts = IF(?, 1, attempts + 1),
+                    first_attempt = IF(?, NOW(), first_attempt),
+                    last_attempt = NOW(),
+                    blocked_until = IF(?, NULL, blocked_until)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$actionType, $identifier, $isFirst, $isFirst, $isFirst]);
     }
     
     /**
@@ -183,16 +199,16 @@ class RateLimiter {
     }
     
     /**
-     * Reset limit for identifier
+     * Reset limit for identifier (public method for use after successful login)
      */
-    private function resetLimit($actionType, $identifier) {
+    public function resetLimit($actionType, $identifier) {
         $sql = "DELETE FROM rate_limits WHERE action_type = ? AND identifier = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$actionType, $identifier]);
     }
     
     /**
-     * Clean up old records (older than 1 hour)
+     * Clean up old records (older than 1 hour) and expired blocks
      */
     private function cleanup() {
         $sql = "DELETE FROM rate_limits 

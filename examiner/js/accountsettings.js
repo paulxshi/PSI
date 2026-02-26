@@ -82,6 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('email').textContent = user.email || '—';
         document.getElementById('contact').textContent = user.contact_number || '—';
         
+        // Also set values in input fields for edit mode
+        document.getElementById('input-lname').value = user.last_name || '';
+        document.getElementById('input-fname').value = user.first_name || '';
+        document.getElementById('input-mname').value = user.middle_name || '';
+        document.getElementById('input-contact').value = user.contact_number || '';
+        document.getElementById('input-school').value = user.school || '';
+        
         // Format birthday
         if (user.date_of_birth) {
             const date = new Date(user.date_of_birth);
@@ -91,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 day: 'numeric' 
             });
             document.getElementById('birthday').textContent = formatted;
+            document.getElementById('input-birthday').value = user.date_of_birth;
         }
         
         document.getElementById('age').textContent = user.age || '—';
@@ -299,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else {
             disableEditMode();
-            globalEditButton.innerHTML = '<i class="bx bx-edit me-2"></i> <span class=\"d-none d-sm-inline\">Edit All</span><span class=\"d-sm-none\">Edit</span>';
+            globalEditButton.innerHTML = '<i class="bx bx-edit me-2"></i> <span class=\"d-none d-sm-inline\">Edit Information</span><span class=\"d-sm-none\">Edit</span>';
             formActions.style.display = 'none';
             
             // Reset upload area styling
@@ -314,38 +322,70 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Enable edit mode
+    // Enable edit mode - show and enable input fields
     function enableEditMode() {
         const editableFields = [
-            { id: 'lname', type: 'text', key: 'last_name' },
-            { id: 'fname', type: 'text', key: 'first_name' },
-            { id: 'mname', type: 'text', key: 'middle_name' },
-            { id: 'contact', type: 'tel', key: 'contact_number' },
-            { id: 'birthday', type: 'date', key: 'date_of_birth' },
-            { id: 'school', type: 'text', key: 'school' }
+            { id: 'lname', inputId: 'input-lname', key: 'last_name' },
+            { id: 'fname', inputId: 'input-fname', key: 'first_name' },
+            { id: 'mname', inputId: 'input-mname', key: 'middle_name' },
+            { id: 'contact', inputId: 'input-contact', key: 'contact_number' },
+            { id: 'birthday', inputId: 'input-birthday', key: 'date_of_birth' },
+            { id: 'school', inputId: 'input-school', key: 'school' }
         ];
 
         editableFields.forEach(field => {
-            const element = document.getElementById(field.id);
-            const currentValue = field.type === 'date' ? 
-                originalData[field.key] : 
-                element.textContent;
+            const fieldGroup = document.getElementById('field-' + field.id);
+            const inputElement = document.getElementById(field.inputId);
             
-            element.innerHTML = `<input type="${field.type}" 
-                class="form-control form-control-sm" 
-                value="${currentValue}" 
-                data-field="${field.key}" />`;
+            if (fieldGroup && inputElement) {
+                // Add active class to show border
+                fieldGroup.classList.add('active');
+                
+                // Enable the input
+                inputElement.disabled = false;
+                
+                // Set value from original data or display text
+                const value = originalData[field.key] || document.getElementById(field.id).textContent;
+                inputElement.value = value === '—' ? '' : value;
+                
+                // Add change listener to birthday input for age calculation
+                if (field.id === 'birthday') {
+                    inputElement.addEventListener('change', updateAge);
+                }
+            }
         });
-
-        // Add change listener to birthday input
-        const birthdayInput = document.querySelector('#birthday input');
-        if (birthdayInput) {
-            birthdayInput.addEventListener('change', updateAge);
-        }
     }
 
-    // Disable edit mode (restore original values)
+    // Disable edit mode - hide and disable input fields
     function disableEditMode() {
+        const editableFields = [
+            { id: 'lname', inputId: 'input-lname', key: 'last_name' },
+            { id: 'fname', inputId: 'input-fname', key: 'first_name' },
+            { id: 'mname', inputId: 'input-mname', key: 'middle_name' },
+            { id: 'contact', inputId: 'input-contact', key: 'contact_number' },
+            { id: 'birthday', inputId: 'input-birthday', key: 'date_of_birth' },
+            { id: 'school', inputId: 'input-school', key: 'school' }
+        ];
+
+        editableFields.forEach(field => {
+            const fieldGroup = document.getElementById('field-' + field.id);
+            const inputElement = document.getElementById(field.inputId);
+            
+            if (fieldGroup && inputElement) {
+                // Remove active class to hide border
+                fieldGroup.classList.remove('active');
+                
+                // Disable the input
+                inputElement.disabled = true;
+                
+                // Remove change listener from birthday input
+                if (field.id === 'birthday') {
+                    inputElement.removeEventListener('change', updateAge);
+                }
+            }
+        });
+        
+        // Restore original display values
         document.getElementById('lname').textContent = originalData.last_name || '—';
         document.getElementById('fname').textContent = originalData.first_name || '—';
         document.getElementById('mname').textContent = originalData.middle_name || '—';
@@ -387,9 +427,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function saveChanges() {
         if (!isEditMode) return;
 
-        // Collect updated data
+        // Collect updated data from the edit-input fields
         const updatedData = {};
-        const inputs = document.querySelectorAll('.form-control');
+        const inputs = document.querySelectorAll('.edit-input');
         
         inputs.forEach(input => {
             const fieldKey = input.dataset.field;

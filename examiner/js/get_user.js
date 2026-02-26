@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="info-label">Test Permit No.</span>
                 <span class="info-value">
                   ${user.test_permit
-                    ? `<span class="permit-badge"><i class='bx bx-id-card'></i>${user.test_permit}</span>`
+                    ? `<span><i class='bx bx-id-card'></i> ${user.test_permit}</span>`
                     : '<span style="color:var(--ink-40);font-size:0.85rem;">Not yet assigned</span>'}
                 </span>
               </div>
