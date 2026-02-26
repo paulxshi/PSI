@@ -4,17 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("php/get_user.php")
     .then(res => {
       console.log("Response status:", res.status);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       return res.json();
     })
     .then(data => {
       console.log("Response data:", data);
-      
+
       if (!data.success) {
         console.error("API Error:", data.message);
-        container.innerHTML = `<p class="text-danger">${data.message || "Failed to load user data."}</p>`;
+        container.innerHTML = `<p class="text-danger p-4">${data.message || "Failed to load user data."}</p>`;
         return;
       }
 
@@ -24,229 +22,220 @@ document.addEventListener("DOMContentLoaded", () => {
       // Format date of birth
       const dob = new Date(user.date_of_birth);
       const dobFormatted = dob.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
+        month: 'long', day: 'numeric', year: 'numeric'
       });
 
       const purposeEl = document.getElementById("purpose");
       if (purposeEl) purposeEl.textContent = user.purpose || "N/A";
 
-      // Format role display
-      const roleDisplay = user.role === 'admin' ? 'Administrator' : 'Examinee';
-      
-      // Format status display
-      const statusBadgeClass = user.status === 'active' ? 'bg-success' : 'bg-warning';
-      const statusDisplay = user.status ? user.status.charAt(0).toUpperCase() + user.status.slice(1) : 'Inactive';
+      // Format role / status
+      const roleDisplay    = user.role === 'admin' ? 'Administrator' : 'Examinee';
+      const statusBadge    = user.status === 'active' ? 'bg-success' : 'bg-warning';
+      const statusDisplay  = user.status
+        ? user.status.charAt(0).toUpperCase() + user.status.slice(1)
+        : 'Inactive';
 
-      // Build user card
+      // Build monogram from initials
+      const firstInitial  = (user.first_name  || '').charAt(0).toUpperCase();
+      const lastInitial   = (user.last_name   || '').charAt(0).toUpperCase();
+      const monogram      = firstInitial + lastInitial;
+
+      // ── ENHANCED CARD MARKUP ──────────────────────────────────────────────
       const card = `
         <div class="user-card">
+
+          <!-- ── HEADER ── -->
           <div class="user-card-header">
-            <h5 class="user-name">
-              ${user.first_name} ${user.middle_name ? user.middle_name + '. ' : ''}${user.last_name}
-            </h5>
-            <p class="user-role">${roleDisplay}</p>
-            <span class="status-pill ${statusBadgeClass}">
-              ${statusDisplay}
-            </span>
+            <div class="user-card-header-monogram">
+              <span class="monogram-initials">${monogram}</span>
+            </div>
+
+            <div class="user-card-header-info">
+              <h5 class="user-name">
+                ${user.first_name}${user.middle_name ? ' ' + user.middle_name + '.' : ''} ${user.last_name}
+              </h5>
+              <p class="user-role">${roleDisplay}</p>
+              <span class="status-pill ${statusBadge}">${statusDisplay}</span>
+
+              <div class="user-card-meta">
+                ${user.email ? `
+                <span class="meta-tag">
+                  <i class='bx bx-envelope'></i>
+                  ${user.email}
+                </span>` : ''}
+                ${user.contact_number ? `
+                <span class="meta-tag">
+                  <i class='bx bx-phone'></i>
+                  ${user.contact_number}
+                </span>` : ''}
+              </div>
+            </div>
+
             <input type="hidden" id="user_id" value="${user.user_id}">
           </div>
+
+          <!-- ── BODY ── -->
           <div class="user-card-body">
-            <div class="info-row">
-              <span class="info-label">Test Permit</span>
-              <span class="info-value">${user.test_permit ?? "N/A"}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Email</span>
-              <span class="info-value">${user.email}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Contact</span>
-              <span class="info-value">${user.contact_number}</span>
-            </div>
-            <div class="info-grid">
-              <div>
+              <div class="info-row">
+                <span class="info-label">Test Permit No.</span>
+                <span class="info-value">
+                  ${user.test_permit
+                    ? `<span class="permit-badge"><i class='bx bx-id-card'></i>${user.test_permit}</span>`
+                    : '<span style="color:var(--ink-40);font-size:0.85rem;">Not yet assigned</span>'}
+                </span>
+              </div>
+
+            <div class="info-section-title">Personal Details</div>
+
+            <div class="info-grid-2col">
+              <div class="info-row">
                 <span class="info-label">Birthday</span>
                 <span class="info-value">${dobFormatted}</span>
               </div>
-              <div>
+              <div class="info-row">
                 <span class="info-label">Age</span>
                 <span class="info-value">${user.age}</span>
               </div>
+              ${user.school ? `
+              <div class="info-row">
+                <span class="info-label">School</span>
+                <span class="info-value">${user.school}</span>
+              </div>` : ''}
             </div>
-            ${user.school ? `
-            <div class="info-row">
-              <span class="info-label">School</span>
-              <span class="info-value">${user.school}</span>
+
+            <div class="info-section-title">Contact Details</div>
+
+            <div class="info-grid-2col">
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <span class="info-value">${user.email}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Contact</span>
+                <span class="info-value">${user.contact_number}</span>
+              </div>
             </div>
-            ` : ''}
+
           </div>
         </div>
       `;
+      // ─────────────────────────────────────────────────────────────────────
 
       container.insertAdjacentHTML("beforeend", card);
 
       const userId = document.getElementById("user_id").value;
 
-      // Display profile picture in the qr-card upload area
-      const profileImageInput = document.getElementById("profileImageInput");
-      const imagePreview = document.getElementById("imagePreview");
+      // ── Profile picture ───────────────────────────────────────────────────
+      const imagePreview      = document.getElementById("imagePreview");
       const uploadPlaceholder = document.getElementById("uploadPlaceholder");
-      const imageText = document.getElementById("imageText");
 
-      // Check if user has a profile picture and display it
       if (user.profile_picture) {
         imagePreview.src = "../" + user.profile_picture;
         imagePreview.style.display = "block";
-        if (uploadPlaceholder) {
-          uploadPlaceholder.style.display = "none";
-        }
+        if (uploadPlaceholder) uploadPlaceholder.style.display = "none";
       }
 
-      // Update View Permit button based on profile picture
+      // ── View Permit button state ──────────────────────────────────────────
       const viewPermitBtn = document.getElementById('btnViewPermit');
       if (viewPermitBtn) {
-        const hasProfilePicture = user.profile_picture && user.profile_picture.trim() !== '';
-        viewPermitBtn.disabled = !hasProfilePicture;
-        viewPermitBtn.style.opacity = hasProfilePicture ? '1' : '0.5';
-        viewPermitBtn.style.cursor = hasProfilePicture ? 'pointer' : 'not-allowed';
+        const hasPhoto = user.profile_picture && user.profile_picture.trim() !== '';
+        viewPermitBtn.disabled       = !hasPhoto;
+        viewPermitBtn.style.opacity  = hasPhoto ? '1' : '0.5';
+        viewPermitBtn.style.cursor   = hasPhoto ? 'pointer' : 'not-allowed';
       }
 
-      // Fetch transaction number from PHP
-      fetch("php/get_transaction.php?user_id=" + userId)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status !== "success") {
-            alert("Unable to retrieve transaction number.");
-            return;
-          }
-
-          const transactionNo = data.external_id;
-          const qrValue = transactionNo;
-
-          document.getElementById("qrText").innerText = qrValue;
-
-          // Generate QR Code
-          const qr = new QRCode(document.getElementById("qrContainer"), {
-            text: qrValue,
-            width: 180,
-            height: 180,
-          });
-
-          const maskButton = document.getElementById("maskButton");
-          const qrText = document.getElementById("qrText");
-
-          // Initially mask the QR value by applying a blur effect (hide it)
-          qrText.style.filter = "blur(5px)";  // Mask QR value by default
-          maskButton.textContent = "VIEW";  // Set button text to "VIEW" initially
-
-          // Add event listener for the mask/unmask button
-          maskButton.addEventListener("click", () => {
-            if (qrText.style.filter === "blur(5px)") {
-              qrText.style.filter = "none";  // Unblur the QR value
-              maskButton.textContent = "HIDE";  // Update button text to "HIDE"
-            } else {
-              qrText.style.filter = "blur(5px)";  // Blur the QR value
-              maskButton.textContent = "VIEW";  // Update button text to "VIEW"
-            }
-          });
-
-          // Download Function for QR Code
-          document.getElementById("downloadQR").addEventListener("click", () => {
-            const canvas = document.querySelector("#qrContainer canvas");
-            if (!canvas) return;
-
-            const ctx = canvas.getContext("2d");
-            const logo = new Image();
-            logo.src = "../imgs/PSI.png";
-
-            logo.onload = () => {
-              const size = canvas.width * 0.22;
-              const x = (canvas.width - size) / 2;
-              const y = (canvas.height - size) / 2;
-
-              // White background circle
-              ctx.fillStyle = "#ffffff";
-              ctx.beginPath();
-              ctx.arc(
-                x + size / 2,
-                y + size / 2,
-                size / 2 + 4,
-                0,
-                Math.PI * 2
-              );
-              ctx.fill();
-
-              // Draw logo
-              ctx.drawImage(logo, x, y, size, size);
-
-              const link = document.createElement("a");
-              link.download = transactionNo + "_QR.png";
-              link.href = canvas.toDataURL("image/png");
-              link.click();
-            };
-          });
-
+      // ── Transaction / QR (parallel with exam details) ────────────────────
+      Promise.all([
+        fetch("php/get_transaction.php?user_id=" + userId).then(r => r.json()),
+        fetch("php/get_exam_details.php?user_id="  + userId).then(r => {
+          if (!r.ok) throw new Error("Network response was not ok");
+          return r.json();
         })
-        .catch(error => console.error(error));
+      ])
+      .then(([txData, examData]) => {
 
-      // Fetch exam details
-      fetch("php/get_exam_details.php?user_id=" + userId)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.status !== "success") {
-            console.warn(data.message || "No exam details found.");
-            return;
+        // ── QR / Transaction ─────────────────────────────────────────────
+        if (txData.status === "success") {
+          const transactionNo = txData.external_id;
+          const qrTextEl      = document.getElementById("qrText");
+          const qrContainerEl = document.getElementById("qrContainer");
+          const maskButton    = document.getElementById("maskButton");
+          const downloadBtn   = document.getElementById("downloadQR");
+
+          if (qrTextEl)      qrTextEl.innerText = transactionNo;
+
+          if (qrContainerEl) {
+            const qr = new QRCode(qrContainerEl, {
+              text: transactionNo, width: 180, height: 180,
+            });
           }
 
-          // Format registration date
-          const registrationDate = data.date_of_registration
-            ? new Date(data.date_of_registration).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-              })
+          if (qrTextEl) {
+            qrTextEl.style.filter = "blur(5px)";
+          }
+
+          if (maskButton) {
+            maskButton.textContent = "VIEW";
+            maskButton.addEventListener("click", () => {
+              if (qrTextEl.style.filter === "blur(5px)") {
+                qrTextEl.style.filter = "none";
+                maskButton.textContent = "HIDE";
+              } else {
+                qrTextEl.style.filter = "blur(5px)";
+                maskButton.textContent = "VIEW";
+              }
+            });
+          }
+
+          if (downloadBtn) {
+            downloadBtn.addEventListener("click", () => {
+              const canvas = document.querySelector("#qrContainer canvas");
+              if (!canvas) return;
+              const ctx  = canvas.getContext("2d");
+              const logo = new Image();
+              logo.src   = "../imgs/PSI.png";
+              logo.onload = () => {
+                const size = canvas.width * 0.22;
+                const x = (canvas.width  - size) / 2;
+                const y = (canvas.height - size) / 2;
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(x + size / 2, y + size / 2, size / 2 + 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.drawImage(logo, x, y, size, size);
+                const link   = document.createElement("a");
+                link.download = transactionNo + "_QR.png";
+                link.href     = canvas.toDataURL("image/png");
+                link.click();
+              };
+            });
+          }
+        }
+
+        // ── Exam Details ─────────────────────────────────────────────────
+        if (examData.status === "success") {
+          const fmt = (dateStr) => dateStr
+            ? new Date(dateStr).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
             : "N/A";
 
-          const examinationDate = data.date_of_test
-            ? new Date(data.date_of_test).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-              })
-            : "N/A";
+          const regEl   = document.getElementById("registration-date");
+          const examEl  = document.getElementById("examination-date");
+          const venueEl = document.getElementById("examination-venue");
 
-          const registrationEl = document.getElementById("registration-date");
-          if (registrationEl) {
-            registrationEl.textContent = registrationDate || "N/A";
-          }
+          if (regEl)   regEl.textContent   = fmt(examData.date_of_registration);
+          if (examEl)  examEl.textContent  = fmt(examData.date_of_test);
+          if (venueEl) venueEl.textContent =
+            (examData.venue_name ? examData.venue_name + ", " : "") + (examData.region || "N/A");
+        } else {
+          console.warn(examData.message || "No exam details found.");
+        }
 
-          const examDateEl = document.getElementById("examination-date");
-          if (examDateEl) {
-            examDateEl.textContent = examinationDate || "N/A";
-          }
-
-          const venueNameEl = document.getElementById("examination-venue");
-          if (venueNameEl) {
-            venueNameEl.textContent =
-              (data.venue_name ? data.venue_name + ", " : "") +
-              (data.region || "N/A");
-          }
-
-        })
-        .catch(error => {
-          console.error("Error fetching exam details:", error);
-        });
+      })
+      .catch(err => console.error("Parallel fetch error:", err));
 
     })
     .catch(err => {
       console.error("Fetch error:", err);
-      container.innerHTML = `<p class="text-danger">Error loading user data: ${err.message}</p>`;
+      container.innerHTML = `<p class="text-danger p-4">Error loading user data: ${err.message}</p>`;
     });
 });
