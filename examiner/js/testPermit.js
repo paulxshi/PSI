@@ -47,7 +47,8 @@ function populateTestPermit(user) {
     // Profile Picture with default fallback
     const photoBox = document.querySelector('.photo-box img');
     if (user.profile_picture && user.profile_picture.trim() !== '') {
-        photoBox.src = `../${user.profile_picture}`;
+        const photoSrc = `../${user.profile_picture}`;
+        photoBox.src = photoSrc;
         photoBox.alt = "Examinee Photo";
         
         // Add error handler to fallback to default avatar if image fails to load
@@ -69,66 +70,53 @@ function populateTestPermit(user) {
         greetingSpan.textContent = `${user.first_name} ${user.last_name}`;
     }
 
-    // Personal Information
-    document.getElementById('testPermit').textContent = user.test_permit || 'N/A';
-    
-    // Status with proper formatting
-    const statusEl = document.getElementById('status');
-    if (user.status === 'active') {
-        statusEl.textContent = 'Active';
-        statusEl.className = 'fw-semibold text-success';
-    } else {
-        statusEl.textContent = user.status ? user.status.charAt(0).toUpperCase() + user.status.slice(1) : 'Inactive';
-        statusEl.className = 'fw-semibold text-warning';
-    }
-
     // Full name
     const fullName = `${user.first_name} ${user.middle_name ? user.middle_name + ' ' : ''}${user.last_name}`;
+    
+    // Personal Information
+    document.getElementById('testPermit').textContent = user.test_permit || 'N/A';
     document.getElementById('fullName').textContent = fullName;
 
     // Date of Birth
+    let dobText = 'N/A';
     if (user.date_of_birth) {
         const dob = new Date(user.date_of_birth);
-        document.getElementById('dob').textContent = dob.toLocaleDateString('en-US', {
+        dobText = dob.toLocaleDateString('en-US', {
             month: '2-digit',
             day: '2-digit',
             year: 'numeric'
         });
+        document.getElementById('dob').textContent = dobText;
     }
 
-    // Age
-    document.getElementById('age').textContent = user.age || 'N/A';
-
-    // Gender
-    document.getElementById('gender').textContent = user.gender || 'N/A';
-
-    // Nationality (should be Filipino)
-    document.getElementById('nationality').textContent = user.nationality || 'Filipino';
-
     // Contact Number
-    document.getElementById('contact').textContent = user.contact_number || 'N/A';
+    const contactText = user.contact_number || 'N/A';
+    document.getElementById('contact').textContent = contactText;
 
     // Email Address
-    document.getElementById('email').textContent = user.email || 'N/A';
+    const emailText = user.email || 'N/A';
+    document.getElementById('email').textContent = emailText;
 
     // Schedule of Examination
+    let dateOfTestText = 'Not Scheduled';
     if (user.exam_date) {
         const examDate = new Date(user.exam_date);
-        document.getElementById('dateOfTest').textContent = examDate.toLocaleDateString('en-US', {
+        dateOfTestText = examDate.toLocaleDateString('en-US', {
             month: '2-digit',
             day: '2-digit',
             year: 'numeric'
         });
+        document.getElementById('dateOfTest').textContent = dateOfTestText;
     } else {
         document.getElementById('dateOfTest').textContent = 'Not Scheduled';
     }
 
     // Venue
-    if (user.exam_venue) {
-        document.getElementById('venue').textContent = `${user.exam_venue}, ${user.region}`;
-    } else {
-        document.getElementById('venue').textContent = 'Not Scheduled';
-    }
+    const venueText = user.exam_venue ? `${user.exam_venue}, ${user.region}` : 'Not Scheduled';
+    document.getElementById('venue').textContent = venueText;
+    
+    // Test Permit Number
+    const testPermitText = user.test_permit || 'N/A';
 }
 
 function loadTransaction(userId) {
@@ -139,6 +127,8 @@ function loadTransaction(userId) {
         .then(data => {
             console.log('Transaction response:', data);
             
+            let transactionNo = 'N/A';
+            
             if (data.status !== "success") {
                 console.warn("No payment found in transaction query");
                 document.getElementById('transactionNo').textContent = 'N/A';
@@ -147,7 +137,7 @@ function loadTransaction(userId) {
                 return;
             }
 
-            const transactionNo = data.external_id;
+            transactionNo = data.external_id;
             console.log("Transaction number:", transactionNo);
 
             // Populate transaction number
@@ -170,9 +160,22 @@ function loadTransaction(userId) {
 function loadPaymentDetails(userId) {
     console.log('Loading payment details for user:', userId);
     
+    const paymentDateEl = document.getElementById('paymentDate');
+    const paymentMethodEl = document.getElementById('paymentMethod');
+    
+    // Set default values first
+    if (paymentDateEl) paymentDateEl.textContent = 'N/A';
+    if (paymentMethodEl) paymentMethodEl.textContent = 'N/A';
+    
     // Fetch full payment details
     fetch(`php/get_payment_details.php?user_id=${userId}`)
-        .then(response => response.json())
+        .then(response => {
+            console.log('Payment response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Payment details response:', data);
             
@@ -180,56 +183,55 @@ function loadPaymentDetails(userId) {
                 const payment = data.payment;
                 console.log('Payment data:', payment);
 
-                // Payment Date (using paid_at column, fallback to payment_date)
+                // Payment Date - try multiple date fields
+                let paymentDateStr = 'N/A';
                 const dateValue = payment.paid_at || payment.payment_date || payment.created_at;
+                console.log('Raw date value:', dateValue);
+                
                 if (dateValue) {
-                    const paymentDate = new Date(dateValue);
-                    const formattedDate = paymentDate.toLocaleDateString('en-US', {
-                        month: '2-digit',
-                        day: '2-digit',
-                        year: 'numeric'
-                    });
-                    console.log('Setting payment date to:', formattedDate);
-                    document.getElementById('paymentDate').textContent = formattedDate;
+                    try {
+                        const paymentDate = new Date(dateValue);
+                        console.log('Parsed date:', paymentDate);
+                        
+                        if (!isNaN(paymentDate.getTime())) {
+                            paymentDateStr = paymentDate.toLocaleDateString('en-US', {
+                                month: '2-digit',
+                                day: '2-digit',
+                                year: 'numeric'
+                            });
+                            console.log('Formatted payment date:', paymentDateStr);
+                        }
+                    } catch (e) {
+                        console.error('Error parsing date:', e);
+                    }
                 } else {
-                    console.warn('No date value in payment data');
-                    document.getElementById('paymentDate').textContent = 'N/A';
+                    console.warn('No date value found in payment data');
+                }
+                
+                // Set payment date
+                if (paymentDateEl) {
+                    paymentDateEl.textContent = paymentDateStr;
                 }
 
-                // Amount
-                if (payment.amount) {
-                    const formattedAmount = `₱${parseFloat(payment.amount).toFixed(2)}`;
-                    console.log('Setting amount to:', formattedAmount);
-                    document.getElementById('amount').textContent = formattedAmount;
-                } else {
-                    console.warn('No amount value in payment data');
-                    document.getElementById('amount').textContent = 'N/A';
+                // Payment Method / Channel
+                const channelValue = payment.channel || 'N/A';
+                console.log('Payment channel:', channelValue);
+                
+                if (paymentMethodEl) {
+                    paymentMethodEl.textContent = channelValue;
                 }
-
-                // Channel
-                if (payment.channel) {
-                    console.log('Setting channel to:', payment.channel);
-                    document.getElementById('paymentMethod').textContent = payment.channel;
-                }  
-                    else {
-                    console.warn('No channel value in payment data');
-                    document.getElementById('paymentMethod').textContent = 'N/A';
-                }
-
 
             } else {
                 console.warn('Payment details not found or unsuccessful response');
-                if (data.error_detail) {
-                    console.error('Error detail:', data.error_detail);
+                console.log('Success:', data.success);
+                console.log('Payment:', data.payment);
+                if (data.message) {
+                    console.log('Message:', data.message);
                 }
-                document.getElementById('paymentDate').textContent = 'N/A';
-                document.getElementById('amount').textContent = 'N/A';
             }
         })
         .catch(error => {
             console.error("Error loading payment details:", error);
-            document.getElementById('paymentDate').textContent = 'N/A';
-            document.getElementById('amount').textContent = 'N/A';
         });
 }
 

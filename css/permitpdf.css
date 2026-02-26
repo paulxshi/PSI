@@ -1,98 +1,310 @@
-body.print-mode #permitPDF {
-  max-width: 210mm;
-  min-height: 297mm;
-  padding: 15mm 14mm; 
+#permitPDF {
+  color: #000;
+  padding: 30px 36px;
+  max-width: 860px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body.print-mode #permitPDF {
-  width: 100% !important;
-  padding: 0.35in !important;  
+/* ── Back button hover ── */
+.btn-light:hover {
+  background-color: #000;
+  transform: translateX(-2px);
+  transition: 0.2s ease;
+  color: aliceblue;
 }
 
+/* ── HEADER ── */
+.permit-header {
+  display: grid;
+  grid-template-columns: 140px 1fr 140px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.permit-header .qr-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.permit-header .center-col {
+  text-align: center;
+}
+
+.permit-header .photo-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+/* QR container */
+.qr-code-square-container {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+}
+
+.qr-code-square-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.transaction-info {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 9px;
+  color: #666;
+}
+
+.transaction-info .transaction-label {
+  font-weight: 600;
+}
+
+.transaction-info .transaction-value {
+  font-weight: 500;
+}
+
+.qr-logo {
+  position: absolute;
+  width: 35px !important;
+  height: 35px !important;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* PSI logo in header */
+.permit-header .center-col img.psi-logo {
+  max-height: 90px;
+  margin-bottom: 6px;
+}
+
+.permit-header .center-col h5 {
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #c0392b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.permit-header .center-col h6 {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #000;
+  margin: 0;
+}
+
+/* Examinee photo */
+.photo-box {
+  width: 120px;
+  height: 125px;
+  overflow: hidden;
+  border: 2px solid #555;
+}
+
+.photo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── RED NOTE ── */
 .permit-note {
   font-weight: 800;
   font-size: 14px;
   text-transform: uppercase;
-  color: #ef0707;
-  line-height: 1.4;
-  margin-top: 15px;
-  margin-bottom: 20px;
+  color: #c0392b;
   font-style: italic;
   text-align: center;
+  margin: 15px 0 14px;
+  text-decoration: underline;
 }
 
-.photo-box {
-  cursor: pointer;
+/* ── PERMIT CONTENT LAYOUT ── */
+.permit-content {
+  margin-top: 10px;
 }
 
-.upload-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+.content-headers .row {
+  padding-bottom: 4px;
 }
 
-.photo-box:hover .upload-overlay {
-  opacity: 1;
-}
-
-#permitPDF {
-  color: #000;
-  padding: 30px;
-  max-width: 800px;
-  margin: auto;
-}
-
-.permit-title {
-  font-size: 18px;
-  font-weight: bold;
-  text-transform: uppercase;
-  border: 2px solid #000;
-  display: inline-block;
-  padding: 6px 18px;
-  margin-top: 15px;
-}
-
-body.print-mode .print-signature {
-  display: block !important;
-  margin-top: 8px !important;
-  margin-left: auto;
-  margin-right: 100px;
-  width: 180px !important;
-  text-align: right;
-}
-
-body.print-mode .print-signature p {
-  margin-bottom: 5px !important;
-  text-align: right;
-}
-
-body.print-mode .print-signature div:first-of-type {
-  margin-top: 10px !important;
-  height: 20px !important;
-  margin-left: auto;
-}
-
-body.print-mode #permitPDF {
-  max-width: 210mm;
-  min-height: 297mm;
-  padding: 15mm 14mm;
+.section-title {
   font-size: 12px;
-  line-height: 1.3;
-
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #111;
+  margin: 0 0 6px 0;
+  background-color: #e0e0e0;
+  padding: 4px 8px;
+  display: inline-block;
+  width: 100%;
+  border-right: 7.5px solid #ffffff;
 }
 
+/* Field styles */
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 2px;
+}
 
+.field-value {
+  font-size: 12px;
+  color: #222;
+}
+
+/* Reduce gap between contact and email fields */
+.permit-content .d-flex {
+  gap: 1rem !important;
+  justify-content: flex-start;
+}
+
+/* ── GUIDELINES ── */
+.guidelines-section {
+  margin-top: 16px;
+}
+
+.guidelines-section h6 {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.guidelines-section ol {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.guidelines-section ol li {
+  font-size: 11.5px;
+  color: #222;
+  margin-bottom: 3px;
+  line-height: 1.5;
+}
+
+/* ── SIGNATURE ── */
+.signature-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.signature-block {
+  text-align: center;
+  width: 220px;
+  margin-top: 90px;
+}
+
+.signature-block .sig-line {
+  border-bottom: 1.5px solid #000;
+  height: 36px;
+  margin-bottom: 4px;
+}
+
+.signature-block .sig-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.signature-block .sig-sub {
+  font-size: 10px;
+  font-style: italic;
+  color: #555;
+}
+
+/* ── Logout modal button ── */
+.btn-close:focus,
+.no-focus:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ══════════════════════════════════════
+   PRINT MODE (html2pdf)
+   ══════════════════════════════════════ */
+body.print-mode #permitPDF {
+  max-width: 100%;
+  padding: 10mm 12mm;
+  font-size: 10px;
+  line-height: 1.25;
+  box-shadow: none !important;
+}
+
+body.print-mode .permit-header .center-col img.psi-logo {
+  max-height: 65px;
+}
+
+body.print-mode .permit-header .center-col h5 {
+  font-size: 14px;
+}
+
+body.print-mode .permit-header .center-col h6 {
+  font-size: 12px;
+}
+
+body.print-mode .photo-box {
+  width: 95px;
+  height: 90px;
+}
+
+body.print-mode .permit-note {
+  font-size: 10px;
+  margin: 4px 0 8px;
+}
+
+body.print-mode .section-title {
+  font-size: 9px;
+}
+
+body.print-mode .field-label {
+  font-size: 9px;
+}
+
+body.print-mode .field-value {
+  font-size: 10px;
+}
+
+body.print-mode .guidelines-section h6 {
+  font-size: 11px;
+}
+
+body.print-mode .guidelines-section ol li {
+  font-size: 9.5px;
+}
+
+body.print-mode .signature-block .sig-label {
+  font-size: 9px;
+}
+
+body.print-mode .signature-block .sig-sub {
+  font-size: 8.5px;
+}
+
+/* ══════════════════════════════════════
+   @MEDIA PRINT (browser print)
+   ══════════════════════════════════════ */
 @media print {
-
   #sidebar,
   nav,
   .btn {
     display: none !important;
   }
 
-  html, body {
+  html,
+  body {
     margin: 0 !important;
     padding: 0 !important;
     background: #fff !important;
@@ -106,318 +318,144 @@ body.print-mode #permitPDF {
   }
 
   @page {
-    size: A4 portrait;
-    margin: 4mm;
+    size: letter portrait;
+    margin: 5mm;
   }
 
   #permitPDF {
     width: 100%;
-    padding: 3mm;
-    font-size: 8px;
-    line-height: 1.0;
+    padding: 4mm;
+    font-size: 9px;
+    line-height: 1.2;
     box-shadow: none !important;
   }
 
-  hr {
-    margin: 2px 0 !important;
-  }
-
-  .row {
-    margin-bottom: 1px !important;
-  }
-
-  .mb-4 {
-    margin-bottom: 4px !important;
-  }
-
-  h6 {
-    font-size: 9px;
-    margin-bottom: 3px !important;
-    padding: 3px 5px !important;
-  }
-
-  #permitPDF h6 {
-    font-size: 8px !important;
-  }
-
-  small {
-    font-size: 7px;
-  }
-
-  .fw-semibold {
-    font-size: 8px;
-  }
-
-  .col-md-6 {
-    width: 33.333% !important;
-  }
-
-  .col-md-4 {
-    width: 25% !important;
-  }
-
-  .col-md-3 {
-    width: 18% !important;
-  }
-
-  .col-md-9 {
-    width: 82% !important;
-  }
-
-  #permitPDF img {
-    max-height: 35px !important;
+  .qr-code-square-container {
+    width: 80px;
+    height: 80px;
   }
 
   .photo-box {
-    width: 40px !important;
-    height: 40px !important; 
+    width: 80px;
+    height: 95px;
+  }
+
+  .permit-header {
+    grid-template-columns: 90px 1fr 90px;
+  }
+
+  .permit-header .center-col img.psi-logo {
+    max-height: 55px;
+  }
+
+  .permit-header .center-col h5 {
+    font-size: 12px;
+  }
+
+  .permit-header .center-col h6 {
+    font-size: 11px;
   }
 
   .permit-note {
-    font-size: 7px;
-    margin-top: 2px;
-    margin-bottom: 3px;
+    font-size: 9px;
   }
 
-  ol {
-    font-size: 7px;
-    padding-left: 10px;
+  .field-label {
+    font-size: 8px;
   }
 
-  li {
-    margin-bottom: 1px !important;
+  .field-value {
+    font-size: 9px;
   }
 
-  .print-signature {
-    display: block !important;
-    margin-top: 5px;
+  .section-title {
+    font-size: 8px;
+  }
+
+  .guidelines-section ol li {
+    font-size: 8.5px;
   }
 }
 
-#permitPDF ol {
-  margin-top: 12px;
-  margin-bottom: 12px;
-  padding-left: 20px;
-}
-
-#permitPDF li {
-  margin-bottom: 10px;
-  line-height: 1.5;
-}
-
-
-#permitPDF h6 {
-  margin-bottom: 10px !important;
-  padding-bottom: 5px;
-  letter-spacing: 0.3px;
-}
-
-#permitPDF .row {
-  margin-bottom: 2px !important;
-}
-
-#permitPDF .fw-semibold {
-  line-height: 1.15;
-}
-
-#permitPDF .mb-4 {
-  margin-bottom: 6px !important;
-}
-
-body.print-mode #permitPDF {
-  width: 100% !important;
-  padding: 0.15in !important;
-
-  font-size: 9px !important;
-  line-height: 1.0 !important;
-
-  box-shadow: none !important;
-}
-
-body.print-mode #permitPDF h6 {
-  font-size: 10px !important;
-  margin-bottom: 2px !important;
-  padding: 3px 5px !important;
-}
-
-body.print-mode #permitPDF hr {
-  margin: 1px 0 !important;
-}
-
-body.print-mode #permitPDF .row {
-  margin-bottom: 0px !important;
-}
-
-body.print-mode #permitPDF .mb-4 {
-  margin-bottom: 2px !important;
-}
-
-body.print-mode #permitPDF .mb-5 {
-  margin-bottom: 6px !important;
-}
-
-body.print-mode #permitPDF small {
-  font-size: 9px !important;
-}
-
-body.print-mode #permitPDF .fw-semibold {
-  font-size: 11px !important;
-}
-
-body.print-mode .qr-code-square-container {
-  width: 70px !important;
-  height: 70px !important;
-  margin: 3px auto !important;
-}
-
-/* Print mode - header QR code */
-body.print-mode #permitPDF > div:first-child .qr-code-square-container {
-  width: 50px !important;
-  height: 50px !important;
-  top: 2px !important;
-  right: 2px !important;
-}
-
-body.print-mode .qr-logo {
-  max-width: 25px !important;
-  max-height: 25px !important;
-}
-
-/* Guidelines list */
-body.print-mode #permitPDF ol {
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-
-body.print-mode #permitPDF li {
-  margin-bottom: 1px !important;
-  line-height: 1.2;
-}
-
-body.print-mode hr {
-  margin: 2px 0 !important;
-}
-
-/* Remove duplicate conflicting rules below */
-
-body.print-mode .row {
-  margin-bottom: 2px !important;
-}
-
-body.print-mode .mb-4 {
-  margin-bottom: 6px !important;
-}
-
-body.print-mode small {
-  font-size: 9px !important;
-}
-
-body.print-mode .fw-semibold {
-  font-size: 11px !important;
-}
-
-.btn-close:focus,
-.no-focus:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* Center the QR code container */
-.qr-code-square-container {
-  width: 120px;  
-  height: 120px;
-  background-color: #f0f0f0;  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* QR code in header - top right positioning */
-#permitPDF > div:first-child .qr-code-square-container {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 80px;
-  height: 80px;
-  margin: 0;
-}
-
-#permitPDF > div:first-child .qr-code-square-container .qr-logo {
-  max-width: 20px;
-  max-height: 20px;
-}
-
-/* Header logo styling */
-.header-logo {
-  max-height: 80px;
-  margin-bottom: 8px;
-}
-
-/* Header title styling */
-.header-title {
-  font-size: 14px;
-}
-
-.header-subtitle {
-  font-size: 13px;
-}
-
-#qrCode {
-  max-width: 90%; 
-  max-height: 90%; 
-}
-
-#permitPDF .col-md-6,
-#permitPDF .col-md-4 {
-  padding: 8px 10px; 
-}
-
-#permitPDF .fw-semibold {
-  font-size: 15px; 
-}
-
-#permitPDF .col-md-6 {
-  width: 50%; 
-}
-
-#permitPDF .col-md-4 {
-  width: 33.333%; 
-}
-
-#permitPDF small.text-muted {
-  font-size: 14px; 
-  color: #666; 
-}
-
-
-
-@media print {
-  #permitPDF .col-md-6 {
-    width: 50% !important; 
+/* ══════════════════════════════════════
+    MOBILE RESPONSIVE
+    ══════════════════════════════════════ */
+@media (max-width: 768px) {
+  #permitPDF {
+    padding: 15px 20px;
   }
 
-  #permitPDF .col-md-4 {
-    width: 25% !important; 
+  .permit-header {
+    grid-template-columns: 80px 1fr 80px;
+    gap: 5px;
   }
 
-  #permitPDF .col-md-3 {
-    width: 25% !important;
+  .qr-code-square-container {
+    width: 70px;
+    height: 70px;
   }
 
-  #permitPDF .col-md-9 {
-    width: 75% !important;
+  .permit-header .center-col img.psi-logo {
+    max-height: 50px;
   }
 
-  #permitPDF .fw-semibold {
-    font-size: 10px !important; 
-    line-height: 1.3;
+  .permit-header .center-col h5 {
+    font-size: 12px;
   }
 
-  #permitPDF small {
-    font-size: 9px !important; 
+  .permit-header .center-col h6 {
+    font-size: 10px;
   }
 
-  .mb-4, .mb-3 {
-    margin-bottom: 10px !important;
+  .photo-box {
+    width: 70px;
+    height: 75px;
+  }
+
+  .permit-content .row {
+    flex-direction: column;
+  }
+
+  .permit-content .col-6 {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .d-flex.gap-2, .d-flex.gap-3 {
+    flex-wrap: wrap;
+    gap: 8px !important;
+  }
+
+  .d-flex.gap-4 {
+    flex-direction: column;
+    gap: 15px !important;
+  }
+
+  .guidelines-section, .signature-block {
+    width: 100%;
+  }
+
+  .signature-block {
+    margin-top: 20px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-title {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .field-label {
+    font-size: 9px;
+  }
+
+  .field-value {
+    font-size: 10px;
+  }
+
+  .guidelines-section ol li {
+    font-size: 10px;
   }
 }
