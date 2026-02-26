@@ -1,5 +1,18 @@
 <?php
-// Export Exam History for specific schedule as CSV
+/**
+ * Examination History CSV Export
+ * 
+ * Generates a clean, Excel-friendly CSV report of examination history
+ * for a specific schedule. Uses pure PHP with no external dependencies.
+ * 
+ * Features:
+ * - UTF-8 BOM for proper Excel encoding
+ * - Dates formatted as YYYY-MM-DD HH:MM
+ * - Phone numbers and test permit numbers prefixed with apostrophe to prevent Excel auto-formatting
+ * - Clean, professional output without decorative lines
+ * - Proper error handling and security checks
+ */
+
 session_start();
 require_once "../../config/db.php";
 
@@ -48,36 +61,23 @@ try {
             u.email,
             u.contact_number,
             e.examinee_status,
-            e.scanned_at,
             e.updated_at
         FROM examinees e
         INNER JOIN users u ON e.user_id = u.user_id
         WHERE e.attended_schedule_id = :schedule_id 
             AND e.examinee_status IN ('Registered', 'Completed')
-        ORDER BY u.last_name ASC, u.first_name ASC
+        ORDER BY e.examinee_id ASC
     ");
     $examineesStmt->execute([':schedule_id' => $schedule_id]);
     $allExaminees = $examineesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Separate examinees into two groups based on examinee_status
-    $registeredExaminees = array_filter($allExaminees, function($e) {
-        return $e['examinee_status'] === 'Registered';
-    });
-    
-    $completedExaminees = array_filter($allExaminees, function($e) {
-        return $e['examinee_status'] === 'Completed';
-    });
-
     // Set headers for CSV download
     $filename = sprintf(
         "Exam_History_%s_%s_%s.csv",
-        $schedule['venue_name'],
+        preg_replace('/[^A-Za-z0-9_\-.]/', '_', $schedule['venue_name']),
         date('Y-m-d', strtotime($schedule['scheduled_date'])),
         date('His')
     );
-    
-    // Clean filename - remove special characters
-    $filename = preg_replace('/[^A-Za-z0-9_\-.]/', '_', $filename);
 
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -90,82 +90,53 @@ try {
     // Add UTF-8 BOM for proper Excel encoding
     fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-    // Add header information
-    fputcsv($output, ['EXAMINATION HISTORY REPORT']);
-    fputcsv($output, ['']);
-    fputcsv($output, ['Region:', $schedule['region']]);
-    fputcsv($output, ['Venue:', $schedule['venue_name']]);
-    fputcsv($output, ['Exam Date:', date('F d, Y', strtotime($schedule['scheduled_date']))]);
-    fputcsv($output, ['Total Examinees:', count($allExaminees)]);
-    fputcsv($output, ['Registered Only:', count($registeredExaminees)]);
-    fputcsv($output, ['Completed (Attended):', count($completedExaminees)]);
-    fputcsv($output, ['Report Generated:', date('F d, Y h:i A')]);
-    fputcsv($output, ['']);
-    fputcsv($output, ['']);
+    // Helper function to format dates as YYYY-MM-DD
+    $formatDate = function($dateString) {
+        if (empty($dateString)) {
+            return '';
+        }
+        return date('Y-m-d', strtotime($dateString));
+    };
 
-    // ========== SECTION 1: REGISTERED EXAMINEES ==========
-    fputcsv($output, ['========== REGISTERED EXAMINEES (' . count($registeredExaminees) . ') ==========']);
-    fputcsv($output, ['']);
-    
-    // Column headers for registered
+    // Helper function to prevent Excel auto-formatting of numbers
+    // Prefixes with apostrophe to force text format
+    $protectNumber = function($value) {
+        if (empty($value)) {
+            return '';
+        }
+        // Only protect if it looks like a number or phone number
+        if (is_numeric($value) || preg_match('/^[0-9\-\+\s]+$/', $value)) {
+            return "'" . $value;
+        }
+        return $value;
+    };
+
+    // EXAMINEES TABLE WITH STATUS COLUMN
     fputcsv($output, [
         'No.',
-        'Test Permit',
+        'Test Permit No.',
         'Full Name',
-        'Email',
+        'Email Address',
         'Contact Number',
-        'Registration Date'
+        'Registration Date',
+        'Status'
     ]);
 
-    // Add registered examinee data
-    if (count($registeredExaminees) > 0) {
+    if (count($allExaminees) > 0) {
         $index = 1;
-        foreach ($registeredExaminees as $examinee) {
+        foreach ($allExaminees as $examinee) {
             fputcsv($output, [
                 $index++,
-                $examinee['test_permit'] ?? '',
+                $protectNumber($examinee['test_permit'] ?? ''),
                 $examinee['full_name'] ?? '',
                 $examinee['email'] ?? '',
-                $examinee['contact_number'] ?? '',
-                $examinee['updated_at'] ? date('M d, Y h:i A', strtotime($examinee['updated_at'])) : ''
+                $protectNumber($examinee['contact_number'] ?? ''),
+                $formatDate($examinee['updated_at'] ?? ''),
+                $examinee['examinee_status'] ?? ''
             ]);
         }
     } else {
-        fputcsv($output, ['', 'No registered examinees (waiting to be scanned)']);
-    }
-
-    fputcsv($output, ['']);
-    fputcsv($output, ['']);
-
-    // ========== SECTION 2: COMPLETED EXAMINEES (ATTENDED) ==========
-    fputcsv($output, ['========== COMPLETED EXAMINEES (' . count($completedExaminees) . ') ==========']);
-    fputcsv($output, ['']);
-    
-    // Column headers for completed
-    fputcsv($output, [
-        'No.',
-        'Test Permit',
-        'Full Name',
-        'Email',
-        'Contact Number',
-        'Scanned At'
-    ]);
-
-    // Add completed examinee data
-    if (count($completedExaminees) > 0) {
-        $index = 1;
-        foreach ($completedExaminees as $examinee) {
-            fputcsv($output, [
-                $index++,
-                $examinee['test_permit'] ?? '',
-                $examinee['full_name'] ?? '',
-                $examinee['email'] ?? '',
-                $examinee['contact_number'] ?? '',
-                $examinee['scanned_at'] ? date('M d, Y h:i A', strtotime($examinee['scanned_at'])) : 'Not scanned'
-            ]);
-        }
-    } else {
-        fputcsv($output, ['', 'No completed examinees found']);
+        fputcsv($output, ['', '', 'No examinees found', '', '', '', '']);
     }
 
     fclose($output);
