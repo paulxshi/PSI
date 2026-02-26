@@ -13,14 +13,7 @@
 
 	<title>Test Permit</title>
 </head>
-<style>
-  .btn-light:hover {
-  background-color: #000000;
-  transform: translateX(-2px);
-  transition: 0.2s ease;
-  color: aliceblue;
-}
-</style>
+  
 <body>
 
 	<!-- Sidebar Section -->
@@ -78,285 +71,286 @@
     </a>
   </div>
 
-  <!-- PERMIT PDF AREA -->
-  <div id="permitPDF" class="bg-white p-4 shadow-sm">
+      <div id="permitPDF" class="bg-white p-4 shadow-sm">
+        <div class="permit-header">
 
-    <!-- HEADER -->
-    <div class="text-center mb-3 position-relative">
-      <!-- QR Code - Top Right -->
-      <div class="qr-code-square-container position-absolute" style="top: 0; right: 0;">
-        <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
-        <img src="../imgs/PSI.png" alt="PSI Logo" class="qr-logo">
-      </div>
-      
-      <!-- PSI Logo at very top -->
-      <img src="../imgs/PSI.png" style="max-height:80px; margin-bottom: 8px;">
-      
-      <!-- Compressed Title Section -->
-      <h6 class="fw-bold text-uppercase mb-0" style="font-size: 14px;">PSY Systems and Innovation, OPC</h6>
-      <h6 class="fw-bold text-uppercase mb-2" style="font-size: 13px;">Test Permit</h6>
-    </div>  
+          <!-- QR Code (left) -->
+          <div class="qr-col">
+            <div class="qr-code-square-container">
+              <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
+              <img src="../imgs/PSI.png" alt="PSI Logo" class="qr-logo">
+            </div>
+          </div>
 
-    <hr style="margin: 8px 0;">
-    
-    <div class="text-center mb-5" style="margin-top: 18px;">
-      <div class="d-flex justify-content-center align-items-center gap-5 mb-3">
-        <div>
-          <div class="text-uppercase">Philippine Merchant Marine Academy</div>
-          <div class="text-uppercase">Psychological Evaluation</div>
+          <!-- Center: Logo + Title -->
+          <div class="center-col">
+            <img src="../imgs/PSI.png" class="psi-logo" alt="PSI Logo">
+            <h5>PSY Systems and Innovations, OPC</h5>
+            <h6>Test Permit</h6>
+          </div>
+
+          <!-- Examinee Photo (right) -->
+          <div class="photo-col">
+            <div class="photo-box">
+              <img src="../imgs/avatar.png" alt="Examinee Photo">
+            </div>
+          </div>
+
+        </div><!-- /permit-header -->
+
+        <hr style="margin: 8px 0; border-color:#aaa;">
+
+        <!-- Exam Type -->
+        <div class="text-center mb-2">
+          <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 1px;">
+            Philippine Marine Merchant Academy<br>
+            PSYCHOLOGICAL EVALUATION
+          </span>
         </div>
-      </div>
-    </div>  
 
-    <!-- PERMIT NOTE AT THE VERY TOP -->
-    <div class="permit-note mb-4" style="margin-top: 15px;">
-      PLEASE BRING THIS TEST PERMIT ON EXAMINATION DAY.
-    </div>
-
-
-
-    <!-- PERSONAL INFORMATION -->
-
-    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Personal Information</h6>
-
-    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
-      <!-- PERSONAL INFO FIELDS -->
-      <div class="col-md-9">
-        <div class="row g-3">
-          <div class="col-md-6" style="margin-bottom: 8px;">
-            <small class="text-muted">Test Permit No.</small>
-            <div class="fw-semibold" id="testPermit">050-2018</div>
-          </div>
-          <div class="col-md-6" style="margin-bottom: 8px;">
-            <small class="text-muted">Status</small>
-            <div class="fw-semibold text-success" id="status">Detected</div>
-          </div>
-          <div class="col-md-6" style="margin-bottom: 8px;">
-            <small class="text-muted">Name of Examinee</small>
-            <div class="fw-semibold" id="fullName">User</div>
-          </div>
-          <div class="col-md-6" style="margin-bottom: 8px;">
-            <small class="text-muted">Date of Birth</small>
-            <div class="fw-semibold" id="dob">02/11/2026</div>
-          </div>
-          <div class="col-md-4" style="margin-bottom: 8px;">
-            <small class="text-muted">Age</small>
-            <div class="fw-semibold" id="age">18</div>
-          </div>
-          <div class="col-md-4" style="margin-bottom: 8px;">
-            <small class="text-muted">Gender</small>
-            <div class="fw-semibold" id="gender">Male</div>
-          </div>
-          <div class="col-md-4" style="margin-bottom: 8px;">
-            <small class="text-muted">Nationality</small>
-            <div class="fw-semibold" id="nationality">Filipino</div>
-          </div>
-          <div class="col-md-4" style="margin-bottom: 8px;">
-            <small class="text-muted">Contact Number</small>
-            <div class="fw-semibold" id="contact">09123456789</div>
-          </div>
-          <div class="col-md-4" style="margin-bottom: 8px;">
-            <small class="text-muted">Email Address</small>
-            <div class="fw-semibold" id="email">example@gmail.com</div>
-          </div>
+        <!-- RED NOTE -->
+        <div class="permit-note">
+          Please bring this test permit on your examination day.
         </div>
-      </div>
-      <!-- PHOTO -->
-      <div class="col-md-3">
-        <div style="width:120px; margin-bottom: 10px;">
-          <div class="rounded ratio ratio-1x1 position-relative photo-box">
-            <img class="img-fluid w-100 h-100 object-fit-cover" src="../imgs/avatar.png" alt="Examinee Photo">
+        
+        <div class="permit-content">
+          
+          <!-- Section Headers -->
+          <div class="content-headers mb-2">
+            <div class="row g-0">
+              <div class="col-6">
+                <h6 class="section-title">Personal Information</h6>
+              </div>
+              <div class="col-6">
+                <h6 class="section-title">Schedule of Examination</h6>
+              </div>
+            </div>
           </div>
+
+          <!-- Row 1: Personal Info + Schedule -->
+          <div class="row g-0 mb-2">
+            <div class="col-6 pe-3">
+              <div class="d-flex gap-2">
+                <div>
+                  <div class="field-label">Test Permit</div>
+                  <div class="field-value fw-semibold" id="testPermit">050-2018</div>
+                </div>
+                <div>
+                  <div class="field-label">Name of Examinee</div>
+                  <div class="field-value fw-semibold" id="fullName">User</div>
+                </div>
+                <div>
+                  <div class="field-label">Date of Birth</div>
+                  <div class="field-value fw-semibold" id="dob">02/11/2026</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex gap-3">
+                <div>
+                  <div class="field-label">Date of Examination</div>
+                  <div class="field-value fw-semibold" id="dateOfTest">05/27/2025</div>
+                </div>
+                <div>
+                  <div class="field-label">Venue</div>
+                  <div class="field-value fw-semibold" id="venue">Manila</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Header: Contact + Payment -->
+          <div class="content-headers mb-2 mt-3">
+            <div class="row g-0">
+              <div class="col-6">
+                <h6 class="section-title">Contact Details</h6>
+              </div>
+              <div class="col-6">
+                <h6 class="section-title">Payment Details</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Contact + Payment -->
+          <div class="row g-0">
+            <div class="col-6 pe-3">
+              <div class="d-flex gap-2">
+                <div>
+                  <div class="field-label">Contact Number</div>
+                  <div class="field-value fw-semibold" id="contact">09123456789</div>
+                </div>
+                <div>
+                  <div class="field-label">Email Address</div>
+                  <div class="field-value fw-semibold" id="email">example@gmail.com</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-6">
+              <div class="d-flex gap-2">
+                <div>
+                  <div class="field-label">Transaction No.</div>
+                  <div class="field-value fw-semibold" id="transactionNo">123456789</div>
+                </div>
+                <div>
+                  <div class="field-label">Payment Date</div>
+                  <div class="field-value fw-semibold" id="paymentDate">02/11/2026</div>
+                </div>
+                <div>
+                  <div class="field-label">Payment Method</div>
+                  <div class="field-value fw-semibold" id="paymentMethod"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
+
+        <!-- ─────────────────────────────────
+             GUIDELINES + SIGNATURE
+        ───────────────────────────────── -->
+        <div class="d-flex gap-4 mt-3 align-items-start">
+
+          <!-- Guidelines -->
+          <div class="guidelines-section flex-grow-1">
+            <h6>Guidelines</h6>
+            <ol>
+              <li><strong>Examination fees are non-refundable under any circumstances.</strong></li>
+              <li>Wear white shirt, Denim pants, and rubber shoes on examination day.</li>
+              <li>Bring a valid or Student ID for verification purposes.</li>
+              <li>Bring 2 pencils, eraser, sharpener.</li>
+              <li>Bring snacks (to be consumed outside the testing room).</li>
+              <li>Mobile phones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
+            </ol>
+          </div>
+
+          <!-- Signature block -->
+          <div class="signature-block flex-shrink-0">
+            <div class="sig-line"></div>
+            <div class="sig-label">Signature of verifier</div>
+            <div class="sig-sub">(to be filled by assigned psi officials)</div>
+          </div>
+
+        </div>
+
+        </div>
+
       </div>
-    </div>
 
-    <!-- SCHEDULE -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Schedule of Examination</h6>
-
-    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
-      <div class="col-md-6" style="margin-bottom: 8px;">
-        <small class="text-muted">Date of Testing</small>
-        <div class="fw-semibold" id="dateOfTest">05/27/2025</div>
+      <div class="d-flex justify-content-center mt-4">
+        <button id="generatePDF" class="btn btn-danger px-4 py-2">
+          <i class="bx bx-download me-2"></i>
+          Generate PDF
+        </button>
       </div>
-      <div class="col-md-6" style="margin-bottom: 8px;">
-        <small class="text-muted">Venue</small>
-        <div class="fw-semibold" id="venue">Manila</div>
-      </div>
-    </div>
-
-    <!-- PAYMENT -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Payment Details</h6>
-
-    <div class="row g-4 mb-5" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 1rem;">
-      <div class="col-md-4" style="margin-bottom: 8px;">
-        <small class="text-muted">Transaction No.</small>
-        <div class="fw-semibold" id="transactionNo">123456789</div>
-      </div>
-      <div class="col-md-4" style="margin-bottom: 8px;">
-        <small class="text-muted">Payment Date</small>
-        <div class="fw-semibold" id="paymentDate">02/11/2026</div>
-      </div>
-      <div class="col-md-4" style="margin-bottom: 8px;">
-        <small class="text-muted">Amount</small>
-        <div class="fw-semibold" id="amount">₱100.00</div>
-      </div>
-      <div class="col-md-4" style="margin-bottom: 8px;">
-        <small class="text-muted">Payment Method</small>
-        <div class="fw-semibold" id="paymentMethod"></div>
-      </div>
-    </div>
-
-    <!-- GUIDELINES -->
-    <h6 class="fw-bold text-uppercase border-bottom pb-3 mb-4" style="margin-top: 30px; background-color: #f8f9fa; padding: 8px 12px; border-radius: 4px;">Guidelines</h6>
-
-    <ol class="small text-muted mb-5" style="padding-left: 20px;">
-      <li style="margin-bottom: 12px;"><strong>Examination fees are non-refundable under any circumstances.</strong></li>
-      <li style="margin-bottom: 12px;">Upload your recent 2×2 picture in a white background.</li>
-      <li style="margin-bottom: 12px;">Wear white shirt, maong pants, and rubber shoes on examination day.</li>
-      <li style="margin-bottom: 12px;">Bring a valid ID for verification purposes.</li>
-      <li style="margin-bottom: 12px;">Bring 2 pencils, eraser, sharpener.</li>
-      <li style="margin-bottom: 12px;">Bring snacks (to be consumed outside the testing room).</li>
-      <li style="margin-bottom: 12px;">Cellphones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
-    </ol>
-
-    <!-- PRINT-ONLY SIGNATURE -->
-<div class="print-signature mt-5 d-none">
-  <p class="fst-italic mb-5">Verified by:</p>
-
-  <div style="margin-top:50px; width:280px;"> 
-    <div style="border-bottom:1px solid #000; height:35px;"></div>
-    <div class="small text-center mt-1">
-      Signature over Printed Name
-    </div>
-    <div class="small fst-italic text-center mt-1">
-      (to be filled by the official representative of PSI)
-    </div>
-  </div>
-</div>
-
-  </div>
-
-<div class="d-flex justify-content-center mt-4">
-  <button id="generatePDF" class="btn btn-danger px-4 py-2">
-    <i class="bx bx-download me-2"></i>
-    Generate PDF
-  </button>
-</div>
 
 </main>
 
-<!-- Logout Confirmation Modal -->
-<div
-  class="modal fade"
-  id="logoutModal"
-  tabindex="-1"
-  aria-labelledby="logoutModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered logout-modal">
-    <div class="modal-content border-0 rounded-4 shadow">
+      <!-- Logout Confirmation Modal -->
+      <div
+        class="modal fade"
+        id="logoutModal"
+        tabindex="-1"
+        aria-labelledby="logoutModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered logout-modal">
+          <div class="modal-content border-0 rounded-4 shadow">
 
-      <!-- Header -->
-      <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
-        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
-          Confirm Logout
-        </h5>
-        <button
-          type="button"
-          class="btn-close no-focus"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+            <!-- Header -->
+            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+              <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+                Confirm Logout
+              </h5>
+              <button
+                type="button"
+                class="btn-close no-focus"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <!-- Divider -->
+            <div class="px-4">
+              <hr class="my-0">
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4 py-4 text-center">
+              <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+              <p class="mb-0 text-muted">
+                Are you sure you want to log out of your account?
+              </p>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+              <button
+                type="button"
+                class="btn btn-outline-secondary rounded-pill px-4"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <a
+                href="../php/logout.php"
+                class="btn btn-danger rounded-pill px-4"
+              >
+                Logout
+              </a>
+            </div>
+
+          </div>
+        </div>
       </div>
-
-      <!-- Divider -->
-      <div class="px-4">
-        <hr class="my-0">
-      </div>
-
-      <!-- Body -->
-      <div class="modal-body px-4 py-4 text-center">
-        <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
-        <p class="mb-0 text-muted">
-          Are you sure you want to log out of your account?
-        </p>
-      </div>
-
-      <!-- Footer -->
-      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-        <button
-          type="button"
-          class="btn btn-outline-secondary rounded-pill px-4"
-          data-bs-dismiss="modal"
-        >
-          Cancel
-        </button>
-        <a
-          href="../php/logout.php"
-          class="btn btn-danger rounded-pill px-4"
-        >
-          Logout
-        </a>
-      </div>
-
-    </div>
-  </div>
-</div>
 
 
 <!-- SCRIPTS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="js/testPermit.js"></script>
-<script>
-
-document.getElementById('generatePDF').addEventListener('click', async () => {
-  const permit = document.getElementById('permitPDF');
-
-  document.body.classList.add('print-mode');
-
-  await html2pdf().set({
-    margin: 0,
-    filename: 'PMMA_Test_Permit.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      scrollY: 0
-    },
-    jsPDF: {
-      unit: 'in',
-      format: 'letter',    
-      orientation: 'portrait'
-    },
-    pagebreak: { mode: ['avoid-all'] }
-  }).from(permit).save();
-
-  document.body.classList.remove('print-mode');
-});
-
-</script>
 
 <script>
-// Check user session on page load
-(function() {
-    fetch('php/check_session.php', {
-        method: 'GET',
-        credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.authenticated) {
-            // Redirect to login if not authenticated
-            window.location.href = '../login.html';
-        }
-    })
-    .catch(error => {
-        console.error('Session check failed:', error);
-        window.location.href = '../login.html';
+    document.getElementById('generatePDF').addEventListener('click', async () => {
+      const permit = document.getElementById('permitPDF');
+      const btn = document.getElementById('generatePDF');
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-2"></i>Generating...';
+
+      document.body.classList.add('print-mode');
+
+      await html2pdf().set({
+        margin: 0,
+        filename: 'PMMA_Test_Permit.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      }).from(permit).save();
+
+      document.body.classList.remove('print-mode');
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bx bx-download me-2"></i>Generate PDF';
     });
-})();
-</script>
+  </script>
+
+  <script>
+    // Check user session on page load
+    (function() {
+      fetch('php/check_session.php', { method: 'GET', credentials: 'same-origin' })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.authenticated) {
+            window.location.href = '../login.html';
+          }
+        })
+        .catch(error => {
+          console.error('Session check failed:', error);
+          window.location.href = '../login.html';
+        });
+    })();
+  </script>
 
 </body>
 </html>
