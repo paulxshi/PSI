@@ -6,12 +6,134 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* ── Back button hover ── */
-.btn-light:hover {
-  background-color: #000;
+.back-btn {
+  position: relative;
+  margin-left: 15%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 22px 5px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 100px;
+  text-decoration: none;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.06),
+    0 4px 12px rgba(0,0,0,0.07),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  transition:
+    box-shadow 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.2s ease,
+    color 0.2s ease;
+  will-change: transform;
+}
+
+.back-btn__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: background-position 0s;
+}
+
+.back-btn__track {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background: linear-gradient(to bottom, #c0392b, #e74c3c);
+  border-radius: 0 3px 3px 0;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.back-btn__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #f5f5f5;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition:
+    background 0.22s ease,
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.22s ease;
+  color: #555;
+}
+
+/* Label */
+.back-btn__label {
+  position: relative;
+  z-index: 1;
+  transition: letter-spacing 0.22s ease;
+}
+
+/* ── HOVER STATE ── */
+.back-btn:hover {
+  color: #1a1a1a;
+  border-color: rgba(192, 57, 43, 0.25);
+  transform: translateX(-3px);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.06),
+    0 8px 24px rgba(192, 57, 43, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  text-decoration: none;
+}
+
+.back-btn:hover .back-btn__arrow {
+  background: #fdf0ef;
+  color: #c0392b;
   transform: translateX(-2px);
-  transition: 0.2s ease;
-  color: aliceblue;
+}
+
+.back-btn:hover .back-btn__track {
+  transform: translateY(-50%) scaleY(1);
+}
+
+.back-btn:hover .back-btn__shine {
+  background-position: 200% 0;
+  transition: background-position 0.55s ease;
+}
+
+.back-btn:hover .back-btn__label {
+  letter-spacing: 0.5px;
+}
+
+/* ── ACTIVE / CLICK STATE ── */
+.back-btn:active {
+  transform: translateX(-1px) scale(0.97);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.08),
+    0 3px 8px rgba(192, 57, 43, 0.10),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  transition-duration: 0.1s;
+}
+
+/* ── FOCUS (accessibility) ── */
+.back-btn:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(192, 57, 43, 0.2),
+    0 4px 12px rgba(0,0,0,0.07);
 }
 
 /* ── HEADER ── */

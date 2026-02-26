@@ -108,7 +108,7 @@ body {
 
 #sidebar .side-menu li {
 	height: 48px;
-	margin: 8px 12px;
+	margin: 8px 10px;
 	border-radius: 12px;
 }
 
@@ -118,7 +118,7 @@ body {
 	align-items: center;
 	font-size: 14px;
 	color: var(--light);
-	border-radius: 25px;
+	border-radius: 10px;
 	transition: 0.2s ease;
 }
 
