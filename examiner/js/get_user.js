@@ -65,16 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="info-label">Contact</span>
               <span class="info-value">${user.contact_number}</span>
             </div>
-            <div class="info-grid">
-              <div>
+            <div class="info-row">
                 <span class="info-label">Birthday</span>
                 <span class="info-value">${dobFormatted}</span>
-              </div>
-              <div>
+            </div>
+            <div class="info-row">
                 <span class="info-label">Age</span>
                 <span class="info-value">${user.age}</span>
-              </div>
-            </div>
+            </div>                        
             ${user.school ? `
             <div class="info-row">
               <span class="info-label">School</span>
