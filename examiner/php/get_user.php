@@ -23,6 +23,7 @@ try {
         SELECT u.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.contact_number, 
                u.date_of_birth, u.age, u.test_permit, u.role, u.status, u.school,
                u.gender, u.address, u.nationality, u.profile_picture, u.last_profile_update,
+               u.profile_upload_attempts,
                u.date_of_registration,
                s.scheduled_date as exam_date, v.venue_name as exam_venue, v.region
         FROM users u
@@ -43,29 +44,14 @@ try {
 
     error_log("User found: " . json_encode($user));
 
-    // Check 7-day restriction for profile picture upload
-    $can_edit = true;
-    $days_remaining = 0;
-    $can_upload_picture = true;
-    $upload_days_remaining = 0;
+    // Check 3-attempt restriction for profile picture upload
+    $upload_attempts = isset($user['profile_upload_attempts']) ? (int)$user['profile_upload_attempts'] : 0;
+    $can_upload_picture = $upload_attempts < 3;
+    $attempts_remaining = 3 - $upload_attempts;
     
-    if ($user['last_profile_update']) {
-        $last_update_time = strtotime($user['last_profile_update']);
-        $current_time = time();
-        $one_week = 7 * 24 * 60 * 60;
-        
-        if (($current_time - $last_update_time) < $one_week) {
-            $can_upload_picture = false;
-            $upload_days_remaining = ceil(($one_week - ($current_time - $last_update_time)) / (24 * 60 * 60));
-        }
-    }
-    
-    $user['can_edit'] = $can_edit;
-    $user['days_remaining'] = $days_remaining;
     $user['can_upload_picture'] = $can_upload_picture;
-    $user['upload_days_remaining'] = $upload_days_remaining;
-
- 
+    $user['upload_attempts_used'] = $upload_attempts;
+    $user['upload_attempts_remaining'] = $attempts_remaining;
 
     echo json_encode(["success" => true, "user" => $user]);
 

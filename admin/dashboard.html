@@ -835,19 +835,20 @@ function renderRegions(data) {
       data[region][venue].forEach(sched => {
         const available = sched.limit - sched.registered;
 
-        regionHTML += `
-          <div class="region-table-row"
-               style="grid-template-columns: 2fr 1fr 1fr 1fr;"
-               data-region="${region}"
-               data-venue="${venue}"
-               data-date="${sched.date}"
-               onclick="selectSchedule('${region}', '${venue}', '${sched.date}', this)">
-            <span>${formatDate(sched.date)}</span>
-            <span class="fw-semibold">${sched.registered}</span>
-            <span class="fw-semibold text-danger">${sched.limit}</span>
-            <span class="fw-semibold text-success">${available}</span>
-          </div>
-        `;
+          regionHTML += `
+            <div class="region-table-row"
+                 style="grid-template-columns: 2fr 1fr 1fr 1fr;"
+                 data-region="${region}"
+                 data-venue="${venue}"
+                 data-date="${sched.date}"
+                 data-schedule-id="${sched.schedule_id}"
+                 onclick="selectSchedule('${region}', '${venue}', '${sched.date}', this)">
+              <span>${formatDate(sched.date)}</span>
+              <span class="fw-semibold">${sched.registered}</span>
+              <span class="fw-semibold text-danger">${sched.limit}</span>
+              <span class="fw-semibold text-success">${available}</span>
+            </div>
+          `;
       });
 
       regionHTML += `</div>`;
@@ -872,29 +873,39 @@ function formatDate(date) {
     });
 }
 
+
+let schedule_id = null;
+
 function selectSchedule(region, venue, date, element) {
+
+      schedule_id = element.dataset.scheduleId;
+
+    console.log("DEBUG: Selected schedule_id =", schedule_id);
+
     if (element.classList.contains('selected')) {
-        // Unselect
-        element.classList.remove('selected');
-        window.selectedRegion = null;
-        window.selectedVenue = null;
-        window.selectedDate = null;
-        console.log("Unselected schedule");
+      // Unselect
+      element.classList.remove('selected');
+      window.selectedRegion = null;
+      window.selectedVenue = null;
+      window.selectedDate = null;
+      window.selectedScheduleId = null;
+      console.log("Unselected schedule");
     } else {
-        // Remove selected class from all rows
-        document.querySelectorAll('.region-table-row.selected').forEach(row => {
-            row.classList.remove('selected');
-        });
+      // Remove selected class from all rows
+      document.querySelectorAll('.region-table-row.selected').forEach(row => {
+        row.classList.remove('selected');
+      });
 
-        // Add selected class to clicked row
-        element.classList.add('selected');
+      // Add selected class to clicked row
+      element.classList.add('selected');
 
-        // Store selected values globally
-        window.selectedRegion = region;
-        window.selectedVenue = venue;
-        window.selectedDate = date;
+      // Store selected values globally
+      window.selectedRegion = region;
+      window.selectedVenue = venue;
+      window.selectedDate = date;
+      window.selectedScheduleId = schedule_id;
 
-        console.log(`Selected: Region=${region}, Venue=${venue}, Date=${date}`);
+      console.log(`Selected: Region=${region}, Venue=${venue}, Date=${date}, ScheduleID=${window.selectedScheduleId}`);
     }
 }
 </script>
