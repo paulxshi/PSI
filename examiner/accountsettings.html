@@ -446,6 +446,83 @@
   10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
   20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
+
+/* ===== Editable Field Group ===== */
+.field-group.editable {
+  position: relative;
+}
+
+.field-group.editable::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Input styles for edit mode */
+.field-group .edit-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #2e2f33;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.2s ease;
+  display: none;
+}
+
+.field-group .edit-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.field-group .edit-input:disabled {
+  background: #f8fafc;
+  color: #000000;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+
+.field-group .edit-input:not(:disabled) {
+  background: #ffffff;
+  color: #2e2f33;
+  cursor: text;
+}
+
+/* Show input, hide text when in edit mode */
+.field-group.editable .field-value {
+  display: block;
+}
+
+.field-group.editable .edit-input {
+  display: block;
+}
+
+.field-group.editable .field-value {
+  display: none;
+}
+
+.field-group.editable.active .field-value {
+  display: none;
+}
+
+.field-group.editable.active .edit-input:disabled {
+  display: block;
+}
+
+.field-group.editable.active .edit-input:not(:disabled) {
+  display: block;
+}
 </style>
 
 
@@ -543,29 +620,32 @@
           <div class="row g-2 mt-2">
             <!-- Last Name -->
             <div class="col-md-4">
-              <div class="field-group">
+              <div class="field-group editable" id="field-lname">
                 <label>Last Name</label>
                 <div class="field-value" id="lname">
                   Dela Cruz
                 </div>
+                <input type="text" class="edit-input" id="input-lname" data-field="last_name" disabled />
               </div>
             </div>
             <!-- First Name -->
             <div class="col-md-4">
-              <div class="field-group">
+              <div class="field-group editable" id="field-fname">
                 <label>First Name</label>
                 <div class="field-value" id="fname">
                   Juan
                 </div>
+                <input type="text" class="edit-input" id="input-fname" data-field="first_name" disabled />
               </div>
             </div>
             <!-- Middle Name -->
             <div class="col-md-4">
-              <div class="field-group">
+              <div class="field-group editable" id="field-mname">
                 <label>Middle Name</label>
                 <div class="field-value" id="mname">
                   M.
                 </div>
+                <input type="text" class="edit-input" id="input-mname" data-field="middle_name" disabled />
               </div>
             </div>
           </div>
@@ -585,11 +665,12 @@
 
             <!-- Contact Number -->
             <div class="col-md-6">
-              <div class="field-group">
+              <div class="field-group editable" id="field-contact">
                 <label>Contact Number</label>
                 <div class="field-value" id="contact">
                   09XXXXXXXXX
                 </div>
+                <input type="tel" class="edit-input" id="input-contact" data-field="contact_number" disabled />
               </div>
             </div>
           </div>
@@ -608,11 +689,12 @@
 
             <!-- Birthday -->
             <div class="col-md-6">
-              <div class="field-group">
+              <div class="field-group editable" id="field-birthday">
                 <label>Birthday</label>
                 <div class="field-value" id="birthday">
                   January 01, 2000
                 </div>
+                <input type="date" class="edit-input" id="input-birthday" data-field="date_of_birth" disabled />
               </div>
             </div>
           </div>
@@ -620,11 +702,12 @@
           <!-- SCHOOL & OTHER DETAILS -->
           <div class="row g-2 mt-1">
             <div class="col-md-4">
-              <div class="field-group">
+              <div class="field-group editable" id="field-school">
                 <label>School</label>
                 <div class="field-value" id="school">
                   Philippine Maritime Institute
                 </div>
+                <input type="text" class="edit-input" id="input-school" data-field="school" disabled />
               </div>
             </div>
 
