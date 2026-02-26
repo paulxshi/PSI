@@ -116,7 +116,7 @@
 }
 
 .exam-cell-value {
-  font-family: 'Cormorant Garamond', serif;
+ font-family: 'DM Sans', sans-serif;         
   font-weight: 600;
   font-size: 1.15rem;
   color: var(--ink);
@@ -171,7 +171,7 @@
 .user-card-header-monogram {
   width: 64px; height: 64px;
   border-radius: 18px;
-  background: var(--ink);
+  border: 1px solid #f59e0b;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
@@ -185,10 +185,10 @@
 }
 
 .monogram-initials {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Syne', sans-serif;                                        
   font-weight: 700;
   font-size: 1.5rem;
-  color: var(--gold-lt);
+  color: var(--ink);
   letter-spacing: 0.05em;
   position: relative; z-index: 1;
 }
@@ -199,7 +199,7 @@
 }
 
 .user-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   font-size: 1.35rem;
   color: var(--ink);
@@ -337,7 +337,7 @@
 }
 
 .info-label {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Syne', sans-serif;     
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -347,28 +347,13 @@
 }
 
 .info-value {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--ink);
   letter-spacing: -0.01em;
 }
 
-/* Permit badge inside info row */
-.permit-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--ink);
-  color: var(--gold-lt);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 5px 12px;
-  border-radius: var(--radius-sm);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
 
 .permit-badge i { font-size: 0.9rem; }
 
@@ -451,7 +436,7 @@
 /* Portal badge */
 .portal-badge {
   display: inline-flex; align-items: center; gap: 7px;
-  background: linear-gradient(135deg, var(--ink) 0%, #1a1a28 100%);
+  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
   border: 1px solid rgba(184,154,90,0.3);
   border-radius: 999px;
   padding: 5px 14px;
@@ -478,12 +463,12 @@
 .badge-label {
   font-family: 'Syne', sans-serif;
   font-size: 0.58rem; font-weight: 700;
-  letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-lt);
+  letter-spacing: 0.2em; text-transform: uppercase; color: white;
 }
 
 /* Profile title */
 .profile-title {
-  font-family:Arial, Helvetica, sans-serif !important;
+  font-family: 'DM Sans', sans-serif;       
   font-size: 1.7rem !important;
   font-weight: 700 !important;
   color: var(--ink) !important;
@@ -629,11 +614,11 @@
   cursor: not-allowed; box-shadow: none;
 }
 #btnViewPermit:not(:disabled) {
-  background: linear-gradient(135deg, #0a0a0f 0%, #1c1c2e 50%, #0a0a0f 100%);
+  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
   background-size: 200% 200%;
-  color: var(--gold-lt); border: 1px solid rgba(184,154,90,0.25);
+  color: white; border: 1px solid rgba(255,255,255,0.3);
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(184,154,90,0.15);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
   animation: fadeUp 0.6s 0.5s both, shimmerBg 4s ease infinite;
 }
 @keyframes shimmerBg {
