@@ -18,7 +18,12 @@ $sql = "SELECT
 FROM examinees e
 INNER JOIN users u ON e.user_id = u.user_id
 LEFT JOIN schedules s ON e.schedule_id = s.schedule_id
-LEFT JOIN payments p ON e.examinee_id = p.examinee_id   
+LEFT JOIN (
+    SELECT examinee_id, MAX(payment_id) AS latest_payment_id
+    FROM payments
+    GROUP BY examinee_id
+) lp ON e.examinee_id = lp.examinee_id
+LEFT JOIN payments p ON p.payment_id = lp.latest_payment_id
 WHERE e.examinee_status = :status
 AND e.scanned_at >= CURRENT_DATE()
 AND e.scanned_at < CURRENT_DATE() + INTERVAL 1 DAY

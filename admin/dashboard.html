@@ -732,17 +732,17 @@
 
 function simulateScan() {
 
-    const fakeQR = document.getElementById("manualQR").value.trim();
+    const QR = document.getElementById("manualQR").value.trim();
 
-    if (!fakeQR) {
+    if (!QR) {
         alert("Enter QR value first.");
         return;
     }
 
-    console.log("Simulated Scan:", fakeQR);
+    console.log("Simulated Scan:", QR);
 
     // This calls the SAME function used by real scanner
-    onScanSuccess(fakeQR);
+    onScanSuccess(QR);
 }
 
 
