@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData(this);
 
-    fetch("php/login.php", {
+    fetch("../php/login.php", {
       method: "POST",
       body: formData
     })
@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Redirect based on user role
         setTimeout(() => {
           if (data.role === 'admin') {
-            window.location.href = "admin/dashboard.html";
+            window.location.href = "../admin/dashboard.html";
           } else {
-            window.location.href = "examiner/dashboard.html";
+            window.location.href = "../examiner/dashboard.html";
           }
         }, 1500); 
       } else if (data.redirect) {
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sendResetBtn.disabled = true;
     sendResetBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
 
-    fetch("php/forgot_password.php", {
+    fetch("../php/forgot_password.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

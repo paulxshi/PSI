@@ -27,6 +27,6 @@ if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
 }
 
 // Redirect to login page
-header("Location: ../adminlogin.html");
+header("Location: ../auth/adminlogin.html");
 exit;
 ?>

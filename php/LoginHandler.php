@@ -255,13 +255,13 @@ class LoginHandler {
                     return [
                         'success' => false,
                         'message' => "Please complete your payment to activate your account.",
-                        'redirect' => "payment.html"
+                        'redirect' => "../payment/payment.html"
                     ];
                 } else {
                     return [
                         'success' => false,
                         'message' => "Please select your exam schedule to continue.",
-                        'redirect' => "examsched.html"
+                        'redirect' => "../exam/examsched.html"
                     ];
                 }
             } else {
@@ -300,13 +300,13 @@ class LoginHandler {
                 return [
                     'success' => false,
                     'message' => "Please complete your payment to access your dashboard.",
-                    'redirect' => "payment.html"
+                    'redirect' => "../payment/payment.html"
                 ];
             } else {
                 return [
                     'success' => false,
                     'message' => "Please select your exam schedule before logging in.",
-                    'redirect' => "examsched.html"
+                    'redirect' => "../exam/examsched.html"
                 ];
             }
         }

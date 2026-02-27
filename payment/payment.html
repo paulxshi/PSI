@@ -7,7 +7,7 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="icon" href="imgs/PSI.png">
+  <link rel="icon" href="../imgs/PSI.png">
 
   <style>
     :root {
@@ -15,7 +15,7 @@
     }
 
     body {
-      background: url('imgs/bg.jpg') center center / cover no-repeat fixed;
+      background: url('../imgs/bg.jpg') center center / cover no-repeat fixed;
     }
 
     .step {
@@ -87,9 +87,9 @@
 
           <!-- LOGOS -->
           <div class="d-flex justify-content-center align-items-center mb-4">
-            <img src="imgs/PSI.png" style="max-width:80px;">
+            <img src="../imgs/PSI.png" style="max-width:80px;">
             <div class="mx-3" style="width:1px;height:40px;background:#8f8f8f;"></div>
-            <img src="imgs/PMMA.png" style="max-width:80px;">
+            <img src="../imgs/PMMA.png" style="max-width:80px;">
           </div>
 
           <!-- STEPPER CARD -->
@@ -168,7 +168,7 @@
                   <span id="errorMessage">Unable to load payment information.</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                  <a href="examsched.html" class="btn btn-outline-secondary px-4 rounded-pill">
+                  <a href="../exam/examsched.html" class="btn btn-outline-secondary px-4 rounded-pill">
                     <i class="bi bi-arrow-left me-1"></i>
                     Go Back
                   </a>
@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                  <a href="examsched.html" class="btn btn-outline-secondary px-4 rounded-pill">
+                  <a href="../exam/examsched.html" class="btn btn-outline-secondary px-4 rounded-pill">
                     <i class="bi bi-arrow-left me-1"></i>
                     Go Back
                   </a>
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Load exam details from server
 function loadExamDetails() {
-  fetch('php/get_payment_details.php', {
+  fetch('../php/get_payment_details.php', {
     method: 'GET',
     credentials: 'same-origin'
   })
@@ -333,7 +333,7 @@ function initiatePayment() {
   payNowBtn.disabled = true;
   payNowBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating invoice...';
   
-  fetch('php/create_payment.php', {
+  fetch('../php/create_payment.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
@@ -407,7 +407,7 @@ function initiatePayment() {
 <script>
 // Check user session on page load
 (function() {
-    fetch('php/check_session.php', {
+    fetch('../php/check_session.php', {
         method: 'GET',
         credentials: 'same-origin'
     })
@@ -415,12 +415,12 @@ function initiatePayment() {
     .then(data => {
         if (!data.authenticated) {
             // Redirect to login if not authenticated
-            window.location.href = 'login.html';
+            window.location.href = '../auth/login.html';
         }
     })
     .catch(error => {
         console.error('Session check failed:', error);
-        window.location.href = 'login.html';
+        window.location.href = '../auth/login.html';
     });
 })();
 </script>
