@@ -987,8 +987,8 @@
 (function() {
   fetch('php/check_session.php', { method: 'GET', credentials: 'same-origin' })
     .then(r => r.json())
-    .then(data => { if (!data.authenticated) window.location.href = '../auth/login.html'; })
-    .catch(() => { window.location.href = '../auth/login.html'; });
+    .then(data => { if (!data.authenticated) window.location.href = '../login.html'; })
+    .catch(() => { window.location.href = '../login.html'; });
 })();
 </script>
 

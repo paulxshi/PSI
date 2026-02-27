@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
-    const SEND_OTP_URL = '/PSI/php/send_otp.php';
-    const CHECK_TEST_PERMIT_URL = '/PSI/php/check_test_permit.php';
+    const SEND_OTP_URL = 'php/send_otp.php';
+    const CHECK_TEST_PERMIT_URL = 'php/check_test_permit.php';
 
     // State
     let cooldownTimer = null;
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showOtpStatus('Verifying OTP...', 'info');
 
         // Call backend to verify OTP
-        fetch('/PSI/php/verify_otp.php', {
+        fetch('php/verify_otp.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

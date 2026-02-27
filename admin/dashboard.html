@@ -906,12 +906,12 @@ function selectSchedule(region, venue, date, element) {
     .then(data => {
         if (!data.authenticated) {
             // Redirect to admin login if not authenticated
-            window.location.href = '../auth/adminlogin.html';
+            window.location.href = '../adminlogin.html';
         }
     })
     .catch(error => {
         console.error('Session check failed:', error);
-        window.location.href = '../auth/adminlogin.html';
+        window.location.href = '../adminlogin.html';
     });
 })();
 </script>

@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode([
         'success' => false,
         'message' => 'Not authenticated',
-        'redirect' => '../auth/login.html'
+        'redirect' => '../login.html'
     ]);
     exit;
 }
