@@ -7,6 +7,4 @@ if ($data['status'] == 'PAID') {
 
     $external_id = $data['external_id'];
 
-    // TODO: Update database
-    // mark order as PAID
 }

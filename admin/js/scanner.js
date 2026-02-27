@@ -92,21 +92,12 @@ function setText(id, value) {
 
 function showQRResult(data) {
 
-    /* -----------------------------
-       Helper: Normalize DATE safely
-       (NO timezone conversion!)
-    ------------------------------*/
     const normalizeDate = (dateStr) => {
         if (!dateStr) return "";
 
-        // If format is "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm:ss"
         return dateStr.toString().split("T")[0].trim();
     };
 
-    /* -----------------------------
-       Helper: Normalize TEXT safely
-       Removes hidden chars, double spaces, etc.
-    ------------------------------*/
     const normalizeText = (text) => {
         if (!text) return "";
         return text
@@ -116,9 +107,6 @@ function showQRResult(data) {
             .toLowerCase();
     };
 
-    /* -----------------------------
-       Get selected schedule (dashboard)
-    ------------------------------*/
     const isScheduleSelected =
         window.selectedRegion &&
         window.selectedVenue &&
@@ -135,9 +123,6 @@ function showQRResult(data) {
         scannedVenue === selectedVenue &&
         scannedDate === selectedDate;
 
-    /* -----------------------------
-       DEBUG LOG (keep for now)
-    ------------------------------*/
     console.log("==== MATCH DEBUG ====");
     console.log("Selected Venue:", selectedVenue);
     console.log("Scanned Venue :", scannedVenue);
@@ -145,9 +130,6 @@ function showQRResult(data) {
     console.log("Scanned Date  :", scannedDate);
     console.log("Is Matching   :", isMatchingSchedule);
 
-    /* -----------------------------
-       Determine status override
-    ------------------------------*/
     let statusClass = data.status_class;
     let statusMessage = data.status_message;
 
@@ -157,22 +139,15 @@ function showQRResult(data) {
         statusMessage = "Schedule Mismatch";
     }
 
-    /* -----------------------------
-       Only allow action if VALID or WARNING (schedule mismatch)
-    ------------------------------*/
 
 window.currentExamineeId =
     (statusClass === "valid" || statusClass === "warning")
         ? data.examinee_id
         : null;
 
-    // DEBUG: Log the examinee ID
     console.log("DEBUG: Setting currentExamineeId =", window.currentExamineeId);
     console.log("DEBUG: statusClass =", statusClass);
     console.log("DEBUG: data.examinee_id =", data.examinee_id);
-    /* -----------------------------
-       Fill modal fields
-    ------------------------------*/
     setText("name", data.name);
     setText("test_permit", data.test_permit);
     setText("examination_date", data.exam_date_display ?? data.exam_date);
@@ -182,9 +157,6 @@ window.currentExamineeId =
     setText("payment_date", data.payment_date);
     setText("payment_amount", data.amount);
 
-    /* -----------------------------
-       Update verification status box
-    ------------------------------*/
     const statusBox = document.getElementById("verificationStatus");
     statusBox.className = "status-box text-center mb-4 " + statusClass;
     statusBox.textContent = statusMessage;
@@ -197,9 +169,6 @@ window.currentExamineeId =
     else if (statusClass === "warning") icon.classList.add("fa-triangle-exclamation");
     else icon.classList.add("fa-circle-xmark");
 
-    /* -----------------------------
-       Update modal color class
-    ------------------------------*/
     const modalElement = document.getElementById("qrResultModal");
     modalElement.classList.remove(
         "modal-valid",
@@ -210,9 +179,6 @@ window.currentExamineeId =
     );
     modalElement.classList.add("modal-" + statusClass);
 
-    /* -----------------------------
-       Apply correct button state
-    ------------------------------*/
 if (statusClass === "already_used") {
     document.getElementById("exam_sched").style.display = "none";
     applyActionState("completed");
@@ -247,9 +213,6 @@ else {
     document.getElementById("completeBtn").style.display = "none";
     document.getElementById("cancelBtn1").style.display = "none";
 }
-    /* -----------------------------
-       Handle auto-complete for valid scans
-    ------------------------------*/
     const modal = new bootstrap.Modal(modalElement);
     if (statusClass === "valid") {
         // Capture the examinee ID BEFORE starting auto-complete
@@ -260,9 +223,6 @@ else {
         document.getElementById("autoCompleteTimer").style.display = "none";
     }
 
-    /* -----------------------------
-       Show modal
-    ------------------------------*/
     modal.show();
 }
 function startAutoComplete(modal, examineeId) {
@@ -270,12 +230,10 @@ function startAutoComplete(modal, examineeId) {
     const timerCount = document.getElementById("timerCount");
 
 
-    // DEBUG: Log the captured examinee ID
     console.log("DEBUG: startAutoComplete called with examineeId =", examineeId);
     const completeBtn = document.getElementById("completeBtn");
     const cancelBtn = document.getElementById("cancelAutoComplete");
 
-    // Create a UNIQUE run id (kills previous timers automatically)
     const runId = Date.now();
     window.currentAutoCompleteRun = runId;
 
@@ -290,7 +248,6 @@ function startAutoComplete(modal, examineeId) {
 
     window.autoCompleteInterval = setInterval(() => {
 
-        // 🔴 If this is NOT the latest run, abort immediately
         if (window.currentAutoCompleteRun !== runId) {
             clearInterval(window.autoCompleteInterval);
             return;
@@ -304,13 +261,11 @@ function startAutoComplete(modal, examineeId) {
 
             clearInterval(window.autoCompleteInterval);
 
-            // 🔴 FINAL protection check
             if (window.currentAutoCompleteRun !== runId) return;
 
             timerDiv.innerHTML =
                 '<span class="text-success fw-semibold"><i class="fa-solid fa-check me-1"></i> Accepted</span>';
 
-            // ✅ Only executes if NOT cancelled
             updateStatusWithId("complete", examineeId);
             applyActionState("completed");
 
@@ -325,10 +280,8 @@ function startAutoComplete(modal, examineeId) {
 
     }, 100);
 
-    // Cancel button (INVALIDATES the run instantly)
     cancelBtn.onclick = () => {
 
-        // 🔥 This kills ALL running logic immediately
         window.currentAutoCompleteRun = null;
 
         clearInterval(window.autoCompleteInterval);
@@ -379,12 +332,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 }
 
-    // Keyboard shortcuts for modal buttons
     let lastEnterTime = 0;
     const doubleClickDelay = 300; // milliseconds
 
     document.addEventListener("keydown", function (event) {
-        // Only listen for Enter key
         if (event.key !== "Enter") return;
 
         const completeBtn = document.getElementById("completeBtn");

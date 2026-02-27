@@ -1,8 +1,4 @@
 <?php
-/**
- * Get registered examinees for a specific region/venue/schedule
- * Used by admin dashboard to display registered examinees
- */
 
 require_once "../config/db.php";
 

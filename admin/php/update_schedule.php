@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 $schedule_id = (int)$_POST['schedule_id'];
 $region = trim($_POST['region']);
 $venue_name = trim($_POST['venue_name']);
-$scheduled_date = trim($_POST['date']); // Format: YYYY-MM-DD
+$scheduled_date = trim($_POST['date']); 
 $capacity = (int)$_POST['capacity'];
 $price = (float)$_POST['price'];
 $status = trim($_POST['status']);
