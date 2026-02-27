@@ -1,23 +1,17 @@
-// Dashboard functionality for Accountant Portal
 document.addEventListener('DOMContentLoaded', function() {
-    // Load statistics and paid examinees on page load
     loadPaymentStatistics();
     loadPaidExaminees();
-    loadVenues(); // Load venues for filter dropdown
+    loadVenues(); 
     
-    // Setup filter event listeners
     setupFilters();
     
-    // Initialize Flatpickr for date inputs
     initializeDatePickers();
 });
 
-// Global variables for pagination
 let currentPage = 1;
-let allExaminees = []; // Store all examinees data
+let allExaminees = []; 
 const itemsPerPage = 10;
 
-// Load payment statistics (region cards and overall stats)
 function loadPaymentStatistics() {
     fetch('php/get_payment_statistics.php')
         .then(response => response.json())
@@ -33,7 +27,6 @@ function loadPaymentStatistics() {
         });
 }
 
-// Update region cards with real data
 function updateRegionCards(regions) {
     // Update Luzon
     const luzonCard = document.querySelector('.luzon-revenue');
@@ -105,7 +98,6 @@ function displayPaidExaminees(examinees, startIndex = 0) {
     
     if (!tableBody) return;
     
-    // Add fade effect
     if (tableContainer) {
         tableContainer.classList.add('table-fade');
         setTimeout(() => tableContainer.classList.remove('table-fade'), 200);
@@ -141,7 +133,6 @@ function displayPaidExaminees(examinees, startIndex = 0) {
     tableBody.innerHTML = html;
 }
 
-// Update count display
 function updateCount(count) {
     const countDisplay = document.querySelector('#examinees-count');
     if (countDisplay) {
@@ -166,11 +157,9 @@ function updatePagination() {
     
     const maxPagesToShow = 3;
     
-    // Determine the range of pages to show
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
     
-    // Adjust the start page if the end page is close to total pages
     if (endPage - startPage + 1 < maxPagesToShow) {
         startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
@@ -195,7 +184,6 @@ function updatePagination() {
         `;
     }
     
-    // Next button
     pagination.innerHTML += `
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="goToPage(${currentPage + 1}); return false;">
@@ -244,7 +232,6 @@ function initializeDatePickers() {
     }
 }
 
-// Apply filters function (can be called from multiple places)
 function applyFilters() {
     const regionFilter = document.querySelector('#region-filter');
     const venueFilter = document.querySelector('#venue-filter');
@@ -277,7 +264,6 @@ function applyFilters() {
     loadPaidExaminees(filters);
 }
 
-// Setup filter event listeners
 function setupFilters() {
     const regionFilter = document.querySelector('#region-filter');
     const venueFilter = document.querySelector('#venue-filter');
@@ -287,10 +273,8 @@ function setupFilters() {
     const applyFilterBtn = document.querySelector('#apply-filter');
     const resetFilterBtn = document.querySelector('#reset-filter');
     
-    // Auto-apply region filter when changed
     if (regionFilter) {
         regionFilter.addEventListener('change', function() {
-            // When region changes, filter venues
             filterVenuesByRegion(regionFilter.value);
             applyFilters();
         });
