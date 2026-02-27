@@ -1,17 +1,12 @@
 <?php
-// Log Activity Function
-// This function logs system activities to the activity_logs table
-
 function logActivity($activityType, $description = null, $userId = null, $username = null, $email = null, $role = null, $severity = 'info', $metadata = null, $pdoConnection = null) {
     try {
-        // Use provided connection or get global one
         if ($pdoConnection) {
             $pdo = $pdoConnection;
         } else {
             require_once __DIR__ . '/../config/db.php';
             global $pdo; // Access the global $pdo variable
             
-            // Check if $pdo is available
             if (!isset($pdo) || !$pdo) {
                 error_log('Activity logging failed: Database connection not available');
                 return false;

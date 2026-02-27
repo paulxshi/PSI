@@ -1,16 +1,13 @@
 <?php
-// Set JSON header immediately - BEFORE anything else
 header('Content-Type: application/json');
 
 session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/RateLimiter.php';
 
-// Initialize rate limiter
 $rateLimiter = new RateLimiter($pdo);
 $clientIP = $_SERVER['REMOTE_ADDR'];
 
-// Check rate limit - max 8 registration attempts, blocked for 15 minutes after exceeding
 if (!$rateLimiter->checkLimit('registration', $clientIP, 8, 900)) {
     $secondsRemaining = $rateLimiter->getTimeUntilUnblocked('registration', $clientIP);
     

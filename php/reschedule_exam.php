@@ -1,5 +1,4 @@
 <?php
-// Reschedule exam for a registered user - updates examinees table with new schedule_id and manages slot counts
 header('Content-Type: application/json');
 session_start();
 

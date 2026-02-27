@@ -1,8 +1,4 @@
 <?php
-/**
- * Clear Rate Limits - Debug Script
- * Clears all rate limit records and resets user lockouts
- */
 
 require_once "../config/db.php";
 

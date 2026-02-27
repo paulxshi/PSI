@@ -1,8 +1,4 @@
 <?php
-/**
- * Rate Limiter Class
- * Prevents brute force attacks by limiting the number of attempts
- */
 class RateLimiter {
     private $pdo;
     
@@ -11,9 +7,6 @@ class RateLimiter {
         $this->createTableIfNotExists();
     }
     
-    /**
-     * Create rate_limits table if it doesn't exist
-     */
     private function createTableIfNotExists() {
         $sql = "CREATE TABLE IF NOT EXISTS rate_limits (
             id INT AUTO_INCREMENT PRIMARY KEY,

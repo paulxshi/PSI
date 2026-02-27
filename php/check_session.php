@@ -1,8 +1,4 @@
 <?php
-/**
- * Check if user has an active registration session
- * Used by frontend pages to verify user authentication
- */
 
 session_start();
 header('Content-Type: application/json');

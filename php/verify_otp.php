@@ -30,7 +30,6 @@ if (!preg_match('/^\d{6}$/', $otp)) {
 }
 
 try {
-    // Find the latest (unused) OTP from database
     $stmt = $pdo->prepare(
         'SELECT verification_id, otp, expires_at, is_used, otp_attempts 
          FROM otp_verifications 
@@ -51,7 +50,6 @@ try {
     error_log("Verification record found: verification_id = $verification_id");
     error_log("Database OTP: '{$verification['otp']}' | Received OTP: '$otp' | Match: " . ($otp === $verification['otp'] ? 'YES' : 'NO'));
 
-    // Check if OTP has expired
     $expiresAt = strtotime($verification['expires_at']);
     $currentTime = time();
 
