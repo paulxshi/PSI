@@ -35,12 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
         ? user.status.charAt(0).toUpperCase() + user.status.slice(1)
         : 'Inactive';
 
-      // Build monogram from initials
       const firstInitial  = (user.first_name  || '').charAt(0).toUpperCase();
       const lastInitial   = (user.last_name   || '').charAt(0).toUpperCase();
       const monogram      = firstInitial + lastInitial;
 
-      // ── ENHANCED CARD MARKUP ──────────────────────────────────────────────
       const card = `
         <div class="user-card">
 
@@ -119,13 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </div>
       `;
-      // ─────────────────────────────────────────────────────────────────────
 
       container.insertAdjacentHTML("beforeend", card);
 
       const userId = document.getElementById("user_id").value;
 
-      // ── Profile picture ───────────────────────────────────────────────────
       const imagePreview      = document.getElementById("imagePreview");
       const uploadPlaceholder = document.getElementById("uploadPlaceholder");
 
@@ -135,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (uploadPlaceholder) uploadPlaceholder.style.display = "none";
       }
 
-      // ── View Permit button state ──────────────────────────────────────────
       const viewPermitBtn = document.getElementById('btnViewPermit');
       if (viewPermitBtn) {
         const hasPhoto = user.profile_picture && user.profile_picture.trim() !== '';
@@ -144,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
         viewPermitBtn.style.cursor   = hasPhoto ? 'pointer' : 'not-allowed';
       }
 
-      // ── Transaction / QR (parallel with exam details) ────────────────────
       Promise.all([
         fetch("php/get_transaction.php?user_id=" + userId).then(r => r.json()),
         fetch("php/get_exam_details.php?user_id="  + userId).then(r => {
@@ -154,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ])
       .then(([txData, examData]) => {
 
-        // ── QR / Transaction ─────────────────────────────────────────────
         if (txData.status === "success") {
           const transactionNo = txData.external_id;
           const qrTextEl      = document.getElementById("qrText");
@@ -212,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        // ── Exam Details ─────────────────────────────────────────────────
         if (examData.status === "success") {
           const fmt = (dateStr) => dateStr
             ? new Date(dateStr).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })

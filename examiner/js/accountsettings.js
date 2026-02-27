@@ -12,12 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let isEditMode = false;
     let originalData = {};
     let userData = null;
-    let profilePictureUploaded = false; // Track if picture was uploaded during this session
+    let profilePictureUploaded = false; 
 
-    // Load user data
     loadUserData();
 
-    // Avatar upload handler
     avatarInput.addEventListener("change", handleAvatarUpload);
 
     // Global Edit button
@@ -224,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                profilePictureUploaded = true; // Mark that picture was uploaded successfully
+                profilePictureUploaded = true; 
                 
                 // Show success modal for profile picture upload
                 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
@@ -245,7 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             } else {
-                // Show error modal for profile picture upload
                 const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
                 errorModal.show();
                 
@@ -259,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     avatarIcon.style.display = 'block';
                 }
             }
-            avatarInput.value = ''; // Reset file input
+            avatarInput.value = ''; 
         })
         .catch(error => {
             console.error('Error uploading image:', error);
@@ -283,7 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Toggle edit mode
     function toggleEditMode() {
-        // Edit information is always allowed - only photo upload has 7-day restriction
         isEditMode = !isEditMode;
 
         if (isEditMode) {
@@ -341,14 +337,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Add active class to show border
                 fieldGroup.classList.add('active');
                 
-                // Enable the input
                 inputElement.disabled = false;
                 
-                // Set value from original data or display text
                 const value = originalData[field.key] || document.getElementById(field.id).textContent;
                 inputElement.value = value === '—' ? '' : value;
                 
-                // Add change listener to birthday input for age calculation
                 if (field.id === 'birthday') {
                     inputElement.addEventListener('change', updateAge);
                 }
@@ -356,7 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Disable edit mode - hide and disable input fields
     function disableEditMode() {
         const editableFields = [
             { id: 'lname', inputId: 'input-lname', key: 'last_name' },
@@ -372,20 +364,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const inputElement = document.getElementById(field.inputId);
             
             if (fieldGroup && inputElement) {
-                // Remove active class to hide border
                 fieldGroup.classList.remove('active');
                 
-                // Disable the input
                 inputElement.disabled = true;
                 
-                // Remove change listener from birthday input
                 if (field.id === 'birthday') {
                     inputElement.removeEventListener('change', updateAge);
                 }
             }
         });
         
-        // Restore original display values
         document.getElementById('lname').textContent = originalData.last_name || '—';
         document.getElementById('fname').textContent = originalData.first_name || '—';
         document.getElementById('mname').textContent = originalData.middle_name || '—';
@@ -442,10 +430,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Profile picture is NOT required to save/edit - users can edit without uploading
-        // View Test Permit requires profile picture, but editing is allowed without it
-
-        // Disable save button
         btnSave.disabled = true;
         btnSave.textContent = 'Saving...';
 
@@ -511,7 +495,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
     }
 
-    // Show professional success notification for profile picture upload
     function showProfileUpdateSuccess() {
         const notification = document.createElement('div');
         notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
@@ -538,7 +521,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
         document.body.appendChild(notification);
         
-        // Auto remove after 10 seconds (longer for this important message)
         setTimeout(() => {
             notification.remove();
         }, 10000);
