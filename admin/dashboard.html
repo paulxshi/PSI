@@ -247,6 +247,10 @@
     border-right: 1px solid #e9ecef;
   }
 }
+.input-group {
+  width: 500px;
+}
+
 .input-group-text {
   border-right: 0;
 }
@@ -732,17 +736,17 @@
 
 function simulateScan() {
 
-    const fakeQR = document.getElementById("manualQR").value.trim();
+    const QR = document.getElementById("manualQR").value.trim();
 
-    if (!fakeQR) {
+    if (!QR) {
         alert("Enter QR value first.");
         return;
     }
 
-    console.log("Simulated Scan:", fakeQR);
+    console.log("Simulated Scan:", QR);
 
     // This calls the SAME function used by real scanner
-    onScanSuccess(fakeQR);
+    onScanSuccess(QR);
 }
 
 
