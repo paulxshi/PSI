@@ -21,7 +21,7 @@ try {
     END) AS num_completed
 FROM schedules s
 INNER JOIN venue v ON s.venue_id = v.venue_id
-LEFT JOIN examinees e ON s.schedule_id = e.attended_schedule_id  -- <-- changed here
+LEFT JOIN examinees e ON s.schedule_id = e.schedule_id
 GROUP BY s.schedule_id, s.scheduled_date, v.venue_name, v.region
 ORDER BY s.scheduled_date ASC;";
 
