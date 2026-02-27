@@ -118,7 +118,7 @@ function completePendingPayment() {
             updated: new Date().toISOString()
         };
         
-        return fetch('webhook.php', {
+        return fetch('../webhook.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -126,7 +126,12 @@ function completePendingPayment() {
             body: JSON.stringify(webhookPayload)
         });
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(webhookResult => {
         if (webhookResult.success) {
             statusBox.className = 'status-box bg-success text-white text-center';
