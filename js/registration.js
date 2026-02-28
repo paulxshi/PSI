@@ -1,17 +1,5 @@
 // OTP Email Verification System - Client-Side Generation
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Flatpickr for date of birth
-    flatpickr('#dateOfBirth', {
-        dateFormat: 'Y-m-d',
-        maxDate: 'today',
-        defaultDate: null,
-        allowInput: true,
-        placeholder: 'Select date of birth',
-        onReady: function(selectedDates, dateStr, instance) {
-            instance.input.setAttribute('data-date', dateStr);
-        }
-    }); 
-
     // Elements
     const emailInput = document.getElementById('email');
     const sendOtpBtn = document.getElementById('sendOtpBtn');
@@ -38,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstNameInput = document.getElementById('firstName');
     const lastNameInput = document.getElementById('lastName');
     const verifyTestPermitBtn = document.getElementById('verifyTestPermitBtn');
+    
+    // Date of Birth and Age Elements
+    const dobInput = document.getElementById('dateOfBirth');
+    const ageInput = document.getElementById('age');
 
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
@@ -99,6 +91,32 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showTestPermitStatus('Please enter a Test Permit Number', 'danger');
             }
+        });
+    }
+
+    // Date of Birth - Auto Calculate Age
+    if (dobInput && ageInput) {
+        // Set max date to today
+        const today = new Date().toISOString().split('T')[0];
+        dobInput.setAttribute('max', today);
+        
+        dobInput.addEventListener('change', function() {
+            const birthDate = new Date(dobInput.value);
+            const today = new Date();
+            
+            if (!dobInput.value || isNaN(birthDate.getTime())) {
+                ageInput.value = '';
+                return;
+            }
+            
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            ageInput.value = age >= 0 ? age : '';
         });
     }
 
