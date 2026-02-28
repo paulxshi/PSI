@@ -1,67 +1,16 @@
 // OTP Email Verification System - Client-Side Generation
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize native date input with age calculation
-    function initializeDateInput() {
-        const dobInput = document.getElementById('dateOfBirth');
-        const ageInput = document.getElementById('age');
-        
-        if (!dobInput || !ageInput) {
-            console.error('Date of birth or age input not found');
-            return;
+    // Initialize Flatpickr for date of birth
+    flatpickr('#dateOfBirth', {
+        dateFormat: 'Y-m-d',
+        maxDate: 'today',
+        defaultDate: null,
+        allowInput: true,
+        placeholder: 'Select date of birth',
+        onReady: function(selectedDates, dateStr, instance) {
+            instance.input.setAttribute('data-date', dateStr);
         }
-
-        // Set max date to today
-        const today = new Date();
-        const maxDate = today.toISOString().split('T')[0];
-        dobInput.setAttribute('max', maxDate);
-
-        // Add event listener for date change
-        dobInput.addEventListener('change', function() {
-            calculateAge(this.value, ageInput);
-        });
-
-        // Also listen to input event for real-time updates
-        dobInput.addEventListener('input', function() {
-            calculateAge(this.value, ageInput);
-        });
-
-        console.log('Native date input initialized successfully');
-    }
-
-    // Calculate age from date of birth
-    function calculateAge(dateString, ageInput) {
-        if (!dateString) {
-            ageInput.value = '';
-            return;
-        }
-
-        const birthDate = new Date(dateString);
-        const today = new Date();
-
-        // Validate date
-        if (isNaN(birthDate.getTime())) {
-            ageInput.value = '';
-            return;
-        }
-
-        // Prevent future dates
-        if (birthDate > today) {
-            ageInput.value = '';
-            return;
-        }
-
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-
-        ageInput.value = age >= 0 ? age : '';
-    }
-
-    // Initialize date input
-    initializeDateInput(); 
+    }); 
 
     // Elements
     const emailInput = document.getElementById('email');
@@ -526,14 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 sendOtpBtn.style.display = 'inline';
                 showTestPermitStatus('Test permit verified! Please complete remaining fields.', 'success');
                 
-                // Trigger validation for autofilled fields
-                setTimeout(() => {
-                    triggerFieldValidation('firstName');
-                    triggerFieldValidation('lastName');
-                    triggerFieldValidation('middleName');
-                    validateForm();
-                }, 100);
-                
                 validateForm();
             } else {
                 testPermitVerified = false;
@@ -659,106 +600,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ========== VISUAL FIELD COMPLETION INDICATORS (GREEN BORDER ONLY) ==========
-    const fieldsToMonitor = [
-        { id: 'lastName', required: true },
-        { id: 'firstName', required: true },
-        { id: 'middleName', required: false },
-        { id: 'dateOfBirth', required: true },
-        { id: 'gender', required: true },
-        { id: 'contactNumber', required: true },
-        { id: 'school', required: true }
-    ];
-
-    // Setup field validation (green border only, no wrapper needed)
-    fieldsToMonitor.forEach(fieldConfig => {
-        const field = document.getElementById(fieldConfig.id);
-        if (!field) return;
-        
-        // Add validation event listeners
-        const validateField = () => {
-            if (field.disabled) {
-                // Don't show validation for disabled fields
-                field.classList.remove('is-valid-filled');
-                return;
-            }
-
-            let isValid = false;
-            
-            if (field.tagName === 'SELECT') {
-                // For select elements, check if value is not empty and not the disabled option
-                isValid = field.value && field.value !== '';
-            } else {
-                // For input elements
-                const value = field.value.trim();
-                isValid = value !== '';
-                
-                // Additional validation for specific fields
-                if (fieldConfig.id === 'contactNumber' && value) {
-                    // Philippine mobile numbers: should start with 09 and be 11 digits
-                    const phonePattern = /^09\d{9}$/;
-                    isValid = phonePattern.test(value);
-                } else if (fieldConfig.id === 'dateOfBirth' && value) {
-                    // Check if valid date format
-                    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-                    isValid = datePattern.test(value);
-                }
-            }
-            
-            // Toggle visual feedback (green border only)
-            if (isValid) {
-                field.classList.add('is-valid-filled');
-            } else {
-                field.classList.remove('is-valid-filled');
-            }
-        };
-        
-        // Listen to multiple events
-        field.addEventListener('input', validateField);
-        field.addEventListener('change', validateField);
-        field.addEventListener('blur', validateField);
-        
-        // Store validation function for external triggering
-        field._validateField = validateField;
-        
-        // For date input fields, validate on initialization
-        if (fieldConfig.id === 'dateOfBirth') {
-            // Check initial state after a brief delay
-            setTimeout(validateField, 100);
-        }
-    });
-
-    // Function to trigger validation for a specific field (used after autofill)
-    window.triggerFieldValidation = function(fieldId) {
-        const field = document.getElementById(fieldId);
-        if (field && field._validateField) {
-            field._validateField();
-        }
-    };
-
-    // Observer to monitor when fields are enabled/disabled
-    const observeFieldChanges = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
-                const field = mutation.target;
-                if (field.disabled) {
-                    field.classList.remove('is-valid-filled');
-                } else {
-                    // When field is enabled, validate it if it has a value
-                    if (field._validateField) {
-                        setTimeout(() => field._validateField(), 50);
-                    }
-                }
-            }
-        });
-    });
-
-    // Observe all monitored fields
-    fieldsToMonitor.forEach(fieldConfig => {
-        const field = document.getElementById(fieldConfig.id);
-        if (field) {
-            observeFieldChanges.observe(field, { attributes: true });
-        }
-    });
 
 });
