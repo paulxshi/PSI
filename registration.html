@@ -4,13 +4,11 @@
   <meta charset="UTF-8">
   <title>PMMA Registration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-  <script src="js/registration.js"></script>
+  
+  <!-- CSS files MUST load before JavaScript -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="imgs/PSI.png">
-  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
   <style>
   :root {
@@ -281,10 +279,7 @@
        margin-left: 8px;
      }
 
-     .flatpickr-calendar {
-       background: white;
-       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
- }
+
 
     .btn-understand {
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
@@ -307,6 +302,71 @@
     }
     .permit-input {
       max-width: 260px;
+    }
+
+    /* FIELD COMPLETION INDICATORS */
+    .field-wrapper {
+      position: relative;
+    }
+
+    .field-wrapper .validation-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .field-wrapper .validation-icon.show {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .field-wrapper .validation-icon i {
+      color: #198754;
+      font-size: 1.1rem;
+      filter: drop-shadow(0 2px 4px rgba(25, 135, 84, 0.3));
+    }
+
+    /* Valid field styling */
+    .form-control.is-valid-filled,
+    .form-select.is-valid-filled {
+      border-color: #198754;
+      padding-right: 2.5rem;
+      background-image: none;
+      box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .form-control.is-valid-filled:focus,
+    .form-select.is-valid-filled:focus {
+      border-color: #198754;
+      box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+
+    /* Native date input styling */
+    input[type="date"] {
+      position: relative;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+    
+    /* Ensure date input is properly styled on mobile */
+    @media (max-width: 768px) {
+      input[type="date"] {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
     }
   </style>
 
@@ -577,12 +637,12 @@
                         Date of Birth <span class="text-danger">*</span>
                       </label>
                       <input
-                        type="text"
+                        type="date"
                         class="form-control"
                         name="date_of_birth"
                         id="dateOfBirth"
                         required
-                        placeholder="Select date"
+                        max="9999-12-31"
                         disabled
                       >
                     </div>
@@ -1100,38 +1160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const dobInput = document.getElementById('dateOfBirth');
-  const ageInput = document.getElementById('age');
 
-  flatpickr(dobInput, {
-    dateFormat: "Y-m-d",
-    maxDate: "today",
-    onChange: function(selectedDates) {
-      if (!selectedDates.length) {
-        ageInput.value = '';
-        return;
-      }
-
-      const birthDate = selectedDates[0];
-      const today = new Date();
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      ageInput.value = age >= 0 ? age : '';
-    }
-  });
-});
-</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -1253,7 +1282,9 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-
+<!-- JavaScript files loaded at end of body for performance -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="js/registration.js"></script>
 
 </body>
 </html>
