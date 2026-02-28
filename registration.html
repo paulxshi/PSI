@@ -583,7 +583,7 @@
                         id="dateOfBirth"
                         required
                         placeholder="Select date"
-                        disabled
+                        
                       >
                     </div>
 
@@ -801,7 +801,6 @@
                       type="button"
                       class="btn btn-primary px-4 rounded-pill"
                       id="registerBtn"
-                      disabled
                     >
                       Proceed to Examination Schedule 
                       <i class="bi bi-arrow-right-short"></i>
@@ -925,47 +924,14 @@
 </script>
 
 <script>
-  const requiredFields = [
-    'lastName',
-    'firstName',
-    'dateOfBirth',
-    'contactNumber',
-    'testPermitNo',
-    'school',
-    'email',
-    'password',
-    'confirmPassword'
-  ];
-
-  const registerBtn = document.getElementById('registerBtn');
-
-  function checkPersonalInfoCompletion() {
-    let isComplete = true;
-
-    requiredFields.forEach(id => {
-      const field = document.getElementById(id);
-      if (!field || field.value.trim() === '') {
-        isComplete = false;
-      }
-    });
-
-    registerBtn.disabled = !isComplete;
-  }
-
-  requiredFields.forEach(id => {
-    const field = document.getElementById(id);
-    if (field) {
-      field.addEventListener('input', checkPersonalInfoCompletion);
-    }
-  });
-
     // Submit registration data when clicking "Proceed to Examination Schedule"
-  registerBtn.addEventListener('click', () => {
+  document.getElementById('registerBtn').addEventListener('click', () => {
     submitRegistration();
   });
 
   // Submit registration function
   function submitRegistration() {
+    const registerBtn = document.getElementById('registerBtn');
     const formData = new FormData();
     
     // Add all form fields
@@ -1100,38 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const dobInput = document.getElementById('dateOfBirth');
-  const ageInput = document.getElementById('age');
-
-  flatpickr(dobInput, {
-    dateFormat: "Y-m-d",
-    maxDate: "today",
-    onChange: function(selectedDates) {
-      if (!selectedDates.length) {
-        ageInput.value = '';
-        return;
-      }
-
-      const birthDate = selectedDates[0];
-      const today = new Date();
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      ageInput.value = age >= 0 ? age : '';
-    }
-  });
-});
-</script>
+<!-- flatpickr initialized in registration.js with age calculation -->
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,16 +1,41 @@
 // OTP Email Verification System - Client-Side Generation
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Flatpickr for date of birth
-    flatpickr('#dateOfBirth', {
-        dateFormat: 'Y-m-d',
-        maxDate: 'today',
-        defaultDate: null,
-        allowInput: true,
-        placeholder: 'Select date of birth',
-        onReady: function(selectedDates, dateStr, instance) {
-            instance.input.setAttribute('data-date', dateStr);
-        }
-    }); 
+    function initFlatpickrDOB() {
+        const dobEl = document.getElementById('dateOfBirth');
+        if (!dobEl) return;
+        // Destroy any existing flatpickr instance to avoid duplicates
+        if (dobEl._flatpickr) dobEl._flatpickr.destroy();
+        flatpickr(dobEl, {
+            dateFormat: 'Y-m-d',
+            maxDate: 'today',
+            defaultDate: null,
+            allowInput: true,
+            placeholder: 'Select date of birth',
+            onReady: function(selectedDates, dateStr, instance) {
+                instance.input.setAttribute('data-date', dateStr);
+            },
+            onChange: function(selectedDates) {
+                const ageInput = document.getElementById('age');
+                if (!selectedDates.length) {
+                    if (ageInput) ageInput.value = '';
+                    validateForm();
+                    return;
+                }
+                const birthDate = selectedDates[0];
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                if (ageInput) ageInput.value = age >= 0 ? age : '';
+                validateForm();
+            }
+        });
+    }
+    // Initial init (will be re-initialized after field is enabled)
+    initFlatpickrDOB(); 
 
     // Elements
     const emailInput = document.getElementById('email');
@@ -28,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordStrength = document.getElementById('passwordStrength');
     const registrationForm = document.getElementById('registrationForm');
     const allInputs = registrationForm.querySelectorAll('input:not(#otpInput)');
+    const allSelects = registrationForm.querySelectorAll('select');
     const invalidTestPermitModal = new bootstrap.Modal(document.getElementById('invalidTestPermitModal'), {
         keyboard: false,
         backdrop: 'static'
@@ -139,10 +165,43 @@ document.addEventListener('DOMContentLoaded', function() {
         validateForm();
     });
 
+    // Fallback age calculation via native events (covers mobile/native pickers)
+    const dateOfBirthInput = document.getElementById('dateOfBirth');
+    if (dateOfBirthInput) {
+        function calculateAndSetAge() {
+            const ageInput = document.getElementById('age');
+            const dobValue = dateOfBirthInput.value.trim();
+            if (!ageInput) return;
+            if (!dobValue) { ageInput.value = ''; return; }
+
+            const birthDate = new Date(dobValue);
+            if (isNaN(birthDate.getTime())) return;
+
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            ageInput.value = age >= 0 ? age : '';
+            validateForm();
+        }
+
+        dateOfBirthInput.addEventListener('change', calculateAndSetAge);
+        dateOfBirthInput.addEventListener('input', calculateAndSetAge);
+        dateOfBirthInput.addEventListener('blur', calculateAndSetAge);
+    }
+
     // All other inputs - validate form
     allInputs.forEach(function(input) {
         input.addEventListener('input', validateForm);
         input.addEventListener('change', validateForm);
+    });
+
+    // All selects - validate form (especially for mobile)
+    allSelects.forEach(function(select) {
+        select.addEventListener('input', validateForm);
+        select.addEventListener('change', validateForm);
     });
 
     // Form submission - handled by submitRegistration() in HTML
@@ -279,6 +338,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Show password section
                 passwordSection.style.display = 'block';
+                const registerBtnWrapper = document.getElementById('registerBtnWrapper');
+                if (registerBtnWrapper) registerBtnWrapper.classList.remove('d-none');
                 
                 // ENABLE password fields
                 passwordInput.disabled = false;
@@ -460,6 +521,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('middleName').disabled = false;
                 document.getElementById('dateOfBirth').disabled = false;
                 document.getElementById('age').disabled = false;
+                // Re-initialize flatpickr now that the field is enabled
+                initFlatpickrDOB();
                 document.getElementById('gender').disabled = false;
                 document.getElementById('contactNumber').disabled = false;
                 document.getElementById('school').disabled = false;
@@ -559,10 +622,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const form = registrationForm;
         let isValid = true;
 
-        // Check all required fields that are NOT disabled
+        // Check all required input fields that are NOT disabled
         allInputs.forEach(function(input) {
             // Skip disabled fields from validation
             if (!input.disabled && input.required && !input.value.trim()) {
+                isValid = false;
+            }
+        });
+
+        // Check all required select fields that are NOT disabled
+        allSelects.forEach(function(select) {
+            if (!select.disabled && select.required && !select.value) {
                 isValid = false;
             }
         });
