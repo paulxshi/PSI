@@ -1,5 +1,17 @@
 // OTP Email Verification System - Client-Side Generation
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Flatpickr for date of birth
+    flatpickr('#dateOfBirth', {
+        dateFormat: 'Y-m-d',
+        maxDate: 'today',
+        defaultDate: null,
+        allowInput: true,
+        placeholder: 'Select date of birth',
+        onReady: function(selectedDates, dateStr, instance) {
+            instance.input.setAttribute('data-date', dateStr);
+        }
+    }); 
+
     // Elements
     const emailInput = document.getElementById('email');
     const sendOtpBtn = document.getElementById('sendOtpBtn');
@@ -26,10 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstNameInput = document.getElementById('firstName');
     const lastNameInput = document.getElementById('lastName');
     const verifyTestPermitBtn = document.getElementById('verifyTestPermitBtn');
-    
-    // Date of Birth and Age Elements
-    const dobInput = document.getElementById('dateOfBirth');
-    const ageInput = document.getElementById('age');
 
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
@@ -43,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentEmail = '';
     let testPermitVerified = false;
     let examineeData = null;
-    let isVerifyingTestPermit = false;
 
     // Show/hide Send OTP button based on email validation and form state
     emailInput.addEventListener('input', function() {
@@ -64,103 +71,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Test Permit validation and auto-fill
     if (testPermitInput) {
-        console.log('Test permit input found, adding event listeners');
-        
         testPermitInput.addEventListener('blur', function() {
-            console.log('Test permit blur event triggered');
             const testPermit = testPermitInput.value.trim();
-            if (testPermit.length > 0 && !isVerifyingTestPermit && !testPermitVerified) {
-                console.log('Verifying test permit on blur:', testPermit);
-                isVerifyingTestPermit = true;
-                checkTestPermit(testPermit).finally(() => {
-                    isVerifyingTestPermit = false;
-                });
+            if (testPermit.length > 0) {
+                checkTestPermit(testPermit);
             }
         });
 
         // Allow Enter key to verify test permit
         testPermitInput.addEventListener('keypress', function(e) {
-            console.log('Test permit keypress event triggered, key:', e.key);
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const testPermit = testPermitInput.value.trim();
-                if (testPermit.length > 0 && !isVerifyingTestPermit && !testPermitVerified) {
-                    console.log('Verifying test permit on Enter:', testPermit);
-                    isVerifyingTestPermit = true;
-                    checkTestPermit(testPermit).finally(() => {
-                        isVerifyingTestPermit = false;
-                    });
+                if (testPermit.length > 0) {
+                    checkTestPermit(testPermit);
                 }
             }
         });
-    } else {
-        console.error('Test permit input not found!');
     }
 
     // Verify Test Permit button click
     if (verifyTestPermitBtn) {
-        console.log('Test permit verify button found, adding click listener');
-        
         verifyTestPermitBtn.addEventListener('click', function() {
-            console.log('Verify button clicked');
             const testPermit = testPermitInput.value.trim();
-            if (testPermit.length > 0 && !isVerifyingTestPermit) {
-                console.log('Verifying test permit on button click:', testPermit);
-                isVerifyingTestPermit = true;
-                
-                // Show loading state on button
-                const originalText = verifyTestPermitBtn.innerHTML;
-                verifyTestPermitBtn.disabled = true;
-                verifyTestPermitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verifying...';
-                
-                checkTestPermit(testPermit).finally(() => {
-                    isVerifyingTestPermit = false;
-                    verifyTestPermitBtn.disabled = false;
-                    verifyTestPermitBtn.innerHTML = originalText;
-                });
-            } else if (!testPermit) {
+            if (testPermit.length > 0) {
+                checkTestPermit(testPermit);
+            } else {
                 showTestPermitStatus('Please enter a Test Permit Number', 'danger');
             }
         });
-    } else {
-        console.error('Test permit verify button not found!');
-    }
-
-    // Date of Birth - Auto Calculate Age (function to be called when field is enabled)
-    function setupDateOfBirth() {
-        if (!dobInput || !ageInput) return;
-        
-        try {
-            // Set max date to today
-            const today = new Date().toISOString().split('T')[0];
-            dobInput.setAttribute('max', today);
-            
-            // Function to calculate age
-            const calculateAge = function() {
-                const birthDate = new Date(dobInput.value);
-                const today = new Date();
-                
-                if (!dobInput.value || isNaN(birthDate.getTime())) {
-                    ageInput.value = '';
-                    return;
-                }
-                
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-                
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-                
-                ageInput.value = age >= 0 ? age : '';
-            };
-            
-            // Add both 'change' and 'input' events for better mobile support
-            dobInput.addEventListener('change', calculateAge);
-            dobInput.addEventListener('input', calculateAge);
-        } catch (error) {
-            console.error('Error setting up date of birth:', error);
-        }
     }
 
     // Send OTP button click
@@ -495,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         formData.append('test_permit', testPermit);
 
-        return fetch(CHECK_TEST_PERMIT_URL, {
+        fetch(CHECK_TEST_PERMIT_URL, {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
@@ -524,9 +463,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('gender').disabled = false;
                 document.getElementById('contactNumber').disabled = false;
                 document.getElementById('school').disabled = false;
-                
-                // Setup date of birth field after it's enabled (important for mobile)
-                setupDateOfBirth();
                 
                 // Make email read-only (locked after test permit verification)
                 emailInput.disabled = false;
