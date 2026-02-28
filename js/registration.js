@@ -1,5 +1,17 @@
 // OTP Email Verification System - Client-Side Generation
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Flatpickr for date of birth
+    flatpickr('#dateOfBirth', {
+        dateFormat: 'Y-m-d',
+        maxDate: 'today',
+        defaultDate: null,
+        allowInput: true,
+        placeholder: 'Select date of birth',
+        onReady: function(selectedDates, dateStr, instance) {
+            instance.input.setAttribute('data-date', dateStr);
+        }
+    }); 
+
     // Elements
     const emailInput = document.getElementById('email');
     const sendOtpBtn = document.getElementById('sendOtpBtn');
@@ -451,11 +463,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('gender').disabled = false;
                 document.getElementById('contactNumber').disabled = false;
                 document.getElementById('school').disabled = false;
-                
-                // Update field borders after auto-filling
-                if (typeof window.updateFieldBorders === 'function') {
-                    window.updateFieldBorders();
-                }
                 
                 // Make email read-only (locked after test permit verification)
                 emailInput.disabled = false;
