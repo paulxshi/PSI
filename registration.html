@@ -304,38 +304,11 @@
       max-width: 260px;
     }
 
-    /* FIELD COMPLETION INDICATORS */
-    .field-wrapper {
-      position: relative;
-    }
-
-    .field-wrapper .validation-icon {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .field-wrapper .validation-icon.show {
-      opacity: 1;
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .field-wrapper .validation-icon i {
-      color: #198754;
-      font-size: 1.1rem;
-      filter: drop-shadow(0 2px 4px rgba(25, 135, 84, 0.3));
-    }
-
-    /* Valid field styling */
+    /* ========== FIELD COMPLETION INDICATORS (GREEN BORDER ONLY) ========== */
+    /* Valid field styling - green border only, no icon */
     .form-control.is-valid-filled,
     .form-select.is-valid-filled {
-      border-color: #198754;
-      padding-right: 2.5rem;
+      border-color: #198754 !important;
       background-image: none;
       box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.15);
       transition: all 0.3s ease;
@@ -343,7 +316,7 @@
 
     .form-control.is-valid-filled:focus,
     .form-select.is-valid-filled:focus {
-      border-color: #198754;
+      border-color: #198754 !important;
       box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
     }
 

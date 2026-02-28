@@ -526,6 +526,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 sendOtpBtn.style.display = 'inline';
                 showTestPermitStatus('Test permit verified! Please complete remaining fields.', 'success');
                 
+                // Trigger validation for autofilled fields
+                setTimeout(() => {
+                    triggerFieldValidation('firstName');
+                    triggerFieldValidation('lastName');
+                    triggerFieldValidation('middleName');
+                    validateForm();
+                }, 100);
+                
                 validateForm();
             } else {
                 testPermitVerified = false;
@@ -651,8 +659,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    //  VISUAL FIELD COMPLETION INDICATORS 
-        const fieldsToMonitor = [
+    // ========== VISUAL FIELD COMPLETION INDICATORS (GREEN BORDER ONLY) ==========
+    const fieldsToMonitor = [
         { id: 'lastName', required: true },
         { id: 'firstName', required: true },
         { id: 'middleName', required: false },
@@ -662,33 +670,15 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: 'school', required: true }
     ];
 
-    // Wrap fields and add validation icons
+    // Setup field validation (green border only, no wrapper needed)
     fieldsToMonitor.forEach(fieldConfig => {
         const field = document.getElementById(fieldConfig.id);
         if (!field) return;
-
-        // Check if already wrapped
-        if (field.parentElement.classList.contains('field-wrapper')) return;
-
-        // Create wrapper
-        const wrapper = document.createElement('div');
-        wrapper.className = 'field-wrapper';
-        
-        // Create validation icon
-        const icon = document.createElement('span');
-        icon.className = 'validation-icon';
-        icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
-        
-        // Wrap the field
-        field.parentNode.insertBefore(wrapper, field);
-        wrapper.appendChild(field);
-        wrapper.appendChild(icon);
         
         // Add validation event listeners
         const validateField = () => {
             if (field.disabled) {
                 // Don't show validation for disabled fields
-                icon.classList.remove('show');
                 field.classList.remove('is-valid-filled');
                 return;
             }
@@ -715,13 +705,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Toggle visual feedback
+            // Toggle visual feedback (green border only)
             if (isValid) {
                 field.classList.add('is-valid-filled');
-                icon.classList.add('show');
             } else {
                 field.classList.remove('is-valid-filled');
-                icon.classList.remove('show');
             }
         };
         
@@ -730,24 +718,35 @@ document.addEventListener('DOMContentLoaded', function() {
         field.addEventListener('change', validateField);
         field.addEventListener('blur', validateField);
         
+        // Store validation function for external triggering
+        field._validateField = validateField;
+        
         // For date input fields, validate on initialization
         if (fieldConfig.id === 'dateOfBirth') {
             // Check initial state after a brief delay
-            setTimeout(validateField, 50);
+            setTimeout(validateField, 100);
         }
     });
+
+    // Function to trigger validation for a specific field (used after autofill)
+    window.triggerFieldValidation = function(fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field && field._validateField) {
+            field._validateField();
+        }
+    };
 
     // Observer to monitor when fields are enabled/disabled
     const observeFieldChanges = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'disabled') {
                 const field = mutation.target;
-                const wrapper = field.parentElement;
-                if (wrapper && wrapper.classList.contains('field-wrapper')) {
-                    const icon = wrapper.querySelector('.validation-icon');
-                    if (field.disabled) {
-                        icon.classList.remove('show');
-                        field.classList.remove('is-valid-filled');
+                if (field.disabled) {
+                    field.classList.remove('is-valid-filled');
+                } else {
+                    // When field is enabled, validate it if it has a value
+                    if (field._validateField) {
+                        setTimeout(() => field._validateField(), 50);
                     }
                 }
             }
