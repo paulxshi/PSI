@@ -277,6 +277,33 @@
     }
     }
 
+    /* Mobile Responsive Styles */
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+
+      #faqPanel, #contactPanel {
+        margin: 0 1rem;
+        max-width: calc(100% - 2rem) !important;
+      }
+
+      .glass-card {
+        padding: 1rem !important;
+      }
+
+      .glass-card h5 {
+        font-size: 1.1rem;
+      }
+
+      .glass-card p, .glass-card li {
+        font-size: 0.9rem;
+      }
+    }
+
   </style>
 </head>
 
@@ -305,28 +332,38 @@
                 </span>
                 </div>
 
+                <!-- MOBILE TOGGLE -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarNav" aria-controls="navbarNav" 
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <!-- LINKS -->
-            <div class="ms-auto d-flex gap-4">
-                <a href="javascript:void(0)"
-                id="faqBtn"
-                class="text-decoration-none fs-6 text-primary fw-semibold">
-                FAQs
-                </a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="ms-auto d-flex flex-column flex-lg-row gap-3 gap-lg-4 align-items-start align-items-lg-center mt-3 mt-lg-0">
+                        <a href="javascript:void(0)"
+                        id="faqBtn"
+                        class="text-decoration-none fs-6 text-primary fw-semibold">
+                        FAQs
+                        </a>
 
-                <a href="javascript:void(0)"
-                    id="contactBtn"
-                    class="text-decoration-none fs-6 text-primary fw-semibold">
-                    Contact Us
-                </a>
-                
-                <a href="login.html"
-                  class="btn btn-sm rounded-pill fw-semibold
-                          d-inline-flex align-items-center gap-1
-                          login-btn text-dark px-3">
-                  Login
-                </a>
-
+                        <a href="javascript:void(0)"
+                            id="contactBtn"
+                            class="text-decoration-none fs-6 text-primary fw-semibold">
+                            Contact Us
+                        </a>
+                        
+                        <a href="login.html"
+                          class="btn btn-sm rounded-pill fw-semibold
+                                  d-inline-flex align-items-center gap-1
+                                  login-btn text-dark px-3">
+                          Login
+                        </a>
+                    </div>
+                </div>
             </div>
+    </nav>
         <!-- INFO PANELS -->
         <div class="container position-fixed top-0 start-50 translate-middle-x pt-5 mt-5"
             style="z-index:1050; max-width:900px;">
@@ -360,9 +397,6 @@
             </div>
         </div>
     </div>
-
-    </div>
-    </nav>
 
   <!-- HERO -->
   <section class="d-flex align-items-center min-vh-100 pt-5">
@@ -432,18 +466,49 @@
 <script>
   const faqBtn = document.getElementById('faqBtn');
   const contactBtn = document.getElementById('contactBtn');
+  const faqPanelEl = document.getElementById('faqPanel');
+  const contactPanelEl = document.getElementById('contactPanel');
 
   const faqPanel = new bootstrap.Collapse('#faqPanel', { toggle: false });
   const contactPanel = new bootstrap.Collapse('#contactPanel', { toggle: false });
+  const navbarCollapse = document.getElementById('navbarNav');
 
-  faqBtn.addEventListener('click', () => {
+  faqBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     contactPanel.hide();
     faqPanel.toggle();
+    // Close mobile menu if open
+    if (window.innerWidth < 992) {
+      bootstrap.Collapse.getInstance(navbarCollapse)?.hide();
+    }
   });
 
-  contactBtn.addEventListener('click', () => {
+  contactBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     faqPanel.hide();
     contactPanel.toggle();
+    // Close mobile menu if open
+    if (window.innerWidth < 992) {
+      bootstrap.Collapse.getInstance(navbarCollapse)?.hide();
+    }
+  });
+
+  // Close panels when clicking outside
+  document.addEventListener('click', (e) => {
+    const isFaqOpen = faqPanelEl.classList.contains('show');
+    const isContactOpen = contactPanelEl.classList.contains('show');
+
+    // Check if click is outside both panels and buttons
+    const clickedInsideFaq = faqPanelEl.contains(e.target) || faqBtn.contains(e.target);
+    const clickedInsideContact = contactPanelEl.contains(e.target) || contactBtn.contains(e.target);
+
+    if (isFaqOpen && !clickedInsideFaq) {
+      faqPanel.hide();
+    }
+
+    if (isContactOpen && !clickedInsideContact) {
+      contactPanel.hide();
+    }
   });
 </script>
 
