@@ -1,0 +1,7 @@
+# =============================================
+# config/.htaccess - Blocks ALL direct access
+# to files inside the config/ folder
+# =============================================
+
+Order deny,allow
+Deny from all

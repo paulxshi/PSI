@@ -343,12 +343,12 @@
         .then(response => response.json())
         .then(data => {
           if (!data.authenticated) {
-            window.location.href = '../login.html';
+            window.location.href = '../auth/login.html';
           }
         })
         .catch(error => {
           console.error('Session check failed:', error);
-          window.location.href = '../login.html';
+          window.location.href = '../auth/login.html';
         });
     })();
   </script>

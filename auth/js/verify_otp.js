@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hideMessage();
         
         try {
-            const response = await fetch('php/verify_otp.php', {
+            const response = await fetch('../php/verify_otp.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hideMessage();
         
         try {
-            const response = await fetch('php/resend_otp.php', {
+            const response = await fetch('../php/resend_otp.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -259,7 +259,7 @@ class LoginHandler {
                 return [
                     'success' => false,
                     'message' => "Please complete your registration first.",
-                    'redirect' => "registration.html"
+                    'redirect' => "auth/registration.html"
                 ];
             }
         }
@@ -282,7 +282,7 @@ class LoginHandler {
             return [
                 'success' => false,
                 'message' => "Examinee record not found. Please complete your registration.",
-                'redirect' => "registration.html"
+                'redirect' => "auth/registration.html"
             ];
         }
         

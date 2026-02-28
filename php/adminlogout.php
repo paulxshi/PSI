@@ -23,6 +23,6 @@ if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
     unset($_SESSION['role']);
 }
 
-header("Location: ../adminlogin.html");
+header("Location: ../auth/adminlogin.html");
 exit;
 ?>

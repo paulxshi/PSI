@@ -1,0 +1,22 @@
+# =============================================
+# MAIN .htaccess - Place in public_html root
+# =============================================
+
+# Disable directory listing (prevents visitors from browsing folders)
+Options -Indexes
+
+# Block access to sensitive file types
+<FilesMatch "\.(env|sql|log|bak|old|ini|conf|sh|git)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to composer files
+<FilesMatch "^(composer\.json|composer\.lock)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Turn off PHP error display (errors go to log, not visible to visitors)
+php_flag display_errors off
+php_flag log_errors on

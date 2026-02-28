@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
     echo json_encode([
         'success' => false,
         'message' => 'Please log in to continue.',
-        'redirect' => 'login.html'
+        'redirect' => 'auth/login.html'
     ]);
     exit();
 }
@@ -95,7 +95,7 @@ try {
         echo json_encode([
             'success' => false,
             'message' => 'Examinee record not found. Please complete registration first.',
-            'redirect' => 'registration.html'
+            'redirect' => 'auth/registration.html'
         ]);
         exit();
     }

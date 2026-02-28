@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Logging in...';
 
-    fetch("php/admin_login.php", {
+    fetch("../php/admin_login.php", {
       method: "POST",
       body: formData
     })
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Redirect to admin dashboard after successful login
         setTimeout(() => {
-          window.location.href = "admin/dashboard.html";
+          window.location.href = "../admin/dashboard.html";
         }, 1500);
       } else {
         // Show error modal
