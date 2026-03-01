@@ -15,6 +15,17 @@ try {
         exit;
     }
 
+    // Check if registration is incomplete
+    if (isset($_SESSION['incomplete_registration']) && $_SESSION['incomplete_registration'] === true) {
+        error_log("User has incomplete registration");
+        echo json_encode([
+            "success" => false, 
+            "message" => "Please complete your registration and payment first.",
+            "redirect" => "../auth/login.html"
+        ]);
+        exit;
+    }
+
     $user_id = $_SESSION['user_id'];
     error_log("Fetching user data for user_id: $user_id");
 

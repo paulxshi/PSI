@@ -135,7 +135,7 @@ class LoginHandler {
         // Login successful - reset failed attempts and clear lock
         $this->resetFailedAttempts($user['user_id']);
         
-        // Set up session
+        // Set up full session (remove incomplete flag if present)
         $this->setupSession($user, $role);
         
         // Log success
@@ -230,6 +230,20 @@ class LoginHandler {
     }
     
     /**
+     * Set up partial session for users who need to complete registration/payment
+     */
+    private function setupPartialSession($user) {
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['first_name'] = $user['first_name'];
+        $_SESSION['last_name'] = $user['last_name'];
+        $_SESSION['role'] = 'examinee';
+        $_SESSION['incomplete_registration'] = true;
+        $_SESSION['registration_flow'] = true;
+    }
+    
+    /**
      * Check examinee-specific status requirements
      */
     private function checkExamineeStatus($user) {
@@ -243,12 +257,16 @@ class LoginHandler {
             
             if ($examinee) {
                 if ($examinee['status'] === 'Awaiting Payment' && $examinee['schedule_id']) {
+                    // Set up partial session before redirecting
+                    $this->setupPartialSession($user);
                     return [
                         'success' => false,
                         'message' => "Please complete your payment to activate your account.",
                         'redirect' => "payment.html"
                     ];
                 } else {
+                    // Set up partial session before redirecting
+                    $this->setupPartialSession($user);
                     return [
                         'success' => false,
                         'message' => "Please select your exam schedule to continue.",
@@ -259,7 +277,7 @@ class LoginHandler {
                 return [
                     'success' => false,
                     'message' => "Please complete your registration first.",
-                    'redirect' => "auth/registration.html"
+                    'redirect' => "registration.html"
                 ];
             }
         }
@@ -282,18 +300,22 @@ class LoginHandler {
             return [
                 'success' => false,
                 'message' => "Examinee record not found. Please complete your registration.",
-                'redirect' => "auth/registration.html"
+                'redirect' => "registration.html"
             ];
         }
         
         if ($examinee['status'] !== 'Scheduled') {
             if ($examinee['status'] === 'Awaiting Payment' && $examinee['schedule_id']) {
+                // Set up partial session before redirecting
+                $this->setupPartialSession($user);
                 return [
                     'success' => false,
                     'message' => "Please complete your payment to access your dashboard.",
                     'redirect' => "payment.html"
                 ];
             } else {
+                // Set up partial session before redirecting
+                $this->setupPartialSession($user);
                 return [
                     'success' => false,
                     'message' => "Please select your exam schedule before logging in.",
@@ -315,6 +337,10 @@ class LoginHandler {
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
         $_SESSION['role'] = $role;
+        
+        // Clear incomplete registration flags on successful login
+        unset($_SESSION['incomplete_registration']);
+        unset($_SESSION['registration_flow']);
         
         if ($role === 'admin') {
             $_SESSION['is_admin'] = true;

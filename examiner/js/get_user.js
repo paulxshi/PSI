@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!data.success) {
         console.error("API Error:", data.message);
+        
+        // Handle redirect if provided (e.g., incomplete registration)
+        if (data.redirect) {
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, 1500);
+        }
+        
         container.innerHTML = `<p class="text-danger p-4">${data.message || "Failed to load user data."}</p>`;
         return;
       }
