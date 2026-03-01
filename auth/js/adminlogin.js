@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Logging in...';
 
-    fetch("../php/admin_login.php", {
+    fetch("php/admin_login.php", {
       method: "POST",
       body: formData
     })

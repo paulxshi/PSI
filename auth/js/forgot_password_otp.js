@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         hideMessage();
 
         try {
-            const response = await fetch("../php/verify_otp_password.php", {
+            const response = await fetch("php/verify_otp_password.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resendBtn.textContent = "Sending...";
 
         try {
-            const response = await fetch("../php/forgot_password.php", {
+            const response = await fetch("php/forgot_password.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData(this);
 
-    fetch("../php/login.php", {
+    fetch("php/login.php", {
       method: "POST",
       body: formData
     })
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sendResetBtn.disabled = true;
     sendResetBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Sending...';
 
-    fetch("../php/forgot_password.php", {
+    fetch("php/forgot_password.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
