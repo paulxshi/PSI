@@ -22,7 +22,7 @@ if ($email === '' || $password === '') {
 $result = handleLogin($pdo, $email, $password, 'accountant', [], 5, 900);
 
 if ($result['success']) {
-    $result['redirect'] = "../accountant/dashboard.html";
+    $result['redirect'] = "dashboard.html";
 }
 
 echo json_encode($result);

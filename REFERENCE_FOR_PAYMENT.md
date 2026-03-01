@@ -25,8 +25,8 @@ define('XENDIT_WEBHOOK_TOKEN_LIVE', 'your_webhook_token_here');
 
 **Lines 38-39:** Update URLs to your domain
 ```php
-define('SUCCESS_URL_LIVE', 'https://yourdomain.com/payment_success.html');
-define('FAILURE_URL_LIVE', 'https://yourdomain.com/payment_failed.html');
+define('SUCCESS_URL_LIVE', 'https://yourdomain.com/auth/payment_success.html');
+define('FAILURE_URL_LIVE', 'https://yourdomain.com/auth/payment_failed.html');
 ```
 
 ### 2️⃣ In Xendit Dashboard:

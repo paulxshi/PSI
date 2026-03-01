@@ -62,8 +62,8 @@ define('XENDIT_WEBHOOK_TOKEN_LIVE', 'your_actual_webhook_token_from_xendit');
 #### 2.4 Update Redirect URLs
 ```php
 // Lines 38-39: Replace with your actual domain
-define('SUCCESS_URL_LIVE', 'https://yourdomain.com/payment_success.html');
-define('FAILURE_URL_LIVE', 'https://yourdomain.com/payment_failed.html');
+define('SUCCESS_URL_LIVE', 'https://yourdomain.com/auth/payment_success.html');
+define('FAILURE_URL_LIVE', 'https://yourdomain.com/auth/payment_failed.html');
 ```
 
 **Example of completed configuration:**
@@ -71,7 +71,7 @@ define('FAILURE_URL_LIVE', 'https://yourdomain.com/payment_failed.html');
 // define('PAYMENT_MODE', 'production');
 define('XENDIT_API_KEY_LIVE', 'xnd_production_ABC123XYZ789...');
 // define('XENDIT_WEBHOOK_TOKEN_LIVE', 'webhook_token_ABC123XYZ789...');
-// define('SUCCESS_URL_LIVE', 'https://psiexam.com/payment_success.html');
+// define('SUCCESS_URL_LIVE', 'https://psiexam.com/auth/payment_success.html');
 // define('FAILURE_URL_LIVE', 'https://psiexam.com/payment_failed.html');
 ```
 
