@@ -6,22 +6,30 @@ header('Content-Type: application/json');
 try {
 
     // IMPROVED: Only count examinees with status 'Registered' or 'Completed'
-    $sql = "SELECT 
+   $sql = "SELECT  
     s.schedule_id,
     s.scheduled_date,
     v.venue_name,
     v.region,
+
     COUNT(DISTINCT CASE 
-        WHEN e.examinee_status = 'Registered' 
+        WHEN e.examinee_status = 'Registered'
+             AND e.schedule_id = s.schedule_id
         THEN e.examinee_id 
     END) AS num_registered,
+
     COUNT(DISTINCT CASE 
-        WHEN e.examinee_status = 'Completed' 
+        WHEN e.examinee_status = 'Completed'
+             AND e.attended_schedule_id = s.schedule_id
         THEN e.examinee_id 
     END) AS num_completed
+
 FROM schedules s
 INNER JOIN venue v ON s.venue_id = v.venue_id
-LEFT JOIN examinees e ON s.schedule_id = e.attended_schedule_id  -- <-- changed here
+LEFT JOIN examinees e 
+    ON (e.schedule_id = s.schedule_id 
+        OR e.attended_schedule_id = s.schedule_id)
+
 GROUP BY s.schedule_id, s.scheduled_date, v.venue_name, v.region
 ORDER BY s.scheduled_date ASC;";
 
