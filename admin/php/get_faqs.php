@@ -24,7 +24,6 @@ try {
     echo json_encode($faqs);
 
 } catch (Exception $e) {
-    // On error, return empty data to prevent 500
     echo json_encode([
         "registered" => [],
         "unregistered" => []

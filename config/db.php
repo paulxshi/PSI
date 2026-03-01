@@ -11,14 +11,12 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
 } catch (PDOException $e) {
-    // If this is called from an API endpoint expecting JSON
     if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
         exit;
     }
-    // Otherwise output plain text
     http_response_code(500);
     exit('Database connection failed.');
 }

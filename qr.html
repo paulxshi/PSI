@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR Code with Logo</title>
+
+<!-- QRCode Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+#qr-wrapper {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin-top: 15px;
+}
+
+#qrcode canvas {
+    width: 250px !important;
+    height: 250px !important;
+}
+
+#logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+    <div id="qr-wrapper">
+        <div id="qrcode"></div>
+
+        <!-- 🔥 Replace logo.png with your logo file -->
+        <img id="logo" src="imgs/PSI.png">
+    </div>
+</div>
+
+
+<button onclick="downloadQR()">Download PNG</button>
+<script>
+    // 🔥 HARD CODE YOUR LINK HERE
+    const hardcodedURL = "https://pmma-per.psi-services.net";
+
+    new QRCode(document.getElementById("qrcode"), {
+        text: hardcodedURL,
+        width: 250,
+        height: 250,
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+
+        function downloadQR() {
+        if (!qrCanvas) {
+            alert("QR not ready yet.");
+            return;
+        }
+
+        const finalCanvas = document.createElement("canvas");
+        const ctx = finalCanvas.getContext("2d");
+
+        finalCanvas.width = qrSize;
+        finalCanvas.height = qrSize;
+
+        // Draw QR
+        ctx.drawImage(qrCanvas, 0, 0);
+
+        // Draw logo
+        const logo = new Image();
+        logo.src = logoPath;
+
+        logo.onload = function() {
+            const logoSize = 70;
+            const x = (qrSize - logoSize) / 2;
+            const y = (qrSize - logoSize) / 2;
+
+            // Optional white background circle
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(qrSize/2, qrSize/2, logoSize/1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.drawImage(logo, x, y, logoSize, logoSize);
+
+            const link = document.createElement("a");
+            link.download = "qr-code.png";
+            link.href = finalCanvas.toDataURL("image/png");
+            link.click();
+        };
+    }
+</script>
+
+</body>
+</html>

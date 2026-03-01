@@ -17,22 +17,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentPage = 1;
     let currentSearch = '';
-    let currentStatus = ''; // Filter by examinee_status: '' = all Scheduled, 'Completed' = only completed
-    let currentRegion = ''; // Filter by region
-    let currentData = {}; // Store for quick access
-    let availableSchedules = []; // Store schedules for selection
+    let currentStatus = ''; 
+    let currentRegion = ''; 
+    let currentData = {}; 
+    let availableSchedules = []; 
     let searchTimeout = null;
 
 
     // Initialize
     loadSchedules();
-    loadSummaryStats(); // Load stats only on page load
-    updateCardHighlights(); // Highlight Total Registered card by default
-    loadExamineeData(); // Load all registered examinees by default
+    loadSummaryStats(); 
+    updateCardHighlights(); 
+    loadExamineeData(); 
 
     filterRegion.addEventListener('change', renderFilteredSchedules);
 
-    // Status filter - Click on stat cards
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
     document.getElementById('totalCompleted').parentElement.parentElement.parentElement.style.cursor = 'pointer';
 
@@ -153,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Populate filter dropdowns with unique regions and venues
                     populateScheduleFilters();
                     
-                    // Render all schedules initially (no filter applied)
                     renderFilteredSchedules();
                 } else {
                     availableSchedules = [];
@@ -185,14 +183,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update filter badge display (no longer used, function kept for compatibility)
     function updateFilterBadge() {
-        // Function removed - filter badge no longer displayed
     }
 
-    // Load summary statistics only (without loading table data)
     function loadSummaryStats() {
-        // Make a lightweight request to get only summary counts
         fetch('../php/get_registered_examinees.php?page=1&limit=0', {
             method: 'GET',
             credentials: 'same-origin'
@@ -200,20 +194,17 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.summary) {
-                    // Update stat cards
                     document.getElementById('totalRegistered').textContent = data.summary.total_registered;
                     document.getElementById('totalCompleted').textContent = data.summary.completed;
                 }
             })
             .catch(error => {
                 console.error('Error loading summary stats:', error);
-                // Set to 0 on error
                 document.getElementById('totalRegistered').textContent = '0';
                 document.getElementById('totalCompleted').textContent = '0';
             });
     }
 
-    // Load examinee data
     function loadExamineeData() {
         showLoading(true);
 
@@ -236,21 +227,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Examinee Data:', data);
                 
                 if (data.success) {
-                    // Update stats
                     document.getElementById('totalRegistered').textContent = data.summary.total_registered;
                     document.getElementById('totalRegistered').textContent = data.summary.total_registered;
                     document.getElementById('totalCompleted').textContent = data.summary.completed;
 
 
-                    // Populate table
                     populateTable(data.data);
 
-                    // Store data for modal access
                     data.data.forEach(record => {
                         currentData[record.user_id] = record;
                     });
 
-                    // Populate pagination
                     populatePagination(data.pagination);
 
                     tableContainer.style.display = 'block';
@@ -272,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Update table header based on current filter
     function updateTableHeader() {
         const dateHeader = document.getElementById('dateColumnHeader');
         if (dateHeader) {
@@ -280,10 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Populate table rows
     function populateTable(records) {
         tableBody.innerHTML = '';
-        updateTableHeader(); // Update column header based on filter
+        updateTableHeader(); 
 
         if (records.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No registered examinees found</td></tr>';
@@ -291,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         records.forEach(record => {
-            // Use completed_date (scanned_at) for completed examinees, exam_date otherwise
             let displayDate;
             if (currentStatus === 'Completed' && record.completed_date) {
                 const completedDateTime = new Date(record.completed_date);
@@ -344,13 +328,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Populate pagination
     function populatePagination(paginationData) {
         pagination.innerHTML = '';
 
         const { current_page, total_pages } = paginationData;
 
-        // Previous
         pagination.innerHTML += `
             <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
                 <a class="page-link" href="#" onclick="goToPage(${current_page - 1}); return false;">
@@ -359,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </li>
         `;
 
-        // Page numbers
         for (let i = 1; i <= total_pages; i++) {
             pagination.innerHTML += `
                 <li class="page-item ${i === current_page ? 'active' : ''}">
@@ -380,14 +361,12 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Go to page (global function)
     window.goToPage = function(page) {
         currentPage = page;
         loadExamineeData();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // View profile (global function)
     window.viewProfile = function(userId) {
         const record = currentData[userId];
         if (!record) return;
@@ -410,12 +389,10 @@ document.addEventListener('DOMContentLoaded', function() {
             day: 'numeric'
         }) : 'Not Set';
 
-        // Determine status based on examinee_status
         const isCompleted = record.examinee_status === 'Completed';
         const statusClass = isCompleted ? 'completed' : 'registered';
         const statusLabel = isCompleted ? 'Completed' : record.status;
 
-        // Update modal subtitle based on completion status
         const modalSubtitle = document.getElementById('profileModalSubtitle');
         if (modalSubtitle) {
             modalSubtitle.textContent = isCompleted ? 'Completed Examinee Information' : 'Registered Examinee Information';
@@ -499,7 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
         profileModal.show();
     };
 
-    // Open reschedule modal (global function)
         window.openRescheduleModal = function(userId) {
             document.getElementById('rescheduleUserId').value = userId;
 
@@ -512,7 +488,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
 
-    // Reschedule exam
     function rescheduleExam() {
         const userId = document.getElementById('rescheduleUserId').value;
         const scheduleId = rescheduleScheduleSelect.value;
@@ -551,12 +526,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Show loading spinner
     function showLoading(show) {
         loadingSpinner.style.display = show ? 'block' : 'none';
     }
 
-    // Show initial instruction message
     function showInitialMessage() {
         tableBody.innerHTML = `
             <tr>
@@ -573,19 +546,16 @@ document.addEventListener('DOMContentLoaded', function() {
         paginationContainer.style.display = 'none';
     }
 
-    // Show status message
     function showStatus(message, type) {
         statusAlert.textContent = message;
         statusAlert.className = 'alert alert-' + type;
         statusAlert.style.display = 'block';
         
-        // Auto-hide after 5 seconds
         setTimeout(() => {
             statusAlert.style.display = 'none';
         }, 5000);
     }
 
-    // Escape HTML
     function escapeHtml(text) {
         const map = {
             '&': '&amp;',

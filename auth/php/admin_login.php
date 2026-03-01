@@ -1,7 +1,4 @@
 <?php
-/**
- * Admin Login
- */
 session_start();
 header("Content-Type: application/json");
 
@@ -21,7 +18,6 @@ if ($email === '' || $password === '') {
     exit;
 }
 
-// Use centralized login handler - max 5 attempts, 15 min lockout
 $result = handleLogin($pdo, $email, $password, 'admin', [], 5, 900);
 
 echo json_encode($result);

@@ -25,9 +25,15 @@ Before going live, ensure you have:
 3. Go to **Settings → Developers → API Keys**
 4. Copy your **Live Secret API Key** (starts with `xnd_production_...`)
    - ⚠️ Keep this secure! Never share or commit to Git
-5. Go to **Settings → Developers → Webhooks**
-6. Add your production webhook URL: `https://yourdomain.com/webhook.php`
-7. Copy the **Webhook Verification Token** provided by Xendit
+5. Go to **Settings → Developers → Callbacks**
+   - ⚠️ Xendit calls these "Callbacks", not "Webhooks" — it's the same thing
+6. Find the **Invoice paid** section and click **Edit**
+7. Enter your production callback URL: `https://yourdomain.com/webhook.php`
+   - Replace `yourdomain.com` with your actual Hostinger domain
+8. Click **Save**
+9. Copy the **Callback Verification Token** shown on this page
+
+
 
 ---
 
@@ -62,11 +68,11 @@ define('FAILURE_URL_LIVE', 'https://yourdomain.com/payment_failed.html');
 
 **Example of completed configuration:**
 ```php
-define('PAYMENT_MODE', 'production');
+// define('PAYMENT_MODE', 'production');
 define('XENDIT_API_KEY_LIVE', 'xnd_production_ABC123XYZ789...');
-define('XENDIT_WEBHOOK_TOKEN_LIVE', 'webhook_token_ABC123XYZ789...');
-define('SUCCESS_URL_LIVE', 'https://psiexam.com/payment_success.html');
-define('FAILURE_URL_LIVE', 'https://psiexam.com/payment_failed.html');
+// define('XENDIT_WEBHOOK_TOKEN_LIVE', 'webhook_token_ABC123XYZ789...');
+// define('SUCCESS_URL_LIVE', 'https://psiexam.com/payment_success.html');
+// define('FAILURE_URL_LIVE', 'https://psiexam.com/payment_failed.html');
 ```
 
 ---
@@ -84,40 +90,80 @@ $pass = 'your_production_password';  // Database password
 
 ---
 
-### **Step 4: Security Checklist**
+### **Step 4: Security Setup (Hostinger)**
 
-#### 4.1 File Permissions (Linux/Unix servers)
-```bash
-# Set proper permissions for config files
-chmod 640 config/payment_config.php
-chmod 640 config/db.php
-```
+> ⚠️ **Why this matters:** Without these steps, someone could visit `yourdomain.com/config/db.php` in a browser and potentially see your database password or API keys. These steps prevent that.
 
-#### 4.2 Hide Sensitive Files from Web Access
+---
 
-Add to your `.htaccess` (or create one in root directory):
-```apache
-# Deny access to config directory
-<FilesMatch "^(payment_config|db)\.php$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
+#### 4.1 Upload the `.htaccess` Files
 
-# Deny access to .env files if you create them later
-<FilesMatch "^\.env">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-```
+Two `.htaccess` files have already been created for you in this project:
 
-#### 4.3 Enable Error Logging (Don't Display Errors)
+- **`.htaccess`** (in the root folder) — blocks access to sensitive file types
+- **`config/.htaccess`** (inside the config folder) — blocks ALL direct access to config files
 
-Update `php.ini` or add to `.htaccess`:
+**What you need to do:**
+1. When uploading your project to Hostinger, make sure **both** `.htaccess` files are included
+2. `.htaccess` files start with a dot (`.`) — your file manager or FTP client may hide them by default
+3. In Hostinger's File Manager: click **Settings** or **Show hidden files** to see them
+4. Verify they uploaded correctly — you should see:
+   - `public_html/.htaccess`
+   - `public_html/config/.htaccess`
+
+> 💡 **How to check if it's working:** After uploading, open your browser and go to `https://yourdomain.com/config/db.php` — you should see a **403 Forbidden** error. That means it's working correctly.
+
+---
+
+#### 4.2 Set File Permissions on Hostinger
+
+File permissions control who can read/write your files. On Hostinger:
+
+1. Log in to **Hostinger hPanel**
+2. Go to **Files → File Manager**
+3. Navigate to `public_html/config/`
+4. Right-click `payment_config.php` → **Change Permissions**
+5. Set permissions to **640** (owner can read/write, no one else can)
+6. Repeat for `db.php`
+
+**What the numbers mean (simplified):**
+| Permission | Meaning |
+|---|---|
+| `640` | Only the server (owner) can read it. Visitors cannot. ✅ |
+| `644` | Everyone can read it. Avoid for config files. ❌ |
+| `777` | Anyone can read AND write. Never use this. ❌ |
+
+---
+
+#### 4.3 Disable Error Display (Hostinger)
+
+By default, PHP errors can show on-screen and reveal file paths or code to visitors.
+
+**Option A — Via Hostinger hPanel (easiest):**
+1. Go to **hPanel → Advanced → PHP Configuration**
+2. Find `display_errors` and set it to **Off**
+3. Find `log_errors` and set it to **On**
+4. Click **Save**
+
+**Option B — Already included in `.htaccess`:**
+The `.htaccess` file created for you already contains:
 ```apache
 php_flag display_errors off
 php_flag log_errors on
-php_value error_log /path/to/error.log
 ```
+This is automatically applied when you upload the `.htaccess` file.
+
+---
+
+#### 4.4 Verify Your Setup
+
+After uploading everything, test these URLs in your browser — all should return **403 Forbidden**:
+
+- `https://yourdomain.com/config/db.php` → ❌ 403 Forbidden ✅
+- `https://yourdomain.com/config/payment_config.php` → ❌ 403 Forbidden ✅
+- `https://yourdomain.com/config/` → ❌ 403 Forbidden ✅
+
+If any of these loads without a 403 error, the `.htaccess` file is not in the right place or didn't upload correctly.
 
 ---
 
@@ -291,7 +337,7 @@ Once all items above are checked:
 
 ---
 
-**Last Updated:** February 20, 2026
+**Last Updated:** February 28, 2026
 **Configuration File Location:** `config/payment_config.php`
 **Webhook Handler:** `webhook.php`
 **Payment Creation:** `php/create_payment.php`

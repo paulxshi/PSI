@@ -30,7 +30,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if (!isset($data[$region][$venue])) $data[$region][$venue] = [];
 
 $data[$region][$venue][] = [
-    "schedule_id" => $row['schedule_id'], // ✅ ADD THIS
+    "schedule_id" => $row['schedule_id'], 
     "date"        => $row['scheduled_date'],
     "registered"  => $row['num_registered'],
     "limit"       => $row['num_of_examinees']

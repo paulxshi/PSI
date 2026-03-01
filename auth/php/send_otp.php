@@ -19,7 +19,6 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-// Check if email already exists in users table for registration
 if ($purpose === 'registration') {
     $checkStmt = $pdo->prepare('SELECT user_id FROM users WHERE email = ? LIMIT 1');
     $checkStmt->execute([$email]);

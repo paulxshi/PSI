@@ -260,7 +260,6 @@ try {
         exit;
     }
     
-    // Save payment record to database
     $insertQuery = "INSERT INTO payments 
                     (user_id, examinee_id, xendit_invoice_id, external_id, amount, status, created_at) 
                     VALUES 
@@ -285,14 +284,14 @@ try {
     echo json_encode([
         'success' => false,
         'message' => 'Database error occurred. Please try again.',
-        'debug' => $e->getMessage() // Remove in production
+        'debug' => $e->getMessage() 
     ]);
 } catch (Exception $e) {
     error_log("Error in create_payment.php: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'message' => 'An error occurred. Please try again.',
-        'debug' => $e->getMessage() // Remove in production
+        'debug' => $e->getMessage() 
     ]);
 }
 ?>

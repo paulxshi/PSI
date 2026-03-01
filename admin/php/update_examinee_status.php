@@ -33,9 +33,6 @@ $examineeId = $data['examinee_id'];
 $action = $data['action'];
 $attended_schedule_id = $data['attended_schedule_id'] ?? null;
 
-/* -------------------------------
-   Determine status and query
---------------------------------*/
 
 if ($action === "complete") {
 
@@ -59,8 +56,6 @@ if ($action === "complete") {
 
     $status = "Rejected";
 
-    // If you DON'T want scanned_at for rejected,
-    // remove scanned_at from this query.
     $stmt = $pdo->prepare("
         UPDATE examinees
         SET examinee_status = ?,
@@ -82,10 +77,6 @@ if ($action === "complete") {
     ]);
     exit;
 }
-
-/* -------------------------------
-   Execute Update
---------------------------------*/
 
 try {
 
@@ -109,9 +100,6 @@ try {
     exit;
 }
 
-/* -------------------------------
-   Log Activity (if admin logged in)
---------------------------------*/
 
 if (isset($_SESSION['user_id'])) {
 
@@ -133,10 +121,6 @@ if (isset($_SESSION['user_id'])) {
         $metadata
     );
 }
-
-/* -------------------------------
-   Success Response
---------------------------------*/
 
 echo json_encode([
     "success" => true,

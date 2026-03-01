@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSearchValue = "";
     let refreshInterval;
 
-    /* ================================
+    /* 
        SEARCH LOGIC (SAFE)
-    ================================= */
+    */
     function applySearchFilter() {
         const rows = tableBody.querySelectorAll("tr");
 
@@ -38,9 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    /* ================================
+    /* 
        DATE HELPERS
-    ================================= */
+    */
     function parseMySQLDateTime(dateTimeString) {
         if (!dateTimeString) return null;
         return new Date(dateTimeString.replace(' ', 'T'));
@@ -67,9 +67,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    /* ================================
+    /* 
        FETCH & RENDER
-    ================================= */
+     */
     function fetchCompletedExaminees() {
         fetch("php/get_completed_examinees.php")
             .then(response => response.json())
@@ -147,15 +147,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 completedCountEl.textContent = completedCount;
 
-                // ✅ Reapply search after rebuild
                 applySearchFilter();
             })
             .catch(error => console.error("Error fetching examinees:", error));
     }
 
-    /* ================================
+    /*
        AUTO REFRESH CONTROL
-    ================================= */
+     */
     function startAutoRefresh() {
         clearInterval(refreshInterval);
         refreshInterval = setInterval(() => {
@@ -165,9 +164,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     }
 
-    /* ================================
+    /* 
        INIT
-    ================================= */
+    */
     fetchCompletedExaminees();
     startAutoRefresh();
 

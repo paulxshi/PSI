@@ -1,5 +1,4 @@
 <?php
-// Export Activity Logs to CSV or PDF
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 session_start();
@@ -169,8 +168,6 @@ function exportCSV($records) {
 
 // Export to PDF
 function exportPDF($records) {
-    // Simple HTML-based PDF using browser's print-to-PDF
-    // For a production system, consider using libraries like TCPDF or DomPDF
     
     $filename = 'activity_logs_' . date('Y-m-d_His');
     
@@ -238,7 +235,6 @@ function exportPDF($records) {
         </style>
         <script>
             window.onload = function() {
-                // Automatically open print dialog
                 window.print();
             }
         </script>

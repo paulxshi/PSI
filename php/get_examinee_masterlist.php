@@ -1,6 +1,4 @@
 <?php
-// Get examinee masterlist with search, filter, and pagination
-// OR get a single record by ID
 header('Content-Type: application/json');
 session_start();
 

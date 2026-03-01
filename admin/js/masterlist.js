@@ -1,4 +1,3 @@
-// Examinee Masterlist Management
 document.addEventListener('DOMContentLoaded', function() {
     const uploadCsvBtn = document.getElementById('uploadCsvBtn');
     const csvFileInput = document.getElementById('csvFileInput');
@@ -60,11 +59,9 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         });
 });
 
-    // Initialize
-    updateCardHighlights(); // Highlight Total Uploaded card by default
+    updateCardHighlights(); 
     loadMasterlistData();
 
-    // Status filter - Click on stat cards
     document.getElementById('totalUploaded').parentElement.parentElement.parentElement.style.cursor = 'pointer';
     document.getElementById('totalRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
     document.getElementById('totalNotRegistered').parentElement.parentElement.parentElement.style.cursor = 'pointer';
@@ -242,10 +239,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 minute: '2-digit'
             });
 
-            // Use full_name if available (from CONCAT in query), otherwise build from parts
             const fullName = record.full_name || escapeHtml(record.first_name + ' ' + record.last_name);
 
-            // Edit and delete buttons only for non-registered users
             const actionButtons = record.used == 0
                 ? `<button class="btn fw-bold" style="color: #111827;" onclick="editRecord(${record.id})" title="Edit">
                         <i class="bx bx-edit"></i>
@@ -255,7 +250,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                       </button>`
                 : '';
 
-            // Build row with conditional actions column
             let row = `
                 <tr class="border-bottom">
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
@@ -268,7 +262,6 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     <td>${statusBadge}</td>
                     <td>${uploadedDate}</td>`;
             
-            // Only add actions column if there are non-registered users
             if (hasNonRegistered) {
                 row += `
                     <td class="text-end table-actions">
@@ -454,11 +447,9 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             });
     }
 
-    // Delete record (global function)
         window.deleteRecord = function(id) {
             deleteTargetId = id;
 
-            // Get name from row (safe + simple)
             const row = event.target.closest('tr');
             deleteTargetName = row.children[1].textContent;
 

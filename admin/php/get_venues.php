@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 try {
     $stmt = $pdo->query("SELECT venue_id, venue_name, region FROM venue");
 
-    $venues = $stmt->fetchAll(); // already FETCH_ASSOC by default
+    $venues = $stmt->fetchAll(); 
 
     echo json_encode($venues);
 

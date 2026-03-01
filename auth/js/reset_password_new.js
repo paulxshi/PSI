@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
         hideMessage();
 
         try {
-            const response = await fetch("php/reset_password.php", {
+            const response = await fetch("../php/reset_password.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

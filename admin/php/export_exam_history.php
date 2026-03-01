@@ -1,18 +1,4 @@
 <?php
-/**
- * Examination History CSV Export
- * 
- * Generates a clean, Excel-friendly CSV report of examination history
- * for a specific schedule. Uses pure PHP with no external dependencies.
- * 
- * Features:
- * - UTF-8 BOM for proper Excel encoding
- * - Dates formatted as YYYY-MM-DD HH:MM
- * - Phone numbers and test permit numbers prefixed with apostrophe to prevent Excel auto-formatting
- * - Clean, professional output without decorative lines
- * - Proper error handling and security checks
- */
-
 session_start();
 require_once "../../config/db.php";
 
@@ -71,7 +57,6 @@ try {
     $examineesStmt->execute([':schedule_id' => $schedule_id]);
     $allExaminees = $examineesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Set headers for CSV download
     $filename = sprintf(
         "Exam_History_%s_%s_%s.csv",
         preg_replace('/[^A-Za-z0-9_\-.]/', '_', $schedule['venue_name']),
@@ -84,13 +69,10 @@ try {
     header('Pragma: no-cache');
     header('Expires: 0');
 
-    // Create output stream
     $output = fopen('php://output', 'w');
 
-    // Add UTF-8 BOM for proper Excel encoding
     fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-    // Helper function to format dates as YYYY-MM-DD
     $formatDate = function($dateString) {
         if (empty($dateString)) {
             return '';
@@ -98,13 +80,10 @@ try {
         return date('Y-m-d', strtotime($dateString));
     };
 
-    // Helper function to prevent Excel auto-formatting of numbers
-    // Prefixes with apostrophe to force text format
     $protectNumber = function($value) {
         if (empty($value)) {
             return '';
         }
-        // Only protect if it looks like a number or phone number
         if (is_numeric($value) || preg_match('/^[0-9\-\+\s]+$/', $value)) {
             return "'" . $value;
         }

@@ -1,25 +1,20 @@
-// Schedule Management JavaScript
 let allSchedules = [];
 let filteredSchedules = [];
 let currentPage = 1;
 const rowsPerPage = 8;
 
-// Load schedules on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadSchedules();
     
-    // Setup event listeners
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    // Search functionality
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', filterSchedules);
     }
     
-    // Filter functionality
     const regionFilter = document.getElementById('regionFilter');
     const statusFilter = document.getElementById('statusFilter');
     const sortFilter = document.getElementById('sortFilter');
@@ -29,7 +24,6 @@ function setupEventListeners() {
     if (sortFilter) sortFilter.addEventListener('change', filterSchedules);
 }
 
-// Load all schedules from database
 async function loadSchedules() {
     try {
         const response = await fetch('php/get_all_schedules.php');
@@ -51,12 +45,10 @@ async function loadSchedules() {
     }
 }
 
-// Display schedules in table
 function displaySchedules() {
     const tbody = document.getElementById('scheduleTableBody');
     if (!tbody) return;
 
-    // Pagination calculation
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
     const paginatedSchedules = filteredSchedules.slice(start, end);
@@ -127,11 +119,9 @@ function renderPagination() {
         </li>
     `;
 
-    // Limit the number of page numbers to 3
     const startPage = Math.max(1, currentPage - 1); 
     const endPage = Math.min(totalPages, currentPage + 1); 
 
-    // Add page numbers
     for (let i = startPage; i <= endPage; i++) {
         buttons += `
             <li class="page-item ${i === currentPage ? 'active' : ''}">
@@ -178,16 +168,14 @@ function getStatusBadge(status) {
     return 'text-secondary';
 }
 
-// Format date to long format
 function formatLongDate(dateString) {
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
-// Filter schedules
 function filterSchedules() {
-    currentPage = 1; // RESET PAGE
+    currentPage = 1; 
 
     const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const regionFilter = document.getElementById('regionFilter')?.value || '';

@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Start transaction
         $pdo->beginTransaction();
 
-        // 1️⃣ Check if venue already exists
         $stmtCheck = $pdo->prepare("SELECT venue_id FROM venue WHERE venue_name = ? AND region = ?");
         $stmtCheck->execute([$venue_name, $region]);
         $existingVenue = $stmtCheck->fetch(PDO::FETCH_ASSOC);
@@ -36,13 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($existingVenue) {
             $venue_id = $existingVenue['venue_id'];
         } else {
-            // 2️⃣ Insert new venue
             $stmtVenue = $pdo->prepare("INSERT INTO venue (venue_name, region) VALUES (?, ?)");
             $stmtVenue->execute([$venue_name, $region]);
             $venue_id = $pdo->lastInsertId();
         }
 
-        // 3️⃣ Insert schedule with price
         $stmtSchedule = $pdo->prepare("
             INSERT INTO schedules (venue_id, scheduled_date, num_of_examinees, price, num_registered, status) 
             VALUES (?, ?, ?, ?, 0, 'Incoming')

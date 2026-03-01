@@ -28,7 +28,6 @@
 .dropdown-item:hover {
   background-color: #f8f9fa;
 }
-    /* ===== Premium Pagination (Shared Across Pages) ===== */
 
     .pagination {
         gap: 6px;
@@ -443,12 +442,12 @@
     .then(data => {
         if (!data.authenticated) {
             // Redirect to admin login if not authenticated
-            window.location.href = '../adminlogin.html';
+            window.location.href = '../auth/adminlogin.html';
         }
     })
     .catch(error => {
         console.error('Session check failed:', error);
-        window.location.href = '../adminlogin.html';
+        window.location.href = '../auth/adminlogin.html';
     });
 })();
 </script>

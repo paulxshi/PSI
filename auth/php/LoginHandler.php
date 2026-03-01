@@ -1,8 +1,4 @@
 <?php
-/**
- * LoginHandler - Centralized login handler for all user types
- * Handles rate limiting, password verification, and session management
- */
 
 require_once __DIR__ . "/../../config/db.php";
 require_once __DIR__ . "/../../php/log_activity.php";
@@ -19,9 +15,6 @@ class LoginHandler {
         $this->ensureColumnsExist();
     }
     
-    /**
-     * Ensure required columns exist in users table
-     */
     private function ensureColumnsExist() {
         try {
             // Add columns if they don't exist
@@ -34,8 +27,6 @@ class LoginHandler {
                 try {
                     $this->pdo->exec($sql);
                 } catch (PDOException $e) {
-                    // Column might already exist or MySQL version doesn't support IF NOT EXISTS
-                    // Try alternative approach
                     $checkStmt = $this->pdo->prepare("SHOW COLUMNS FROM users LIKE ?");
                     $checkStmt->execute([$column]);
                     if ($checkStmt->rowCount() === 0) {
@@ -268,7 +259,7 @@ class LoginHandler {
                 return [
                     'success' => false,
                     'message' => "Please complete your registration first.",
-                    'redirect' => "registration.html"
+                    'redirect' => "auth/registration.html"
                 ];
             }
         }
@@ -291,7 +282,7 @@ class LoginHandler {
             return [
                 'success' => false,
                 'message' => "Examinee record not found. Please complete your registration.",
-                'redirect' => "registration.html"
+                'redirect' => "auth/registration.html"
             ];
         }
         

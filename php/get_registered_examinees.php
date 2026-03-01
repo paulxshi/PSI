@@ -1,9 +1,7 @@
 <?php
-// Get registered examinees from examinees table with schedule details
 header('Content-Type: application/json');
 session_start();
 
-// Check if admin is logged in
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -21,20 +19,9 @@ $limit = 10; // Records per page
 $offset = ($page - 1) * $limit;
 
 try {
-    /**
-     * Business Logic:
-     * - Total Registered: status='Scheduled' AND examinee_status != 'Completed' (can be rescheduled)
-     * - Completed: status='Scheduled' AND examinee_status='Completed' (view only, cannot reschedule)
-     * - Base query always: status='Scheduled'
-     * - When no filter (Total Registered view): exclude completed examinees
-     * - When Completed filter: show only completed examinees
-     */
-    
-    // Build base query - Join examinees with users and schedules
     $whereConditions = ["e.status = 'Scheduled'"]; // Only those who have paid and confirmed
     $params = [];
 
-    // Status filter (examinee_status)
     if (!empty($status)) {
         // Show only examinees with specified examinee_status (e.g., 'Completed')
         $whereConditions[] = "e.examinee_status = :status";

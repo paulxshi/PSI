@@ -1,12 +1,11 @@
 <?php
-require "../../config/db.php"; // this should return $conn as PDO
+require "../../config/db.php"; 
 
 header('Content-Type: application/json');
 
 try {
 
-    // IMPROVED: Only count examinees with status 'Registered' or 'Completed'
-   $sql = "SELECT  
+    $sql = "SELECT 
     s.schedule_id,
     s.scheduled_date,
     v.venue_name,

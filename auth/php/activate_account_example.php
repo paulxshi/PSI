@@ -1,12 +1,5 @@
 <?php
-/**
- * EXAMPLE: How to activate user account after payment confirmation
- * 
- * This should be called from your payment webhook (webhook.php)
- * after verifying that payment was successful
- */
-
-require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../config/db.php';
 
 /**
  * Activate user account and update examinee status after payment
@@ -21,7 +14,6 @@ function activateUserAccount($user_id, $schedule_id = null) {
     try {
         $pdo->beginTransaction();
         
-        // Update user status to 'active' - allows login
         $updateUserStmt = $pdo->prepare("
             UPDATE users 
             SET status = 'active' 
@@ -29,9 +21,7 @@ function activateUserAccount($user_id, $schedule_id = null) {
         ");
         $updateUserStmt->execute([$user_id]);
         
-        // Update examinee status based on whether schedule is selected
         if ($schedule_id) {
-            // If schedule is selected, set status to 'Scheduled'
             $updateExamineeStmt = $pdo->prepare("
                 UPDATE examinees 
                 SET status = 'Scheduled', schedule_id = ?
@@ -39,7 +29,6 @@ function activateUserAccount($user_id, $schedule_id = null) {
             ");
             $updateExamineeStmt->execute([$schedule_id, $user_id]);
         } else {
-            // If schedule not yet selected, set to 'Awaiting Payment' -> 'Scheduled' after schedule selection
             $updateExamineeStmt = $pdo->prepare("
                 UPDATE examinees 
                 SET status = 'Awaiting Payment'
@@ -58,20 +47,4 @@ function activateUserAccount($user_id, $schedule_id = null) {
     }
 }
 
-/**
- * USAGE IN WEBHOOK:
- * 
- * After verifying payment is successful in webhook.php:
- * 
- * $user_id = $payment_data['user_id'];
- * $schedule_id = $payment_data['schedule_id'] ?? null;
- * 
- * if (activateUserAccount($user_id, $schedule_id)) {
- *     // Account activated successfully
- *     // User can now login
- * } else {
- *     // Error activating account
- *     error_log('Failed to activate account for user_id: ' . $user_id);
- * }
- */
 ?>

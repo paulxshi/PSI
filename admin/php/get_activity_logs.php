@@ -1,12 +1,9 @@
 <?php
-// Get Activity Logs
-// Retrieves activity logs with filters and pagination
 ini_set('display_errors', 0); // Don't display errors in output
 error_reporting(E_ALL); // But log them
 header('Content-Type: application/json');
 session_start();
 
-// Check if admin is logged in
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
@@ -15,7 +12,6 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 
 require_once __DIR__ . '/../../config/db.php';
 
-// Get parameters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $activityType = isset($_GET['activity_type']) ? trim($_GET['activity_type']) : '';
 $role = isset($_GET['role']) ? trim($_GET['role']) : '';
@@ -26,7 +22,6 @@ $limit = 20; // Records per page
 $offset = ($page - 1) * $limit;
 
 try {
-    // Build WHERE conditions
     $whereConditions = [];
     $params = [];
 

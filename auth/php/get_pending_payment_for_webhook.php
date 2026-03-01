@@ -15,7 +15,6 @@ require_once('../../config/db.php');
 $user_id = $_SESSION['user_id'];
 
 try {
-    // Get the most recent PENDING payment for this user
     $query = "SELECT payment_id, xendit_invoice_id, external_id, amount, created_at 
               FROM payments 
               WHERE user_id = :user_id 

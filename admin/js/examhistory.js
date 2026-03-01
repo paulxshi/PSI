@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         });
 
-    /* ---------- Render Table ---------- */
     function renderTable() {
         tableBody.innerHTML = "";
 
@@ -83,8 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `Showing ${start + 1}–${Math.min(end, total)} of ${total} records`;
     }
 
-    /* ---------- Pagination ---------- */
-/* ---------- Pagination ---------- */
 function renderPagination() {
     pagination.innerHTML = "";
     const totalPages = Math.ceil(examData.length / ROWS_PER_PAGE);
@@ -118,7 +115,6 @@ function renderPagination() {
     }
 });
 
-/* ---------- Helpers ---------- */
 
 function pageItem(label, disabled, onClick, active = false) {
     const li = document.createElement("li");
@@ -168,14 +164,12 @@ function emptyRow(message) {
     `;
 }
 
-/* ---------- Export Function ---------- */
 function exportExamHistory(scheduleId) {
     if (!scheduleId) {
         alert('Invalid schedule ID');
         return;
     }
 
-    // Create and trigger download
     const exportUrl = `php/export_exam_history.php?schedule_id=${scheduleId}`;
     window.location.href = exportUrl;
 }

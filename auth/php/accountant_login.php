@@ -1,8 +1,4 @@
 <?php
-/**
- * Accountant Login
- */
-// Separate session for accountants
 session_name('PSI_ACCOUNTANT');
 session_start();
 header("Content-Type: application/json");
@@ -23,10 +19,8 @@ if ($email === '' || $password === '') {
     exit;
 }
 
-// Use centralized login handler - max 5 attempts, 15 min lockout
 $result = handleLogin($pdo, $email, $password, 'accountant', [], 5, 900);
 
-// Add redirect for successful accountant login
 if ($result['success']) {
     $result['redirect'] = "../accountant/dashboard.html";
 }

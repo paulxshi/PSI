@@ -259,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
             startPage = Math.max(1, endPage - maxPagesToShow + 1);
         }
 
-        // Previous button
         const prevDisabled = current_page === 1 ? 'disabled' : '';
         pagination.insertAdjacentHTML('beforeend', `
             <li class="page-item ${prevDisabled}">
@@ -269,7 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </li>
         `);
 
-        // Page numbers
         for (let i = startPage; i <= endPage; i++) {
             const active = i === current_page ? 'active' : '';
             pagination.insertAdjacentHTML('beforeend', `
@@ -279,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `);
         }
 
-        // Next button
         const nextDisabled = current_page === total_pages ? 'disabled' : '';
         pagination.insertAdjacentHTML('beforeend', `
             <li class="page-item ${nextDisabled}">
@@ -289,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </li>
         `);
 
-        // Add click handlers
         pagination.querySelectorAll('.page-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -303,12 +299,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Show loading spinner
     function showLoading(show) {
         loadingSpinner.style.display = show ? 'block' : 'none';
     }
 
-    // Show status message
     function showStatus(message, type) {
         statusAlert.textContent = message;
         statusAlert.className = 'alert alert-' + type;
@@ -319,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Escape HTML
     function escapeHtml(text) {
         if (!text) return '';
         const map = {

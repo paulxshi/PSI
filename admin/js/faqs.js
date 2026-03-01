@@ -13,17 +13,14 @@ function loadFaqs() {
         .then(data => {
             if (data.error) {
                 console.error("Server error:", data.message);
-                // Don't alert, just log
                 return;
             }
             console.log("Returned data:", data);
-            // Directly use grouped data
             buildAccordion(data.registered, "examAccordion", "exam");
             buildAccordion(data.unregistered, "pmmaAccordion", "pmma");
         })
         .catch(error => {
             console.error("Fetch error:", error);
-            // Don't alert, just log
         });
 }
 
@@ -45,7 +42,6 @@ function editFaq(faq_id, category, event) {
 
 function deleteFaq(faq_id, event) {
     event.stopPropagation();
-    // Store faq_id for confirm
     window.currentDeleteFaqId = faq_id;
     new bootstrap.Modal(document.getElementById('deleteFaqModal')).show();
 }
@@ -119,7 +115,6 @@ function buildAccordion(faqs, accordionId, prefix) {
 
     faqs.forEach((faq, index) => {
 
-        // ✅ Unique IDs: use faq_id + index
         const collapseId = `${prefix}Collapse_${faq.faq_id}_${index}`;
         const headingId  = `${prefix}Heading_${faq.faq_id}_${index}`;
 
