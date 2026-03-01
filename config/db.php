@@ -1,8 +1,8 @@
 <?php
 $host = '127.0.0.1';
-$db   = 'u679207742_pmma';
-$user = 'u679207742_User_pmma';
-$pass = 'gZ3*FuQ@2DZ#';
+$db   = 'pmma_database';
+$user = 'root';
+$pass = '';
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
 try {
