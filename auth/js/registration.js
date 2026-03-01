@@ -153,6 +153,15 @@ document.addEventListener('DOMContentLoaded', function() {
         otpInput.value = otpInput.value.replace(/\D/g, '');
         validateForm();
     });
+    
+    // OTP input - explicit keyboard handling for backspace/delete
+    otpInput.addEventListener('keydown', function(e) {
+        // Ensure backspace and delete always work
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            // Allow default behavior - these keys should always work
+            return true;
+        }
+    });
 
     // Password validation
     passwordInput.addEventListener('input', function() {
@@ -250,11 +259,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Start cooldown
                 startCooldown();
                 
+                // Ensure OTP input is enabled and ready for input
+                otpInput.disabled = false;
+                otpInput.readOnly = false;
+                otpInput.value = '';
+                
                 // Focus on OTP input
                 otpInput.focus();
-                
-                // Clear any previous OTP input
-                otpInput.value = '';
             } else {
                 showOtpStatus(data.message || 'Failed to send OTP. Please try again.', 'danger');
                 resetOtpState();
@@ -354,7 +365,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // OTP verification failed
                 console.log('OTP verification failed:', data.message);
                 showOtpStatus(data.message || 'Invalid OTP. Please try again.', 'danger');
+                
+                // Ensure OTP input remains editable and clear it
+                otpInput.disabled = false;
+                otpInput.readOnly = false;
                 otpInput.value = '';
+                
+                // Trigger input event to clear visual boxes
+                otpInput.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                // Refocus and re-enable verify button
                 otpInput.focus();
                 verifyOtpBtn.disabled = false;
                 verifyOtpBtn.textContent = 'Verify OTP';
@@ -363,6 +383,17 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error verifying OTP:', error);
             showOtpStatus('Network error. Please try again.', 'danger');
+            
+            // Ensure OTP input remains editable after error
+            otpInput.disabled = false;
+            otpInput.readOnly = false;
+            otpInput.value = '';
+            
+            // Trigger input event to clear visual boxes
+            otpInput.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            // Refocus and re-enable verify button
+            otpInput.focus();
             verifyOtpBtn.disabled = false;
             verifyOtpBtn.textContent = 'Verify OTP';
         });
