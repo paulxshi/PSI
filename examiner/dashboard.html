@@ -2,1257 +2,995 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PMMA Registration</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-  <script src="js/registration.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../imgs/PSI.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="icon" href="imgs/PSI.png">
-  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/dashstyle.css">
+  <title>Dashboard</title>
 
-  <style>
-  :root {
-  --primary: #ef8809;
- }
+<style>
+/* ═══════════════════════════════════════════════
+   COLOR VARIABLES
+═══════════════════════════════════════════════ */
+:root {
+  --ink:        #0a0a0f;
+  --ink-80:     rgba(10,10,15,0.80);
+  --ink-40:     rgba(10,10,15,0.40);
+  --ink-12:     rgba(10,10,15,0.12);
+  --ink-06:     rgba(10,10,15,0.06);
+  --gold:       #FF8040;
+  --gold-lt:    #d4b87a;
+  --gold-dim:   rgba(184,154,90,0.18);
+  --gold-glow:  rgba(184,154,90,0.08);
+  --blue:       #2563eb;
+  --blue-lt:    #3b82f6;
+  --blue-dim:   rgba(37,99,235,0.10);
+  --surface:    #ffffff;
+  --surface-2:  #f7f7f8;
+  --border:     rgba(10,10,15,0.08);
+  --radius-xl:  24px;
+  --radius-lg:  16px;
+  --radius-md:  12px;
+  --radius-sm:  8px;
+  --shadow-card:
+    0 0 0 1px var(--border),
+    0 4px 6px rgba(0,0,0,0.02),
+    0 12px 40px rgba(0,0,0,0.07),
+    0 24px 64px rgba(0,0,0,0.04);
+  --shadow-float:
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 8px rgba(0,0,0,0.06);
+  --transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-/* HIDE REAL INPUT */
-.otp-hidden-input {
+/* ═══════════════════════════════════════════════
+   EXAM INFO HEADER — REFINED TICKER STRIP
+═══════════════════════════════════════════════ */
+.exam-info-strip {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.exam-info-strip::before {
+  content: '';
   position: absolute;
-  opacity: 0;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 30%, var(--gold-lt) 50%, var(--gold) 70%, transparent 100%);
+}
+
+.exam-info-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 28px;
+  position: relative;
+  transition: var(--transition);
+}
+
+.exam-info-cell:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--border) 40%, var(--border) 60%, transparent);
+}
+
+.exam-info-cell:hover {
+  background: var(--gold-glow);
+}
+
+.exam-cell-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.exam-cell-label::before,
+.exam-cell-label::after {
+  content: '';
+  display: inline-block;
+  width: 16px; height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.exam-cell-value {
+ font-family: 'DM Sans', sans-serif;         
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTAINER LAYOUT
+═══════════════════════════════════════════════ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 991px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   USER CARD — MAIN INFO PANEL
+═══════════════════════════════════════════════ */
+#userCard {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Thin gold top bar - removed */
+
+.user-card {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+.user-card-header {
+  padding: 36px 36px 28px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.user-card-header-monogram {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  border: 1px solid #f59e0b;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-card-header-monogram::after {
+  content: '';
+  position: absolute; inset: 0;
+}
+
+.monogram-initials {
+  font-family: 'Syne', sans-serif;                                        
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  position: relative; z-index: 1;
+}
+
+.user-card-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.user-role {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--ink-40);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.status-pill::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  display: inline-block;
+  animation: pulseStatus 2s ease-in-out infinite;
+}
+
+@keyframes pulseStatus {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; box-shadow: 0 0 6px rgba(255,255,255,0.8); }
+}
+
+.status-pill.bg-success { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 2px 10px rgba(16,185,129,0.3); }
+.status-pill.bg-warning { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 2px 10px rgba(245,158,11,0.3); }
+
+/* ── HEADER META STRIP ── */
+.user-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 4px;
+}
+
+.meta-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  color: var(--ink-40);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-tag i { font-size: 0.85rem; }
+
+/* ── BODY ── */
+.user-card-body {
+  padding: 8px 36px 36px;
+}
+
+.info-section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 28px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+/* ── INFO ROWS ── */
+.info-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+@media (max-width: 576px) {
+  .info-grid-2col { grid-template-columns: 1fr; }
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 0;
+  position: relative;
+  transition: var(--transition);
+}
+
+
+
+/* Every other row in grid gets a right separator */
+.info-grid-2col .info-row:nth-child(odd) {
+  padding-right: 32px;
+}
+.info-grid-2col .info-row:nth-child(even) {
+  padding-left: 32px;
+}
+
+/* Remove bottom border from last two in grid */
+.info-grid-2col .info-row:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+.info-row:hover::before {
+  content: '';
+  position: absolute;
+  left: -36px; right: -36px; top: 0; bottom: 0;
+  background: var(--gold-glow);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.info-label {
+  font-family: 'Syne', sans-serif;     
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  margin-bottom: 4px;
+}
+
+.info-value {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+
+.permit-badge i { font-size: 0.9rem; }
+
+/* ═══════════════════════════════════════════════
+   PROFILE CARD — RIGHT COLUMN
+═══════════════════════════════════════════════ */
+.profile-card {
+  position: relative;
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  animation: cardReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  padding: 0;
+  text-align: center;
+}
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Gold top rule */
+.profile-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold-lt) 50%, var(--gold) 70%, transparent);
+  z-index: 3;
+}
+
+.card-bg-graphics {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+
+.orb-tr {
+  position: absolute; top: -80px; right: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(184,154,90,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.orb-bl {
+  position: absolute; bottom: -60px; left: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.grid-lines {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--ink-06) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-06) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.diag-rule { display: none; }
+
+/* Corner accents */
+.corner-tl, .corner-tr, .corner-bl, .corner-br, .footer-rule {
+  position: absolute; z-index: 2; pointer-events: none;
+}
+.corner-tl { top: 18px; left: 18px; width: 18px; height: 18px; border-top: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); border-radius: 4px 0 0 0; }
+.corner-tr { top: 18px; right: 18px; width: 18px; height: 18px; border-top: 1.5px solid var(--gold); border-right: 1.5px solid var(--gold); border-radius: 0 4px 0 0; }
+.corner-bl { bottom: 18px; left: 18px; width: 18px; height: 18px; border-bottom: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); border-radius: 0 0 0 4px; }
+.corner-br { bottom: 18px; right: 18px; width: 18px; height: 18px; border-bottom: 1.5px solid var(--gold); border-right: 1.5px solid var(--gold); border-radius: 0 0 4px 0; }
+.footer-rule {
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(184,154,90,0.3) 30%, rgba(184,154,90,0.5) 50%, rgba(184,154,90,0.3) 70%, transparent);
+}
+
+.card-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 24px 24px;
+}
+
+/* Portal badge */
+.portal-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
+  border: 1px solid rgba(184,154,90,0.3);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 16px;
+  animation: fadeDown 0.6s 0.15s both;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--gold-lt); box-shadow: 0 0 8px var(--gold);
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 6px var(--gold); }
+  50%       { box-shadow: 0 0 14px var(--gold-lt); }
+}
+
+.badge-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.58rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase; color: white;
+}
+
+/* Profile title */
+.profile-title {
+  font-family: 'DM Sans', sans-serif;       
+  font-size: 1.7rem !important;
+  font-weight: 700 !important;
+  color: var(--ink) !important;
+  letter-spacing: 0.01em;
+  margin-bottom: 2px;
+  animation: fadeUp 0.6s 0.2s both;
+}
+.profile-title.text-primary { color: var(--ink) !important; }
+
+/* Gold divider */
+.gold-divider {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  margin: 10px 0 14px;
+  animation: fadeUp 0.6s 0.25s both;
+}
+.gold-divider-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+.gold-divider-diamond {
+  width: 5px; height: 5px; background: var(--gold);
+  transform: rotate(45deg); flex-shrink: 0;
+}
+
+/* Profile subtitle */
+.profile-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  color: var(--ink-80);
+  text-align: justify;
+  line-height: 1.65; font-weight: 400; letter-spacing: 0.01em;
+  background: linear-gradient(135deg, rgba(184,154,90,0.06), rgba(184,154,90,0.03));
+  border: 1px solid rgba(184,154,90,0.2);
+  border-radius: var(--radius-md);
+  padding: 12px 14px; width: 100%;
+  animation: fadeUp 0.6s 0.3s both;
+}
+.profile-subtitle::before {
+  content: "ⓘ "; color: var(--gold); font-weight: 900 !important;
+}
+
+/* Spinning ring */
+.spinning-ring-wrap {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 20px;
+}
+.spinning-ring-wrap::before {
+  content: '';
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 1.5px dashed rgba(184,154,90,0.4);
+  animation: spinRing 12s linear infinite;
+  pointer-events: none;
+}
+.spinning-ring-wrap::after {
+  content: '';
+  position: absolute; inset: -3px; border-radius: 50%;
+  border: 1px solid rgba(184,154,90,0.15);
+  pointer-events: none;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+
+/* Image preview */
+.image-preview-container {
+  width: 130px; height: 130px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--surface-2), #e9ecef);
+  border: 2px solid rgba(184,154,90,0.35);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 4px var(--gold-glow),
+    inset 0 0 20px rgba(0,0,0,0.05),
+    0 8px 24px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+.image-preview-container:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 4px var(--gold-dim),
+    0 12px 32px rgba(0,0,0,0.15);
+  border-color: var(--gold);
+}
+#imagePreview {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+.upload-placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.upload-placeholder i {
+  font-size: 36px !important; color: var(--gold) !important; opacity: 0.5;
+}
+.upload-placeholder p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 500; color: var(--ink-40); margin-top: 6px !important;
+}
+
+.photo-sublabel {
+  margin-top: 14px !important;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-40); font-weight: 600;
+}
+
+.profile-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem; color: var(--ink-40);
+  letter-spacing: 0.04em; min-height: 1em;
+  animation: fadeUp 0.6s 0.45s both;
+  margin-top: 20px;
+}
+
+/* View Permit button */
+#permitLink {
+  display: block; width: 100%; text-decoration: none;
+  margin-top: 18px;
+}
+
+#btnViewPermit {
+  width: 100%; border-radius: var(--radius-md); padding: 11px 0;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  overflow: hidden; transition: all 0.3s ease;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  animation: fadeUp 0.6s 0.5s both;
+  position: relative;
+}
+
+#btnViewPermit::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
   pointer-events: none;
 }
 
-.otp-box {
-  width: 44px;
-  height: 52px;
-  border-radius: 6px;
-  border: 2px solid #c7cbe6;
-  background: #f8f9fc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #111827;
-  transition: all 0.2s ease;
+#btnViewPermit:disabled {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--ink-40);
+  cursor: not-allowed; box-shadow: none;
+}
+#btnViewPermit:not(:disabled) {
+  background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
+  background-size: 200% 200%;
+  color: white; border: 1px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  animation: fadeUp 0.6s 0.5s both, shimmerBg 4s ease infinite;
+}
+@keyframes shimmerBg {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+#btnViewPermit:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.3), 0 0 20px rgba(184,154,90,0.15);
+  border-color: rgba(184,154,90,0.5);
+}
+#btnViewPermit:not(:disabled):active { transform: translateY(1px); }
+
+/* Lock hint */
+.lock-hint {
+  margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.6rem; color: var(--ink-40);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  animation: fadeUp 0.6s 0.55s both;
 }
 
-/* ACTIVE STATE */
-.otp-box.active {
-  border-color: #4f4f4f;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  background: #ffffff;
+/* Settings link */
+.settings-link {
+  margin-top: 18px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem; color: var(--blue); text-decoration: none;
+  font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  opacity: 0.55; transition: opacity 0.2s;
+  animation: fadeUp 0.6s 0.6s both;
+}
+.settings-link:hover { opacity: 1; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* FILLED STATE */
-.otp-box.filled {
-  border-color: #2563eb;
-  background: #ffffff;
+/* ═══════════════════════════════════════════════
+   FAQ SECTION
+═══════════════════════════════════════════════ */
+#faq {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 24px;
 }
 
- .form-control:disabled,
- .form-select:disabled {
-   background-color: #f8f9fa;
-   opacity: 1;
-   cursor: not-allowed;
- }
-
- /* Small auto-generated age field */
-#age {
-  background-color: #f8f9fa;
-  font-weight: 600;
-  border-style: dashed;
-  border-color: #ced4da;
-  cursor: not-allowed;
+#faq::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold-lt) 50%, var(--gold) 70%, transparent);
 }
 
-#age::placeholder {
-  color: #adb5bd;
+.faq-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; font-size: 1.1rem;
+  color: var(--ink); margin-bottom: 4px;
+  letter-spacing: -0.01em;
 }
 
-
-.btn-send-otp {
-  background: linear-gradient(135deg, #ffb347, #ef8809);
-  border: none;
-  color: #000000;
-  font-weight: 600;
-  padding: 0.45rem 1.2rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 14px rgba(239, 136, 9, 0.25);
+.faq-subheading {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; color: var(--ink-40);
+  margin-bottom: 24px;
 }
 
-.btn-send-otp:hover {
-  background: linear-gradient(135deg, #ef8809, #d97706);
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(239, 136, 9, 0.35);
+.faq-ui { border-top: 1px solid var(--border); }
+
+.faq-row { border-bottom: 1px solid var(--border); }
+
+.faq-toggle {
+  width: 100%; background: none; border: none;
+  padding: 18px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; transition: var(--transition);
+}
+.faq-toggle:hover { padding-left: 4px; }
+
+.faq-left {
+  display: flex; align-items: center; gap: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem; font-weight: 500; color: var(--ink);
+  text-align: left;
 }
 
-.btn-send-otp:active {
-  transform: scale(0.97);
+.faq-icon {
+  width: 34px; height: 34px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.faq-row.active .faq-icon {
+  background: var(--ink); border-color: var(--ink);
+  color: var(--gold-lt);
 }
 
-/* VERIFY OTP BUTTON */
-.btn-verify-otp {
-  background: linear-gradient(135deg, #ffb347, #ef8809);
-  border: none;
-  color: #fff;
-  font-weight: 600;
-  padding: 0.5rem 1.4rem;
-  border-radius: 999px;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.25);
+.faq-chevron {
+  font-size: 1.3rem; color: var(--ink-40);
+  transition: transform 0.3s ease;
+}
+.faq-row.active .faq-chevron { transform: rotate(180deg); color: var(--ink); }
+
+.faq-content-wrapper { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.faq-content-wrapper.open { max-height: 300px; }
+
+.faq-content {
+  padding: 0 0 18px 48px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; color: var(--ink-80); line-height: 1.65;
 }
 
-.btn-verify-otp:hover {
-   background: linear-gradient(135deg, #f0971a, #ef8809);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(22, 163, 74, 0.35);
+/* ═══════════════════════════════════════════════
+   EXAM INFO BAR — legacy IDs kept
+═══════════════════════════════════════════════ */
+/* IDs #registration-date, #examination-date, #examination-venue still work inside .exam-cell-value */
+
+/* ═══════════════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .exam-info-strip { flex-direction: column; }
+  .exam-info-cell:not(:last-child)::after { display: none; }
+  .user-card-header { padding: 24px; }
+  .user-card-body { padding: 8px 24px 24px; }
+  .info-grid-2col { grid-template-columns: 1fr; }
+  .info-grid-2col .info-row:nth-child(odd) { padding-right: 0; border-right: none; }
+  .info-grid-2col .info-row:nth-child(even) { padding-left: 0; }
+  .info-grid-2col .info-row:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .info-grid-2col .info-row:last-child { border-bottom: none; }
+  #faq { padding: 24px 20px; }
 }
 
-.btn-verify-otp:active {
-  transform: scale(0.97);
+/* Content box fallback */
+.content-box {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: 32px 36px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
-.verified-badge {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  color: #fff;
-  padding: 0.45rem 0.75rem;
-  font-weight: 600;
-  font-size: 0.75rem;
-  border-radius: 999px;
-  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
-  white-space: nowrap;
-}
+</style>
+</head>
 
-/* OTP INPUT GROUP POLISH */
-#otpContainer .form-control {
-  border-radius: 999px 0 0 999px;
-  font-weight: 600;
-}
+<body>
 
-#otpContainer .btn {
-  border-radius: 0 999px 999px 0;
-}
+<!-- Sidebar Section -->
+<section id="sidebar">
+  <a href="#" class="brand" style="display: flex; align-items: center;">
+    <img src="../imgs/PSI.png" alt="PSILogo" class="logo">
+    <span class="text">PSI-PMMA Portal</span>
+  </a>
+  <ul class="side-menu top">
+    <li class="active">
+      <a href="dashboard.html">
+        <i class="bx bxs-dashboard"></i>
+        <span class="text">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a href="accountsettings.html">
+        <i class="bx bx-cog ms-1"></i>
+        <span class="text">Account Settings</span>
+      </a>
+    </li>
+  </ul>
+  <ul class="side-menu">
+    <li>
+      <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+        <i class="bx bxs-log-out-circle"></i>
+        <span class="text">Logout</span>
+      </a>
+    </li>
+  </ul>
+</section>
 
-/* OTP STATUS TEXT */
-#otpStatus {
-  display: block;
-  font-size: 0.8rem;
-  margin-top: 6px;
-}
-.btn-password-toggle {
-  border: 1px solid #dee2e6;
-  background-color: #f8f9fa;
-  color: #6b7280;
-  border-left: 0;
-  padding: 0 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
+<section id="content">
+  <main class="container-fluid p-4">
 
-.btn-password-toggle i {
-  font-size: 1.05rem;
-}
+    <!-- ══════════════════════════════════
+         EXAM INFO HEADER  (IDs preserved)
+    ══════════════════════════════════ -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="exam-info-strip">
 
-.btn-password-toggle:hover {
-  background-color: #eef2ff;
-  color: #2563eb;
-}
+          <div class="exam-info-cell">
+            <div class="exam-cell-label">Date of Registration</div>
+            <div class="exam-cell-value fw-bold" id="registration-date">—</div>
+          </div>
 
-.btn-password-toggle:active {
-  background-color: #e0e7ff;
-  transform: scale(0.96);
-}
+          <div class="exam-info-cell">
+            <div class="exam-cell-label">Date of Examination</div>
+            <div class="exam-cell-value fw-bold" id="examination-date">—</div>
+          </div>
 
-.btn-password-toggle:focus {
-  box-shadow: none;
-}
-.input-group .form-control {
-  border-right: 0;
-}
+          <div class="exam-info-cell">
+            <div class="exam-cell-label">Examination Venue</div>
+            <div class="exam-cell-value fw-bold" id="examination-venue">—</div>
+          </div>
 
-.input-group .form-control:focus {
-  box-shadow: none;
-}
+        </div>
+      </div>
+    </div>
 
- .step {
-   cursor: pointer;
- } 
- .stepper {
-   gap: 0.5rem;
- }
+    <!-- ══════════════════════════════════
+         USER INFO CONTAINER
+    ══════════════════════════════════ -->
+    <div class="container">
+      <div class="dashboard-grid">
 
- .form-control:focus,
- .form-select:focus {
-   border-color: #000;
-   box-shadow: none;
- }
-
- .input-group .form-control:focus {
-   border-color: #000;
-   box-shadow: none;
- }
-
- .form-control,
- .form-select {
-   transition: border-color 0.2s ease;
- }
-
- .step {
-   text-align: center;
-   flex: 1;
-   color: #6c757d;
-   font-weight: 600;
-   font-size: 0.8rem;
-   transition: all 0.3s ease;
- }
-
- .step-circle {
-   width: 42px;
-   height: 42px;
-   border-radius: 50%;
-   border: 2px solid #ced4da;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin: 0 auto 6px;
-   font-size: 1.2rem;
-   background: #fff;
-   transition: all 0.3s ease;
- }
-
- .step-line {
-   flex: 1;
-   height: 2px;
-   background: #dee2e6;
-   margin-top: 20px;
- }
-
- .step.active {
-   color: #000;
- }
-
- .step.active .step-circle {
-   border-color: var(--primary);
-   background: var(--primary);
-   color: #ffffff;
-   box-shadow: 0 6px 18px rgba(247, 222, 34, 0.45);
- }
-
- .step.completed {
-   color: #198754;
- }
-
- .step.completed .step-circle {
-   background: #198754;
-   border-color: #198754;
-   color: #fff;
- }
-
- .btn-primary {
-   background-color: var(--primary);
-   border-color: var(--primary);
-   color: #000;
-   font-weight: 600;
- }
-
- .btn-primary:hover {
-   background-color:#b56401;
-   border-color: #b56401;
-   color: #ffffff;
- }
-
- .overflow-auto::-webkit-scrollbar {
-     display: none;
-  } 
-
- .otp-verified-badge {
-       background-color: #198754;
-       color: white;
-       padding: 2px 8px;
-       border-radius: 4px;
-       font-size: 0.75rem;
-       margin-left: 8px;
-     }
-
-     .flatpickr-calendar {
-       background: white;
-       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
- }
-
-    .btn-understand {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      border: none;
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.85rem;
-      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
-      transition: all 0.25s ease;
-    }
-
-    .btn-understand:hover {
-      background: linear-gradient(135deg, #1d4ed8, #1e40af);
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn-understand:active {
-      transform: scale(0.96);
-    }
-    .permit-input {
-      max-width: 260px;
-    }
-  </style>
-
- </head>
-
-<body
-  class="min-vh-100 d-flex align-items-center justify-content-center"
-  style="background: url('imgs/bg.jpg') center center / cover no-repeat fixed;"
- >
-
-<div
-  class="position-fixed top-0 start-0 w-100 h-100"
-  style="backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 0;">
-</div>
-
-<div class="container position-relative" style="z-index: 1;">
-  <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-9">
-
-      <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75">
-        <div class="card-body p-4">
-
-        <div class="d-flex justify-content-center align-items-center mb-4">
-          <img src="imgs/PSI.png" class="img-fluid" style="max-width:80px;">
-          <div class="mx-3" style="width:1px; height:40px; background-color:#8f8f8f;"></div>
-          <img src="imgs/PMMA.png" class="img-fluid" style="max-width:80px;">
+        <!-- LEFT: User Card (ID preserved) -->
+        <div id="userCard">
+          <!-- JS (get_user.js) injects .user-card here -->
         </div>
 
+        <!-- RIGHT: Profile Card -->
+        <div>
+          <div class="profile-card">
+            <!-- Corner accents (classes preserved) -->
+            <div class="corner-tl"></div>
+            <div class="corner-tr"></div>
+            <div class="corner-bl"></div>
+            <div class="corner-br"></div>
+            <div class="footer-rule"></div>
 
-        <!-- MODERN STEPPER CARD -->
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-          <div class="card-body px-4 py-3">
+            <!-- Content (IDs preserved) -->
+            <div class="card-content">
 
-            <div class="d-flex justify-content-between align-items-center stepper">
-
-                    <!-- Step 1 -->
-                    <div class="step active" id="step-reminders" onclick="goToStep(1)">
-                      <div class="step-circle">
-                        <i class="bi bi-exclamation-circle"></i>
-                      </div>
-                      <span>Reminders</span>
-                    </div>
-
-                    <div class="step-line"></div>
-
-                    <!-- Step 2 -->
-                    <div class="step" id="step-personal-info">
-                      <div class="step-circle">
-                        <i class="bi bi-person-lines-fill"></i>
-                      </div>
-                      <span>Information</span>
-                    </div>
-
-                    <div class="step-line"></div>
-
-                    <!-- Step 3 -->
-                    <div class="step" id="step-exam-schedule">
-                      <div class="step-circle">
-                        <i class="bi bi-calendar-check"></i>
-                      </div>
-                      <span>Exam Schedule</span>
-                    </div>
-
-                    <div class="step-line"></div>
-
-                    <!-- Step 4 -->
-                    <div class="step" id="step-payment">
-                      <div class="step-circle">
-                        <i class="bi bi-credit-card"></i>
-                      </div>
-                      <span>Payment</span>
-                    </div>
-
-                    <div class="step-line"></div>
-
-                    <!-- Step 5 -->
-                    <div class="step" id="step-finish">
-                      <div class="step-circle">
-                        <i class="bi bi-check-circle"></i>
-                      </div>
-                      <span>Finish</span>
-                    </div>
-
-                  </div>
-                </div>
+              <div class="portal-badge">
+                <div class="badge-dot"></div>
+                <span class="badge-label">Student Portal</span>
               </div>
 
-            <!-- REMINDERS CARD -->
-            <div id="reminderCard" class="card border-0 shadow-sm rounded-4 mb-4">
-              <div class="card-body p-4">
+              <h5 class="profile-title fw-bold text-primary">User Profile</h5>
 
-                <div class="d-flex align-items-center mb-3">
-                  <i class="bi bi-shield-lock-fill text-primary me-2" style="font-size:1.4rem;"></i>
-                  <h5 class="mb-0 fw-semibold">Terms and Conditions</h5>
-                </div>
-
-                  <div
-                    id="termsContainer"
-                    class="p-3 rounded-3 mb-4 overflow-auto"
-                    style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
-                  >
-                    <p class="small text-muted">
-                      By proceeding with this registration, you acknowledge and agree that all
-                      information, statements, and documents you submit through the PSI Examination
-                      System are true, accurate, complete, and correct to the
-                      best of your knowledge.
-                    </p>
-
-                    <p class="small text-muted">
-                      The system will collect and process personal information including, but not
-                      limited to, your full name, date of birth, age, gender, contact number, email
-                      address, school affiliation, test permit number, and other details required
-                      for examination registration, identity verification, scheduling, and official
-                      record purposes.
-                    </p>
-
-                    <p class="small text-muted">
-                      In compliance with <strong>Republic Act No. 10173</strong>, otherwise known as
-                      the <strong>Data Privacy Act of 2012</strong>, all personal data collected shall
-                      be handled with strict confidentiality and shall be processed, stored, and
-                      protected using reasonable organizational, physical, and technical security
-                      measures. Your information will only be accessed by authorized personnel and
-                      will not be disclosed to unauthorized third parties, except as required by
-                      law or official regulatory bodies.
-                    </p>
-
-                    <p class="small text-muted">
-                      By registering, you expressly consent to the collection, use, storage, and
-                      processing of your personal data for purposes that include examination
-                      administration, exam scheduling, identity validation, result processing,
-                      payment verification, account management, and official communications related
-                      to the PSI examination.
-                    </p>
-
-                    <p class="small text-muted">
-                      The system includes an online examination scheduling feature. Once an
-                      examination schedule has been selected and confirmed, it shall be considered
-                      final. Requests for changes, rescheduling, or cancellations may be subject to
-                      approval and applicable policies set by the administering authority.
-                    </p>
-
-                    <p class="small text-muted">
-                      Examination fees collected through this system are used to cover
-                      administrative, operational, and examination-related costs. Please be
-                      advised that <strong>all payments made are strictly non-refundable</strong>,
-                      regardless of whether the applicant fails to attend the examination,
-                      withdraws the application, provides incorrect information, or fails to meet
-                      eligibility requirements.
-                    </p>
-
-                    <p class="small text-muted">
-                      No refunds shall be issued under any circumstances once payment has been
-                      successfully processed, including but not limited to examination
-                      disqualification, schedule conflicts, technical issues on the applicant’s
-                      end, or failure to complete subsequent steps in the registration process.
-                    </p>
-
-                    <p class="small text-muted">
-                      Any misrepresentation, omission, falsification of information, or submission
-                      of fraudulent documents may result in the denial, cancellation, or revocation
-                      of your application, disqualification from the examination, and possible
-                      prohibition from future PSI examinations, without prior notice and without
-                      refund.
-                    </p>
-
-                    <p class="small text-muted mb-0">
-                      By continuing with this registration, you confirm that you have read,
-                      understood, and voluntarily agreed to all the terms and conditions stated
-                      above, including the data privacy provisions and the no-refund policy.
-                    </p>
-
-                  </div>
-
-                  <div class="form-check mb-4 d-none" id="termsCheckboxWrapper">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="agreeTerms"
-                    >
-                    <label class="form-check-label small" for="agreeTerms">
-                      I have read and agree to the Terms and Conditions
-                    </label>
-                  </div>
-
-
-
-                <div class="d-flex justify-content-end">
-                  <button
-                    id="reminderProceedBtn"
-                    class="btn btn-primary px-4 rounded-pill"
-                    onclick="goToPersonalInfo()"
-                    disabled
-                  >
-                    Proceed
-                    <i class="bi bi-arrow-right-short"></i>
-                  </button>
-
-                </div>
+              <div class="gold-divider">
+                <div class="gold-divider-line"></div>
+                <div class="gold-divider-diamond"></div>
+                <div class="gold-divider-line"></div>
               </div>
+
+              <p class="profile-subtitle">
+                Uploading a photo is required to access your Test Permit.
+                You can upload your photo in the <strong>Account Settings</strong> section.
+              </p>
+
+              <div style="display:flex; flex-direction:column; align-items:center;">
+
+                <div class="spinning-ring-wrap">
+                  <!-- IDs preserved -->
+                  <div id="imagePreviewContainer" class="image-preview-container">
+                    <img id="imagePreview" src="../imgs/avatar.png" alt="Profile Preview" class="img-fluid" style="display: none;" />
+                    <div id="uploadPlaceholder" class="upload-placeholder">
+                      <i class="bx bx-image" style="font-size: 48px;"></i>
+                      <p class="mt-2">No photo uploaded</p>
+                    </div>
+                  </div>
+                </div>
+
+                <span class="photo-sublabel">Official Photo</span>
+              </div>
+
+              <!-- ID preserved -->
+              <p class="profile-text" id="imageText" style="margin-top: 20px;"> </p>
+
+              <!-- ID & href preserved -->
+              <a href="testpermit.html" id="permitLink">
+                <button id="btnViewPermit" class="btn-view-permit" disabled>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                  View Test Permit
+                </button>
+              </a>
+
+              <!-- ID preserved -->
+              <div class="lock-hint" id="lockHint">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Locked until photo is uploaded
+              </div>
+
+              <a href="accountsettings.html" class="settings-link">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                Account Settings
+              </a>
+
             </div>
+          </div><!-- /profile-card -->
+        </div><!-- /right col -->
 
+      </div><!-- /dashboard-grid -->
 
+      <!-- FAQ (ID preserved) -->
+      <div id="faq" class="content-box">
+        <h4 class="faq-heading">Frequently asked questions</h4>
+        <p class="faq-subheading">Common questions about the examination process.</p>
+        <div class="faq-ui" id="faqContainer">
+          <!-- FAQs injected by get_faq.js -->
+        </div>
+      </div>
 
+    </div><!-- /container -->
+  </main>
 
-          <!-- REGISTER FORM -->
-          <form id="registrationForm" class="overflow-auto" style="max-height: 65vh;" method="POST" novalidate>
-            <div id="personalInfoCard" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-              <div class="card-body p-4">
-
-                <h6 class="fw-semibold mb-4">
-                  <i class="bi bi-person-lines-fill me-2 text-primary"></i>
-                  Personal Information
-                </h6>
-
-                <!-- STEP 1: TEST PERMIT VERIFICATION (ALWAYS FIRST) -->
-                <div class="row g-3 mb-4 pb-4 border-bottom">
-                  <div class="col-12">
-                    <label class="form-label fw-semibold">
-                      Test Permit Number <span class="text-danger">*</span>
-                    </label>
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        class="form-control permit-input"
-                        name="test_permit_no"
-                        id="testPermitNo"
-                        required
-                        placeholder="Enter Test Permit Number"
-                      >
-                      <button
-                        type="button"
-                        id="verifyTestPermitBtn"
-                        class="btn btn-primary"
-                      >
-                        <i class="bi bi-check-circle me-1"></i>
-                        Verify
-                      </button>
-                    </div>
-                    <small id="testPermitStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
-                  </div>
-                </div>
-
-                <!-- STEP 2: PERSONAL INFO (DISABLED UNTIL PERMIT VERIFIED) -->
-                <!-- ROW 1: LAST / FIRST / MIDDLE -->
-                <div class="row g-3 mb-3">
-                  <div class="col-md-4">
-                    <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="last_name" id="lastName" required disabled>
-                  </div>
-
-                  <div class="col-md-4">
-                    <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" name="first_name" id="firstName" required disabled>
-                  </div>
-
-                  <div class="col-md-4">
-                    <label class="form-label fw-semibold">Middle Name</label>
-                    <input type="text" class="form-control" name="middle_name" id="middleName" disabled>
-                  </div>
-                </div>
-
-              <!-- ROW: DATE OF BIRTH / AGE / GENDER -->
-                  <div class="row g-3 mb-3 align-items-end">
-
-                    <!-- DATE OF BIRTH -->
-                    <div class="col-md-6">
-                      <label class="form-label fw-semibold">
-                        Date of Birth <span class="text-danger">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="date_of_birth"
-                        id="dateOfBirth"
-                        required
-                        placeholder="Select date"
-                        
-                      >
-                    </div>
-
-                    <!-- AGE (AUTO-CALCULATED) -->
-                    <div class="col-md-2">
-                      <label class="form-label fw-semibold text-muted small">
-                        Age
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control text-center"
-                        id="age"
-                        name="age"
-                        readonly
-                        placeholder="—"
-                        disabled
-                      >
-                    </div>
-
-                    <!-- GENDER -->
-                    <div class="col-md-4">
-                    <label class="form-label">
-                      Sex <span class="text-danger">*</span>
-                    </label>
-
-                    <select class="form-select" id="gender" name="gender" required disabled>
-                      <option value="" selected disabled>Select sex
-                        
-                      </option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Prefer not to say">Prefer not to say</option>
-                    </select>
-
-                    <div class="invalid-feedback">
-                      Please select your sex.
-                    </div>
-
-                    </div>
-
-                  </div>
-
-                  <!-- ROW: CONTACT NUMBER & SCHOOL -->
-                  <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                      <label class="form-label fw-semibold">
-                        Contact Number <span class="text-danger">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        class="form-control"
-                        name="contact_number"
-                        id="contactNumber"
-                        required
-                        placeholder="e.g., 09123456789"
-                        disabled
-                      >
-                    </div>
-
-                    <div class="col-md-6">
-                      <label class="form-label fw-semibold">School <span class="text-danger">*</span></label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="school"
-                        id="school"
-                        required
-                        placeholder="Enter School Name"
-                        disabled
-                      >
-                    </div>
-                  </div>
-
-                <!-- ROW 4: EMAIL -->
-                <div class="row mb-2">
-                  <div class="col-12">
-                    <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                      <input type="email" class="form-control" name="email" id="email" required placeholder="user@example.com" disabled>
-
-                        <button
-                          type="button"
-                          id="sendOtpBtn"
-                          class="btn btn-send-otp ms-2"
-                        >
-                          <i class="bi bi-shield-lock me-1"></i>
-                          Send OTP
-                        </button>
-
-                      <span id="otpVerifiedBadge" class="badge verified-badge ms-2" style="display:none;">
-                        <i class="bi bi-shield-check me-1"></i>
-                        Verified
-                      </span>
-                    </div>
-                    <small id="otpStatus" class="mb-2 mt-1 small fw-semibold" style="display:none;"></small>
-                  </div>
-                </div>
-
-                <!-- OTP INPUT -->
-<!-- OTP INPUT (BOX STYLE – SAME FUNCTION) -->
-<div id="otpContainer" class="mb-4" style="display:none;">
-  <label class="form-label fw-semibold mb-3">
-    OTP Code <span class="text-danger">*</span>
-  </label>
-
-  <!-- Hidden REAL input (your logic uses this) -->
-  <input
-    type="text"
-    id="otpInput"
-    maxlength="6"
-    autocomplete="one-time-code"
-    inputmode="numeric"
-    class="otp-hidden-input"
-  />
-
-  <!-- Visual OTP boxes -->
-  <div class="d-flex justify-content-center gap-2 mb-3" id="otpBoxes">
-    <div class="otp-box"></div>
-    <div class="otp-box"></div>
-    <div class="otp-box"></div>
-    <div class="otp-box"></div>
-    <div class="otp-box"></div>
-    <div class="otp-box"></div>
-  </div>
-
-  <div class="text-center">
-    <button
-      type="button"
-      id="verifyOtpBtn"
-      class="btn btn-verify-otp px-4 rounded-pill"
-    >
-      Verify & Continue
-    </button>
-  </div>
-
-  <small class="text-muted d-block text-center mt-2">
-    Enter the 6-digit code sent to your email
-  </small>
-</div>
-
-
-                
-                <!-- RESEND OTP -->
-                <div class="mb-3">
-                  <small
-                    id="resendOtpBtn"
-                    class="text-primary fw-semibold"
-                    style="cursor:pointer; display:none;"
-                  >
-                    Resend OTP
-                  </small>
-                </div>
-                <!-- PASSWORD SECTION -->
-                <div id="passwordSection" style="display:none;">
-                  <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                      <label class="form-label">
-                        Password <span class="text-danger">*</span>
-                      </label>
-
-                      <div class="input-group">
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="password"
-                          placeholder="At least 8 characters"
-                          required
-                          disabled
-                        >
-                        <button
-                          class="btn btn-password-toggle"
-                          type="button"
-                          id="togglePassword"
-                          aria-label="Toggle password visibility"
-                        >
-                          <i class="bi bi-eye"></i>
-                        </button>
-
-                      </div>
-
-                   <div class="small text-muted mt-1">
-                      Must contain uppercase, lowercase, and number. Ex: <strong>Example123</strong>
-                   </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-                      <label class="form-label">
-            Confirm Password <span class="text-danger">*</span>
-          </label>
-
-          <div class="input-group">
-            <input
-              type="password"
-              class="form-control"
-              id="confirmPassword"
-              placeholder="Re-enter password"
-              required
-            >
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              id="toggleConfirmPassword"
-              aria-label="Toggle confirm password visibility"
-            >
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-
-                    </div>
-                  </div>
-
-                  <div class="d-flex justify-content-end mb-3">
-                    <button
-                      type="button"
-                      class="btn btn-primary px-4 rounded-pill"
-                      id="registerBtn"
-                    >
-                      Proceed to Examination Schedule 
-                      <i class="bi bi-arrow-right-short"></i>
-                    </button>
-
-                  </div>
-                </div>
-              </div>
-          </div>
-
-
-                      <!-- REGISTRATION COMPLETE -->
-                      <div id="registrationComplete" class="card border-0 shadow-sm rounded-4 mb-4 d-none">
-                        <div class="card-body p-4 text-center">
-
-                          <div class="mb-4">
-                            <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
-                          </div>
-
-                          <h5 class="fw-semibold mb-2">Registration Complete!</h5>
-
-                          <p class="text-muted mb-4">
-                            Your registration has been successfully submitted. 
-                            You will receive a confirmation email shortly with your account details.
-                          </p>
-
-                          <div class="alert alert-info small mb-4">
-                            <strong>Next Steps:</strong><br>
-                            1. Check your email for confirmation<br>
-                            2. Proceed to login with your credentials<br>
-                            3. Download your test permit once approved
-                          </div>
-
-                          <a href="login.html" class="btn btn-primary px-4 rounded-pill">
-                            Login to Your Account
-                            <i class="bi bi-arrow-right ms-1"></i>
-                          </a>
-
-                        </div>
-                      </div>
-          </form>
-
+  <!-- Logout Modal (unchanged) -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered logout-modal">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+          <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">Confirm Logout</h5>
+          <button type="button" class="btn-close no-focus" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="px-4"><hr class="my-0"></div>
+        <div class="modal-body px-4 py-4 text-center">
+          <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+          <p class="mb-0 text-muted">Are you sure you want to log out of your account?</p>
+        </div>
+        <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+          <a href="../php/logout.php" class="btn btn-danger rounded-pill px-4">Logout</a>
         </div>
       </div>
     </div>
   </div>
-</div>
-<script>
-  function goToPersonalInfo() {
-    document.getElementById('reminderCard').classList.add('d-none');
-    document.getElementById('personalInfoCard').classList.remove('d-none');
 
-    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-    document.querySelectorAll('.step')[1].classList.add('active');
+</section>
+
+<!-- Permit link sync (unchanged logic) -->
+<script>
+  const btn      = document.getElementById('btnViewPermit');
+  const link     = document.getElementById('permitLink');
+  const lockHint = document.getElementById('lockHint');
+
+  function syncLink() {
+    const isDisabled = btn.disabled;
+    link.style.pointerEvents = isDisabled ? 'none' : 'auto';
+    lockHint.style.display   = isDisabled ? 'flex'  : 'none';
   }
 
-  function goToStep(step) {
-    const reminderCard = document.getElementById('reminderCard');
-    const personalInfoCard = document.getElementById('personalInfoCard');
-
-    steps.forEach(s => s.classList.remove('active', 'completed'));
-
-    if (step === 1) {
-      reminderCard.classList.remove('d-none');
-      personalInfoCard.classList.add('d-none');
-      paymentCard.classList.add('d-none');
-      registrationComplete.classList.add('d-none');
-      steps[0].classList.add('active');
-    } else if (step === 2) {
-      reminderCard.classList.add('d-none');
-      personalInfoCard.classList.remove('d-none');
-      paymentCard.classList.add('d-none');
-      registrationComplete.classList.add('d-none');
-      steps[1].classList.add('active');
-    } else if (step === 3) {
-      reminderCard.classList.add('d-none');
-      personalInfoCard.classList.add('d-none');
-      paymentCard.classList.add('d-none');
-      registrationComplete.classList.add('d-none');
-      steps[2].classList.add('active');
-    } else if (step === 4) {
-      reminderCard.classList.add('d-none');
-      personalInfoCard.classList.add('d-none');
-      paymentCard.classList.remove('d-none');
-      registrationComplete.classList.add('d-none');
-      steps[3].classList.add('active');
-    } else if (step === 5) {
-      reminderCard.classList.add('d-none');
-      personalInfoCard.classList.add('d-none');
-      paymentCard.classList.add('d-none');
-      registrationComplete.classList.remove('d-none');  
-      steps[4].classList.add('active');
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function goToExamSchedule() {
-    console.log('goToExamSchedule() called');
-    const personalInfoCard = document.getElementById('personalInfoCard');
-    
-    console.log('personalInfoCard exists:', !!personalInfoCard);
-    
-    if (personalInfoCard) {
-      personalInfoCard.classList.add('d-none');
-      console.log('Hidden personal info card');
-    }
-
-    const steps = document.querySelectorAll('.step');
-    console.log('Found steps:', steps.length);
-    
-    steps.forEach(step => step.classList.remove('active', 'completed'));
-
-    if (steps[0]) steps[0].classList.add('completed'); // Reminders
-    if (steps[1]) steps[1].classList.add('completed'); // Personal Info
-    if (steps[2]) steps[2].classList.add('active');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    console.log('Scrolled to top');
-  }
+  const observer = new MutationObserver(syncLink);
+  observer.observe(btn, { attributes: true, attributeFilter: ['disabled'] });
+  syncLink();
 </script>
+
+<script src="js/get_user.js"></script>
+<script src="js/get_faq.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  const requiredFields = [
-    'lastName',
-    'firstName',
-    'dateOfBirth',
-    'contactNumber',
-    'testPermitNo',
-    'school',
-    'email',
-    'password',
-    'confirmPassword'
-  ];
-
-  const registerBtn = document.getElementById('registerBtn');
-
-  function checkPersonalInfoCompletion() {
-    let isComplete = true;
-
-    requiredFields.forEach(id => {
-      const field = document.getElementById(id);
-      if (!field || field.value.trim() === '') {
-        isComplete = false;
-      }
-    });
-
-    registerBtn.disabled = !isComplete;
-  }
-
-  requiredFields.forEach(id => {
-    const field = document.getElementById(id);
-    if (field) {
-      field.addEventListener('input', checkPersonalInfoCompletion);
-    }
-  });
-
-    // Submit registration data when clicking "Proceed to Examination Schedule"
-  registerBtn.addEventListener('click', () => {
-    submitRegistration();
-  });
-
-  // Submit registration function
-  function submitRegistration() {
-    const formData = new FormData();
-    
-    // Add all form fields
-    formData.append('test_permit', document.getElementById('testPermitNo').value.trim());
-    formData.append('last_name', document.getElementById('lastName').value.trim());
-    formData.append('first_name', document.getElementById('firstName').value.trim());
-    formData.append('middle_name', document.getElementById('middleName').value.trim());
-    formData.append('email', document.getElementById('email').value.trim());
-    formData.append('date_of_birth', document.getElementById('dateOfBirth').value.trim());
-    formData.append('contact_number', document.getElementById('contactNumber').value.trim());
-    formData.append('gender', document.getElementById('gender').value);
-    formData.append('school', document.getElementById('school').value.trim());
-    formData.append('address', document.getElementById('address')?.value.trim() || '');
-    formData.append('nationality', document.getElementById('nationality')?.value.trim() || '');
-    formData.append('password', document.getElementById('password').value);
-    formData.append('confirm_password', document.getElementById('confirmPassword').value);
-
-    // Disable button and show loading state
-    registerBtn.disabled = true;
-    registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
-
-    fetch('php/register.php', {
-      method: 'POST',
-      body: formData,
-      credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Registration Response:', data);
-      
-      if (data.success) {
-        // Show success modal
-        const successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
-        successModal.show();
-        
-        // Redirect to exam schedule after short delay
-        setTimeout(() => {
-          window.location.href = 'examsched.html';
-        }, 1500);
-      } else {
-        // Show error modal
-        document.getElementById('registrationErrorMessage').textContent = data.message || 'Registration failed. Please try again.';
-        const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-        errorModal.show();
-        
-        registerBtn.disabled = false;
-        registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-      }
-    })
-    .catch(error => {
-      console.error('Registration Error:', error);
-      
-      // Show error modal
-      document.getElementById('registrationErrorMessage').textContent = 'Network error. Please try again.';
-      const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-      errorModal.show();
-      
-      registerBtn.disabled = false;
-      registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-    });
-  }
-
+(function() {
+  fetch('php/check_session.php', { method: 'GET', credentials: 'same-origin' })
+    .then(r => r.json())
+    .then(data => { if (!data.authenticated) window.location.href = '../auth/login.html'; })
+    .catch(() => { window.location.href = '../auth/login.html'; });
+})();
 </script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const agreeTermsCheckbox = document.getElementById('agreeTerms');
-    const reminderProceedBtn = document.getElementById('reminderProceedBtn');
-    const understandBtn = document.getElementById('understandBtn');
-
-    if (!understandBtn) {
-      console.error('Understand button not found');
-      return;
-    }
-
-    // When user clicks "I Understand"
-    understandBtn.addEventListener('click', () => {
-      agreeTermsCheckbox.disabled = false; // enable checkbox
-      agreeTermsCheckbox.checked = true;   // auto-check checkbox
-      reminderProceedBtn.disabled = false; // enable Proceed
-    });
-
-    // Safety check (if user manually unchecks)
-    agreeTermsCheckbox.addEventListener('change', () => {
-      reminderProceedBtn.disabled = !agreeTermsCheckbox.checked;
-    });
-  });
-
-</script>
-
-<script>
-  function setupPasswordToggle(inputId, toggleBtnId) {
-    const input = document.getElementById(inputId);
-    const btn = document.getElementById(toggleBtnId);
-    const icon = btn.querySelector('i');
-
-    btn.addEventListener('click', () => {
-      const isPassword = input.type === 'password';
-      input.type = isPassword ? 'text' : 'password';
-      icon.classList.toggle('bi-eye');
-      icon.classList.toggle('bi-eye-slash');
-    });
-  }
-
-  setupPasswordToggle('password', 'togglePassword');
-  setupPasswordToggle('confirmPassword', 'toggleConfirmPassword');
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const termsContainer = document.getElementById('termsContainer');
-  const checkboxWrapper = document.getElementById('termsCheckboxWrapper');
-  const agreeTerms = document.getElementById('agreeTerms');
-  const proceedBtn = document.getElementById('reminderProceedBtn');
-
-  proceedBtn.disabled = true;
-
-  // Detect scroll to bottom
-  termsContainer.addEventListener('scroll', () => {
-    const isAtBottom =
-      termsContainer.scrollTop + termsContainer.clientHeight >=
-      termsContainer.scrollHeight - 5;
-
-    if (isAtBottom) {
-      checkboxWrapper.classList.remove('d-none');
-    }
-  });
-
-  // Enable proceed only when checked
-  agreeTerms.addEventListener('change', () => {
-    proceedBtn.disabled = !agreeTerms.checked;
-  });
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const dobInput = document.getElementById('dateOfBirth');
-  const ageInput = document.getElementById('age');
-
-  flatpickr(dobInput, {
-    dateFormat: "Y-m-d",
-    maxDate: "today",
-    onChange: function(selectedDates) {
-      if (!selectedDates.length) {
-        ageInput.value = '';
-        return;
-      }
-
-      const birthDate = selectedDates[0];
-      const today = new Date();
-
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 && today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
-
-      ageInput.value = age >= 0 ? age : '';
-    }
-  });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const otpInput = document.getElementById('otpInput');
-  const boxes = document.querySelectorAll('.otp-box');
-
-  // Focus hidden input when clicking boxes
-  document.getElementById('otpBoxes').addEventListener('click', () => {
-    otpInput.focus();
-  });
-
-  otpInput.addEventListener('input', () => {
-    otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 6);
-
-    boxes.forEach((box, index) => {
-      box.textContent = otpInput.value[index] || '';
-      box.classList.toggle('filled', !!otpInput.value[index]);
-      box.classList.toggle('active', index === otpInput.value.length);
-    });
-  });
-
-  otpInput.addEventListener('focus', () => {
-    boxes[otpInput.value.length]?.classList.add('active');
-  });
-
-  otpInput.addEventListener('blur', () => {
-    boxes.forEach(box => box.classList.remove('active'));
-  });
-});
-</script>
-
-<!-- REGISTRATION SUCCESS MODAL -->
-<div class="modal fade" id="registrationSuccessModal" tabindex="-1" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      
-      <div class="modal-header border-0 justify-content-center pb-2">
-        <h5 class="modal-title fw-semibold">Registration Successful</h5>
-      </div>
-      
-      <div class="modal-body px-4 py-4 text-center">
-        <div class="rounded-circle bg-success-subtle text-success mx-auto mb-3
-                    d-flex align-items-center justify-content-center"
-             style="width:64px;height:64px;">
-          <i class="bi bi-check-circle fs-1"></i>
-        </div>
-        
-        <p class="mb-0 text-muted">
-          Your account has been created! Redirecting to exam schedule selection...
-        </p>
-        
-        <div class="mt-3">
-          <div class="spinner-border spinner-border-sm text-success" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-<!-- REGISTRATION ERROR MODAL -->
-<div class="modal fade" id="registrationErrorModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      
-      <div class="modal-header border-0 justify-content-center pb-2">
-        <h5 class="modal-title fw-semibold">Registration Failed</h5>
-        <button type="button" class="btn-close position-absolute end-0 me-3" 
-                data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <div class="modal-body px-4 py-4 text-center">
-        <div class="rounded-circle bg-danger-subtle text-danger mx-auto mb-3
-                    d-flex align-items-center justify-content-center"
-             style="width:64px;height:64px;">
-          <i class="bi bi-x-circle fs-1"></i>
-        </div>
-        
-        <p class="mb-0 text-muted" id="registrationErrorMessage">
-          <!-- Error message will be inserted here -->
-        </p>
-      </div>
-      
-      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-        <button type="button" class="btn btn-primary rounded-pill px-4" 
-                data-bs-dismiss="modal">
-          <i class="bi bi-arrow-left me-1"></i> Try Again
-        </button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-<!-- INVALID TEST PERMIT MODAL -->
-<div class="modal fade" id="invalidTestPermitModal" tabindex="-1" aria-labelledby="invalidTestPermitLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 rounded-4 shadow-lg">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-semibold" id="invalidTestPermitLabel">
-          <i class="bi bi-exclamation-circle text-danger me-2"></i>
-          Verification Failed
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body text-center py-4">
-        <p class="text-danger fw-semibold mb-0">Test Permit is invalid.</p>
-        <p class="text-muted small mt-2">Please check that you've entered the correct Test Permit Number and try again.</p>
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-primary px-4 rounded-pill" data-bs-dismiss="modal">
-          Try Again
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 
 </body>
 </html>

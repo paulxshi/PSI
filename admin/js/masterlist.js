@@ -31,7 +31,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
     const formData = new FormData();
     formData.append('id', deleteTargetId);
 
-    fetch('../php/delete_examinee_masterlist.php', {
+    fetch('php/delete_examinee_masterlist.php', {
         method: 'POST',
         body: formData,
         credentials: 'same-origin'
@@ -161,7 +161,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         }
         params.append('page', currentPage);
 
-        fetch(`../php/get_examinee_masterlist.php?${params.toString()}`, {
+        fetch(`php/get_examinee_masterlist.php?${params.toString()}`, {
             method: 'GET',
             credentials: 'same-origin'
         })
@@ -355,7 +355,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         formData.append('middle_name', middleName);
         formData.append('email', email);
 
-        fetch('../php/create_examinee_masterlist.php', {
+        fetch('php/create_examinee_masterlist.php', {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
@@ -475,7 +475,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         const formData = new FormData();
         formData.append('csvFile', file);
 
-        fetch('../php/upload_examinee_csv.php', {
+        fetch('php/upload_examinee_csv.php', {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
@@ -664,7 +664,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 
     window.editRecord = function(id) {
         // Find the record in current data
-        fetch(`../php/get_examinee_masterlist.php?id=${id}`, {
+        fetch(`php/get_examinee_masterlist.php?id=${id}`, {
             method: 'GET',
             credentials: 'same-origin'
         })
@@ -724,7 +724,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         formData.append('middle_name', middleName);
         formData.append('email', email);
         
-        fetch('../php/update_examinee_masterlist.php', {
+        fetch('php/update_examinee_masterlist.php', {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'

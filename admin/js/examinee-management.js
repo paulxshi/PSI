@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load available schedules for modal
     function loadSchedules() {
-        fetch('../php/get_schedules_for_rescheduling.php', {
+        fetch('php/get_schedules_for_rescheduling.php', {
             method: 'GET',
             credentials: 'same-origin'
         })
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function loadSummaryStats() {
-        fetch('../php/get_registered_examinees.php?page=1&limit=0', {
+        fetch('php/get_registered_examinees.php?page=1&limit=0', {
             method: 'GET',
             credentials: 'same-origin'
         })
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
             params.append('region', currentRegion);
         }
 
-        fetch(`../php/get_registered_examinees.php?${params.toString()}`, {
+        fetch(`php/get_registered_examinees.php?${params.toString()}`, {
             method: 'GET',
             credentials: 'same-origin'
         })
@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('user_id', userId);
         formData.append('schedule_id', scheduleId);
 
-        fetch('../php/reschedule_exam.php', {
+        fetch('php/reschedule_exam.php', {
             method: 'POST',
             body: formData,
             credentials: 'same-origin'
