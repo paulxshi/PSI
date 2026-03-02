@@ -208,11 +208,9 @@
 }
 
 .permit-header .center-col h5 {
-  font-family:Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
   font-size: 20px;
-  font-weight: 800;
   color: #c0392b;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 5px;
 }
@@ -370,6 +368,7 @@ body.print-mode .permit-header .center-col img.psi-logo {
 }
 
 body.print-mode .permit-header .center-col h5 {
+  font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
   font-size: 14px;
 }
 
@@ -471,6 +470,7 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .permit-header .center-col h5 {
+    font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
     font-size: 12px;
   }
 
@@ -499,8 +499,8 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .qr-logo {
-    width: 20px !important;
-    height: 20px !important;
+    width: 25px !important;
+    height: 25px !important;
   }
 }
 
@@ -532,8 +532,8 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .qr-logo {
-    width: 22px !important;
-    height: 22px !important;
+    width: 25px !important;
+    height: 25px !important;
   }
 
   .permit-header .center-col img.psi-logo {
@@ -541,6 +541,7 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .permit-header .center-col h5 {
+    font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
     font-size: 14px;
   }
 
@@ -626,8 +627,8 @@ body.print-mode .qr-code-square-container {
 }
 
 body.print-mode .qr-logo {
-  width: 18px !important;
-  height: 18px !important;
+  width: 22px !important;
+  height: 22px !important;
 }
 
 body.print-mode .photo-box {
@@ -721,3 +722,4 @@ body.print-mode .permit-header .center-col img.psi-logo {
     font-size: 10px;
   }
 }
+
