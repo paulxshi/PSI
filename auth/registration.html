@@ -307,7 +307,21 @@
     .permit-input {
       max-width: 260px;
     }
-<<<<<<< HEAD
+
+    /* Filled-field indicator */
+    .form-control.field-filled,
+    .form-select.field-filled {
+      border-color: #198754 !important;
+      border-left: 3px solid #198754 !important;
+      background-color: #f0fdf4 !important;
+      transition: border-color 0.3s ease, background-color 0.3s ease, border-left 0.3s ease;
+    }
+
+    .form-control.field-filled:focus,
+    .form-select.field-filled:focus {
+      border-color: #198754 !important;
+      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
+    }
     .step span {
    display: inline;
  }
@@ -328,23 +342,6 @@
      margin-top: 17px;
    }
  }
-=======
-
-    /* Filled-field indicator */
-    .form-control.field-filled,
-    .form-select.field-filled {
-      border-color: #198754 !important;
-      border-left: 3px solid #198754 !important;
-      background-color: #f0fdf4 !important;
-      transition: border-color 0.3s ease, background-color 0.3s ease, border-left 0.3s ease;
-    }
-
-    .form-control.field-filled:focus,
-    .form-select.field-filled:focus {
-      border-color: #198754 !important;
-      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
-    }
->>>>>>> 7524f2f218688c2ccccd1f356b4ffa5c72b0b7a6
   </style>
 
  </head>
