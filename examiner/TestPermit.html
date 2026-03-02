@@ -15,6 +15,11 @@
 </head>
   
 <body>
+	<button id="hamburgerBtn" aria-label="Toggle sidebar" title="Toggle sidebar" style="position: fixed; top: 18px; left: 18px; z-index: 9999;">
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	</button>
 
 	<!-- Sidebar Section -->
 		<section id="sidebar">
@@ -351,6 +356,21 @@
           window.location.href = '../auth/login.html';
         });
     })();
+    const sidebar  = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburgerBtn');
+
+  // Restore user preference
+  if (localStorage.getItem('sidebarCollapsed') === 'true') {
+    sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
+  }
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('hide');
+    hamburger.classList.toggle('collapsed');
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
+  });
+  
   </script>
 
 </body>

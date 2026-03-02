@@ -63,7 +63,16 @@ body {
 #hamburgerBtn:hover {
   background: rgba(255,255,255,0.14);
 }
-
+#hamburgerBtn.active .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+#hamburgerBtn.active .bar:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+#hamburgerBtn.active .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
 /* The three bar lines */
 #hamburgerBtn .bar {
   display: block;
@@ -71,22 +80,33 @@ body {
   height: 2px;
   background: #ffffff;
   border-radius: 2px;
-  transition: transform 0.35s ease, opacity 0.25s ease, width 0.3s ease;
+  transition: transform 0.35s ease, opacity 0.25s ease, width 0.3s ease, background 0.3s ease;
   transform-origin: center;
 }
 
-/* Animate to X when sidebar is hidden */
-#sidebar.hide #hamburgerBtn .bar:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-#sidebar.hide #hamburgerBtn .bar:nth-child(2) {
-  opacity: 0;
-  width: 0;
-}
-#sidebar.hide #hamburgerBtn .bar:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+/* When sidebar is collapsed, hamburger icon becomes black */
+#hamburgerBtn.collapsed .bar {
+  background: #000000;
 }
 
+#sidebar.hide ~ #content #hamburgerBtn .bar,
+#sidebar.hide + #hamburgerBtn .bar,
+body.sidebar-collapsed #hamburgerBtn .bar {
+  background: #000000 !important;
+}
+
+#sidebar.hide {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-right: none !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transform: translateX(-250px); /* ← change from -100% to -250px */
+}
 /* ─── SIDEBAR OVERRIDES ─── */
 #sidebar {
   position: fixed;
@@ -96,18 +116,23 @@ body {
   height: 100%;
   background: #151515;
   font-family: var(--lato, 'Lato', sans-serif);
-  transition: width 0.35s ease;
+  transition: width 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
   z-index: 2000;
   border-right: 1px solid #1f1f1f;
   overflow: hidden;           /* clips text when collapsing */
 }
 
 #sidebar.hide {
-  width: 0;
-  border-right: none;
-  overflow: hidden;
-  visibility: hidden;
-  opacity: 0;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-right: none !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transform: translateX(-100%);
 }
 
 /* Brand block */
@@ -220,39 +245,9 @@ body {
 }
 
 #sidebar.hide ~ #content {
-  margin-left: 50px;
+  margin-left: 0;  
+  border-radius: 0;
 }
-
-/* Tooltip on collapsed sidebar - removed since sidebar is now completely hidden */
-/* #sidebar.hide .side-menu li {
-  position: relative;
-} */
-
-/* #sidebar.hide .side-menu li a::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 70px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #2a2a2a;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-#sidebar.hide .side-menu li a:hover::after {
-  opacity: 1;
-} */
-
-
-
 #sidebar.hide .text {
 	display: none;
 }
@@ -274,8 +269,8 @@ body {
 }
 
 #sidebar.hide ~ #content {
-	margin-left: 70px;
-	border-radius: 28px 0 0 0;
+  margin-left: 0; 
+  border-radius: 0;
 }
 
 #content nav {

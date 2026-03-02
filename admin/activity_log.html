@@ -165,6 +165,7 @@
 	  <span class="bar"></span>
 	  <span class="bar"></span>
 	</button>
+    
     <!-- Sidebar Section -->
     <section id="sidebar">
         <a href="#" class="brand d-flex align-items-center">
@@ -460,10 +461,12 @@
   // Restore user preference
   if (localStorage.getItem('sidebarCollapsed') === 'true') {
     sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
   }
 
   hamburger.addEventListener('click', () => {
     sidebar.classList.toggle('hide');
+    hamburger.classList.toggle('collapsed');
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
 

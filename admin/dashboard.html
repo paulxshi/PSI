@@ -903,10 +903,12 @@ function selectSchedule(region, venue, date, element) {
   // Restore user preference
   if (localStorage.getItem('sidebarCollapsed') === 'true') {
     sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
   }
 
   hamburger.addEventListener('click', () => {
     sidebar.classList.toggle('hide');
+    hamburger.classList.toggle('collapsed');
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
 </script>
