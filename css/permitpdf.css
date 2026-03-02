@@ -1,3 +1,6 @@
+/* ══════════════════════════════════════
+   BASE PERMIT STYLES
+   ══════════════════════════════════════ */
 #permitPDF {
   color: #000;
   padding: 30px 36px;
@@ -6,6 +9,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ── BACK BUTTON ── */
 .back-btn {
   position: relative;
   margin-left: 15%;
@@ -80,14 +84,12 @@
   color: #555;
 }
 
-/* Label */
 .back-btn__label {
   position: relative;
   z-index: 1;
   transition: letter-spacing 0.22s ease;
 }
 
-/* ── HOVER STATE ── */
 .back-btn:hover {
   color: #1a1a1a;
   border-color: rgba(192, 57, 43, 0.25);
@@ -118,7 +120,6 @@
   letter-spacing: 0.5px;
 }
 
-/* ── ACTIVE / CLICK STATE ── */
 .back-btn:active {
   transform: translateX(-1px) scale(0.97);
   box-shadow:
@@ -128,7 +129,6 @@
   transition-duration: 0.1s;
 }
 
-/* ── FOCUS (accessibility) ── */
 .back-btn:focus-visible {
   outline: none;
   box-shadow:
@@ -201,7 +201,6 @@
   pointer-events: none;
 }
 
-/* PSI logo in header */
 .permit-header .center-col img.psi-logo {
   max-height: 90px;
   margin-bottom: 6px;
@@ -210,6 +209,7 @@
 .permit-header .center-col h5 {
   font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
   font-size: 20px;
+  font-weight: bold;
   color: #c0392b;
   letter-spacing: 0.5px;
   margin-bottom: 5px;
@@ -226,8 +226,8 @@
 
 /* Examinee photo */
 .photo-box {
-  width: 100px;
-  height: 105px;
+  width: 124px;
+  height: 124px;
   overflow: hidden;
   border: 2px solid #555;
 }
@@ -271,6 +271,7 @@
   display: inline-block;
   width: 100%;
   border-right: 7.5px solid #ffffff;
+  box-sizing: border-box;
 }
 
 /* Field styles */
@@ -286,10 +287,26 @@
   color: #222;
 }
 
-/* Reduce gap between contact and email fields */
+/* Keep two-column layout at all sizes */
 .permit-content .d-flex {
   gap: 1rem !important;
   justify-content: flex-start;
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+}
+
+/* Force Bootstrap cols to stay side by side */
+.permit-content .row.g-0,
+.content-headers .row.g-0 {
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+}
+
+.permit-content .row.g-0 > .col-6,
+.content-headers .row.g-0 > .col-6 {
+  width: 50% !important;
+  flex: 0 0 50% !important;
+  max-width: 50% !important;
 }
 
 /* ── GUIDELINES ── */
@@ -326,6 +343,7 @@
   text-align: center;
   width: 220px;
   margin-top: 90px;
+  flex-shrink: 0;
 }
 
 .signature-block .sig-line {
@@ -345,6 +363,11 @@
   color: #555;
 }
 
+.d-flex.gap-4.mt-3 {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+}
+
 /* ── Logout modal button ── */
 .btn-close:focus,
 .no-focus:focus {
@@ -352,8 +375,88 @@
   box-shadow: none;
 }
 
+@media (max-width: 768px) {
+
+  /* Page chrome */
+  .back-btn {
+    margin-left: 0;
+    font-size: 12px;
+    padding: 5px 16px 5px 12px;
+  }
+
+  main.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .permit-scale-wrapper {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
+  #permitPDF {
+    transform-origin: top center;
+    transform: scale(0.42);
+    width: 860px !important;
+    max-width: 860px !important;
+    margin-bottom: calc((100% * (1 - 0.42) / 0.42) * -1);
+
+    box-shadow: 0 4px 24px rgba(0,0,0,0.14) !important;
+    border-radius: 4px;
+  }
+
+  #generatePDF {
+    font-size: 14px;
+    padding: 10px 28px;
+  }
+
+  /* Mobile info banner above the scaled permit */
+  .mobile-permit-banner {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: #fff8f8;
+    border: 1px solid #fad7d7;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #7a2020;
+    font-weight: 500;
+  }
+
+  .mobile-permit-banner i {
+    font-size: 18px;
+    color: #c0392b;
+    flex-shrink: 0;
+  }
+}
+
+/* Hide banner on desktop */
+.mobile-permit-banner {
+  display: none;
+}
+
+/* Responsive scale for very small screens (≤360px) */
+@media (max-width: 390px) {
+  #permitPDF {
+    transform: scale(0.37);
+    margin-bottom: calc((100% * (1 - 0.37) / 0.37) * -1);
+  }
+}
+
+@media (max-width: 340px) {
+  #permitPDF {
+    transform: scale(0.33);
+    margin-bottom: calc((100% * (1 - 0.33) / 0.33) * -1);
+  }
+}
+
+
 /* ══════════════════════════════════════
-   PRINT MODE (html2pdf)
+   PRINT MODE
    ══════════════════════════════════════ */
 body.print-mode #permitPDF {
   max-width: 100%;
@@ -361,6 +464,10 @@ body.print-mode #permitPDF {
   font-size: 10px;
   line-height: 1.25;
   box-shadow: none !important;
+  /* Reset any mobile transform */
+  transform: none !important;
+  width: auto !important;
+  margin-bottom: 0 !important;
 }
 
 body.print-mode .permit-header .center-col img.psi-logo {
@@ -369,6 +476,7 @@ body.print-mode .permit-header .center-col img.psi-logo {
 
 body.print-mode .permit-header .center-col h5 {
   font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
+  font-size: medium;
   font-size: 14px;
 }
 
@@ -377,8 +485,8 @@ body.print-mode .permit-header .center-col h6 {
 }
 
 body.print-mode .photo-box {
-  width: 85px;
-  height: 90px;
+  width: 124px;
+  height: 124px;
 }
 
 body.print-mode .permit-note {
@@ -415,12 +523,13 @@ body.print-mode .signature-block .sig-sub {
 }
 
 /* ══════════════════════════════════════
-   @MEDIA PRINT (browser print)
+   @MEDIA PRINT 
    ══════════════════════════════════════ */
 @media print {
   #sidebar,
   nav,
-  .btn {
+  .btn,
+  .mobile-permit-banner {
     display: none !important;
   }
 
@@ -449,6 +558,8 @@ body.print-mode .signature-block .sig-sub {
     font-size: 9px;
     line-height: 1.2;
     box-shadow: none !important;
+    transform: none !important;
+    margin-bottom: 0 !important;
   }
 
   .qr-code-square-container {
@@ -457,8 +568,8 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .photo-box {
-    width: 80px;
-    height: 95px;
+    width: 124px;
+    height: 124px;
   }
 
   .permit-header {
@@ -472,6 +583,7 @@ body.print-mode .signature-block .sig-sub {
   .permit-header .center-col h5 {
     font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
     font-size: 12px;
+    font-weight: 500;
   }
 
   .permit-header .center-col h6 {
@@ -503,223 +615,3 @@ body.print-mode .signature-block .sig-sub {
     height: 25px !important;
   }
 }
-
-/* ══════════════════════════════════════
-    @MEDIA MOBILE RESPONSIVE
-    ══════════════════════════════════════ */
-@media (max-width: 768px) {
-  #permitPDF {
-    padding: 15px;
-  }
-
-  .permit-header {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .permit-header .qr-col,
-  .permit-header .center-col,
-  .permit-header .photo-col {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .qr-code-square-container {
-    width: 90px;
-    height: 90px;
-  }
-
-  .qr-logo {
-    width: 25px !important;
-    height: 25px !important;
-  }
-
-  .permit-header .center-col img.psi-logo {
-    max-height: 50px;
-  }
-
-  .permit-header .center-col h5 {
-    font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
-    font-size: 14px;
-  }
-
-  .permit-header .center-col h6 {
-    font-size: 11px;
-  }
-
-  .photo-box {
-    width: 80px;
-    height: 85px;
-  }
-
-  .permit-note {
-    font-size: 11px;
-    margin: 10px 0;
-  }
-
-  .content-headers .row {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .content-headers .col-6 {
-    width: 100%;
-  }
-
-  .row.g-0 {
-    flex-direction: column;
-  }
-
-  .row.g-0 .col-6 {
-    width: 100%;
-    padding: 5px 0;
-  }
-
-  .d-flex.gap-2, 
-  .d-flex.gap-3 {
-    flex-direction: column;
-    gap: 8px !important;
-  }
-
-  .field-label {
-    font-size: 10px;
-  }
-
-  .field-value {
-    font-size: 11px;
-  }
-
-  .section-title {
-    font-size: 11px;
-  }
-
-  .guidelines-section {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .guidelines-section ol li {
-    font-size: 10px;
-  }
-
-  .signature-block {
-    width: 100%;
-    margin-top: 30px;
-  }
-
-  .d-flex.gap-4 {
-    flex-direction: column;
-    gap: 15px !important;
-  }
-}
-
-/* Mobile print-mode (html2pdf on mobile) */
-body.print-mode #permitPDF {
-  max-width: 100%;
-  padding: 8mm 10mm;
-}
-
-body.print-mode .qr-code-square-container {
-  width: 70px;
-  height: 70px;
-}
-
-body.print-mode .qr-logo {
-  width: 22px !important;
-  height: 22px !important;
-}
-
-body.print-mode .photo-box {
-  width: 70px;
-  height: 75px;
-}
-
-body.print-mode .permit-header .center-col img.psi-logo {
-  max-height: 45px;
-}
-
-/* ══════════════════════════════════════
-    MOBILE RESPONSIVE
-    ══════════════════════════════════════ */
-@media (max-width: 768px) {
-  #permitPDF {
-    padding: 15px 20px;
-  }
-
-  .permit-header {
-    grid-template-columns: 80px 1fr 80px;
-    gap: 5px;
-  }
-
-  .qr-code-square-container {
-    width: 70px;
-    height: 70px;
-  }
-
-  .permit-header .center-col img.psi-logo {
-    max-height: 50px;
-  }
-
-  .permit-header .center-col h5 {
-    font-size: 12px;
-  }
-
-  .permit-header .center-col h6 {
-    font-size: 10px;
-  }
-
-  .photo-box {
-    width: 70px;
-    height: 75px;
-  }
-
-  .permit-content .row {
-    flex-direction: column;
-  }
-
-  .permit-content .col-6 {
-    width: 100%;
-    margin-bottom: 12px;
-  }
-
-  .d-flex.gap-2, .d-flex.gap-3 {
-    flex-wrap: wrap;
-    gap: 8px !important;
-  }
-
-  .d-flex.gap-4 {
-    flex-direction: column;
-    gap: 15px !important;
-  }
-
-  .guidelines-section, .signature-block {
-    width: 100%;
-  }
-
-  .signature-block {
-    margin-top: 20px;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .section-title {
-    font-size: 10px;
-    padding: 3px 6px;
-  }
-
-  .field-label {
-    font-size: 9px;
-  }
-
-  .field-value {
-    font-size: 10px;
-  }
-
-  .guidelines-section ol li {
-    font-size: 10px;
-  }
-}
-
