@@ -92,10 +92,11 @@ body {
 #sidebar.hide ~ #content #hamburgerBtn .bar,
 #sidebar.hide + #hamburgerBtn .bar,
 body.sidebar-collapsed #hamburgerBtn .bar {
-  background: #000000 !important;
+  background: #000000;
 }
 
 #sidebar.hide {
+  transform: translateX(-100%);
   width: 0 !important;
   min-width: 0 !important;
   max-width: 0 !important;
@@ -105,8 +106,8 @@ body.sidebar-collapsed #hamburgerBtn .bar {
   overflow: hidden !important;
   visibility: hidden !important;
   opacity: 0 !important;
-  transform: translateX(-250px); /* ← change from -100% to -250px */
 }
+
 /* ─── SIDEBAR OVERRIDES ─── */
 #sidebar {
   position: fixed;
@@ -122,20 +123,7 @@ body.sidebar-collapsed #hamburgerBtn .bar {
   overflow: hidden;           /* clips text when collapsing */
 }
 
-#sidebar.hide {
-  width: 0 !important;
-  min-width: 0 !important;
-  max-width: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border-right: none !important;
-  overflow: hidden !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  transform: translateX(-100%);
-}
 
-/* Brand block */
 #sidebar .brand {
   height: auto;
   padding: 20px 16px 18px;
@@ -236,7 +224,7 @@ body.sidebar-collapsed #hamburgerBtn .bar {
   margin-left: 250px;
   margin-top: 16px;
   margin-right: 16px;
-  background: #ffffff;
+  background: var(--light);
   min-height: calc(100vh - 16px);
   border-radius: 28px 0 0 0;
   box-shadow: -12px 0 35px rgba(0,0,0,0.25);
@@ -245,31 +233,7 @@ body.sidebar-collapsed #hamburgerBtn .bar {
 }
 
 #sidebar.hide ~ #content {
-  margin-left: 0;  
-  border-radius: 0;
-}
-#sidebar.hide .text {
-	display: none;
-}
-
-#content {
-	position: relative;
-	margin-left: 250px;
-	margin-top: 16px;
-	margin-right: 16px;
-
-	background: var(--light);
-	min-height: calc(100vh - 16px);
-
-	border-radius: 28px 0 0 0;
-	box-shadow: -12px 0 35px rgba(0, 0, 0, 0.25);
-
-	transition: 0.35s ease;
-	overflow: hidden;
-}
-
-#sidebar.hide ~ #content {
-  margin-left: 0; 
+  margin-left: 0;
   border-radius: 0;
 }
 
@@ -366,88 +330,56 @@ body.sidebar-collapsed #hamburgerBtn .bar {
 }
 
 
-@media screen and (max-width: 576px) {
-    #sidebar {
-        width: 250px;
-        padding: 0;
-    }
-
-	    #sidebar .brand {
-		align-items: center;
-        padding-top: 45px; 
-    }
-
-    #sidebar .brand .logo {
-        width: 50px;
-        height: 50px;
-    }
-
-    #sidebar .brand .logo {
-        width: 40px;
-        height: 40px;
-    }
-
-}
-
 @media screen and (max-width: 768px) {
-    #sidebar {
-        width: 250px;
-        padding: 0;
-    }
+  #sidebar {
+    width: 250px;
+    padding: 0;
+  }
 
-	    #sidebar .brand {
-		align-items: center;
-        padding-top: 45px; 
-    }
+  #sidebar .brand {
+    align-items: center;
+    padding-top: 45px;
+  }
 
-    #sidebar .brand .logo {
-        width: 50px;
-        height: 50px;
-    }
+  #sidebar .brand .logo {
+    width: 40px;
+    height: 40px;
+  }
 
-    #sidebar .brand .logo {
-        width: 40px;
-        height: 40px;
-    }
+  #content {
+    margin-left: 250px;
+  }
 
-	#content {
-		margin-left: 250px;
-	}
+  /* Sidebar hidden state for mobile */
+  #sidebar.hide {
+    transform: translateX(-250px);
+  }
+
+  /* When sidebar is hidden on mobile, adjust content */
+  #sidebar.hide ~ #content {
+    margin-left: 0;
+    border-radius: 0;
+  }
 }
 
+@media (max-width: 576px) {
+  #sidebar {
+    width: 250px;
+    transform: translateX(0);
+  }
 
-@media (max-width: 992px) {
+  #sidebar.hide {
+    transform: translateX(-100%);
+    width: 0;
+  }
 
-    #sidebar {
-       width: 250px;
-        padding: 0;
-    }
-	    #sidebar .brand {
-		align-items: center;
-        padding-top: 45px; 
-    }
+  #content {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+  }
 
-    #sidebar .brand .logo {
-        width: 50px;
-        height: 50px;
-    }
-
-    #content {
-        margin-left: 250px;
-    }
-
-    /* HIDE LOGO & TEXT */
-	#sidebar .brand .logo {
-        width: 50px;
-        height: 50px;
-    }
-	
-    #sidebar .brand .text {
-        display: block;
-    }
-
-    /* HIDE MENU LABELS */
-    #sidebar .side-menu li a .text {
-        display: block;
-    }
+  #sidebar.hide ~ #content {
+    margin-left: 0;
+  }
 }

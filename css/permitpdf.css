@@ -162,8 +162,8 @@
 
 /* QR container */
 .qr-code-square-container {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
@@ -195,8 +195,8 @@
 
 .qr-logo {
   position: absolute;
-  width: 35px !important;
-  height: 35px !important;
+  width: 28px !important;
+  height: 28px !important;
   object-fit: contain;
   pointer-events: none;
 }
@@ -228,8 +228,8 @@
 
 /* Examinee photo */
 .photo-box {
-  width: 120px;
-  height: 125px;
+  width: 100px;
+  height: 105px;
   overflow: hidden;
   border: 2px solid #555;
 }
@@ -378,7 +378,7 @@ body.print-mode .permit-header .center-col h6 {
 }
 
 body.print-mode .photo-box {
-  width: 95px;
+  width: 85px;
   height: 90px;
 }
 
@@ -497,6 +497,146 @@ body.print-mode .signature-block .sig-sub {
   .guidelines-section ol li {
     font-size: 8.5px;
   }
+
+  .qr-logo {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+/* ══════════════════════════════════════
+    @MEDIA MOBILE RESPONSIVE
+    ══════════════════════════════════════ */
+@media (max-width: 768px) {
+  #permitPDF {
+    padding: 15px;
+  }
+
+  .permit-header {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .permit-header .qr-col,
+  .permit-header .center-col,
+  .permit-header .photo-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .qr-code-square-container {
+    width: 90px;
+    height: 90px;
+  }
+
+  .qr-logo {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .permit-header .center-col img.psi-logo {
+    max-height: 50px;
+  }
+
+  .permit-header .center-col h5 {
+    font-size: 14px;
+  }
+
+  .permit-header .center-col h6 {
+    font-size: 11px;
+  }
+
+  .photo-box {
+    width: 80px;
+    height: 85px;
+  }
+
+  .permit-note {
+    font-size: 11px;
+    margin: 10px 0;
+  }
+
+  .content-headers .row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .content-headers .col-6 {
+    width: 100%;
+  }
+
+  .row.g-0 {
+    flex-direction: column;
+  }
+
+  .row.g-0 .col-6 {
+    width: 100%;
+    padding: 5px 0;
+  }
+
+  .d-flex.gap-2, 
+  .d-flex.gap-3 {
+    flex-direction: column;
+    gap: 8px !important;
+  }
+
+  .field-label {
+    font-size: 10px;
+  }
+
+  .field-value {
+    font-size: 11px;
+  }
+
+  .section-title {
+    font-size: 11px;
+  }
+
+  .guidelines-section {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .guidelines-section ol li {
+    font-size: 10px;
+  }
+
+  .signature-block {
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  .d-flex.gap-4 {
+    flex-direction: column;
+    gap: 15px !important;
+  }
+}
+
+/* Mobile print-mode (html2pdf on mobile) */
+body.print-mode #permitPDF {
+  max-width: 100%;
+  padding: 8mm 10mm;
+}
+
+body.print-mode .qr-code-square-container {
+  width: 70px;
+  height: 70px;
+}
+
+body.print-mode .qr-logo {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+body.print-mode .photo-box {
+  width: 70px;
+  height: 75px;
+}
+
+body.print-mode .permit-header .center-col img.psi-logo {
+  max-height: 45px;
 }
 
 /* ══════════════════════════════════════

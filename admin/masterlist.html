@@ -1115,6 +1115,18 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
 
+  // Close sidebar when clicking on content area (mobile only)
+  const content = document.getElementById('content');
+  if (content) {
+    content.addEventListener('click', (e) => {
+      if (window.innerWidth < 768 && !sidebar.classList.contains('hide')) {
+        sidebar.classList.add('hide');
+        hamburger.classList.add('collapsed');
+        localStorage.setItem('sidebarCollapsed', 'true');
+      }
+    });
+  }
+
 </script>
 
 </body>
