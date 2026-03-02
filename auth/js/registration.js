@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Password validation
     passwordInput.addEventListener('input', function() {
-        validatePassword();
+        try { validatePassword(); } catch(e) { console.warn('Password strength display skipped:', e); }
         validateForm();
     });
 
@@ -173,6 +173,18 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmPasswordInput.addEventListener('input', function() {
         validateForm();
     });
+
+    // Mobile-friendly: also listen for blur/change on password fields
+    passwordInput.addEventListener('blur', function() {
+        try { validatePassword(); } catch(e) {}
+        validateForm();
+    });
+    passwordInput.addEventListener('change', function() {
+        try { validatePassword(); } catch(e) {}
+        validateForm();
+    });
+    confirmPasswordInput.addEventListener('blur', validateForm);
+    confirmPasswordInput.addEventListener('change', validateForm);
 
     // Fallback age calculation via native events (covers mobile/native pickers)
     const dateOfBirthInput = document.getElementById('dateOfBirth');
@@ -201,23 +213,115 @@ document.addEventListener('DOMContentLoaded', function() {
         dateOfBirthInput.addEventListener('blur', calculateAndSetAge);
     }
 
-    // All other inputs - validate form
+    // All other inputs - validate form (input, change, AND blur for mobile)
     allInputs.forEach(function(input) {
         input.addEventListener('input', validateForm);
         input.addEventListener('change', validateForm);
+        input.addEventListener('blur', validateForm);
     });
 
     // All selects - validate form (especially for mobile)
     allSelects.forEach(function(select) {
         select.addEventListener('input', validateForm);
         select.addEventListener('change', validateForm);
+        select.addEventListener('blur', validateForm);
     });
 
-    // Form submission - handled by submitRegistration() in HTML
+    // Mobile fallback: periodically check form validity when password section is visible
+    // This catches edge cases where mobile browsers don't fire events reliably
+    let mobileValidationInterval = null;
+    function startMobileValidation() {
+        if (mobileValidationInterval) return;
+        mobileValidationInterval = setInterval(function() {
+            if (passwordSection.style.display !== 'none') {
+                validateForm();
+            }
+        }, 1000);
+    }
+    // Start periodic validation once password section is shown
+    const passwordSectionObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'style' && passwordSection.style.display !== 'none') {
+                startMobileValidation();
+            }
+        });
+    });
+    passwordSectionObserver.observe(passwordSection, { attributes: true, attributeFilter: ['style'] });
+
+    // Form submission — registerBtn click handler
+    registerBtn.addEventListener('click', function() {
+        submitRegistration();
+    });
+
     registrationForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        // Form is submitted via submitRegistration() button onclick
     });
+
+    // Submit registration function
+    function submitRegistration() {
+        var formData = new FormData();
+
+        // Add all form fields
+        formData.append('test_permit', document.getElementById('testPermitNo').value.trim());
+        formData.append('last_name', document.getElementById('lastName').value.trim());
+        formData.append('first_name', document.getElementById('firstName').value.trim());
+        formData.append('middle_name', document.getElementById('middleName').value.trim());
+        formData.append('email', document.getElementById('email').value.trim());
+        formData.append('date_of_birth', document.getElementById('dateOfBirth').value.trim());
+        formData.append('contact_number', document.getElementById('contactNumber').value.trim());
+        formData.append('gender', document.getElementById('gender').value);
+        formData.append('school', document.getElementById('school').value.trim());
+        var addressEl = document.getElementById('address');
+        formData.append('address', addressEl ? addressEl.value.trim() : '');
+        var nationalityEl = document.getElementById('nationality');
+        formData.append('nationality', nationalityEl ? nationalityEl.value.trim() : '');
+        formData.append('password', document.getElementById('password').value);
+        formData.append('confirm_password', document.getElementById('confirmPassword').value);
+
+        // Disable button and show loading state
+        registerBtn.disabled = true;
+        registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+
+        fetch('php/register.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            console.log('Registration Response:', data);
+
+            if (data.success) {
+                // Show success modal
+                var successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
+                successModal.show();
+
+                // Redirect to exam schedule after short delay
+                setTimeout(function() {
+                    window.location.href = 'examsched.html';
+                }, 1500);
+            } else {
+                // Show error modal
+                document.getElementById('registrationErrorMessage').textContent = data.message || 'Registration failed. Please try again.';
+                var errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
+                errorModal.show();
+
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
+            }
+        })
+        .catch(function(error) {
+            console.error('Registration Error:', error);
+
+            // Show error modal
+            document.getElementById('registrationErrorMessage').textContent = 'Network error. Please try again.';
+            var errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
+            errorModal.show();
+
+            registerBtn.disabled = false;
+            registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
+        });
+    }
 
     // Generate OTP - generates 6-digit code client-side
     function generateOtp() {
@@ -514,10 +618,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
         }
 
-        passwordStrength.innerHTML = '<div class="progress mt-1" style="height: 5px;"><div class="progress-bar ' + strengthClass + '" role="progressbar" style="width: ' + (strength * 20) + '%"></div></div><small class="text-muted">' + strengthText + '</small>';
-        
-        if (feedback.length > 0 && password.length > 0) {
-            passwordStrength.innerHTML += '<small class="text-muted d-block">Add ' + feedback.join(', ') + '</small>';
+        if (passwordStrength) {
+            passwordStrength.innerHTML = '<div class="progress mt-1" style="height: 5px;"><div class="progress-bar ' + strengthClass + '" role="progressbar" style="width: ' + (strength * 20) + '%"></div></div><small class="text-muted">' + strengthText + '</small>';
+            
+            if (feedback.length > 0 && password.length > 0) {
+                passwordStrength.innerHTML += '<small class="text-muted d-block">Add ' + feedback.join(', ') + '</small>';
+            }
         }
     }
 
@@ -648,40 +754,50 @@ document.addEventListener('DOMContentLoaded', function() {
         statusEl.className = 'small fw-semibold text-' + type;
     }
 
-    // Validate entire form
+    // Validate entire form — checks specific fields by ID for mobile reliability
     function validateForm() {
-        const form = registrationForm;
         let isValid = true;
 
-        // Check all required input fields that are NOT disabled
-        allInputs.forEach(function(input) {
-            // Skip disabled fields from validation
-            if (!input.disabled && input.required && !input.value.trim()) {
-                isValid = false;
-            }
-        });
+        // Check specific required text/tel fields by ID
+        var requiredFields = [
+            'testPermitNo', 'lastName', 'firstName',
+            'dateOfBirth', 'contactNumber', 'school'
+        ];
 
-        // Check all required select fields that are NOT disabled
-        allSelects.forEach(function(select) {
-            if (!select.disabled && select.required && !select.value) {
+        for (var i = 0; i < requiredFields.length; i++) {
+            var el = document.getElementById(requiredFields[i]);
+            if (el && !el.disabled && !el.value.trim()) {
                 isValid = false;
+                console.log('validateForm FAIL:', requiredFields[i], 'is empty');
             }
-        });
+        }
 
-        // Check email validity (if enabled)
-        if (!emailInput.disabled && !emailInput.validity.valid) {
+        // Check gender select
+        var genderEl = document.getElementById('gender');
+        if (genderEl && !genderEl.disabled && !genderEl.value) {
             isValid = false;
+            console.log('validateForm FAIL: gender not selected');
+        }
+
+        // Check email with regex (validity API unreliable on mobile with readOnly)
+        if (!emailInput.disabled) {
+            var emailVal = emailInput.value.trim();
+            if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+                isValid = false;
+                console.log('validateForm FAIL: email invalid or empty');
+            }
         }
 
         // Check OTP verification
         if (!isOtpVerified) {
             isValid = false;
+            console.log('validateForm FAIL: OTP not verified');
         }
 
-        // Check password (only if password section is shown)
-        const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
-        let passwordValid = false;
+        // Check password (only if password section is visible)
+        var password = passwordInput.value;
+        var confirmPassword = confirmPasswordInput.value;
+        var passwordValid = false;
 
         if (password.length >= 8 && 
             /[A-Z]/.test(password) && 
@@ -691,11 +807,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Check password match
-        const passwordsMatch = password === confirmPassword && password.length > 0;
+        var passwordsMatch = password === confirmPassword && password.length > 0;
 
-        // Enable/disable register button - only if passwords are being shown and filled
+        // Enable/disable register button
         if (passwordSection.style.display !== 'none') {
-            registerBtn.disabled = !(isValid && passwordValid && passwordsMatch);
+            var shouldEnable = isValid && passwordValid && passwordsMatch;
+            registerBtn.disabled = !shouldEnable;
+            if (!shouldEnable) {
+                console.log('validateForm: Button DISABLED — isValid:', isValid,
+                    'passwordValid:', passwordValid, 'passwordsMatch:', passwordsMatch);
+            } else {
+                console.log('validateForm: Button ENABLED');
+            }
         } else {
             registerBtn.disabled = true;
         }

@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-  <script src="js/registration.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="../imgs/PSI.png">
@@ -307,6 +306,21 @@
     }
     .permit-input {
       max-width: 260px;
+    }
+
+    /* Filled-field indicator */
+    .form-control.field-filled,
+    .form-select.field-filled {
+      border-color: #198754 !important;
+      border-left: 3px solid #198754 !important;
+      background-color: #f0fdf4 !important;
+      transition: border-color 0.3s ease, background-color 0.3s ease, border-left 0.3s ease;
+    }
+
+    .form-control.field-filled:focus,
+    .form-select.field-filled:focus {
+      border-color: #198754 !important;
+      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
     }
   </style>
 
@@ -782,6 +796,7 @@
               id="confirmPassword"
               placeholder="Re-enter password"
               required
+              disabled
             >
             <button
               class="btn btn-outline-secondary"
@@ -848,6 +863,45 @@
     </div>
   </div>
 </div>
+
+
+  <script src="js/registration.js"></script>
+<script>
+  // Auto-detect filled fields and apply visual indicator
+  (function() {
+    const trackedIds = [
+      'lastName','firstName','middleName','dateOfBirth',
+      'gender','contactNumber','school','email',
+      'password','confirmPassword'
+    ];
+
+    function updateFieldState(el) {
+      if (!el) return;
+      const val = el.value && el.value.trim();
+      if (el.tagName === 'SELECT') {
+        el.classList.toggle('field-filled', val !== '' && !el.selectedOptions[0]?.disabled);
+      } else {
+        el.classList.toggle('field-filled', val !== '');
+      }
+    }
+
+    function scanAll() {
+      trackedIds.forEach(id => updateFieldState(document.getElementById(id)));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      trackedIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => updateFieldState(el));
+        el.addEventListener('change', () => updateFieldState(el));
+      });
+
+      // Observe programmatic value changes via MutationObserver + polling
+      setInterval(scanAll, 400);
+    });
+  })();
+</script>
 <script>
   function goToPersonalInfo() {
     document.getElementById('reminderCard').classList.add('d-none');
@@ -923,78 +977,7 @@
   }
 </script>
 
-<script>
-    // Submit registration data when clicking "Proceed to Examination Schedule"
-  document.getElementById('registerBtn').addEventListener('click', () => {
-    submitRegistration();
-  });
 
-  // Submit registration function
-  function submitRegistration() {
-    const registerBtn = document.getElementById('registerBtn');
-    const formData = new FormData();
-    
-    // Add all form fields
-    formData.append('test_permit', document.getElementById('testPermitNo').value.trim());
-    formData.append('last_name', document.getElementById('lastName').value.trim());
-    formData.append('first_name', document.getElementById('firstName').value.trim());
-    formData.append('middle_name', document.getElementById('middleName').value.trim());
-    formData.append('email', document.getElementById('email').value.trim());
-    formData.append('date_of_birth', document.getElementById('dateOfBirth').value.trim());
-    formData.append('contact_number', document.getElementById('contactNumber').value.trim());
-    formData.append('gender', document.getElementById('gender').value);
-    formData.append('school', document.getElementById('school').value.trim());
-    formData.append('address', document.getElementById('address')?.value.trim() || '');
-    formData.append('nationality', document.getElementById('nationality')?.value.trim() || '');
-    formData.append('password', document.getElementById('password').value);
-    formData.append('confirm_password', document.getElementById('confirmPassword').value);
-
-    // Disable button and show loading state
-    registerBtn.disabled = true;
-    registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
-
-    fetch('php/register.php', {
-      method: 'POST',
-      body: formData,
-      credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Registration Response:', data);
-      
-      if (data.success) {
-        // Show success modal
-        const successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
-        successModal.show();
-        
-        // Redirect to exam schedule after short delay
-        setTimeout(() => {
-          window.location.href = 'examsched.html';
-        }, 1500);
-      } else {
-        // Show error modal
-        document.getElementById('registrationErrorMessage').textContent = data.message || 'Registration failed. Please try again.';
-        const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-        errorModal.show();
-        
-        registerBtn.disabled = false;
-        registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-      }
-    })
-    .catch(error => {
-      console.error('Registration Error:', error);
-      
-      // Show error modal
-      document.getElementById('registrationErrorMessage').textContent = 'Network error. Please try again.';
-      const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-      errorModal.show();
-      
-      registerBtn.disabled = false;
-      registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-    });
-  }
-
-</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
