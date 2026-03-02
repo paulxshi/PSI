@@ -42,101 +42,216 @@ body {
 	overflow-x: hidden;
 }
 
-/* Brand */
-#sidebar .brand {
-	height: auto;
-	padding: 32px 16px 28px; 
-	display: flex;
-	flex-direction: column;   
-	align-items: center;     
-	text-align: center;
-	position: sticky;
-	top: 0;
-	background: #151515;
-	z-index: 100;
+
+/* ─── HAMBURGER BUTTON ─── */
+#hamburgerBtn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255,255,255,0.07);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 8px;
+  transition: background 0.2s ease;
 }
 
-#sidebar .brand .logo {
-	width: 75px;
-	height: 75px;
-	margin: 10px;
+#hamburgerBtn:hover {
+  background: rgba(255,255,255,0.14);
 }
 
-#sidebar .brand .text {
-	font-size: 20px;
-	line-height: 1.35;
-	letter-spacing: 0.3px;
-	font-weight: 900;
-	color: var(--light);
+/* The three bar lines */
+#hamburgerBtn .bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: transform 0.35s ease, opacity 0.25s ease, width 0.3s ease;
+  transform-origin: center;
 }
 
+/* Animate to X when sidebar is hidden */
+#sidebar.hide #hamburgerBtn .bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+#sidebar.hide #hamburgerBtn .bar:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+#sidebar.hide #hamburgerBtn .bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ─── SIDEBAR OVERRIDES ─── */
 #sidebar {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 250px;
-	height: 100%;
-	background: #151515;
-	font-family: var(--lato);
-	transition: 0.35s ease;
-	z-index: 2000;
-	border-right: 1px solid #1f1f1f;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background: #151515;
+  font-family: var(--lato, 'Lato', sans-serif);
+  transition: width 0.35s ease;
+  z-index: 2000;
+  border-right: 1px solid #1f1f1f;
+  overflow: hidden;           /* clips text when collapsing */
 }
 
 #sidebar.hide {
-	width: 70px;
+  width: 0;
+  border-right: none;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
 }
 
-
+/* Brand block */
 #sidebar .brand {
-	height: 56px;
-	display: flex;
-	align-items: center;
-	font-size: 22px;
-	font-weight: 700;
-	color: var(--light);
-	padding: 0 20px;
-	position: sticky;
-	top: 0;
-	z-index: 100;
+  height: auto;
+  padding: 20px 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  background: #151515;
+  z-index: 100;
 }
 
-/* Menu */
+#sidebar .brand .logo {
+  width: 64px;
+  height: 64px;
+  margin: 6px 0 6px;
+  transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease;
+}
+
+#sidebar.hide .brand .logo {
+  width: 36px;
+  height: 36px;
+  margin: 4px 0;
+}
+
+#sidebar .brand .text {
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 900;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 200px;
+  opacity: 1;
+  transition: opacity 0.2s ease, max-width 0.3s ease;
+}
+
+#sidebar.hide .brand .text {
+  opacity: 0;
+  max-width: 0;
+}
+
+/* Side menu */
 #sidebar .side-menu {
-	margin-top: 90px;
+  margin-top: 16px;
 }
 
 #sidebar .side-menu li {
-	height: 48px;
-	margin: 8px 10px;
-	border-radius: 12px;
+  height: 48px;
+  margin: 8px 10px;
+  border-radius: 12px;
 }
 
 #sidebar .side-menu li a {
-	height: 100%;
-	display: flex;
-	align-items: center;
-	font-size: 14px;
-	color: var(--light);
-	border-radius: 10px;
-	transition: 0.2s ease;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #ffffff;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 #sidebar .side-menu li a .bx {
-	min-width: 48px;
-	display: flex;
-	justify-content: center;
-	font-size: 18px;
+  min-width: 48px;
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 #sidebar .side-menu li a:hover {
-	background: rgba(255, 255, 255, 0.08);
+  background: rgba(255,255,255,0.08);
 }
 
 #sidebar .side-menu.top li.active a {
-	background: rgba(255, 255, 255, 0.15);
-	font-weight: 520;
+  background: rgba(255,255,255,0.15);
+  font-weight: 520;
 }
+
+#sidebar .side-menu li a .text {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  overflow: hidden;
+}
+
+#sidebar.hide .side-menu li a .text {
+  opacity: 0;
+  width: 0;
+}
+
+/* Content area adjusts with sidebar */
+#content {
+  position: relative;
+  margin-left: 250px;
+  margin-top: 16px;
+  margin-right: 16px;
+  background: #ffffff;
+  min-height: calc(100vh - 16px);
+  border-radius: 28px 0 0 0;
+  box-shadow: -12px 0 35px rgba(0,0,0,0.25);
+  transition: margin-left 0.35s ease;
+  overflow: hidden;
+}
+
+#sidebar.hide ~ #content {
+  margin-left: 50px;
+}
+
+/* Tooltip on collapsed sidebar - removed since sidebar is now completely hidden */
+/* #sidebar.hide .side-menu li {
+  position: relative;
+} */
+
+/* #sidebar.hide .side-menu li a::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2a2a2a;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+#sidebar.hide .side-menu li a:hover::after {
+  opacity: 1;
+} */
+
+
 
 #sidebar.hide .text {
 	display: none;
@@ -258,7 +373,7 @@ body {
 
 @media screen and (max-width: 576px) {
     #sidebar {
-        width: 60px;
+        width: 250px;
         padding: 0;
     }
 
@@ -281,7 +396,7 @@ body {
 
 @media screen and (max-width: 768px) {
     #sidebar {
-        width: 100px;
+        width: 250px;
         padding: 0;
     }
 
@@ -301,7 +416,7 @@ body {
     }
 
 	#content {
-		margin-left: 200px;
+		margin-left: 250px;
 	}
 }
 
@@ -309,7 +424,7 @@ body {
 @media (max-width: 992px) {
 
     #sidebar {
-       width: 100px;
+       width: 250px;
         padding: 0;
     }
 	    #sidebar .brand {
@@ -323,7 +438,7 @@ body {
     }
 
     #content {
-        margin-left: 72px;
+        margin-left: 250px;
     }
 
     /* HIDE LOGO & TEXT */
@@ -333,11 +448,11 @@ body {
     }
 	
     #sidebar .brand .text {
-        display: none;
+        display: block;
     }
 
     /* HIDE MENU LABELS */
     #sidebar .side-menu li a .text {
-        display: none;
+        display: block;
     }
 }

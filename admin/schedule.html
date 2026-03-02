@@ -78,8 +78,15 @@
 
     <body>
 
+	<button id="hamburgerBtn" aria-label="Toggle sidebar" title="Toggle sidebar" style="position: fixed; top: 18px; left: 18px; z-index: 9999;">
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	</button>
+
         <!-- Sidebar Section -->
             <section id="sidebar">
+            
             <a href="#" class="brand" style="display: flex; align-items: center;">
                 <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
                 <span class="text">PSI-ADMIN Portal</span>
@@ -534,6 +541,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+  const sidebar  = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburgerBtn');
+
+  // Restore user preference
+  if (localStorage.getItem('sidebarCollapsed') === 'true') {
+    sidebar.classList.add('hide');
+  }
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('hide');
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
+  });
+
 </script>
 
 
