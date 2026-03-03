@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("php/get_schedules.php?type=regions")
         .then(response => response.json())
         .then(data => {
-            regionSelect.innerHTML = '<option value="">Select Region</option>';
+            regionSelect.innerHTML = '<option value="" disabled selected>Select Region</option>';
 
             data.forEach(region => {
                 const option = document.createElement("option");
@@ -356,8 +356,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const region = this.value;
 
         // Reset lower dropdowns
-        venueSelect.innerHTML = '<option value="">Select Venue</option>';
-        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        venueSelect.innerHTML = '<option value="" disabled selected>Select Venue</option>';
+        scheduleSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
         venueSelect.disabled = true;
         scheduleSelect.disabled = true;
         examFeeInput.value = "";
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const venueId = this.value;
 
-        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        scheduleSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
         scheduleSelect.disabled = true;
         examFeeInput.value = "";
         validateForm();
