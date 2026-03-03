@@ -50,7 +50,7 @@ try {
             e.updated_at
         FROM examinees e
         INNER JOIN users u ON e.user_id = u.user_id
-        WHERE e.attended_schedule_id = :schedule_id 
+        WHERE (e.schedule_id = :schedule_id OR e.attended_schedule_id = :schedule_id)
             AND e.examinee_status IN ('Registered', 'Completed')
         ORDER BY e.examinee_id ASC
     ");
@@ -116,7 +116,7 @@ try {
         }
     } else {
         fputcsv($output, ['', '', 'No examinees found', '', '', '', '']);
-    }
+    } 
 
     fclose($output);
     exit;
@@ -127,3 +127,4 @@ try {
     echo "Database error occurred";
     exit;
 }
+ 

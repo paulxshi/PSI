@@ -1,8 +1,13 @@
 <?php
 
-require_once 'vendor/autoload.php';
+// Load unified payment configuration (handles test/production mode automatically)
+require_once __DIR__ . '/../config/payment_config.php';
 
-use Xendit\Configuration;
-
-// Set your Xendit Secret Key (Test Key recommended)
-Configuration::setXenditKey('xnd_development_LkvLnIqM2G6qlGDFyMtdBUlpUI5Pr2SiZHhz4qRtp6QAkya4ME9Q6rvyIL150t');
+// Load Xendit SDK if available
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+    
+    if (class_exists('Xendit\Configuration')) {
+        Xendit\Configuration::setXenditKey(XENDIT_API_KEY);
+    }
+}

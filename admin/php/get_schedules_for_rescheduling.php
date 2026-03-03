@@ -10,7 +10,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     exit;
 }
 
-require_once '../config/db.php';
+require_once '../../config/db.php';
 
 try {
     // Get only valid, selectable schedules with available slots
