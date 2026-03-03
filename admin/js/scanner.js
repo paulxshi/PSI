@@ -25,6 +25,8 @@ function onScanSuccess(decodedText) {
     })
     .then(res => res.json())
     .then(data => {
+        console.log("Server response:", data);
+        if (data.debug) console.warn("Debug info:", data.debug);
         showQRResult(data);
     })
     .catch(err => {
@@ -196,9 +198,7 @@ else if (statusClass === "rejected") {
 }
 else if (statusClass === "valid") {
     // For verified examinees - hide buttons, auto accept only
-    document.getElementById("completeBtn").style.display = "none";
-    document.getElementById("cancelBtn1").style.display = "none";
-    applyActionState("default");
+    applyActionState("hidden");
     document.getElementById("autoCompleteTimer").style.display = "none";
 }
 else if (statusClass === "warning") {
@@ -232,7 +232,6 @@ function startAutoComplete(modal, examineeId) {
 
     console.log("DEBUG: startAutoComplete called with examineeId =", examineeId);
     const completeBtn = document.getElementById("completeBtn");
-    const cancelBtn = document.getElementById("cancelAutoComplete");
 
     const runId = Date.now();
     window.currentAutoCompleteRun = runId;
@@ -241,7 +240,7 @@ function startAutoComplete(modal, examineeId) {
     completeBtn.style.display = "none";
 
     const startTime = Date.now();
-    const duration = 5000;
+    const duration = 3000;
 
     if (window.autoCompleteInterval) clearInterval(window.autoCompleteInterval);
     if (window.autoCompleteTimeout) clearTimeout(window.autoCompleteTimeout);
@@ -280,16 +279,6 @@ function startAutoComplete(modal, examineeId) {
 
     }, 100);
 
-    cancelBtn.onclick = () => {
-
-        window.currentAutoCompleteRun = null;
-
-        clearInterval(window.autoCompleteInterval);
-        clearTimeout(window.autoCompleteTimeout);
-
-        timerDiv.style.display = "none";
-        completeBtn.style.display = "inline-block";
-    };
 }
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -432,6 +421,10 @@ body: JSON.stringify({
 
             // Re-enable if server failed
             applyActionState("default");
+        } else {
+            // Clear the manual QR input on successful completion
+            const manualQR = document.getElementById("manualQR");
+            if (manualQR) manualQR.value = "";
         }
 
     })

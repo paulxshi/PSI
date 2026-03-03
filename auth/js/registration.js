@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const ageInput = document.getElementById('age');
                 if (!selectedDates.length) {
                     if (ageInput) ageInput.value = '';
+                    updateSendOtpButtonState();
                     validateForm();
                     return;
                 }
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     age--;
                 }
                 if (ageInput) ageInput.value = age >= 0 ? age : '';
+                updateSendOtpButtonState();
                 validateForm();
             }
         });
@@ -65,6 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const lastNameInput = document.getElementById('lastName');
     const verifyTestPermitBtn = document.getElementById('verifyTestPermitBtn');
 
+    // Required field elements for OTP validation (dateOfBirth is declared later)
+    const genderInput = document.getElementById('gender');
+    const contactNumberInput = document.getElementById('contactNumber');
+    const schoolInput = document.getElementById('school');
+
     // Constants
     const COOLDOWN_SECONDS = 60; // 60 seconds between OTP requests
     const SEND_OTP_URL = 'php/send_otp.php';
@@ -78,22 +85,62 @@ document.addEventListener('DOMContentLoaded', function() {
     let testPermitVerified = false;
     let examineeData = null;
 
-    // Show/hide Send OTP button based on email validation and form state
-    emailInput.addEventListener('input', function() {
-        // Only show OTP button if:
-        // 1. Email is not disabled (test permit verified)
-        // 2. Email is valid
-        // 3. OTP not yet verified
-        if (!emailInput.disabled && emailInput.validity.valid && !isOtpVerified) {
+    // Helper function to check if all required fields are filled
+    function areRequiredFieldsFilled() {
+        const dateOfBirthEl = document.getElementById('dateOfBirth');
+        const dateOfBirthFilled = dateOfBirthEl && dateOfBirthEl.value.trim() !== '';
+        const genderFilled = genderInput && genderInput.value !== '' && genderInput.value !== 'Select Gender';
+        const contactNumberFilled = contactNumberInput && contactNumberInput.value.trim() !== '';
+        const schoolFilled = schoolInput && schoolInput.value.trim() !== '';
+        
+        return dateOfBirthFilled && genderFilled && contactNumberFilled && schoolFilled;
+    }
+
+    // Function to update Send OTP button state
+    function updateSendOtpButtonState() {
+        const emailValid = emailInput && !emailInput.disabled && emailInput.validity.valid;
+        const requiredFieldsFilled = areRequiredFieldsFilled();
+        
+        if (emailValid && requiredFieldsFilled && !isOtpVerified) {
             sendOtpBtn.style.display = 'inline';
+            sendOtpBtn.disabled = false;
         } else if (isOtpVerified) {
             // Keep button visible but disabled after OTP verified
             sendOtpBtn.style.display = 'inline';
+            sendOtpBtn.disabled = true;
         } else {
-            sendOtpBtn.style.display = 'none';
+            if (emailValid && !isOtpVerified) {
+                // Show button but keep it disabled if required fields are not filled
+                sendOtpBtn.style.display = 'inline';
+                sendOtpBtn.disabled = true;
+            } else {
+                sendOtpBtn.style.display = 'none';
+            }
         }
+    }
+
+    // Show/hide Send OTP button based on email validation and form state
+    emailInput.addEventListener('input', function() {
+        updateSendOtpButtonState();
         validateForm();
     });
+
+    // Add event listeners to required fields for OTP validation
+    // Note: dateOfBirth listeners are added later where dateOfBirthInput is declared
+    
+    if (genderInput) {
+        genderInput.addEventListener('change', updateSendOtpButtonState);
+    }
+    
+    if (contactNumberInput) {
+        contactNumberInput.addEventListener('input', updateSendOtpButtonState);
+        contactNumberInput.addEventListener('change', updateSendOtpButtonState);
+    }
+    
+    if (schoolInput) {
+        schoolInput.addEventListener('input', updateSendOtpButtonState);
+        schoolInput.addEventListener('change', updateSendOtpButtonState);
+    }
 
     // Test Permit validation and auto-fill
     if (testPermitInput) {
@@ -205,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 age--;
             }
             ageInput.value = age >= 0 ? age : '';
+            updateSendOtpButtonState();
             validateForm();
         }
 
@@ -671,8 +719,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 emailInput.style.cursor = 'not-allowed';
                 emailInput.title = 'Email is locked after test permit verification';
 
-                // Show OTP button (keep it visible)
-                sendOtpBtn.style.display = 'inline';
+                // Update OTP button state based on all required fields
+                updateSendOtpButtonState();
                 showTestPermitStatus('Test permit verified! Please complete remaining fields.', 'success');
                 
                 validateForm();
@@ -697,8 +745,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('middleName').value = '';
                 emailInput.value = '';
 
-                // Hide OTP button
-                sendOtpBtn.style.display = 'none';
+                // Update OTP button state
+                updateSendOtpButtonState();
                 
                 // Show modal
                 invalidTestPermitModal.show();
@@ -727,8 +775,8 @@ document.addEventListener('DOMContentLoaded', function() {
             firstNameInput.value = '';
             emailInput.value = '';
 
-            // Hide OTP button
-            sendOtpBtn.style.display = 'none';
+            // Update OTP button state
+            updateSendOtpButtonState();
             
             // Show modal
             invalidTestPermitModal.show();
