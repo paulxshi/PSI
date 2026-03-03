@@ -486,11 +486,11 @@
     hamburger.classList.toggle('collapsed');
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
-    // Close sidebar when clicking on content area (mobile only)
+
+  // Close sidebar when clicking on content area (mobile only)
   const content = document.getElementById('content');
   if (content) {
     content.addEventListener('click', (e) => {
-      // Only close on mobile (screen width < 768px)
       if (window.innerWidth < 768 && !sidebar.classList.contains('hide')) {
         sidebar.classList.add('hide');
         hamburger.classList.add('collapsed');
