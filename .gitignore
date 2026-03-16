@@ -1,11 +1,10 @@
-# Ignore sensitive configuration files
-config/payment_config.php
-config/db.php
-
-# Ignore environment files
+# Ignore environment files (CONTAINS SECRETS!)
 .env
 .env.local
 .env.production
+
+# Keep example files tracked
+!.env.example
 
 # Ignore log files
 *.log

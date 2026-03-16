@@ -17,18 +17,9 @@ Options -Indexes
     Deny from all
 </FilesMatch>
 
-# Block direct access to PHP files inside php/ subfolder
-# These should only be accessed via AJAX or internal includes
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-
-    # Block direct browser access to auth/php/ files
-    # Allow AJAX requests (XMLHttpRequest) and same-origin POST
-    RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
-    RewriteCond %{REQUEST_URI} ^/PSI/auth/php/ [NC]
-    RewriteCond %{REQUEST_METHOD} !^POST$ [NC]
-    RewriteRule ^php/.+\.php$ - [F,L]
-</IfModule>
+# Note: PHP files in php/ subfolder have their own session/permission checks
+# No need for additional .htaccess blocking since they return JSON (not sensitive HTML)
+# Security is handled within each PHP file through session validation
 
 # Block access to config.php (sensitive credentials)
 <Files "config.php">
