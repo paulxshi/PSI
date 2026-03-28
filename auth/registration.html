@@ -322,7 +322,7 @@
       border-color: #198754 !important;
       box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
     }
-    .step span {
+.step span {
    display: inline;
  }
 
@@ -342,6 +342,31 @@
      margin-top: 17px;
    }
  }
+ #termsContainer {
+    max-height: 300px; /* Limit the height to create space for scrolling */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    padding-right: 10px; /* Add space on the right for the scrollbar */
+}
+
+/* Styling the scrollbar */
+#termsContainer::-webkit-scrollbar {
+    width: 8px; /* Slightly wider for better visibility */
+}
+
+#termsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* More visible thumb */
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+#termsContainer::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* Darker on hover */
+}
+
+#termsContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05); /* Very light track for subtle indication */
+    border-radius: 4px;
+}
   </style>
 
  </head>
