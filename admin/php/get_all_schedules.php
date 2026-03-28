@@ -15,6 +15,22 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 }
 
 try {
+    // First, auto-update schedules that have passed to 'Completed' status
+    $updateQuery = "
+        UPDATE schedules 
+        SET status = 'Completed' 
+        WHERE scheduled_date < CURDATE() 
+        AND status != 'Completed'
+        AND status != 'Closed'
+    ";
+    $updateStmt = $pdo->prepare($updateQuery);
+    $updateStmt->execute();
+    
+    $updatedCount = $updateStmt->rowCount();
+    if ($updatedCount > 0) {
+        error_log("Auto-updated $updatedCount past schedules to 'Completed' status");
+    }
+    
     // Get all schedules with venue information
     $query = "
         SELECT 
@@ -49,7 +65,7 @@ try {
             'day' => $datetime->format('l'),
             'capacity' => (int)$schedule['capacity'],
             'num_registered' => (int)$schedule['num_registered'],
-            'price' => number_format((float)$schedule['price'], 2),
+            'price' => (float)$schedule['price'],
             'status' => $schedule['status'],
             'is_full' => (int)$schedule['num_registered'] >= (int)$schedule['capacity']
         ];

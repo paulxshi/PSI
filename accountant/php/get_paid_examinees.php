@@ -23,6 +23,19 @@ try {
     $dateTo = isset($_GET['dateTo']) ? $_GET['dateTo'] : '';
     $search = isset($_GET['search']) ? $_GET['search'] : '';
     
+    // Pagination parameters
+    $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+    $limit = isset($_GET['limit']) ? max(1, min(100, intval($_GET['limit']))) : 10;
+    $exportAll = isset($_GET['exportAll']) && $_GET['exportAll'] === '1';
+    
+    // Validate date formats
+    if (!empty($dateFrom) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+        $dateFrom = '';
+    }
+    if (!empty($dateTo) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+        $dateTo = '';
+    }
+    
     // Build the query
     $query = "SELECT 
                 u.test_permit,
@@ -81,6 +94,18 @@ try {
     
     $query .= " ORDER BY p.paid_at DESC";
     
+    // Get total count first
+    $countQuery = "SELECT COUNT(*) as total FROM (" . $query . ") as countTable";
+    $countStmt = $pdo->prepare($countQuery);
+    $countStmt->execute($params);
+    $totalCount = (int)$countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+    // Apply pagination unless exporting all
+    if (!$exportAll) {
+        $offset = ($page - 1) * $limit;
+        $query .= " LIMIT " . intval($limit) . " OFFSET " . intval($offset);
+    }
+    
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $examinees = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -112,15 +137,21 @@ try {
         unset($examinee['xendit_response']);
     }
     
+    $totalPages = $exportAll ? 1 : ceil($totalCount / $limit);
+    
     echo json_encode([
         'success' => true,
         'data' => $examinees,
-        'count' => count($examinees)
+        'count' => $totalCount,
+        'page' => $page,
+        'limit' => $limit,
+        'totalPages' => $totalPages
     ]);
     
 } catch (PDOException $e) {
+    error_log('Accountant get_paid_examinees error: ' . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'An error occurred while fetching payment records. Please try again later.'
     ]);
 }

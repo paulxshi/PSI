@@ -47,9 +47,13 @@ try {
             u.email,
             u.contact_number,
             e.examinee_status,
-            e.updated_at
+            e.updated_at,
+            p.paid_at,
+            p.external_id,
+            e.scanned_at
         FROM examinees e
         INNER JOIN users u ON e.user_id = u.user_id
+        LEFT JOIN payments p ON p.examinee_id = e.examinee_id AND p.status = 'PAID'
         WHERE (e.schedule_id = :schedule_id OR e.attended_schedule_id = :schedule_id)
             AND e.examinee_status IN ('Registered', 'Completed')
         ORDER BY e.examinee_id ASC
@@ -98,12 +102,19 @@ try {
         'Email Address',
         'Contact Number',
         'Registration Date',
-        'Status'
+        'Status',
+        'Payment Date',
+        'Payment External ID',
+        'Scan Date'
     ]);
 
     if (count($allExaminees) > 0) {
         $index = 1;
         foreach ($allExaminees as $examinee) {
+            $scanDate = ($examinee['examinee_status'] === 'Completed' && !empty($examinee['scanned_at']))
+                ? $formatDate($examinee['scanned_at'])
+                : '';
+
             fputcsv($output, [
                 $index++,
                 $protectNumber($examinee['test_permit'] ?? ''),
@@ -111,11 +122,14 @@ try {
                 $examinee['email'] ?? '',
                 $protectNumber($examinee['contact_number'] ?? ''),
                 $formatDate($examinee['updated_at'] ?? ''),
-                $examinee['examinee_status'] ?? ''
+                $examinee['examinee_status'] ?? '',
+                $formatDate($examinee['paid_at'] ?? ''),
+                $examinee['external_id'] ?? '',
+                $scanDate
             ]);
         }
     } else {
-        fputcsv($output, ['', '', 'No examinees found', '', '', '', '']);
+        fputcsv($output, ['', '', 'No examinees found', '', '', '', '', '', '', '']);
     } 
 
     fclose($output);

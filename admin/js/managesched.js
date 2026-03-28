@@ -31,6 +31,21 @@ async function loadSchedules() {
         
         if (data.success) {
             allSchedules = data.schedules;
+            
+            // Auto-update status to 'Completed' for past dates on frontend
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to start of day
+            
+            allSchedules.forEach(schedule => {
+                const scheduleDate = new Date(schedule.scheduled_date);
+                scheduleDate.setHours(0, 0, 0, 0);
+                
+                // If date has passed and not already completed or cancelled, mark as completed
+                if (scheduleDate < today && schedule.status !== 'Completed' && schedule.status !== 'Cancelled') {
+                    schedule.status = 'Completed';
+                }
+            });
+            
             // Sort by date in descending order (newest first)
             allSchedules.sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
             filteredSchedules = [...allSchedules];
@@ -74,7 +89,7 @@ function displaySchedules() {
             <td data-label="Capacity">
                 ${schedule.num_registered} / ${schedule.capacity}
             </td>
-            <td data-label="Exam Fee">₱${schedule.price}</td>
+            <td data-label="Exam Fee">₱${formatPrice(schedule.price)}</td>
             <td data-label="Status">
                 <span class="badge ${getStatusBadge(schedule.status)}">
                     ${schedule.status}
@@ -174,6 +189,13 @@ function formatLongDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
+function formatPrice(price) {
+    return parseFloat(price).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
 function filterSchedules() {
     currentPage = 1; 
 
@@ -225,7 +247,7 @@ function editSchedule(scheduleId) {
     document.getElementById('editVenue').value = schedule.venue_name;
     document.getElementById('editDate').value = date;
     document.getElementById('editCapacity').value = schedule.capacity;
-    document.getElementById('editPrice').value = parseFloat(schedule.price);
+    document.getElementById('editPrice').value = parseFloat(schedule.price).toFixed(2);
     document.getElementById('editStatus').value = schedule.status;
     
     // Show modal
