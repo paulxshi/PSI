@@ -363,6 +363,7 @@
   color: #555;
 }
 
+/* Guidelines + signature row stays horizontal */
 .d-flex.gap-4.mt-3 {
   flex-direction: row !important;
   flex-wrap: nowrap !important;
@@ -373,6 +374,136 @@
 .no-focus:focus {
   outline: none;
   box-shadow: none;
+}
+.items-footer-section {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.items-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.items-panel {
+  min-width: 0;
+}
+
+.items-panel + .items-panel {
+  border-left: 1px solid #d8d8d8; /* soft partition */
+  padding-left: 16px;
+}
+
+.items-panel h6 {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  line-height: 1.1;
+}
+
+.allowed-panel h6 {
+  color: #1f5f2d;
+}
+
+.prohibited-panel h6 {
+  color: #b02a2a;
+}
+
+.items-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.items-panel li {
+  position: relative;
+  padding-left: 10px;
+  margin-bottom: 3px;
+  font-size: 9.4px;
+  line-height: 1.28;
+  color: #222;
+}
+
+.items-panel li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #666;
+}
+
+.items-warning {
+  margin-top: 5px;
+  font-size: 8px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #b02a2a;
+}
+
+.signature-block.signature-below {
+  width: 240px;
+  margin-top: 18px;
+  margin-left: auto;
+  margin-right: 0;
+  text-align: center;
+  align-self: flex-end;
+}
+
+.signature-block .sig-line {
+  border-bottom: 1.2px solid #000;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+.signature-block .sig-label {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.signature-block .sig-sub {
+  font-size: 10px;
+  font-style: italic;
+  color: #666;
+  line-height: 1.15;
+}
+
+
+/* remove old side-by-side footer behavior */
+.d-flex.gap-4.mt-3 {
+  display: block !important;
+}
+
+/* PDF / print sizing */
+body.print-mode .items-panel h6 {
+  font-size: 9px;
+}
+
+body.print-mode .items-panel li {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+body.print-mode .items-warning {
+  font-size: 7px;
+}
+
+body.print-mode .signature-block.signature-below {
+  width: 210px;
+  margin: 10px 0 0 auto;
+}
+
+body.print-mode .signature-block .sig-label {
+  font-size: 9px;
+}
+
+body.print-mode .signature-block .sig-sub {
+  font-size: 8px;
 }
 
 @media (max-width: 768px) {
@@ -389,6 +520,11 @@
     padding-right: 8px !important;
   }
 
+  /* 
+   * Permit card: scale it down to fit mobile screen
+   * while keeping the exact printed layout intact.
+   * The wrapper clips overflow cleanly.
+   */
   .permit-scale-wrapper {
     width: 100%;
     overflow: hidden;
@@ -397,16 +533,25 @@
   }
 
   #permitPDF {
+    /* Permit is designed for ~860px. On mobile (~390px) we scale it down. */
     transform-origin: top center;
     transform: scale(0.42);
     width: 860px !important;
     max-width: 860px !important;
+
+    /* 
+     * After scaling by 0.42, the element still occupies its original 
+     * height in the DOM. Compensate with a negative margin so the page
+     * doesn't have a huge blank gap below.
+     * Approximate: 860px permit height ~ 900px → 900 * (1 - 0.42) = ~522px gap
+     */
     margin-bottom: calc((100% * (1 - 0.42) / 0.42) * -1);
 
     box-shadow: 0 4px 24px rgba(0,0,0,0.14) !important;
     border-radius: 4px;
   }
 
+  /* Tighter generate button */
   #generatePDF {
     font-size: 14px;
     padding: 10px 28px;
@@ -456,7 +601,7 @@
 
 
 /* ══════════════════════════════════════
-   PRINT MODE
+   PRINT MODE (html2pdf)
    ══════════════════════════════════════ */
 body.print-mode #permitPDF {
   max-width: 100%;
@@ -523,8 +668,38 @@ body.print-mode .signature-block .sig-sub {
 }
 
 /* ══════════════════════════════════════
-   @MEDIA PRINT 
+   @MEDIA PRINT (browser print)
    ══════════════════════════════════════ */
+@media print {
+  .items-grid {
+    column-gap: 12px;
+  }
+
+  .items-panel + .items-panel {
+    padding-left: 12px;
+  }
+
+  .items-panel h6 {
+    font-size: 8.5px;
+  }
+
+  .items-panel li {
+    font-size: 7.8px;
+    line-height: 1.18;
+    margin-bottom: 2px;
+  }
+
+  .items-warning {
+    font-size: 6.8px;
+  }
+
+  .signature-block.signature-below {
+    width: 200px;
+    margin: 8px 0 0 auto;
+  }
+}
+
+
 @media print {
   #sidebar,
   nav,
