@@ -57,8 +57,35 @@
    opacity: 1;
    cursor: not-allowed;
  }
+ 
+#termsContainer {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 6px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;              
+  scrollbar-color: #c7cbd1 #eef1f4;   
+}
 
- /* Small auto-generated age field */
+#termsContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+#termsContainer::-webkit-scrollbar-track {
+  background: #eef1f4;
+  border-radius: 999px;
+}
+
+#termsContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d6d9de, #b8bec7);
+  border-radius: 999px;
+  border: 2px solid #eef1f4;
+}
+
+#termsContainer::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #bfc5cd, #9ea6b1);
+}
+
 #age {
   background-color: #f8f9fa;
   font-weight: 600;
@@ -267,9 +294,9 @@
    color: #ffffff;
  }
 
- .overflow-auto::-webkit-scrollbar {
-     display: none;
-  } 
+    #registrationForm::-webkit-scrollbar {
+      display: none;
+    }
 
  .otp-verified-badge {
        background-color: #198754;
@@ -326,7 +353,30 @@
    display: inline;
  }
 
- /* Hide step labels on mobile */
+@media (max-width: 767.98px) {
+  #termsContainer {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #a8afb8 #eef1f4;
+  }
+
+  #termsContainer::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #termsContainer::-webkit-scrollbar-track {
+    background: #eef1f4;
+    border-radius: 999px;
+  }
+
+  #termsContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #c7ccd3, #9fa7b2);
+    border-radius: 999px;
+    border: 2px solid #eef1f4;
+  }
+}
+
  @media (max-width: 575.98px) {
    .step span {
      display: none;
@@ -342,31 +392,6 @@
      margin-top: 17px;
    }
  }
- #termsContainer {
-    max-height: 300px; /* Limit the height to create space for scrolling */
-    overflow-y: auto;  /* Enable vertical scrolling */
-    padding-right: 10px; /* Add space on the right for the scrollbar */
-}
-
-/* Styling the scrollbar */
-#termsContainer::-webkit-scrollbar {
-    width: 8px; /* Slightly wider for better visibility */
-}
-
-#termsContainer::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2); /* More visible thumb */
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-#termsContainer::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* Darker on hover */
-}
-
-#termsContainer::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05); /* Very light track for subtle indication */
-    border-radius: 4px;
-}
   </style>
 
  </head>
@@ -463,10 +488,11 @@
                 </div>
 
                   <div
-                    id="termsContainer"
-                    class="p-3 rounded-3 mb-4 overflow-auto"
-                    style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
-                  >
+                    <div
+                      id="termsContainer"
+                      class="p-3 rounded-3 mb-4"
+                      style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
+                    >
                     <p class="small text-muted">
                       By proceeding with this registration, you acknowledge and agree that all
                       information, statements, and documents you submit through the PSI Examination
