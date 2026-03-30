@@ -400,7 +400,7 @@
 
 .items-panel h6 {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   margin: 0 0 6px;
   line-height: 1.1;
@@ -445,15 +445,26 @@
   color: #b02a2a;
 }
 
-.signature-block.signature-below {
-  width: 240px;
+.signature-row-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-top: 18px;
-  margin-left: auto;
-  margin-right: 0;
-  text-align: center;
-  align-self: flex-end;
+  width: 100%;
 }
 
+.signature-block {
+  width: 240px;
+  text-align: center;
+}
+
+.signature-left {
+  margin-left: 0;
+}
+
+.signature-right {
+  margin-left: auto;
+}
 .signature-block .sig-line {
   border-bottom: 1.2px solid #000;
   height: 24px;
@@ -480,6 +491,14 @@
 }
 
 /* PDF / print sizing */
+body.print-mode .signature-row-bottom {
+  margin-top: 10px;
+}
+
+body.print-mode .signature-block {
+  width: 210px;
+}
+
 body.print-mode .items-panel h6 {
   font-size: 9px;
 }
@@ -670,6 +689,16 @@ body.print-mode .signature-block .sig-sub {
 /* ══════════════════════════════════════
    @MEDIA PRINT (browser print)
    ══════════════════════════════════════ */
+@media print {
+  .signature-row-bottom {
+    margin-top: 8px;
+  }
+
+  .signature-block {
+    width: 200px;
+  }
+}
+
 @media print {
   .items-grid {
     column-gap: 12px;
