@@ -358,6 +358,7 @@
 }
 
 .signature-block .sig-sub {
+  margin-top: 5px;
   font-size: 10px;
   font-style: italic;
   color: #555;
@@ -399,8 +400,8 @@
 }
 
 .items-panel h6 {
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 12.5px;
+  font-weight: 700;
   text-transform: uppercase;
   margin: 0 0 6px;
   line-height: 1.1;
@@ -424,7 +425,7 @@
   position: relative;
   padding-left: 10px;
   margin-bottom: 3px;
-  font-size: 9.4px;
+  font-size: 11px;
   line-height: 1.28;
   color: #222;
 }
@@ -438,39 +439,52 @@
 }
 
 .items-warning {
-  margin-top: 5px;
-  font-size: 8px;
+  margin-top: 8px;
+  font-size: 10px;
   line-height: 1.2;
   font-weight: 700;
   color: #b02a2a;
 }
 
-.signature-block.signature-below {
-  width: 240px;
-  margin-top: 18px;
-  margin-left: auto;
-  margin-right: 0;
-  text-align: center;
-  align-self: flex-end;
+.signature-row-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px !important;   
+  width: 100%;
 }
 
+.signature-block {
+  width: 220px;
+  text-align: center;
+  margin-top: 20px !important;  
+  flex-shrink: 0;
+}
+
+.signature-left {
+  margin-left: 0;
+}
+
+.signature-right {
+  margin-left: auto;
+}
 .signature-block .sig-line {
   border-bottom: 1.2px solid #000;
-  height: 24px;
-  margin-bottom: 4px;
+  height: 14px;  
+  margin-bottom: 3px;
 }
 
 .signature-block .sig-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .signature-block .sig-sub {
-  font-size: 10px;
+  font-size: 8x;
   font-style: italic;
   color: #666;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 
@@ -480,6 +494,14 @@
 }
 
 /* PDF / print sizing */
+body.print-mode .signature-row-bottom {
+   margin-top: 2px;
+}
+
+body.print-mode .signature-block {
+  width: 210px;
+}
+
 body.print-mode .items-panel h6 {
   font-size: 9px;
 }
@@ -490,7 +512,7 @@ body.print-mode .items-panel li {
 }
 
 body.print-mode .items-warning {
-  font-size: 7px;
+  font-size: 9px;
 }
 
 body.print-mode .signature-block.signature-below {
@@ -670,44 +692,9 @@ body.print-mode .signature-block .sig-sub {
 /* ══════════════════════════════════════
    @MEDIA PRINT (browser print)
    ══════════════════════════════════════ */
-@media print {
-  .items-grid {
-    column-gap: 12px;
-  }
-
-  .items-panel + .items-panel {
-    padding-left: 12px;
-  }
-
-  .items-panel h6 {
-    font-size: 8.5px;
-  }
-
-  .items-panel li {
-    font-size: 7.8px;
-    line-height: 1.18;
-    margin-bottom: 2px;
-  }
-
-  .items-warning {
-    font-size: 6.8px;
-  }
-
-  .signature-block.signature-below {
-    width: 200px;
-    margin: 8px 0 0 auto;
-  }
-}
-
 
 @media print {
-  #sidebar,
-  nav,
-  .btn,
-  .mobile-permit-banner {
-    display: none !important;
-  }
-
+  /* Reset some styles for printing */
   html,
   body {
     margin: 0 !important;
@@ -724,31 +711,24 @@ body.print-mode .signature-block .sig-sub {
 
   @page {
     size: letter portrait;
-    margin: 5mm;
+    margin: 0;
   }
 
   #permitPDF {
-    width: 100%;
-    padding: 4mm;
+    width: 50% !important; 
+    padding: 4mm; 
     font-size: 9px;
     line-height: 1.2;
     box-shadow: none !important;
     transform: none !important;
     margin-bottom: 0 !important;
+    margin-left: auto;
+    margin-right: auto;  
   }
 
   .qr-code-square-container {
-    width: 80px;
-    height: 80px;
-  }
-
-  .photo-box {
-    width: 124px;
-    height: 124px;
-  }
-
-  .permit-header {
-    grid-template-columns: 90px 1fr 90px;
+    width: 60px;
+    height: 60px;
   }
 
   .permit-header .center-col img.psi-logo {
@@ -756,17 +736,24 @@ body.print-mode .signature-block .sig-sub {
   }
 
   .permit-header .center-col h5 {
-    font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
     font-size: 12px;
-    font-weight: 500;
   }
 
   .permit-header .center-col h6 {
     font-size: 11px;
   }
 
+  .photo-box {
+    width: 100px;
+    height: 100px;
+  }
+
   .permit-note {
     font-size: 9px;
+  }
+
+  .section-title {
+    font-size: 8px;
   }
 
   .field-label {
@@ -777,16 +764,36 @@ body.print-mode .signature-block .sig-sub {
     font-size: 9px;
   }
 
-  .section-title {
-    font-size: 8px;
+  .signature-block .sig-label {
+    font-size: 9px;
+  }
+
+  .signature-block .sig-sub {
+    font-size: 8.5px;
   }
 
   .guidelines-section ol li {
     font-size: 8.5px;
   }
 
-  .qr-logo {
-    width: 25px !important;
-    height: 25px !important;
+  .signature-row-bottom {
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }
+    .signature-block {
+    width: 180px;
+    margin-top: 0 !important;
+  }
+
+  .signature-block .sig-line {
+    height: 12px;
+  }
+
+  .signature-block .sig-label {
+    font-size: 10px; /* Reduce font size */
+  }
+
+  .signature-block .sig-sub {
+    font-size: 8px; 
   }
 }
