@@ -556,6 +556,16 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
                     document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
                     
+                    // Update email notification stats
+                    const emailStatsContainer = document.getElementById('emailStatsContainer');
+                    if (typeof data.emailsSent !== 'undefined' && typeof data.emailsFailed !== 'undefined') {
+                        document.getElementById('csvEmailsSent').textContent = data.emailsSent || 0;
+                        document.getElementById('csvEmailsFailed').textContent = data.emailsFailed || 0;
+                        emailStatsContainer.style.display = 'block';
+                    } else {
+                        emailStatsContainer.style.display = 'none';
+                    }
+                    
                     // Show detailed results if available
                     if (data.detailedResults && data.detailedResults.length > 0) {
                         displayDetailedResults(data.detailedResults);

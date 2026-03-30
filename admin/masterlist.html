@@ -818,6 +818,24 @@
                     </div>
                 </div>
 
+                <!-- Email Notification Stats -->
+                <div class="border rounded-3 p-3 bg-info-subtle mb-3" id="emailStatsContainer" style="display:none;">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bx bx-envelope fs-5 text-info me-2"></i>
+                        <h6 class="mb-0 fw-semibold text-info">Email Notifications</h6>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="text-muted small">Emails Sent</div>
+                            <div class="fw-bold fs-5 text-info" id="csvEmailsSent">0</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted small">Failed</div>
+                            <div class="fw-bold fs-5 text-warning" id="csvEmailsFailed">0</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Detailed Results Table -->
                 <div id="csvDetailedResultsContainer" style="display:none;">
                     <h6 class="fw-semibold mb-2">
