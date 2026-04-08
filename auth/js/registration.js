@@ -493,11 +493,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (cooldownTimer) {
                     clearInterval(cooldownTimer);
                 }
-                
-                // Lock email field after verification to prevent changes
-                emailInput.readOnly = true;
-                emailInput.classList.add('bg-light');
-                emailInput.title = 'Email locked after verification';
 
                 // Show password section
                 passwordSection.style.display = 'block';
@@ -712,12 +707,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('contactNumber').disabled = false;
                 document.getElementById('school').disabled = false;
                 
-                // Make email read-only (locked after test permit verification)
+                // Enable email field
                 emailInput.disabled = false;
-                emailInput.readOnly = true;
-                emailInput.classList.add('bg-light');
-                emailInput.style.cursor = 'not-allowed';
-                emailInput.title = 'Email is locked after test permit verification';
 
                 // Update OTP button state based on all required fields
                 updateSendOtpButtonState();
