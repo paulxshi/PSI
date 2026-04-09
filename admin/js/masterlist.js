@@ -39,8 +39,28 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                showStatus('Examinee record deleted successfully', 'success');
-                loadMasterlistData();
+                // Hide delete modal
+                bootstrap.Modal.getInstance(
+                    document.getElementById('deleteExamineeModal')
+                ).hide();
+
+                // Show success modal
+                setTimeout(() => {
+                    document.getElementById('deleteSuccessMessage').textContent = 
+                        'The examinee record has been successfully deleted.';
+                    document.getElementById('deleteSuccessDetails').textContent = 
+                        data.data.test_permit || 'Record ID: ' + deleteTargetId;
+                    
+                    const successModal = new bootstrap.Modal(
+                        document.getElementById('deleteSuccessModal')
+                    );
+                    successModal.show();
+                }, 300);
+
+                // Reload data after modal is dismissed
+                document.getElementById('deleteSuccessModal').addEventListener('hidden.bs.modal', function() {
+                    loadMasterlistData();
+                }, { once: true });
             } else {
                 showStatus(data.message || 'Failed to delete record', 'danger');
             }
@@ -52,12 +72,59 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             this.disabled = false;
             this.textContent = 'Delete Examinee';
             deleteTargetId = null;
-
-            bootstrap.Modal.getInstance(
-                document.getElementById('deleteExamineeModal')
-            ).hide();
         });
 });
+
+    // Delete All Records handler
+    document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+
+        const formData = new FormData();
+        formData.append('deleteAll', 'true');
+
+        fetch('php/bulk_delete_examinee_masterlist.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success || data.deletedCount > 0) {
+                    // Hide bulk delete modal
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('bulkDeleteModal')
+                    ).hide();
+
+                    // Show success modal
+                    setTimeout(() => {
+                        document.getElementById('deleteSuccessMessage').textContent = 
+                            data.deletedCount + ' record(s) have been successfully deleted.';
+                        document.getElementById('deleteSuccessDetails').textContent = 
+                            'Total Deleted: ' + data.deletedCount;
+                        
+                        const successModal = new bootstrap.Modal(
+                            document.getElementById('deleteSuccessModal')
+                        );
+                        successModal.show();
+                    }, 300);
+
+                    // Reload data after modal is dismissed
+                    document.getElementById('deleteSuccessModal').addEventListener('hidden.bs.modal', function() {
+                        loadMasterlistData();
+                    }, { once: true });
+                } else {
+                    showStatus(data.message || 'Failed to delete records', 'danger');
+                }
+            })
+            .catch(() => {
+                showStatus('Network error deleting records', 'danger');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = '<i class="bx bx-trash me-1"></i> Delete All';
+            });
+    });
 
     updateCardHighlights(); 
     loadMasterlistData();
@@ -488,6 +555,16 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     // Update modal with upload results
                     document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
                     document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
+                    
+                    // Update email notification stats
+                    const emailStatsContainer = document.getElementById('emailStatsContainer');
+                    if (typeof data.emailsSent !== 'undefined' && typeof data.emailsFailed !== 'undefined') {
+                        document.getElementById('csvEmailsSent').textContent = data.emailsSent || 0;
+                        document.getElementById('csvEmailsFailed').textContent = data.emailsFailed || 0;
+                        emailStatsContainer.style.display = 'block';
+                    } else {
+                        emailStatsContainer.style.display = 'none';
+                    }
                     
                     // Show detailed results if available
                     if (data.detailedResults && data.detailedResults.length > 0) {

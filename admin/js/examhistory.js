@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         });
 
+
     function renderTable() {
         tableBody.innerHTML = "";
 
@@ -50,14 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             tableBody.innerHTML += `
-                <tr>
+                <tr data-schedule-id="${row.schedule_id}">
                     <td>${start + index + 1}</td>
                     <td>
                         <span class="region-pill ${mapRegionClass(row.region)}">
                             ${row.region}
                         </span>
                     </td>
-                    <td>${row.venue_name ?? "—"}</td>
+                    <td>${row.venue_name ?? "\u2014"}</td>
                     <td>
                         <div class="fw-semibold">${formattedDate}</div>
                         <div class="text-muted small">${dayName}</div>
@@ -66,11 +67,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td><strong>${row.num_completed ?? 0}</strong> attended</td>
                     <td class="text-end">
                         <button 
-                            class="btn btn-sm btn-outline-success rounded-pill px-3" 
+                            class="btn btn-sm btn-outline-success rounded-pill px-3 me-2" 
                             onclick="exportExamHistory(${row.schedule_id})"
                             title=" CSV"
                         >
                             <i class="bx bx-download"></i> CSV
+                        </button>
+                        <button 
+                            class="btn btn-sm btn-outline-warning rounded-pill px-3 archive-btn" 
+                            data-schedule-id="${row.schedule_id}"
+                            title="Archive"
+                        >
+                            <i class="bx bx-archive"></i> Archive
                         </button>
                     </td>
                 </tr>
@@ -80,6 +88,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const total = examData.length;
         paginationInfo.textContent = 
             `Showing ${start + 1}–${Math.min(end, total)} of ${total} records`;
+
+        // Archive button logic
+        setTimeout(() => {
+            const archiveBtns = tableBody.querySelectorAll('.archive-btn');
+            archiveBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const scheduleId = btn.getAttribute('data-schedule-id');
+                    if (!scheduleId) return;
+                    if (!confirm('Archive this schedule?')) return;
+                    btn.disabled = true;
+                    fetch('php/archive_schedules.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'schedule_ids=' + encodeURIComponent(JSON.stringify([scheduleId]))
+                    })
+                    .then(res => res.json())
+                    .then(resp => {
+                        if (resp.success) {
+                            // Remove archived row from UI and data
+                            examData = examData.filter(row => String(row.schedule_id) !== String(scheduleId));
+                            update();
+                        } else {
+                            alert(resp.message || 'Failed to archive.');
+                        }
+                    })
+                    .catch(() => alert('Failed to archive.'))
+                    .finally(() => { btn.disabled = false; });
+                });
+            });
+        }, 0);
     }
 
 function renderPagination() {

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const roleFilter = document.getElementById('roleFilter');
     const dateFilter = document.getElementById('dateFilter');
     const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const deleteAllBtn = document.getElementById('deleteAllBtn');
     const tableContainer = document.getElementById('tableContainer');
     const tableBody = document.getElementById('tableBody');
     const paginationContainer = document.getElementById('paginationContainer');
@@ -21,6 +22,63 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize - Load data immediately
     loadActivityData();
+
+    // Delete All button
+    deleteAllBtn.addEventListener('click', function() {
+        new bootstrap.Modal(document.getElementById('deleteActivityLogsModal')).show();
+    });
+
+    // Confirm delete all activity logs
+    document.getElementById('confirmDeleteActivityLogsBtn').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+
+        const formData = new FormData();
+        formData.append('deleteAll', 'true');
+
+        fetch('php/delete_activity_logs.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success || data.deletedCount > 0) {
+                    // Hide confirmation modal
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('deleteActivityLogsModal')
+                    ).hide();
+
+                    // Show success modal
+                    setTimeout(() => {
+                        document.getElementById('deleteActivityLogsSuccessMessage').textContent = 
+                            data.deletedCount + ' activity log record(s) have been successfully deleted.';
+                        document.getElementById('deleteActivityLogsSuccessDetails').textContent = 
+                            'Total Deleted: ' + data.deletedCount;
+                        
+                        const successModal = new bootstrap.Modal(
+                            document.getElementById('deleteActivityLogsSuccessModal')
+                        );
+                        successModal.show();
+                    }, 300);
+
+                    // Reload data after modal is dismissed
+                    document.getElementById('deleteActivityLogsSuccessModal').addEventListener('hidden.bs.modal', function() {
+                        currentPage = 1;
+                        loadActivityData();
+                    }, { once: true });
+                } else {
+                    showStatus(data.message || 'Failed to delete records', 'danger');
+                }
+            })
+            .catch(() => {
+                showStatus('Network error deleting records', 'danger');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = '<i class="bx bx-trash me-1"></i> Delete All';
+            });
+    });
 
     // Search on input with debounce
     searchInput.addEventListener('input', function() {

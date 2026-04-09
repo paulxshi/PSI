@@ -126,33 +126,41 @@ function loadTransaction(userId) {
         .then(response => response.json())
         .then(data => {
             console.log('Transaction response:', data);
-            
             let transactionNo = 'N/A';
-            
             if (data.status !== "success") {
                 console.warn("No payment found in transaction query");
                 document.getElementById('transactionNo').textContent = 'N/A';
-                // Still try to load payment details
                 loadPaymentDetails(userId);
                 return;
             }
-
             transactionNo = data.external_id;
             console.log("Transaction number:", transactionNo);
-
-            // Populate transaction number
             document.getElementById('transactionNo').textContent = transactionNo;
 
-            // Generate QR Code with transaction number
-            generateQRCode(transactionNo);
+            // Fetch user full name for QR value
+            fetch(`php/get_user.php?user_id=${userId}`)
+                .then(res => res.json())
+                .then(userData => {
+                    let qrValue = transactionNo;
+                    if (userData && userData.success && userData.user) {
+                        const user = userData.user;
+                        const fullName = `${user.first_name} ${user.last_name}`;
+                        const testPermit = user.test_permit;
+                        // CSV style for Excel: transaction_no, full_name
+                        // \u000A is line feed (LF, Excel accepts this inside a cell)
+                        qrValue = `${fullName} ${transactionNo}\t${testPermit}`;
+                    }
+                    generateQRCode(qrValue);
+                })
+                .catch(() => {
+                    generateQRCode(transactionNo);
+                });
 
-            // Load additional payment details
             loadPaymentDetails(userId);
         })
         .catch(error => {
             console.error("Error loading transaction:", error);
             document.getElementById('transactionNo').textContent = 'N/A';
-            // Still try to load payment details
             loadPaymentDetails(userId);
         });
 }

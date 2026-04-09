@@ -49,7 +49,7 @@ try {
             'day' => $datetime->format('l'),
             'capacity' => (int)$schedule['capacity'],
             'num_registered' => (int)$schedule['num_registered'],
-            'price' => number_format((float)$schedule['price'], 2),
+            'price' => (float)$schedule['price'],
             'status' => $schedule['status'],
             'is_full' => (int)$schedule['num_registered'] >= (int)$schedule['capacity']
         ];

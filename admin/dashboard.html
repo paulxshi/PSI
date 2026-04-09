@@ -164,19 +164,6 @@
   text-align: center;
 }
 
-.auto-timer #cancelAutoComplete {
-  border: none;
-  background: transparent;
-  color: #6b7280;
-  font-size: 0.8rem;
-  padding: 0;
-  cursor: pointer;
-}
-
-.auto-timer #cancelAutoComplete:hover {
-  color: #374151;
-}
-
 /* MODAL BUTTONS */
 .modal-footer .btn {
   border-radius: 999px;
@@ -279,34 +266,25 @@
 
 </style>
 <body>
-
-	<!-- Sidebar Section -->
+	<button id="hamburgerBtn" aria-label="Toggle sidebar" title="Toggle sidebar" style="position: fixed; top: 18px; left: 18px; z-index: 9999;">
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	</button>
+    <!-- Sidebar Section -->
     <section id="sidebar">
-        <a href="#" class="brand" style="display: flex; align-items: center;">
-          <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
-          <span class="text">PSI-ADMIN Portal</span>
+        <a href="#" class="brand d-flex align-items-center">
+            <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
+            <span class="text">PSI-ADMIN Portal</span>
         </a>
+
         <ul class="side-menu top">
-          <li class="active">
-            <a href="dashboard.html">
-              <i class="bx bxs-dashboard"></i>
-              <span class="text">Dashboard</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="schedule.html">
-              <i class="bx bx-calendar-check"></i>
-              <span class="text">Create Schedule</span>
-            </a>
-          </li>
-
-          <li>
-            <a href="managesched.html">
-              <i class="bx bx-edit"></i>
-              <span class="text">Schedule Management</span>
-            </a>
-          </li>
+            <li  class="active">
+                <a href="dashboard.html">
+                    <i class="bx bxs-dashboard"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
 
             <li>
                 <a href="masterlist.html">
@@ -314,14 +292,28 @@
                     <span class="text">Examinee Masterlist</span>
                 </a>
             </li>
-         
             <li>
-                <a href="examinee.html">
-                    <i class="bx bx-group"></i>
-                    <span class="text">Examinee Management</span>
+                <a href="schedule.html">
+                    <i class="bx bx-calendar-check"></i>
+                    <span class="text">Create Schedule</span>
                 </a>
-            </li>  
-                            <li>
+            </li>
+
+            <li>
+                <a href="managesched.html">
+                    <i class="bx bx-edit"></i>
+                    <span class="text">Schedule Management </span>
+                </a>
+            </li>
+
+
+                <li>
+                    <a href="examinee.html">
+                        <i class="bx bx-group"></i>
+                        <span class="text">Examinee Management</span>
+                    </a>
+                </li>  
+                <li>
                     <a href="examhistory.html">
                         <i class="bx bx-history"></i>
                         <span class="text">Exam History</span>
@@ -334,17 +326,14 @@
                         <span class="text">Activity Log</span>
                     </a>
                 </li>
-
                 <li>
-                   <a href="faqsmanagement.html">
+                    <a href="faqsmanagement.html">
                        <i class="bx bx-task"></i>
                         <span class="text">FAQs Management </span>
                     </a>
                 </li>
-          
         </ul>
-    </ul>		
-  </section>
+    </section>
 
 	<section id="content">
     <nav class="d-flex justify-content-end align-items-center px-4">
@@ -423,6 +412,7 @@
             id="manualQR"
             class="form-control shadow-none"
             placeholder="Enter QR value"
+            autofocus
           >
 
 <button id="scanBtn" class="btn btn-primary px-3">
@@ -643,8 +633,7 @@
       <div id="autoCompleteTimer" class="text-center" style="display: none;">
         <span class="auto-timer">
           <i class="fa-solid fa-clock"></i>
-          Auto accepting in <strong id="timerCount">5</strong>s
-          <button id="cancelAutoComplete" class="btn btn-sm btn-link text-secondary text-decoration-none p-0 ms-1">Cancel</button>
+          Auto accepting in <strong id="timerCount">3</strong>s
         </span>
       </div>
 
@@ -720,6 +709,31 @@
 
 <script src="js/scanner.js"></script>
 <script>
+// Disable scan controls unless schedule is selected and no modal is open
+function isScheduleSelected() {
+  return window.selectedRegion && window.selectedVenue && window.selectedDate && window.selectedScheduleId;
+}
+
+function updateScanControls() {
+  const scanBtn = document.getElementById("scanBtn");
+  const manualQR = document.getElementById("manualQR");
+  const anyModalOpen = document.querySelectorAll(".modal.show").length > 0;
+  const enabled = isScheduleSelected() && !anyModalOpen;
+  if (scanBtn) scanBtn.disabled = !enabled;
+  if (manualQR) manualQR.disabled = !enabled;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Bootstrap modal events
+  document.querySelectorAll('.modal').forEach(function(modal) {
+    modal.addEventListener('shown.bs.modal', updateScanControls);
+    modal.addEventListener('hidden.bs.modal', updateScanControls);
+  });
+  // Listen for schedule selection changes
+  document.addEventListener("scheduleSelectionChanged", updateScanControls);
+  // Initial state
+  updateScanControls();
+});
 
 
 
@@ -727,26 +741,52 @@
 
   btn.addEventListener("click", simulateScan);
 
-  document.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      btn.click();
+  // Keep manualQR focused at all times (except when modal is open)
+  document.addEventListener("click", function(event) {
+    const modal = document.getElementById("qrResultModal");
+    const isModalOpen = modal && modal.classList.contains("show");
+    if (isModalOpen) return;
+
+    const manualQR = document.getElementById("manualQR");
+    // Don't steal focus from sidebar links / dropdowns
+    const isInteractive = event.target.closest("a, button, select, .dropdown");
+    if (!isInteractive && manualQR) {
+      manualQR.focus();
     }
   });
 
-function simulateScan() {
+  document.addEventListener("keydown", function(event) {
+    if (event.key !== "Enter") return;
 
-    const QR = document.getElementById("manualQR").value.trim();
-
-    if (!QR) {
-        alert("Enter QR value first.");
-        return;
+    // If the QR result modal is open, Enter dismisses it instead of re-scanning
+    const modal = document.getElementById("qrResultModal");
+    if (modal && modal.classList.contains("show")) {
+      event.preventDefault();
+      const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]');
+      if (closeBtn) closeBtn.click();
+      return;
     }
 
-    console.log("Simulated Scan:", QR);
+    event.preventDefault();
+    btn.click();
+  });
 
-    // This calls the SAME function used by real scanner
-    onScanSuccess(QR);
+function simulateScan() {
+    const input = document.getElementById("manualQR");
+
+   
+    setTimeout(() => {
+        const QR = input.value.trim();
+
+        if (!QR || QR.length < 5) {
+            alert("Please enter a valid QR value before scanning.");
+            return;
+        }
+
+        console.log("Simulated Scan:", QR);
+        onScanSuccess(QR);
+
+    }, 150); 
 }
 
 
@@ -774,6 +814,20 @@ document.addEventListener("click", function(e) {
 
     schedule.classList.toggle("show");
     icon.classList.toggle("open");
+});
+
+/* ✅ Schedule Row Selection (Event Delegation) */
+document.addEventListener("click", function(e) {
+    const row = e.target.closest(".region-table-row");
+    if (!row) return;
+
+    const region = row.dataset.region;
+    const venue  = row.dataset.venue;
+    const date   = row.dataset.date;
+
+    if (region && venue && date) {
+        selectSchedule(region, venue, date, row);
+    }
 });
 
 
@@ -826,8 +880,7 @@ function renderRegions(data) {
                  data-region="${region}"
                  data-venue="${venue}"
                  data-date="${sched.date}"
-                 data-schedule-id="${sched.schedule_id}"
-                 onclick="selectSchedule('${region}', '${venue}', '${sched.date}', this)">
+                 data-schedule-id="${sched.schedule_id}">
               <span>${formatDate(sched.date)}</span>
               <span class="fw-semibold">${sched.registered}</span>
               <span class="fw-semibold text-danger">${sched.limit}</span>
@@ -916,5 +969,51 @@ function selectSchedule(region, venue, date, element) {
 })();
 </script>
 
+<script>
+// Check admin session on page load
+(function() {
+    fetch('php/check_session.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.authenticated) {
+            // Redirect to admin login if not authenticated
+            window.location.href = '../auth/adminlogin.html';
+        }
+    })
+    .catch(error => {
+        console.error('Session check failed:', error);
+        window.location.href = '../auth/adminlogin.html';
+    });
+})();
+  const sidebar  = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburgerBtn');
+
+  // Restore user preference
+  if (localStorage.getItem('sidebarCollapsed') === 'true') {
+    sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
+  }
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('hide');
+    hamburger.classList.toggle('collapsed');
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
+  });
+    // Close sidebar when clicking on content area (mobile only)
+  const content = document.getElementById('content');
+  if (content) {
+    content.addEventListener('click', (e) => {
+      // Only close on mobile (screen width < 768px)
+      if (window.innerWidth < 768 && !sidebar.classList.contains('hide')) {
+        sidebar.classList.add('hide');
+        hamburger.classList.add('collapsed');
+        localStorage.setItem('sidebarCollapsed', 'true');
+      }
+    });
+  }
+</script>
 </body>
 </html>

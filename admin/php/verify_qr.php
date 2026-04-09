@@ -1,15 +1,17 @@
 <?php
 require "../../config/db.php";
 
-
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
-$data = json_decode(file_get_contents("php://input"), true);
+// Get raw input
+$rawInput = file_get_contents("php://input");
+$data = json_decode($rawInput, true);
 
+// Validate JSON
 if (json_last_error() !== JSON_ERROR_NONE) {
     echo json_encode([
         "status_class" => "invalid",
@@ -18,7 +20,8 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-if (!isset($data['external_id'])) {
+// Validate input
+if (empty($data['external_id'])) {
     echo json_encode([
         "status_class" => "invalid",
         "status_message" => "Missing Transaction Number"
@@ -26,20 +29,53 @@ if (!isset($data['external_id'])) {
     exit;
 }
 
-$invoiceNo = $data['external_id'];
-$stmt = $pdo->prepare("SELECT * FROM payments WHERE external_id = ?");
-$stmt->execute([$invoiceNo]);
-$payment = $stmt->fetch(PDO::FETCH_ASSOC);
+// ===============================
+// QR Extraction
+// ===============================
+$qrValue = trim($data['external_id']);
 
-if (!$payment || $payment['status'] !== 'PAID') {
+// Handle TAB interpreted as Enter by scanner
+$lines = preg_split('/\r?\n/', $qrValue);
+$firstLine = trim($lines[0]); // Take only the first line
+
+// Extract transaction number (last word of first line)
+$parts = preg_split('/\s+/', $firstLine);
+$invoiceNo = end($parts);
+
+if (!$invoiceNo) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => !$payment ? "Payment Not Found" : "Payment Pending",
-        "debug" => !$payment ? "No record in payments table" : "Payment status is not PAID"
+        "status_message" => "Invalid QR Format"
     ]);
     exit;
 }
 
+// ===============================
+// Payment Query
+// ===============================
+$stmt = $pdo->prepare("SELECT * FROM payments WHERE external_id = ?");
+$stmt->execute([$invoiceNo]);
+$payment = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$payment) {
+    echo json_encode([
+        "status_class" => "invalid",
+        "status_message" => "Payment Not Found"
+    ]);
+    exit;
+}
+
+if ($payment['status'] !== 'PAID') {
+    echo json_encode([
+        "status_class" => "invalid",
+        "status_message" => "Payment Pending"
+    ]);
+    exit;
+}
+
+// ===============================
+// Examinee
+// ===============================
 $stmt = $pdo->prepare("SELECT * FROM examinees WHERE examinee_id = ?");
 $stmt->execute([$payment['examinee_id']]);
 $examinee = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,14 +83,12 @@ $examinee = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$examinee) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Record Not Found",
-        "debug" => "Invalid examinee_id: " . $payment['examinee_id']
+        "status_message" => "Record Not Found"
     ]);
     exit;
 }
 
-$status = strtolower($examinee['examinee_status']);
-
+$status = strtolower(trim($examinee['examinee_status']));
 if ($status === 'completed') {
     echo json_encode([
         "status_class" => "already_used",
@@ -63,7 +97,6 @@ if ($status === 'completed') {
     ]);
     exit;
 }
-
 if ($status === 'rejected') {
     echo json_encode([
         "status_class" => "rejected",
@@ -73,6 +106,9 @@ if ($status === 'rejected') {
     exit;
 }
 
+// ===============================
+// User
+// ===============================
 $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt->execute([$payment['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -80,12 +116,14 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$user) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "User Not Found",
-        "debug" => "Invalid user_id: " . $payment['user_id']
+        "status_message" => "User Not Found"
     ]);
     exit;
 }
 
+// ===============================
+// Schedule
+// ===============================
 $stmt = $pdo->prepare("SELECT * FROM schedules WHERE schedule_id = ?");
 $stmt->execute([$examinee['schedule_id']]);
 $schedule = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,12 +131,14 @@ $schedule = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$schedule) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Schedule Not Found",
-        "debug" => "Invalid schedule_id: " . $examinee['schedule_id']
+        "status_message" => "Schedule Not Found"
     ]);
     exit;
 }
 
+// ===============================
+// Venue
+// ===============================
 $stmt = $pdo->prepare("SELECT * FROM venue WHERE venue_id = ?");
 $stmt->execute([$schedule['venue_id']]);
 $venue = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -106,18 +146,23 @@ $venue = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$venue) {
     echo json_encode([
         "status_class" => "invalid",
-        "status_message" => "Venue Not Found",
-        "debug" => "Invalid venue_id: " . $schedule['venue_id']
+        "status_message" => "Venue Not Found"
     ]);
     exit;
 }
 
-
+// ===============================
+// PH Timezone
+// ===============================
+date_default_timezone_set('Asia/Manila');
 $scannedTime = date("Y-m-d H:i:s");
 
+// ===============================
+// Name formatting 
+// ===============================
+$middleInitial = !empty($user['middle_name']) ? strtoupper($user['middle_name'][0]) . "." : "";
+$fullName = trim("{$user['first_name']} {$middleInitial} {$user['last_name']}");
 
-
-$fullName = $user['first_name'] . " " . $user['middle_name'] . ". " . $user['last_name'];
 
 echo json_encode([
     "status_class" => "valid",
@@ -132,6 +177,7 @@ echo json_encode([
     "venue" => $venue['venue_name'],
     "examinee_id" => $examinee['examinee_id'],
     "invoice_no" => $payment['external_id'],
+
     "payment_status" => $payment['status'],
     "payment_date" => $payment['payment_date'],
     "amount" => "₱" . number_format($payment['amount'], 2),

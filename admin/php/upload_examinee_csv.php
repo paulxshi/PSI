@@ -10,7 +10,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     exit;
 }
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -205,6 +205,48 @@ try {
     
     $pdo->commit();
     
+    // Send welcome emails via n8n webhook for successful imports
+    $emailsSent = 0;
+    $emailsFailed = 0;
+    
+    if ($successCount > 0) {
+        $n8nWebhookUrl = 'https://n8n.srv1069938.hstgr.cloud/webhook/csv-welcome-email';
+        
+        foreach ($detailedResults as $result) {
+            // Only send email for successful imports with valid email
+            if ($result['status'] === 'success' && !empty($result['email'])) {
+                $emailData = [
+                    'email' => $result['email'],
+                    'first_name' => $result['first_name'],
+                    'last_name' => $result['last_name'],
+                    'middle_name' => $result['middle_name'],
+                    'test_permit' => $result['test_permit']
+                ];
+                
+                // Send asynchronously to n8n (non-blocking)
+                $ch = curl_init($n8nWebhookUrl);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+                
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                
+                if ($httpCode === 200) {
+                    $emailsSent++;
+                    error_log("CSV Upload: Email sent to {$result['email']} (Test Permit: {$result['test_permit']})");
+                } else {
+                    $emailsFailed++;
+                    error_log("CSV Upload: Email failed for {$result['email']} (HTTP: $httpCode)");
+                }
+            }
+        }
+    }
+    
     echo json_encode([
         'success' => true,
         'message' => "Imported $successCount records successfully" . ($errorCount > 0 ? " with $errorCount errors" : ''),
@@ -212,7 +254,9 @@ try {
         'errorCount' => $errorCount,
         'errors' => $errors,
         'detailedResults' => $detailedResults,
-        'totalRows' => count($csvData)
+        'totalRows' => count($csvData),
+        'emailsSent' => $emailsSent,
+        'emailsFailed' => $emailsFailed
     ]);
     
 } catch (Exception $e) {

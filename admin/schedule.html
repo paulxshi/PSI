@@ -1,577 +1,476 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="../imgs/PSI.png">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-        <link rel="stylesheet" href="../css/dashstyle.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-        <title>Create Schedule</title>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../imgs/PSI.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashstyle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>Create Schedule</title>
 
     <style>
-    .dropdown-menu {
-    border-radius: 12px;
-    min-width: 180px;
-    }
+        .dropdown-menu {
+            border-radius: 12px;
+            min-width: 180px;
+        }
 
-    .dropdown-item {
-    font-size: 14px;
-    padding: 10px 14px;
-    }
+        .dropdown-item {
+            font-size: 14px;
+            padding: 10px 14px;
+        }
 
-    .dropdown-item i {
-    font-size: 18px;
-    }
+        .dropdown-item i {
+            font-size: 18px;
+        }
 
-    .dropdown-item:hover {
-    background-color: #f8f9fa;
-    }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
 
-    #content main {
-        background: linear-gradient(
-            180deg,
-            #f8fafc 0%,
-            #eef2f7 100%
-        );
-        min-height: 100vh;
-    }
+        #content main {
+            background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+            min-height: 100vh;
+        }
 
-    .page-header {
-        padding: 15px 24px;
-        border-bottom: 3px solid #acacac;
-        max-width: 50%;
-    }
+        #publishBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-    #publishBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-   }
+        .btn-close:focus,
+        .no-focus:focus {
+            outline: none;
+            box-shadow: none;
+        }
 
-    .exam-info {
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 12px;
-    }
-    .exam-info small {
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    }
-    .exam-value {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 600;
-        font-size: 1.1rem;
-        letter-spacing: 0.5px;
-        color: #111827;
-    }
-    
-    .btn-close:focus,
-    .no-focus:focus {
-        outline: none;
-        box-shadow: none;
-    }
+        .meal-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .meal-empty {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .preview-meals-list > div:not(:last-child) {
+            margin-bottom: 6px;
+        }
     </style>
+</head>
 
-    <body>
+<body>
 
-        <!-- Sidebar Section -->
-            <section id="sidebar">
-            <a href="#" class="brand" style="display: flex; align-items: center;">
-                <img src="../imgs/PSI.png" alt="RHULogo" class="logo">
-                <span class="text">PSI-ADMIN Portal</span>
-            </a>
-            <ul class="side-menu top">
-                <li>
-                    <a href="dashboard.html">
-                        <i class="bx bxs-dashboard"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
+    <!-- Hamburger -->
+    <button id="hamburgerBtn" aria-label="Toggle sidebar" title="Toggle sidebar"
+        style="position: fixed; top: 18px; left: 18px; z-index: 9999;">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
 
-                <li class="active">
-                    <a href="schedule.html">
-                        <i class="bx bx-calendar-check" /></i>
-                        <span class="text">Create Schedule</span>
-                    </a>
-                </li>
+    <!-- Sidebar -->
+    <section id="sidebar">
+        <a href="#" class="brand" style="display: flex; align-items: center;">
+            <img src="../imgs/PSI.png" alt="PSI Logo" class="logo">
+            <span class="text">PSI-ADMIN Portal</span>
+        </a>
 
-                <li>
-                    <a href="managesched.html">
+        <ul class="side-menu top">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bx bxs-dashboard"></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="schedule.html">
+                    <i class="bx bx-calendar-check"></i>
+                    <span class="text">Create Schedule</span>
+                </a>
+            </li>
+            <li>
+                <a href="managesched.html">
                     <i class="bx bx-edit"></i>
                     <span class="text">Schedule Management</span>
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="masterlist.html">
-                        <i class="bx bx-list-ul"></i>
-                        <span class="text">Examinee Masterlist</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="examinee.html">
-                        <i class="bx bx-group"></i>
-                        <span class="text">Examinee Management</span>
-                    </a>
-                </li> 
-                <li>
-                    <a href="examhistory.html">
-                        <i class="bx bx-history"></i>
-                        <span class="text">Exam History</span>
-                    </a>
-                </li> 
-
-                <li>
-                    <a href="activity_log.html">
-                        <i class="bx bx-notepad"></i>
-                        <span class="text">Activity Log</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="faqsmanagement.html">
-                       <i class="bx bx-task"></i>
-                        <span class="text">FAQs Management </span>
-                    </a>
-                </li>       
-            </ul>
-
-            <ul class="side-menu">
-
-
-        </ul>
-            
-        </section>
-
-        <section id="content">
-
-            <nav class="d-flex justify-content-end align-items-center px-4">
-            
-            <div class="dropdown">
-                <!-- Admin Icon -->
-                <a href="#"
-                class="d-flex align-items-center text-decoration-none"
-                id="adminDropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-                
-                <i class="bx bxs-user-circle fs-2 text-primary"></i>
-                <i class="bx bx-chevron-down ms-1 text-muted"></i>
                 </a>
+            </li>
+            <li>
+                <a href="examinee.html">
+                    <i class="bx bx-group"></i>
+                    <span class="text">Examinee Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="examhistory.html">
+                    <i class="bx bx-history"></i>
+                    <span class="text">Exam History</span>
+                </a>
+            </li>
+            <li>
+                <a href="activity_log.html">
+                    <i class="bx bx-notepad"></i>
+                    <span class="text">Activity Log</span>
+                </a>
+            </li>
+            <li>
+                <a href="faqsmanagement.html">
+                    <i class="bx bx-task"></i>
+                    <span class="text">FAQs Management</span>
+                </a>
+            </li>
+        </ul>
 
-                <!-- Dropdown Menu -->
+        <ul class="side-menu"></ul>
+    </section>
+
+    <!-- Main Content -->
+    <section id="content">
+
+        <!-- Navbar -->
+        <nav class="d-flex justify-content-end align-items-center px-4">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none"
+                   id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bx bxs-user-circle fs-2 text-primary"></i>
+                    <i class="bx bx-chevron-down ms-1 text-muted"></i>
+                </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                <li class="dropdown-header small text-muted">
-                    Administrator
-                </li>
-
-                <li><hr class="dropdown-divider"></li>
-
-                <li>
-                    <a class="dropdown-item d-flex align-items-center text-danger"
-                    href="#"
-                    data-bs-toggle="modal"
-                    data-bs-target="#logoutModal">
-                    <i class="bx bxs-log-out-circle me-2"></i>
-                    Logout
-                    </a>
-                </li>
+                    <li class="dropdown-header small text-muted">Administrator</li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center text-danger"
+                           href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bx bxs-log-out-circle me-2"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             </div>
-
-            </nav>
+        </nav>
 
         <main class="p-4">
+
+            <!-- Page Header Banner -->
             <div class="container-fluid mt-3 mb-4">
                 <div class="card border-0 shadow-sm rounded-4 p-3">
                     <div class="d-flex align-items-center gap-3">
-                <!-- Message -->
-                <div>
-                    <h6 class="mb-1 fw-bold text-uppercase" style="letter-spacing:0.08em;">
-                    Examination Schedule Management
-                    </h6>
-                    <p class="mb-0 text-muted small">
-                        This module to configure and publish official examination schedules.
-                        Ensure that all details are accurate before publishing, as these records will be made available to applicants and examination staff.
-                    </p>
-                </div>
-                </div>
-            </div>
-            </div>
-
-        <div class="row g-4">
-
-            <!-- Create Schedule Form -->
-            <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4">
-
-                <h6 class="fw-semibold mb-3">Schedule Details</h6>
-
-                <form method="POST" action="php/save_schedule.php" id="scheduleForm">
-
-                <div class="mb-4">
-                    <label class="form-label fw-medium mb-2">Exam Location</label>
-
-                    <!-- Region Dropdown -->
-                    <select class="form-select mb-3" name="exam_region" id="exam_region" required>
-                        <option value="">Select Region</option>
-                        <option value="Luzon">Luzon</option>
-                        <option value="Visayas">Visayas</option>
-                        <option value="Mindanao">Mindanao</option>
-                    </select>
-
-                    <!-- Venue Input -->
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Please select Examination venue"
-                        name="exam_area"
-                        id="exam_area"
-                        required
-                    >
-                </div>
-
-
-                    <!-- Date Row -->
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-medium">Exam Date</label>
-                            <input
-                                type="date"
-                                class="form-control"
-                                placeholder="Please select examination date"
-                                name="exam_date"
-                                id="exam_date"
-                                required
-                            >
-                            
+                        <div>
+                            <h6 class="mb-1 fw-bold text-uppercase" style="letter-spacing: 0.08em;">
+                                Examination Schedule Management
+                            </h6>
+                            <p class="mb-0 text-muted small">
+                                This module configures and publishes official examination schedules.
+                                Ensure all details are accurate before publishing, as these records will be
+                                made available to applicants and examination staff.
+                            </p>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Examinees & Price -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-medium">Number of Examinees</label>
-                            <input
-                                type="number"
-                                class="form-control"
-                                placeholder="Please enter the no. of examinees"
-                                name="exam_limit"
-                                min="1"
-                                required
-                            >
-                            
-                        </div>
+            <div class="row g-4">
 
-                        <div class="col-md-6">
-                            <label class="form-label fw-medium">Exam Price</label>
-                            <input
-                                type="number"
-                                class="form-control"
-                                placeholder="Please enter exam price"
-                                name="exam_price"
-                                min="0"
-                                step="0.01"
-                                required
-                            >
-                            
+                <!-- Schedule Form -->
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <h6 class="fw-semibold mb-3">Schedule Details</h6>
+
+                            <form method="POST" action="php/save_schedule.php" id="scheduleForm">
+
+                                <!-- Location -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium mb-2">Exam Location</label>
+
+                                    <select class="form-select mb-3" name="exam_region" id="exam_region" required>
+                                        <option value="" disabled selected>Select Region</option>
+                                        <option value="Luzon">Luzon</option>
+                                        <option value="Visayas">Visayas</option>
+                                        <option value="Mindanao">Mindanao</option>
+                                    </select>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Enter examination venue"
+                                        name="exam_area"
+                                        id="exam_area"
+                                        required
+                                    >
+                                </div>
+
+                                <!-- Date -->
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label fw-medium">Exam Date</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Select examination date"
+                                            name="exam_date"
+                                            id="exam_date"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                                <!-- Limit & Price -->
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Number of Examinees</label>
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            placeholder="Enter no. of examinees"
+                                            name="exam_limit"
+                                            id="exam_limit"
+                                            min="1"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Exam Price</label>
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            placeholder="Enter exam price"
+                                            name="exam_price"
+                                            id="exam_price"
+                                            min="0"
+                                            step="0.01"
+                                            required
+                                        >
+                                    </div>
+                                </div>
+
+                                <!-- Meals -->
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label fw-medium mb-0">Meals</label>
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-dark btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#mealModal"
+                                            id="addMealBtn"
+                                        >
+                                            <i class="bx bx-plus me-1"></i> Add Meal
+                                        </button>
+                                    </div>
+
+                                    <div id="mealList" class="border rounded-4 p-3 bg-light">
+                                        <span class="meal-empty">No meals added yet.</span>
+                                    </div>
+
+                                    <!-- Hidden field — keeps meals JSON in sync before submit -->
+                                    <input type="hidden" name="meals" id="mealsInput" value="[]">
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="reset" class="btn btn-light">Clear</button>
+                                </div>
+
+                            </form>
                         </div>
                     </div>
+                </div>
 
+                <!-- Preview Panel -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            <h6 class="fw-semibold mb-3">Schedule Preview</h6>
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex justify-content-end gap-2">
-                    <button type="reset" class="btn btn-light">
-                        Clear
-                    </button>
+                            <div class="border rounded-3 p-3 mb-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Region</small>
+                                <div class="fw-semibold" id="previewRegion">—</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 mb-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Venue</small>
+                                <div class="fw-semibold" id="previewVenue">—</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 mb-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Exam Date</small>
+                                <div class="fw-semibold" id="previewDate">—</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 mb-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Number of Examinees</small>
+                                <div class="fw-semibold text-danger" id="previewLimit">—</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 mb-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Exam Price</small>
+                                <div class="fw-semibold text-success" id="previewPrice">—</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3">
+                                <small class="text-muted text-uppercase d-block mb-1">Meals</small>
+                                <div class="fw-semibold preview-meals-list" id="previewMeals">—</div>
+                            </div>
+
+                            <div class="alert alert-light border mt-4 small mb-3">
+                                This preview shows how the schedule will appear once published.
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn fw-medium" style="background-color: #000000; color: #fff;"
+                                    id="publishBtn" type="button" disabled>
+                                    Publish Schedule
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                </form>
-
-                </div>
-            </div>
-            </div>
-
-            <!-- Preview / Summary -->
-            <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-
-                <h6 class="fw-semibold mb-3">Schedule Preview</h6>
-
-                <div class="border rounded-3 p-3 mb-3">
-                    <small class="text-muted text-uppercase d-block mb-1">Region</small>
-                    <div class="fw-semibold" id="previewRegion">—</div>
-                </div>
-
-                <div class="border rounded-3 p-3 mb-3">
-                    <small class="text-muted text-uppercase d-block mb-1">Venue</small>
-                    <div class="fw-semibold" id="previewVenue">—</div>
-                </div>
-
-                <div class="border rounded-3 p-3 mb-3">
-                    <small class="text-muted text-uppercase d-block mb-1">Exam Date</small>
-                    <div class="fw-semibold" id="previewDate">—</div>
-                </div>
-
-                <div class="border rounded-3 p-3">
-                    <small class="text-muted text-uppercase d-block mb-1">Number of Examinees</small>
-                    <div class="fw-semibold text-danger" id="previewLimit">—</div>
-                </div>
-
-                <div class="border rounded-3 p-3 mt-3">
-                    <small class="text-muted text-uppercase d-block mb-1">Exam Price</small>
-                    <div class="fw-semibold text-success" id="previewPrice">—</div>
-                </div>
-
-                <div class="alert alert-light border mt-4 small mb-3">
-                    This preview shows how the schedule will appear once published.
-                </div>
-
-                <div class="d-grid">
-                    <button class="btn btn-success fw-medium" style="background-color: #000000;" id="publishBtn" disabled>
-                        Publish Schedule
-                    </button>
                 </div>
 
             </div>
-
-
-            </div>
-            </div>
-
-        </div>
-
         </main>
 
-
-
-        <!-- Confirmation Modal -->
-<div class="modal fade" id="confirmScheduleModal" tabindex="-1" aria-labelledby="confirmScheduleLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      
-      <!-- Modal Header -->
-      <div class="modal-header border-0 justify-content-center pb-0">
-        <h5 class="modal-title fw-semibold" id="confirmScheduleLabel">
-          Confirm Schedule Creation
-        </h5>
-        <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      
-      <!-- Modal Body -->
-      <div class="modal-body px-4 py-4 text-center">
-        <i class="bx bx-calendar-check fs-1 text-primary mb-3"></i>
-        <p class="mb-0 text-muted">
-          Are you sure you want to publish this schedule?
-        </p>
-      </div>
-      
-      <!-- Modal Footer -->
-      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
-        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary rounded-pill px-4" id="confirmCreateBtn">
-          <i class="bx bx-check me-1"></i> Yes, Create
-        </button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
-
-<div
-    class="modal fade"
-    id="logoutModal"
-    tabindex="-1"
-    aria-labelledby="logoutModalLabel"
-    aria-hidden="true"
->
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow">
-
-            <!-- Modal Header -->
-            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
-                <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
-                    Confirm Logout
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close no-focus"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
+        <!-- ── Meal Modal ──────────────────────────────────────────────────── -->
+        <div class="modal fade" id="mealModal" tabindex="-1" aria-labelledby="mealModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-semibold" id="mealModalLabel">Add Meal</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-3">
+                        <div class="mb-3">
+                            <label for="mealName" class="form-label fw-medium">Meal Type</label>
+                            <input
+                                type="text"
+                                id="mealName"
+                                class="form-control"
+                                placeholder="e.g. Lunch Set A"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="mealPrice" class="form-label fw-medium">Meal Price</label>
+                            <input
+                                type="number"
+                                id="mealPrice"
+                                class="form-control"
+                                placeholder="Enter meal price"
+                                min="0"
+                                step="0.01"
+                            >
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-dark rounded-pill px-4" id="saveMealBtn">
+                            Save Meal
+                        </button>
+                    </div>
+                </div>
             </div>
-
-            <!-- Divider -->
-            <div class="px-4">
-                <hr class="my-0">
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body px-4 py-4 text-center">
-                <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
-                <p class="mb-0 text-muted">
-                    Are you sure you want to log out of your account?
-                </p>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-                <button
-                    type="button"
-                    class="btn btn-outline-secondary rounded-pill px-4"
-                    data-bs-dismiss="modal"
-                >
-                    Cancel
-                </button>
-                <a
-                    href="../php/adminlogout.php"
-                    class="btn btn-danger rounded-pill px-4"
-                >
-                    Logout
-                </a>
-            </div>
-
         </div>
-    </div>
-</div>
 
+        <!-- ── Confirm Publish Modal ───────────────────────────────────────── -->
+        <div class="modal fade" id="confirmScheduleModal" tabindex="-1" aria-labelledby="confirmScheduleLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header border-0 justify-content-center pb-0">
+                        <h5 class="modal-title fw-semibold" id="confirmScheduleLabel">Confirm Schedule Creation</h5>
+                        <button type="button" class="btn-close position-absolute end-0 me-3"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body px-4 py-4 text-center">
+                        <i class="bx bx-calendar-check fs-1 text-primary mb-3"></i>
+                        <p class="mb-0 text-muted">Are you sure you want to publish this schedule?</p>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary rounded-pill px-4" id="confirmCreateBtn">
+                            <i class="bx bx-check me-1"></i> Yes, Create
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- ── Logout Modal ────────────────────────────────────────────────── -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content border-0 rounded-4 shadow">
+                    <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+                        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">Confirm Logout</h5>
+                        <button type="button" class="btn-close no-focus" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="px-4"><hr class="my-0"></div>
+                    <div class="modal-body px-4 py-4 text-center">
+                        <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+                        <p class="mb-0 text-muted">Are you sure you want to log out of your account?</p>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <a href="../php/adminlogout.php" class="btn btn-danger rounded-pill px-4">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+    </section>
 
-    const regionSelect = document.getElementById("exam_region");
-    const venueInput   = document.getElementById("exam_area");
-    const dateInput    = document.getElementById("exam_date");
-    const limitInput   = document.querySelector('input[name="exam_limit"]');
-    const priceInput   = document.querySelector('input[name="exam_price"]');
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="js/schedule.js"></script>
 
-    const previewRegion = document.getElementById("previewRegion");
-    const previewVenue  = document.getElementById("previewVenue");
-    const previewDate   = document.getElementById("previewDate");
-    const previewLimit  = document.getElementById("previewLimit");
-    const previewPrice  = document.getElementById("previewPrice");
-    const publishBtn    = document.getElementById("publishBtn");
+    <script>
+        // Session check
+        (function () {
+            fetch("php/check_session.php", { method: "GET", credentials: "same-origin" })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.authenticated) window.location.href = "../auth/adminlogin.html";
+                })
+                .catch(() => { window.location.href = "../auth/adminlogin.html"; });
+        })();
 
-    function updatePreview() {
+        // Sidebar toggle
+        const sidebar   = document.getElementById("sidebar");
+        const hamburger = document.getElementById("hamburgerBtn");
+        const content   = document.getElementById("content");
 
-        const region = regionSelect.value;
-        const venue  = venueInput.value;
-        const date   = dateInput.value;
-        const limit  = limitInput.value;
-        const price  = priceInput.value;
+        if (localStorage.getItem("sidebarCollapsed") === "true") {
+            sidebar.classList.add("hide");
+            hamburger.classList.add("collapsed");
+        }
 
-        // Update preview text
-        previewRegion.textContent = region || "—";
-        previewVenue.textContent  = venue  || "—";
+        hamburger.addEventListener("click", () => {
+            sidebar.classList.toggle("hide");
+            hamburger.classList.toggle("collapsed");
+            localStorage.setItem("sidebarCollapsed", sidebar.classList.contains("hide"));
+        });
 
-        // Format date for preview
-        if (date) {
-            const dateObj = new Date(date + 'T00:00:00');
-            const formattedDate = dateObj.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+        if (content) {
+            content.addEventListener("click", () => {
+                if (window.innerWidth < 768 && !sidebar.classList.contains("hide")) {
+                    sidebar.classList.add("hide");
+                    hamburger.classList.add("collapsed");
+                    localStorage.setItem("sidebarCollapsed", "true");
+                }
             });
-            previewDate.textContent = formattedDate;
-        } else {
-            previewDate.textContent = "—";
         }
+    </script>
 
-        previewLimit.textContent = limit || "—";
-        previewPrice.textContent = price ? `₱${Number(price).toLocaleString()}` : "—";
-
-        // Enable publish button only if all fields are filled
-        const isComplete =
-            region && venue && date && limit && price;
-
-        publishBtn.disabled = !isComplete;
-    }
-
-    // Live listeners
-    [
-        regionSelect,
-        venueInput,
-        dateInput,
-        limitInput,
-        priceInput
-    ].forEach(el => el.addEventListener("input", updatePreview));
-
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const form = document.getElementById("scheduleForm");
-
-    const previewRegion = document.getElementById("previewRegion");
-    const previewVenue  = document.getElementById("previewVenue");
-    const previewDate   = document.getElementById("previewDate");
-    const previewLimit  = document.getElementById("previewLimit");
-    const publishBtn    = document.getElementById("publishBtn");
-
-    form.addEventListener("reset", function () {
-
-        // Small delay to allow native reset to finish
-        setTimeout(() => {
-            previewRegion.textContent = "—";
-            previewVenue.textContent  = "—";
-            previewDate.textContent   = "—";
-            previewLimit.textContent  = "—";
-            previewPrice.textContent = "—";
-
-            publishBtn.disabled = true;
-        }, 0);
-
-    });
-
-});
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="js/schedule.js"></script>
-<script>
-// Initialize flatpickr on exam date
-document.addEventListener('DOMContentLoaded', function() {
-    flatpickr("#exam_date", {
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        altInput: true,
-        altFormat: "F j, Y",
-        allowInput: true
-    });
-});
-</script>
-
-<script>
-// Check admin session on page load
-(function() {
-    fetch('php/check_session.php', {
-        method: 'GET',
-        credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (!data.authenticated) {
-            // Redirect to admin login if not authenticated
-            window.location.href = '../auth/adminlogin.html';
-        }
-    })
-    .catch(error => {
-        console.error('Session check failed:', error);
-        window.location.href = '../auth/adminlogin.html';
-    });
-})();
-</script>
-
-    </body>
-    </html>
+</body>
+</html>

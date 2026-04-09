@@ -274,9 +274,33 @@ fetch('php/check_payment_status.php', {
       document.getElementById('invoiceText').innerHTML = 
         '<small class="text-muted">' + data.payment.external_id + '</small>';
     } else if (data.payment.status === 'PENDING') {
-      // Redirect to complete_payment.html for pending payments
-      console.log('Payment still pending, redirecting to complete payment page...');
-      window.location.href = 'complete_payment.html';
+      // Payment is still PENDING — verify and complete it via Xendit API server-side
+      console.log('Payment still pending, verifying with Xendit API...');
+      document.getElementById('invoiceText').innerHTML = 
+        '<small class="text-muted">Verifying payment...</small>';
+      
+      fetch('php/complete_pending_payment.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(result => {
+        console.log('Complete payment result:', result);
+        if (result.success) {
+          // Payment verified and completed — reload to show updated info
+          window.location.reload();
+        } else {
+          document.getElementById('invoiceText').innerHTML = 
+            '<span class="text-warning">Payment not yet confirmed. ' + 
+            (result.message || 'Please wait a moment and refresh.') + '</span>';
+        }
+      })
+      .catch(err => {
+        console.error('Error completing payment:', err);
+        document.getElementById('invoiceText').innerHTML = 
+          '<span class="text-warning">Could not verify payment. Please refresh the page.</span>';
+      });
     } else {
       document.getElementById('invoiceText').innerHTML = 
         '<span class="text-danger">Payment Status: ' + data.payment.status + '</span>';

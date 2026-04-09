@@ -15,6 +15,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $exam_limit = (int)$_POST['exam_limit'];
     $exam_price = (float)$_POST['exam_price'];
 
+    // Parse meals JSON (optional — defaults to empty array)
+    $meals = [];
+    if (!empty($_POST['meals'])) {
+        $decoded = json_decode($_POST['meals'], true);
+        if (is_array($decoded)) {
+            $meals = $decoded;
+        }
+    }
+
     // Validate required fields
     if (empty($region) || empty($venue_name) || empty($scheduled_date) || $exam_limit <= 0 || $exam_price < 0) {
         echo json_encode([
@@ -28,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Start transaction
         $pdo->beginTransaction();
 
+        // Check if venue already exists, otherwise insert it
         $stmtCheck = $pdo->prepare("SELECT venue_id FROM venue WHERE venue_name = ? AND region = ?");
         $stmtCheck->execute([$venue_name, $region]);
         $existingVenue = $stmtCheck->fetch(PDO::FETCH_ASSOC);
@@ -40,11 +50,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $venue_id = $pdo->lastInsertId();
         }
 
+        // Insert schedule
         $stmtSchedule = $pdo->prepare("
             INSERT INTO schedules (venue_id, scheduled_date, num_of_examinees, price, num_registered, status) 
             VALUES (?, ?, ?, ?, 0, 'Incoming')
         ");
         $stmtSchedule->execute([$venue_id, $scheduled_date, $exam_limit, $exam_price]);
+
+        // Capture schedule_id immediately after insert, before commit
+        $schedule_id = $pdo->lastInsertId();
+
+        // Insert meals linked to the new schedule
+        if (!empty($meals)) {
+            $stmtMeal = $pdo->prepare("
+                INSERT INTO meals (name, price, schedule_id) VALUES (?, ?, ?)
+            ");
+            foreach ($meals as $meal) {
+                $meal_name = trim($meal['name'] ?? '');
+                $meal_price = (float)($meal['price'] ?? 0);
+
+                if (empty($meal_name) || $meal_price < 0) {
+                    continue; // Skip invalid meal entries
+                }
+
+                $stmtMeal->execute([$meal_name, $meal_price, $schedule_id]);
+            }
+        }
 
         // Commit transaction
         $pdo->commit();
@@ -52,12 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Log activity
         if (isset($_SESSION['user_id'])) {
             $metadata = [
-                'schedule_id' => $pdo->lastInsertId(),
+                'schedule_id' => $schedule_id,
                 'venue' => $venue_name,
                 'region' => $region,
                 'date' => $scheduled_date,
                 'capacity' => $exam_limit,
-                'price' => $exam_price
+                'price' => $exam_price,
+                'meals_count' => count($meals)
             ];
             logActivity(
                 'admin_schedule_created',

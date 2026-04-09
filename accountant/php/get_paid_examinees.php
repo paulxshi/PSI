@@ -36,6 +36,7 @@ try {
                 p.payment_id,
                 p.xendit_invoice_id,
                 p.external_id,
+                p.channel,
                 p.xendit_response
               FROM payments p
               INNER JOIN users u ON p.user_id = u.user_id
@@ -86,8 +87,11 @@ try {
     
     // Extract payment method from xendit_response
     foreach ($examinees as &$examinee) {
+        // Use the channel column directly if available
         $paymentMethod = 'Online Payment';
-        if (!empty($examinee['xendit_response'])) {
+        if (!empty($examinee['channel'])) {
+            $paymentMethod = $examinee['channel'];
+        } elseif (!empty($examinee['xendit_response'])) {
             $xenditData = json_decode($examinee['xendit_response'], true);
             if (isset($xenditData['payment_channel'])) {
                 $paymentMethod = $xenditData['payment_channel'];
