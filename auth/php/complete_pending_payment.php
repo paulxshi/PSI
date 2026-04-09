@@ -169,6 +169,7 @@ try {
     $stmt = $pdo->prepare($updateUserQuery);
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
+<<<<<<< HEAD
     
     
     
@@ -187,6 +188,8 @@ $stmt->execute();
 
 
 
+=======
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
 
     // Commit transaction
     $pdo->commit();

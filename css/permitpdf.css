@@ -224,6 +224,99 @@
   margin: 0;
 }
 
+.payment-details-row {
+  gap: 0.45rem !important;
+  align-items: flex-start;
+}
+
+.payment-details-row > div {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.payment-details-row .field-label {
+  font-size: 10px;
+  line-height: 1.05;
+  margin-bottom: 1px;
+}
+
+.payment-details-row .field-value {
+  font-size: 10px;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.meal-option-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  line-height: 1.05;
+  white-space: normal;
+}
+
+.meal-option-list .meal-item {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Make the payment block denser in PDF / print so stacked meals still fit */
+body.print-mode .payment-details-row {
+  gap: 0.35rem !important;
+}
+
+body.print-mode .payment-details-row .field-label {
+  font-size: 8px;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+body.print-mode .payment-details-row .field-value {
+  font-size: 8.5px;
+  line-height: 1.05;
+}
+
+body.print-mode .meal-option-list {
+  gap: 0;
+  line-height: 1;
+}
+
+body.print-mode .meal-option-list .meal-item {
+  font-size: 8px;
+  line-height: 1;
+}
+
+/* Browser print */
+@media print {
+  .payment-details-row {
+    gap: 0.3rem !important;
+    align-items: flex-start;
+  }
+
+  .payment-details-row .field-label {
+    font-size: 7px;
+    line-height: 1;
+    margin-bottom: 1px;
+  }
+
+  .payment-details-row .field-value {
+    font-size: 8px;
+    line-height: 1.02;
+  }
+
+  .meal-option-list {
+    gap: 0;
+    line-height: 1;
+  }
+
+  .meal-option-list .meal-item {
+    font-size: 7.5px;
+    line-height: 1;
+    margin: 0;
+  }
+}
+
 /* Examinee photo */
 .photo-box {
   width: 124px;

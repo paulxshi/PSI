@@ -79,6 +79,8 @@ qrValue = qrValue.replace(/\s{2,}/g, "\t");
     })
     .then(res => res.json())
     .then(data => {
+        console.log("Server response:", data);
+        if (data.debug) console.warn("Debug info:", data.debug);
         showQRResult(data);
     })
     .catch(err => {
@@ -167,6 +169,110 @@ function showQRResult(data) {
     modalElement.classList.remove("modal-valid", "modal-invalid", "modal-warning", "modal-already_used", "modal-rejected");
     modalElement.classList.add("modal-" + statusClass);
 
+<<<<<<< HEAD
+=======
+if (statusClass === "already_used") {
+    document.getElementById("exam_sched").style.display = "none";
+    applyActionState("completed");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for already used
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
+}
+else if (statusClass === "rejected") {
+    applyActionState("rejected");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for rejected
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
+}
+else if (statusClass === "valid") {
+    // For verified examinees - hide buttons, auto accept only
+    applyActionState("hidden");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+}
+else if (statusClass === "warning") {
+    // For schedule mismatch - show buttons for manual decision
+    applyActionState("default");
+    document.getElementById("autoCompleteTimer").style.display = "none";
+}
+else {
+    applyActionState("completed"); // truly invalid only
+    document.getElementById("autoCompleteTimer").style.display = "none";
+    // Hide action buttons for invalid
+    document.getElementById("completeBtn").style.display = "none";
+    document.getElementById("cancelBtn1").style.display = "none";
+}
+    const modal = new bootstrap.Modal(modalElement);
+    if (statusClass === "valid") {
+        // Capture the examinee ID BEFORE starting auto-complete
+        const examineeId = window.currentExamineeId;
+        console.log("DEBUG: Captured examineeId for auto-complete =", examineeId);
+        startAutoComplete(modal, examineeId);
+    } else {
+        document.getElementById("autoCompleteTimer").style.display = "none";
+    }
+
+    modal.show();
+}
+function startAutoComplete(modal, examineeId) {
+    const timerDiv = document.getElementById("autoCompleteTimer");
+    const timerCount = document.getElementById("timerCount");
+
+
+    console.log("DEBUG: startAutoComplete called with examineeId =", examineeId);
+    const completeBtn = document.getElementById("completeBtn");
+
+    const runId = Date.now();
+    window.currentAutoCompleteRun = runId;
+
+    timerDiv.style.display = "block";
+    completeBtn.style.display = "none";
+
+    const startTime = Date.now();
+    const duration = 3000;
+
+    if (window.autoCompleteInterval) clearInterval(window.autoCompleteInterval);
+    if (window.autoCompleteTimeout) clearTimeout(window.autoCompleteTimeout);
+
+    window.autoCompleteInterval = setInterval(() => {
+
+        if (window.currentAutoCompleteRun !== runId) {
+            clearInterval(window.autoCompleteInterval);
+            return;
+        }
+
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, Math.ceil((duration - elapsed) / 1000));
+        timerCount.textContent = remaining;
+
+        if (elapsed >= duration) {
+
+            clearInterval(window.autoCompleteInterval);
+
+            if (window.currentAutoCompleteRun !== runId) return;
+
+            timerDiv.innerHTML =
+                '<span class="text-success fw-semibold"><i class="fa-solid fa-check me-1"></i> Accepted</span>';
+
+            updateStatusWithId("complete", examineeId);
+            applyActionState("completed");
+
+            window.autoCompleteTimeout = setTimeout(() => {
+                if (window.currentAutoCompleteRun !== runId) return;
+
+                const modalElement = document.getElementById("qrResultModal");
+                const activeModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                activeModal.hide();
+            }, 1000);
+        }
+
+    }, 100);
+
+}
+document.addEventListener("DOMContentLoaded", function () {
+
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
     const completeBtn = document.getElementById("completeBtn");
     const cancelBtn1 = document.getElementById("cancelBtn1");
     const timerDiv = document.getElementById("autoCompleteTimer");
@@ -279,8 +385,17 @@ function updateStatusWithId(action, examineeId) {
     .then(res => res.json())
     .then(data => {
         if (!data.success) {
+<<<<<<< HEAD
             console.error("Status update failed:", data.message);
         } else {
+=======
+            alert("Error: " + data.message);
+
+            // Re-enable if server failed
+            applyActionState("default");
+        } else {
+            // Clear the manual QR input on successful completion
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
             const manualQR = document.getElementById("manualQR");
             if (manualQR) manualQR.value = "";
         }

@@ -78,6 +78,21 @@ async function loadSchedules() {
         
         if (data.success) {
             allSchedules = data.schedules;
+            
+            // Auto-update status to 'Completed' for past dates on frontend
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time to start of day
+            
+            allSchedules.forEach(schedule => {
+                const scheduleDate = new Date(schedule.scheduled_date);
+                scheduleDate.setHours(0, 0, 0, 0);
+                
+                // If date has passed and not already completed or cancelled, mark as completed
+                if (scheduleDate < today && schedule.status !== 'Completed' && schedule.status !== 'Cancelled') {
+                    schedule.status = 'Completed';
+                }
+            });
+            
             // Sort by date in descending order (newest first)
             allSchedules.sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
             filteredSchedules = [...allSchedules];
@@ -221,7 +236,10 @@ function formatLongDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US', {
         minimumFractionDigits: 2,
@@ -229,7 +247,10 @@ function formatPrice(price) {
     });
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
 function filterSchedules() {
     currentPage = 1; 
 

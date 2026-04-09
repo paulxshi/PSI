@@ -1,66 +1,75 @@
+// Utility: escape HTML to prevent XSS
+function escapeHtml(str) {
+    if (str == null) return '';
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(String(str)));
+    return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadPaymentStatistics();
     loadPaidExaminees();
     loadVenues(); 
     
     setupFilters();
+    setupDatePresets();
     
     initializeDatePickers();
 });
 
 let currentPage = 1;
-let allExaminees = []; 
+let totalPages = 1;
+let totalCount = 0;
+let currentPageData = [];
 const itemsPerPage = 10;
 
-function loadPaymentStatistics() {
-    fetch('php/get_payment_statistics.php')
+function loadPaymentStatistics(filters = {}) {
+    const queryParams = new URLSearchParams(filters).toString();
+    const url = `php/get_payment_statistics.php${queryParams ? '?' + queryParams : ''}`;
+    fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updateRegionCards(data.regions);
+                updateRegionCards(data.regions, data.overall);
             } else {
-                console.error('Error loading statistics:', data.message);
+                showToast(data.message || 'Error loading statistics', 'danger');
             }
         })
         .catch(error => {
             console.error('Error fetching statistics:', error);
+            showToast('Failed to load statistics.', 'danger');
         });
 }
 
-function updateRegionCards(regions) {
-    // Update Luzon
-    const luzonCard = document.querySelector('.luzon-revenue');
-    if (luzonCard) {
-        luzonCard.textContent = '₱' + regions.Luzon.revenue;
-    }
-    const luzonSub = document.querySelector('.luzon-sub');
-    if (luzonSub) {
-        luzonSub.innerHTML = `${regions.Luzon.examinees} paid examinees &nbsp;•&nbsp; ${regions.Luzon.payments} payments`;
+function updateRegionCards(regions, overall) {
+    const regionMap = {
+        Luzon: { revenue: '.luzon-revenue', sub: '.luzon-sub' },
+        Visayas: { revenue: '.visayas-revenue', sub: '.visayas-sub' },
+        Mindanao: { revenue: '.mindanao-revenue', sub: '.mindanao-sub' }
+    };
+    
+    for (const [name, selectors] of Object.entries(regionMap)) {
+        const revenueEl = document.querySelector(selectors.revenue);
+        const subEl = document.querySelector(selectors.sub);
+        if (revenueEl) revenueEl.textContent = '₱' + (regions[name]?.revenue || '0.00');
+        if (subEl) subEl.innerHTML = `${regions[name]?.examinees || 0} paid examinees &nbsp;•&nbsp; ${regions[name]?.payments || 0} payments`;
     }
     
-    // Update Visayas
-    const visayasCard = document.querySelector('.visayas-revenue');
-    if (visayasCard) {
-        visayasCard.textContent = '₱' + regions.Visayas.revenue;
+    // Update total revenue card
+    const totalRevenueEl = document.querySelector('.total-revenue');
+    const totalSubEl = document.querySelector('.total-sub');
+    if (totalRevenueEl && overall) {
+        totalRevenueEl.textContent = '₱' + (overall.total_revenue || '0.00');
     }
-    const visayasSub = document.querySelector('.visayas-sub');
-    if (visayasSub) {
-        visayasSub.innerHTML = `${regions.Visayas.examinees} paid examinees &nbsp;•&nbsp; ${regions.Visayas.payments} payments`;
-    }
-    
-    // Update Mindanao
-    const mindanaoCard = document.querySelector('.mindanao-revenue');
-    if (mindanaoCard) {
-        mindanaoCard.textContent = '₱' + regions.Mindanao.revenue;
-    }
-    const mindanaoSub = document.querySelector('.mindanao-sub');
-    if (mindanaoSub) {
-        mindanaoSub.innerHTML = `${regions.Mindanao.examinees} paid examinees &nbsp;•&nbsp; ${regions.Mindanao.payments} payments`;
+    if (totalSubEl && overall) {
+        totalSubEl.innerHTML = `${overall.total_examinees || 0} paid examinees &nbsp;•&nbsp; ${overall.total_payments || 0} payments`;
     }
 }
 
 // Load paid examinees list
-function loadPaidExaminees(filters = {}) {
+function loadPaidExaminees(filters = {}, page = 1) {
+    filters.page = page;
+    filters.limit = itemsPerPage;
     const queryParams = new URLSearchParams(filters).toString();
     const url = `php/get_paid_examinees.php${queryParams ? '?' + queryParams : ''}`;
     
@@ -68,27 +77,22 @@ function loadPaidExaminees(filters = {}) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                allExaminees = data.data; // Store all data
-                currentPage = 1; // Reset to first page
-                displayCurrentPage();
+                currentPage = data.page;
+                totalPages = data.totalPages;
+                totalCount = data.count;
+                currentPageData = data.data;
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                displayPaidExaminees(data.data, startIndex);
                 updateCount(data.count);
                 updatePagination();
             } else {
-                console.error('Error loading examinees:', data.message);
+                showToast(data.message || 'Error loading examinees', 'danger');
             }
         })
         .catch(error => {
             console.error('Error fetching examinees:', error);
+            showToast('Failed to load examinees. Please try again.', 'danger');
         });
-}
-
-// Display current page of examinees
-function displayCurrentPage() {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const pageData = allExaminees.slice(startIndex, endIndex);
-    
-    displayPaidExaminees(pageData, startIndex);
 }
 
 // Display paid examinees in a table
@@ -113,12 +117,12 @@ function displayPaidExaminees(examinees, startIndex = 0) {
         html += `
             <tr>
                 <td>${startIndex + index + 1}</td>
-                <td class="fw-semibold">${examinee.test_permit}</td>
-                <td>${examinee.full_name}</td>
-                <td class="font-monospace small">${examinee.external_id || '-'}</td>
-                <td>${examinee.payment_method || 'Online Payment'}</td>
-                <td class="fw-semibold">${examinee.amount_formatted}</td>
-                <td class="text-muted" style="font-size: 0.8rem;">${examinee.paid_at_formatted}</td>
+                <td class="fw-semibold">${escapeHtml(examinee.test_permit)}</td>
+                <td>${escapeHtml(examinee.full_name)}</td>
+                <td class="font-monospace small">${escapeHtml(examinee.external_id || '-')}</td>
+                <td>${escapeHtml(examinee.payment_method || 'Online Payment')}</td>
+                <td class="fw-semibold">${escapeHtml(examinee.amount_formatted)}</td>
+                <td class="text-muted" style="font-size: 0.8rem;">${escapeHtml(examinee.paid_at_formatted)}</td>
                 <td class="text-center table-actions">
                     <div class="btn-group btn-group-sm">
                         <button class="btn btn-light" onclick="viewPaymentDetails(${startIndex + index})" title="View Payment Details">
@@ -142,12 +146,11 @@ function updateCount(count) {
 
 // Update pagination controls
 function updatePagination() {
-    const totalPages = Math.ceil(allExaminees.length / itemsPerPage);
     const paginationContainer = document.getElementById('paginationContainer');
     const pagination = document.getElementById('pagination');
     
-    // Only show pagination if more than 10 records
-    if (allExaminees.length <= 10) {
+    // Only show pagination if more than 1 page
+    if (totalPages <= 1) {
         paginationContainer.style.display = 'none';
         return;
     }
@@ -195,12 +198,10 @@ function updatePagination() {
 
 // Go to page function (global)
 window.goToPage = function(page) {
-    const totalPages = Math.ceil(allExaminees.length / itemsPerPage);
     if (page < 1 || page > totalPages) return;
     
     currentPage = page;
-    displayCurrentPage();
-    updatePagination();
+    applyFilters(page);
     
     // Scroll to table (minimal scrolling)
     document.getElementById('tableContainer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -232,7 +233,7 @@ function initializeDatePickers() {
     }
 }
 
-function applyFilters() {
+function applyFilters(page = 1) {
     const regionFilter = document.querySelector('#region-filter');
     const venueFilter = document.querySelector('#venue-filter');
     const searchInput = document.querySelector('#search-input');
@@ -261,7 +262,8 @@ function applyFilters() {
         filters.dateTo = dateToInput.value;
     }
     
-    loadPaidExaminees(filters);
+    loadPaidExaminees(filters, page);
+    loadPaymentStatistics(filters);
 }
 
 function setupFilters() {
@@ -319,6 +321,16 @@ function setupFilters() {
             }
             
             loadPaidExaminees();
+            loadPaymentStatistics();
+        });
+    }
+    
+    // Debounced live search
+    let searchDebounceTimer = null;
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => applyFilters(), 350);
         });
     }
     
@@ -326,6 +338,7 @@ function setupFilters() {
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                clearTimeout(searchDebounceTimer);
                 applyFilters();
             }
         });
@@ -334,13 +347,51 @@ function setupFilters() {
 
 // Export to CSV functionality
 function exportToCSV() {
-    // Export all examinees data (not just current page)
-    if (allExaminees.length === 0) {
-        alert('No data to export');
+    if (totalCount === 0) {
+        showToast('No data to export', 'warning');
         return;
     }
     
-    downloadCSV(allExaminees);
+    // Build current filter params + exportAll flag
+    const filters = getCurrentFilters();
+    filters.exportAll = '1';
+    const queryParams = new URLSearchParams(filters).toString();
+    const url = `php/get_paid_examinees.php?${queryParams}`;
+    
+    showToast('Preparing export...', 'info');
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                downloadCSV(data.data);
+                showToast('Export complete!', 'success');
+            } else {
+                showToast('Export failed.', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Export error:', error);
+            showToast('Export failed. Please try again.', 'danger');
+        });
+}
+
+// Get current filter values as an object
+function getCurrentFilters() {
+    const filters = {};
+    const regionFilter = document.querySelector('#region-filter');
+    const venueFilter = document.querySelector('#venue-filter');
+    const searchInput = document.querySelector('#search-input');
+    const dateFromInput = document.querySelector('#date-from');
+    const dateToInput = document.querySelector('#date-to');
+    
+    if (regionFilter && regionFilter.value) filters.region = regionFilter.value;
+    if (venueFilter && venueFilter.value) filters.venue = venueFilter.value;
+    if (searchInput && searchInput.value.trim()) filters.search = searchInput.value.trim();
+    if (dateFromInput && dateFromInput.value) filters.dateFrom = dateFromInput.value;
+    if (dateToInput && dateToInput.value) filters.dateTo = dateToInput.value;
+    
+    return filters;
 }
 
 function downloadCSV(data) {
@@ -391,10 +442,13 @@ function loadVenues() {
             if (data.success) {
                 allVenues = data.venues;
                 populateVenueDropdown(allVenues);
+            } else {
+                showToast(data.message || 'Error loading venues', 'danger');
             }
         })
         .catch(error => {
             console.error('Error loading venues:', error);
+            showToast('Failed to load venues.', 'danger');
         });
 }
 
@@ -430,8 +484,8 @@ function filterVenuesByRegion(region) {
 }
 
 // View payment details in modal
-window.viewPaymentDetails = function(index) {
-    const examinee = allExaminees[index];
+window.viewPaymentDetails = function(localIndex) {
+    const examinee = currentPageData[localIndex - ((currentPage - 1) * itemsPerPage)];
     if (!examinee) return;
     
     // Populate modal fields
@@ -450,3 +504,163 @@ window.viewPaymentDetails = function(index) {
     const modal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
     modal.show();
 };
+
+// ── Toast Notification System ──
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const iconMap = {
+        success: 'bx-check-circle',
+        danger: 'bx-error-circle',
+        warning: 'bx-error',
+        info: 'bx-info-circle'
+    };
+    
+    const toastEl = document.createElement('div');
+    toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+    toastEl.setAttribute('role', 'alert');
+    toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class='bx ${iconMap[type] || iconMap.info}'></i>
+                ${escapeHtml(message)}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    container.appendChild(toastEl);
+    
+    const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+    toast.show();
+    toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+}
+
+// ── Date Range Presets ──
+function setupDatePresets() {
+    document.querySelectorAll('.date-preset').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const preset = this.dataset.preset;
+            const today = new Date();
+            let from, to;
+            
+            to = formatDate(today);
+            
+            switch (preset) {
+                case 'today':
+                    from = to;
+                    break;
+                case 'week': {
+                    const day = today.getDay();
+                    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+                    from = formatDate(new Date(today.getFullYear(), today.getMonth(), diff));
+                    break;
+                }
+                case 'month':
+                    from = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
+                    break;
+                case 'quarter': {
+                    const qMonth = Math.floor(today.getMonth() / 3) * 3;
+                    from = formatDate(new Date(today.getFullYear(), qMonth, 1));
+                    break;
+                }
+            }
+            
+            const dateFromInput = document.querySelector('#date-from');
+            const dateToInput = document.querySelector('#date-to');
+            
+            if (dateFromInput) {
+                if (dateFromInput._flatpickr) dateFromInput._flatpickr.setDate(from, true);
+                else dateFromInput.value = from;
+            }
+            if (dateToInput) {
+                if (dateToInput._flatpickr) dateToInput._flatpickr.setDate(to, true);
+                else dateToInput.value = to;
+            }
+            
+            // Highlight active preset
+            document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('btn-dark', 'text-white'));
+            this.classList.add('btn-dark', 'text-white');
+            
+            applyFilters();
+        });
+    });
+}
+
+function formatDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+}
+
+// ── PDF Export ──
+function exportToPDF() {
+    if (totalCount === 0) {
+        showToast('No data to export', 'warning');
+        return;
+    }
+    
+    const filters = getCurrentFilters();
+    filters.exportAll = '1';
+    const queryParams = new URLSearchParams(filters).toString();
+    const url = `php/get_paid_examinees.php?${queryParams}`;
+    
+    showToast('Generating PDF...', 'info');
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                generatePDF(data.data);
+                showToast('PDF export complete!', 'success');
+            } else {
+                showToast('PDF export failed.', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('PDF export error:', error);
+            showToast('PDF export failed. Please try again.', 'danger');
+        });
+}
+
+function generatePDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape', 'mm', 'a4');
+    
+    // Title
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('PSI - Paid Examinees Report', 14, 18);
+    
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 24);
+    doc.text(`Total Records: ${data.length}`, 14, 29);
+    
+    // Table
+    const headers = [['#', 'Test Permit', 'Full Name', 'Venue', 'Region', 'Transaction ID', 'Method', 'Amount', 'Payment Date']];
+    const rows = data.map((item, i) => [
+        i + 1,
+        item.test_permit || '',
+        item.full_name || '',
+        item.venue_name || '',
+        item.region || '',
+        item.external_id || '-',
+        item.payment_method || 'Online Payment',
+        item.amount_formatted || '',
+        item.paid_at_formatted || ''
+    ]);
+    
+    doc.autoTable({
+        head: headers,
+        body: rows,
+        startY: 34,
+        styles: { fontSize: 7, cellPadding: 2 },
+        headStyles: { fillColor: [30, 41, 59], textColor: 255, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [248, 249, 250] },
+        margin: { left: 14, right: 14 }
+    });
+    
+    doc.save(`paid_examinees_${new Date().toISOString().split('T')[0]}.pdf`);
+}
