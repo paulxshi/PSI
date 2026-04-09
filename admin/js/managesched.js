@@ -11,6 +11,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function setupEditMealListeners() {
+    // Open meal modal programmatically to support stacking on top of the edit modal
+    document.getElementById('openAddMealBtn').addEventListener('click', function () {
+        document.getElementById('editMealName').value  = '';
+        document.getElementById('editMealPrice').value = '';
+
+        const mealModalEl = document.getElementById('editMealModal');
+        let mealModal = bootstrap.Modal.getInstance(mealModalEl);
+        if (!mealModal) {
+            mealModal = new bootstrap.Modal(mealModalEl);
+        }
+        mealModal.show();
+
+        // Fix z-index so meal modal sits on top of the edit schedule modal
+        mealModalEl.addEventListener('shown.bs.modal', function handler() {
+            mealModalEl.style.zIndex = 1060;
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            if (backdrops.length > 0) {
+                backdrops[backdrops.length - 1].style.zIndex = 1059;
+            }
+            mealModalEl.removeEventListener('shown.bs.modal', handler);
+        });
+    });
+
     document.getElementById('saveEditMealBtn').addEventListener('click', function () {
         const name  = document.getElementById('editMealName').value.trim();
         const price = document.getElementById('editMealPrice').value.trim();
@@ -26,7 +49,8 @@ function setupEditMealListeners() {
         document.getElementById('editMealName').value  = '';
         document.getElementById('editMealPrice').value = '';
 
-        bootstrap.Modal.getInstance(document.getElementById('editMealModal')).hide();
+        const mealModal = bootstrap.Modal.getInstance(document.getElementById('editMealModal'));
+        if (mealModal) mealModal.hide();
     });
 
     document.getElementById('editMealList').addEventListener('click', function (e) {
