@@ -15,22 +15,6 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 }
 
 try {
-    // First, auto-update schedules that have passed to 'Completed' status
-    $updateQuery = "
-        UPDATE schedules 
-        SET status = 'Completed' 
-        WHERE scheduled_date < CURDATE() 
-        AND status != 'Completed'
-        AND status != 'Closed'
-    ";
-    $updateStmt = $pdo->prepare($updateQuery);
-    $updateStmt->execute();
-    
-    $updatedCount = $updateStmt->rowCount();
-    if ($updatedCount > 0) {
-        error_log("Auto-updated $updatedCount past schedules to 'Completed' status");
-    }
-    
     // Get all schedules with venue information
     $query = "
         SELECT 
@@ -50,24 +34,41 @@ try {
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $schedules = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
+    // Fetch all meals grouped by schedule_id
+    $stmtMeals = $pdo->prepare("SELECT meal_id, schedule_id, name, price FROM meals WHERE schedule_id IS NOT NULL");
+    $stmtMeals->execute();
+    $allMeals = $stmtMeals->fetchAll(PDO::FETCH_ASSOC);
+
+    $mealsBySchedule = [];
+    foreach ($allMeals as $meal) {
+        $sid = (int)$meal['schedule_id'];
+        $mealsBySchedule[$sid][] = [
+            'meal_id' => (int)$meal['meal_id'],
+            'name'    => $meal['name'],
+            'price'   => (float)$meal['price']
+        ];
+    }
+
     // Format the data for frontend
     $formattedSchedules = [];
     foreach ($schedules as $schedule) {
         $datetime = new DateTime($schedule['scheduled_date']);
-        
+        $sid = (int)$schedule['schedule_id'];
+
         $formattedSchedules[] = [
-            'schedule_id' => (int)$schedule['schedule_id'],
-            'venue_name' => $schedule['venue_name'],
-            'region' => $schedule['region'],
+            'schedule_id'    => $sid,
+            'venue_name'     => $schedule['venue_name'],
+            'region'         => $schedule['region'],
             'scheduled_date' => $schedule['scheduled_date'],
-            'date' => $datetime->format('F j, Y'),
-            'day' => $datetime->format('l'),
-            'capacity' => (int)$schedule['capacity'],
+            'date'           => $datetime->format('F j, Y'),
+            'day'            => $datetime->format('l'),
+            'capacity'       => (int)$schedule['capacity'],
             'num_registered' => (int)$schedule['num_registered'],
-            'price' => (float)$schedule['price'],
-            'status' => $schedule['status'],
-            'is_full' => (int)$schedule['num_registered'] >= (int)$schedule['capacity']
+            'price'          => (float)$schedule['price'],
+            'status'         => $schedule['status'],
+            'is_full'        => (int)$schedule['num_registered'] >= (int)$schedule['capacity'],
+            'meals'          => $mealsBySchedule[$sid] ?? []
         ];
     }
     

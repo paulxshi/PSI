@@ -2,12 +2,59 @@ let allSchedules = [];
 let filteredSchedules = [];
 let currentPage = 1;
 const rowsPerPage = 8;
+let editMeals = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     loadSchedules();
-    
     setupEventListeners();
+    setupEditMealListeners();
 });
+
+function setupEditMealListeners() {
+    document.getElementById('saveEditMealBtn').addEventListener('click', function () {
+        const name  = document.getElementById('editMealName').value.trim();
+        const price = document.getElementById('editMealPrice').value.trim();
+
+        if (!name || !price || isNaN(parseFloat(price))) {
+            alert('Please enter a valid meal name and price.');
+            return;
+        }
+
+        editMeals.push({ name: name, price: parseFloat(price) });
+        renderEditMeals();
+
+        document.getElementById('editMealName').value  = '';
+        document.getElementById('editMealPrice').value = '';
+
+        bootstrap.Modal.getInstance(document.getElementById('editMealModal')).hide();
+    });
+
+    document.getElementById('editMealList').addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-edit-meal-btn')) {
+            const index = Number(e.target.getAttribute('data-index'));
+            editMeals.splice(index, 1);
+            renderEditMeals();
+        }
+    });
+}
+
+function renderEditMeals() {
+    const list = document.getElementById('editMealList');
+    if (editMeals.length === 0) {
+        list.innerHTML = '<span class="text-muted" style="font-size:0.9rem;">No meals added yet.</span>';
+    } else {
+        list.innerHTML = editMeals.map((meal, i) => `
+            <div class="d-flex justify-content-between align-items-center border rounded-3 p-2 mb-2 bg-white">
+                <div>
+                    <div class="fw-semibold">${meal.name}</div>
+                    <small class="text-muted">&#8369;${parseFloat(meal.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-edit-meal-btn" data-index="${i}">Remove</button>
+            </div>
+        `).join('');
+    }
+    document.getElementById('editMealsInput').value = JSON.stringify(editMeals);
+}
 
 function setupEventListeners() {
     const searchInput = document.getElementById('searchInput');
@@ -31,21 +78,6 @@ async function loadSchedules() {
         
         if (data.success) {
             allSchedules = data.schedules;
-            
-            // Auto-update status to 'Completed' for past dates on frontend
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Reset time to start of day
-            
-            allSchedules.forEach(schedule => {
-                const scheduleDate = new Date(schedule.scheduled_date);
-                scheduleDate.setHours(0, 0, 0, 0);
-                
-                // If date has passed and not already completed or cancelled, mark as completed
-                if (scheduleDate < today && schedule.status !== 'Completed' && schedule.status !== 'Cancelled') {
-                    schedule.status = 'Completed';
-                }
-            });
-            
             // Sort by date in descending order (newest first)
             allSchedules.sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date));
             filteredSchedules = [...allSchedules];
@@ -189,12 +221,14 @@ function formatLongDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
+
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
+
 
 function filterSchedules() {
     currentPage = 1; 
@@ -237,19 +271,20 @@ function updateTotalCount() {
 function editSchedule(scheduleId) {
     const schedule = allSchedules.find(s => s.schedule_id === scheduleId);
     if (!schedule) return;
-    
-    // Extract date from scheduled_date
-    const date = schedule.scheduled_date;
-    
-    // Populate modal
+
+    // Populate basic fields
     document.getElementById('editScheduleId').value = schedule.schedule_id;
     document.getElementById('editRegion').value = schedule.region;
     document.getElementById('editVenue').value = schedule.venue_name;
-    document.getElementById('editDate').value = date;
+    document.getElementById('editDate').value = schedule.scheduled_date;
     document.getElementById('editCapacity').value = schedule.capacity;
     document.getElementById('editPrice').value = parseFloat(schedule.price).toFixed(2);
     document.getElementById('editStatus').value = schedule.status;
-    
+
+    // Populate meals
+    editMeals = (schedule.meals || []).map(m => ({ name: m.name, price: parseFloat(m.price) }));
+    renderEditMeals();
+
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('editScheduleModal'));
     modal.show();
@@ -258,6 +293,8 @@ function editSchedule(scheduleId) {
 // Save schedule changes
 async function saveScheduleChanges() {
     const form = document.getElementById('editScheduleForm');
+    // Sync meals to hidden input before building FormData
+    document.getElementById('editMealsInput').value = JSON.stringify(editMeals);
     const formData = new FormData(form);
     
     // Disable save button

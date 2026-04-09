@@ -45,6 +45,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES (?, ?, ?, ?, 0, 'Incoming')
         ");
         $stmtSchedule->execute([$venue_id, $scheduled_date, $exam_limit, $exam_price]);
+        $schedule_id = $pdo->lastInsertId();
+
+        // Save meals if provided
+        $mealsRaw = $_POST['meals'] ?? '[]';
+        $meals = json_decode($mealsRaw, true);
+        if (is_array($meals) && count($meals) > 0) {
+            $stmtMeal = $pdo->prepare("INSERT INTO meals (name, price, schedule_id) VALUES (?, ?, ?)");
+            foreach ($meals as $meal) {
+                $mealName  = trim($meal['type'] ?? $meal['name'] ?? '');
+                $mealPrice = (float)($meal['price'] ?? 0);
+                if ($mealName !== '') {
+                    $stmtMeal->execute([$mealName, $mealPrice, $schedule_id]);
+                }
+            }
+        }
 
         // Commit transaction
         $pdo->commit();
@@ -52,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Log activity
         if (isset($_SESSION['user_id'])) {
             $metadata = [
-                'schedule_id' => $pdo->lastInsertId(),
+                'schedule_id' => $schedule_id,
                 'venue' => $venue_name,
                 'region' => $region,
                 'date' => $scheduled_date,

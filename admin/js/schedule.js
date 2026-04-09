@@ -145,6 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     confirmBtn.addEventListener("click", function () {
+        if (confirmBtn.disabled) return;
+        confirmBtn.disabled = true;
         confirmModal.hide();
 
         publishBtn.disabled = true;
@@ -167,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert(data.message || "Failed to create schedule. Please try again.");
                 publishBtn.disabled = false;
                 publishBtn.textContent = "Publish Schedule";
+                confirmBtn.disabled = false;
             }
         })
         .catch(error => {
@@ -174,6 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Network error. Please try again.");
             publishBtn.disabled = false;
             publishBtn.textContent = "Publish Schedule";
+            confirmBtn.disabled = false;
         });
     });
 
