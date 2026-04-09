@@ -169,27 +169,18 @@ try {
     $stmt = $pdo->prepare($updateUserQuery);
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
-<<<<<<< HEAD
-    
-    
-    
-    
-        // 4d. Update examinee_meals payment status to 'paid'
-$updateMealsQuery = "
-    UPDATE examinee_meals 
-    SET payment_status = 'paid'
-    WHERE user_id = :user_id
-    AND payment_status = 'unpaid'
-";
 
-$stmt = $pdo->prepare($updateMealsQuery);
-$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-$stmt->execute();
+    // 4d. Update examinee_meals payment status to 'paid'
+    $updateMealsQuery = "
+        UPDATE examinee_meals 
+        SET payment_status = 'paid'
+        WHERE user_id = :user_id
+        AND payment_status = 'unpaid'
+    ";
 
-
-
-=======
->>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
+    $stmt = $pdo->prepare($updateMealsQuery);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
 
     // Commit transaction
     $pdo->commit();
