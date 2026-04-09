@@ -59,36 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $schedule_id = $pdo->lastInsertId();
 
         // Save meals if provided
-        $mealsRaw = $_POST['meals'] ?? '[]';
-        $meals = json_decode($mealsRaw, true);
-        if (is_array($meals) && count($meals) > 0) {
+        if (!empty($meals)) {
             $stmtMeal = $pdo->prepare("INSERT INTO meals (name, price, schedule_id) VALUES (?, ?, ?)");
             foreach ($meals as $meal) {
-                $mealName  = trim($meal['type'] ?? $meal['name'] ?? '');
+                $mealName  = trim($meal['name'] ?? $meal['type'] ?? '');
                 $mealPrice = (float)($meal['price'] ?? 0);
-                if ($mealName !== '') {
+                if ($mealName !== '' && $mealPrice >= 0) {
                     $stmtMeal->execute([$mealName, $mealPrice, $schedule_id]);
                 }
-            }
-        }
-
-        // Capture schedule_id immediately after insert, before commit
-        $schedule_id = $pdo->lastInsertId();
-
-        // Insert meals linked to the new schedule
-        if (!empty($meals)) {
-            $stmtMeal = $pdo->prepare("
-                INSERT INTO meals (name, price, schedule_id) VALUES (?, ?, ?)
-            ");
-            foreach ($meals as $meal) {
-                $meal_name = trim($meal['name'] ?? '');
-                $meal_price = (float)($meal['price'] ?? 0);
-
-                if (empty($meal_name) || $meal_price < 0) {
-                    continue; // Skip invalid meal entries
-                }
-
-                $stmtMeal->execute([$meal_name, $meal_price, $schedule_id]);
             }
         }
 
