@@ -1,5 +1,9 @@
 // Examinee Management - Registered Examinees
 document.addEventListener('DOMContentLoaded', function() {
+    // Bulk select/delete elements
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+    let selectedUserIds = new Set();
     const searchInput = document.getElementById('searchInput');
     const regionFilter = document.getElementById('regionFilter');
     const tableContainer = document.getElementById('tableContainer');
@@ -268,10 +272,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function populateTable(records) {
         tableBody.innerHTML = '';
-        updateTableHeader(); 
+        updateTableHeader();
+
+        // Reset selection
+        selectedUserIds.clear();
+        if (selectAllCheckbox) selectAllCheckbox.checked = false;
+        if (deleteSelectedBtn) deleteSelectedBtn.style.display = 'none';
 
         if (records.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No registered examinees found</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No registered examinees found</td></tr>';
             return;
         }
 
@@ -296,14 +305,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Show reschedule button only if examinee_status is NOT 'Completed'
             const isCompleted = record.examinee_status === 'Completed';
-            const rescheduleBtn = !isCompleted 
+            const rescheduleBtn = !isCompleted
                 ? `<button class="btn btn-light" onclick="openRescheduleModal(${record.user_id})" title="Reschedule">
                         <i class="bx bx-calendar-edit"></i>
                    </button>`
                 : '';
 
+            // Add checkbox for selection (use examinee_id)
             const row = `
                 <tr class="border-bottom">
+                    <td style="width:36px;">
+                        <input type="checkbox" class="rowCheckbox" data-examinee-id="${record.examinee_id}">
+                    </td>
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
                     <td>${escapeHtml(record.full_name)}</td>
                     <td>
@@ -325,6 +338,78 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
 
             tableBody.innerHTML += row;
+        });
+
+        // Add event listeners for row checkboxes
+        const rowCheckboxes = tableBody.querySelectorAll('.rowCheckbox');
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const examineeId = this.getAttribute('data-examinee-id');
+                if (this.checked) {
+                    selectedUserIds.add(examineeId);
+                } else {
+                    selectedUserIds.delete(examineeId);
+                }
+                updateBulkDeleteUI();
+            });
+        });
+    }
+    // Select All checkbox logic
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = tableBody.querySelectorAll('.rowCheckbox');
+            if (this.checked) {
+                checkboxes.forEach(cb => {
+                    cb.checked = true;
+                    selectedUserIds.add(cb.getAttribute('data-examinee-id'));
+                });
+            } else {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+                selectedUserIds.clear();
+            }
+            updateBulkDeleteUI();
+        });
+    }
+
+    // Update Delete Selected button visibility
+    function updateBulkDeleteUI() {
+        if (deleteSelectedBtn) {
+            deleteSelectedBtn.style.display = selectedUserIds.size > 0 ? 'inline-block' : 'none';
+        }
+        // Update selectAllCheckbox state
+        const checkboxes = tableBody.querySelectorAll('.rowCheckbox');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+        }
+    }
+
+    // Delete Selected button logic
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.addEventListener('click', function() {
+            if (selectedUserIds.size === 0) return;
+            if (!confirm('Are you sure you want to delete the selected examinees? This action cannot be undone.')) return;
+
+            // Send AJAX request to delete selected examinees by examinee_id
+            fetch('php/delete_examinees.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ examinee_ids: Array.from(selectedUserIds) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showStatus('Selected examinees deleted successfully.', 'success');
+                    loadExamineeData();
+                } else {
+                    showStatus(data.message || 'Failed to delete selected examinees.', 'danger');
+                }
+            })
+            .catch(error => {
+                showStatus('Network error deleting examinees.', 'danger');
+            });
         });
     }
 

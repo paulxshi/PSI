@@ -782,6 +782,31 @@ body.print-mode .signature-block .sig-sub {
   font-size: 8.5px;
 }
 
+@font-face {
+  font-family: 'MaturaWeb';
+  src: url('../fonts/MaturaMTScriptCapitals.woff2') format('woff2'),
+       url('../fonts/MaturaMTScriptCapitals.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.permit-header .center-col h5 {
+  font-family: 'MaturaWeb', 'Brush Script MT', cursive;
+  font-size: 20px;
+  font-weight: normal;
+  color: #c0392b;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+body.print-mode .permit-header .center-col h5 {
+  font-family: 'MaturaWeb', 'Brush Script MT', cursive;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+
 /* ══════════════════════════════════════
    @MEDIA PRINT (browser print)
    ══════════════════════════════════════ */

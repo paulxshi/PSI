@@ -61,6 +61,7 @@ try {
     // Get data with schedule information
     $dataQuery = "
         SELECT 
+            e.examinee_id,
             u.user_id,
             u.test_permit,
             u.first_name,

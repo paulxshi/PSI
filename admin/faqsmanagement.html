@@ -182,9 +182,9 @@
     </a>
     <ul class="side-menu top">
       <li><a href="dashboard.html"><i class="bx bxs-dashboard"></i><span class="text">Dashboard</span></a></li>
+      <li><a href="masterlist.html"><i class="bx bx-list-ul"></i><span class="text">Examinee Masterlist</span></a></li>
       <li><a href="schedule.html"><i class="bx bx-calendar-check"></i><span class="text">Create Schedule</span></a></li>
       <li><a href="managesched.html"><i class="bx bx-edit"></i><span class="text">Schedule Management</span></a></li>
-      <li><a href="masterlist.html"><i class="bx bx-list-ul"></i><span class="text">Examinee Masterlist</span></a></li>
       <li><a href="examinee.html"><i class="bx bx-group"></i><span class="text">Examinee Management</span></a></li>
       <li><a href="examhistory.html"><i class="bx bx-history"></i><span class="text">Exam History</span></a></li>
       <li><a href="activity_log.html"><i class="bx bx-notepad"></i><span class="text">Activity Log</span></a></li>
@@ -486,11 +486,19 @@
     hamburger.classList.toggle('collapsed');
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
+<<<<<<< HEAD
+    // Close sidebar when clicking on content area (mobile only)
+  const content = document.getElementById('content');
+  if (content) {
+    content.addEventListener('click', (e) => {
+      // Only close on mobile (screen width < 768px)
+=======
 
   // Close sidebar when clicking on content area (mobile only)
   const content = document.getElementById('content');
   if (content) {
     content.addEventListener('click', (e) => {
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
       if (window.innerWidth < 768 && !sidebar.classList.contains('hide')) {
         sidebar.classList.add('hide');
         hamburger.classList.add('collapsed');

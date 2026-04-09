@@ -452,7 +452,12 @@
                     <span class="text">Dashboard</span>
                 </a>
             </li>
-
+            <li>
+                <a href="masterlist.html">
+                    <i class="bx bx-list-ul"></i>
+                    <span class="text">Examinee Masterlist</span>
+                </a>
+            </li>
             <li>
                 <a href="schedule.html">
                     <i class="bx bx-calendar-check"></i>
@@ -467,12 +472,6 @@
                 </a>
             </li>
             
-            <li>
-                <a href="masterlist.html">
-                    <i class="bx bx-list-ul"></i>
-                    <span class="text">Examinee Masterlist</span>
-                </a>
-            </li>
 
             <li class="active">
                 <a href="examinee.html">
@@ -636,7 +635,7 @@
                         <!-- Region Filter -->
                         <div class="col-md-3">
                             <select class="form-select" id="regionFilter">
-                                <option value="">All Regions</option>
+                                <option value="">Filter by Region</option>
                                 <option value="Luzon">Luzon</option>
                                 <option value="Visayas">Visayas</option>
                                 <option value="Mindanao">Mindanao</option>
@@ -654,9 +653,18 @@
                     <!-- Examinee Table Container -->
                     <div id="tableContainer" style="display:none;">
                         <div class="table-responsive">
+                            <!-- Bulk Delete Button -->
+                            <div class="mb-2">
+                                <button id="deleteSelectedBtn" class="btn btn-danger btn-sm rounded-pill" style="display:none;">
+                                    <i class="bx bx-trash"></i> Delete Selected
+                                </button>
+                            </div>
                             <table class="table table-borderless align-middle schedule-table mb-0">
                                 <thead>
                                     <tr class="text-uppercase text-muted border-bottom">
+                                        <th style="width:36px;">
+                                            <input type="checkbox" id="selectAllCheckbox" title="Select All">
+                                        </th>
                                         <th>Test Permit</th>
                                         <th>Name</th>
                                         <th>Email</th>

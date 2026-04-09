@@ -222,22 +222,22 @@
     letter-spacing: -0.6px;
   }
 
-  .pmma-main {
-    display: inline-block;
-
-    font-size: clamp(2.5rem, 5vw, 3.6rem);
-    font-weight: 800;
-    color: #ffb703;
-    text-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.65),
-      0 0 18px rgba(0, 0, 0, 0.45);
-  }
+ .pmma-main {
+  display: inline-block; 
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #ffb703;
+  white-space: nowrap; /* prevents line break */
+  text-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(0, 0, 0, 0.45);
+}
 
 .pmma-sub {
   display: inline-block;
   margin-top: 6px;
 
-  font-size: clamp(2.3rem, 4.5vw, 3.2rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: #ffffff;
 
@@ -246,19 +246,19 @@
     0 0 18px rgba(255, 183, 3, 0.65);
 }
 
-/* Subtle underline accent (optional, clean) */
 .pmma-sub::after {
   content: "";
   display: block;
   width: 70px;
-  height: 3px;
-  margin-top: 6px;
+  height: 3.2px;
+
+  margin-top: 13px; 
 
   background: linear-gradient(90deg, #ffb703, #ef8809);
-  border-radius: 2px;
-
+  border-radius: 1px;
   box-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
 }
+
 .pmma-title {
   animation: titleReveal 0.9s ease-out both;
 }
@@ -519,15 +519,15 @@
             Welcome to the
           </h6>
 
-            <h1 class="pmma-title mb-3">
-            <span class="pmma-main">PMMA Examination</span><br>
-            <span class="pmma-sub">Portal</span>
+             <h1 class="pmma-title mb-3">
+            <span class="pmma-main">PMMA</span><br>
+            <span class="pmma-main">Psychological Assessment</span><br>
+            <span class="pmma-sub">Registration Portal</span>
             </h1>
 
           <!-- DESCRIPTION -->
           <p class="fs-6 text-white opacity-80 mb-4">
-            Secure access for examination applicants. Please proceed using your
-            official test permit and registered email address.
+            For qualified PMMAEE applicants, please register for the psychological assessment.
           </p>
 
           <!-- CTA -->

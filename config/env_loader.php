@@ -1,20 +1,26 @@
 <?php
+<<<<<<< HEAD
+=======
 /**
  * Simple Environment Variable Loader
  * ===================================
  * Loads environment variables from .env file
  * This is a lightweight alternative to vlucas/phpdotenv
  */
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
 
 class EnvLoader {
     private static $loaded = false;
     
+<<<<<<< HEAD
+=======
     /**
      * Load environment variables from .env file
      * 
      * @param string $path Path to .env file
      * @return bool True if loaded successfully
      */
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
     public static function load($path) {
         if (self::$loaded) {
             return true;
@@ -56,6 +62,8 @@ class EnvLoader {
         return true;
     }
     
+<<<<<<< HEAD
+=======
     /**
      * Get environment variable with optional default value
      * 
@@ -63,6 +71,7 @@ class EnvLoader {
      * @param mixed $default Default value if not found
      * @return mixed
      */
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
     public static function get($key, $default = null) {
         // Check $_ENV first
         if (isset($_ENV[$key])) {

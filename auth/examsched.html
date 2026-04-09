@@ -513,6 +513,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const scheduleMealsMap = {};
 
+<<<<<<< HEAD
+=======
     // TEMPORARY: Change to false when your real meal database is ready
     const USE_DUMMY_MEALS = true;
 
@@ -524,6 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { meal_id: "DUMMY5", meal_name: "Bottled Water", meal_price: 25 }
     ];
 
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
     function clearScheduleMealsMap() {
         Object.keys(scheduleMealsMap).forEach(key => delete scheduleMealsMap[key]);
     }
@@ -727,6 +730,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     scheduleSelect.appendChild(option);
 
+<<<<<<< HEAD
+                   scheduleMealsMap[schedule.schedule_id] = [];
+=======
                     const backendMeals =
                         schedule.meals ||
                         schedule.meal_options ||
@@ -736,6 +742,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         Array.isArray(backendMeals) && backendMeals.length > 0
                             ? backendMeals
                             : (USE_DUMMY_MEALS ? DUMMY_MEALS : []);
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
                 });
 
                 scheduleSelect.disabled = false;
@@ -745,6 +752,45 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 
+<<<<<<< HEAD
+scheduleSelect.addEventListener("change", function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const fee = selectedOption ? selectedOption.dataset.fee : "";
+    const selectedScheduleId = this.value;
+
+    if (!fee) {
+        examFeeInput.value = "";
+    } else {
+        examFeeInput.value = "₱" + Number(fee).toLocaleString();
+    }
+
+    resetMealOptions();
+
+    if (!selectedScheduleId) {
+        validateForm();
+        return;
+    }
+
+    fetchJSON(
+        "php/get_meals.php?schedule_id=" + encodeURIComponent(selectedScheduleId)
+    )
+    .then(meals => {
+        const formattedMeals = Array.isArray(meals)
+            ? meals.map(meal => ({
+                  meal_id: meal.meal_id,
+                  meal_name: meal.name,
+                  meal_price: meal.price
+              }))
+            : [];
+
+        scheduleMealsMap[selectedScheduleId] = formattedMeals;
+        populateMealOptions(formattedMeals);
+        validateForm();
+    })
+    .catch(error => {
+        console.error("Error loading meals:", error);
+        resetMealOptions();
+=======
     scheduleSelect.addEventListener("change", function () {
         const selectedOption = this.options[this.selectedIndex];
         const fee = selectedOption ? selectedOption.dataset.fee : "";
@@ -759,8 +805,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const meals = scheduleMealsMap[selectedScheduleId] || (USE_DUMMY_MEALS ? DUMMY_MEALS : []);
         populateMealOptions(meals);
 
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
         validateForm();
     });
+});
 
     scheduleForm.addEventListener("submit", function (e) {
         e.preventDefault();

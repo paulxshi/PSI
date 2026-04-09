@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $user_id = $_SESSION['user_id'];
 $schedule_id = isset($_POST['schedule_id']) ? (int)$_POST['schedule_id'] : 0;
+$meal_ids = $_POST['meal_ids'] ?? [];
 
 // Validate schedule_id
 if ($schedule_id <= 0) {
@@ -140,6 +141,32 @@ try {
     ");
     $checkFullStmt->execute([$schedule_id]);
     
+
+    // 7. Save examinee meal selections
+
+// First, delete old selections (so user can update meals)
+$deleteMealsStmt = $pdo->prepare("
+    DELETE FROM examinee_meals 
+    WHERE user_id = ?
+");
+$deleteMealsStmt->execute([$user_id]);
+
+// Insert new selections (if any)
+if (!empty($meal_ids)) {
+    $insertMealStmt = $pdo->prepare("
+        INSERT INTO examinee_meals (user_id, meal_id)
+        VALUES (?, ?)
+    ");
+
+    foreach ($meal_ids as $meal_id) {
+        $insertMealStmt->execute([
+            $user_id,
+            (int)$meal_id
+        ]);
+    }
+}
+
+
     // Commit transaction
     $pdo->commit();
     
@@ -148,11 +175,11 @@ try {
         'message' => 'Schedule saved successfully!'
     ]);
     
-} catch (PDOException $e) {
+}  catch (PDOException $e) {
     $pdo->rollBack();
-    error_log('Error saving examinee schedule: ' . $e->getMessage());
+
     echo json_encode([
         'success' => false,
-        'message' => 'Error saving schedule. Please try again later.'
+        'message' => $e->getMessage() // 🔥 SHOW REAL ERROR
     ]);
 }

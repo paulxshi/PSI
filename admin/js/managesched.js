@@ -221,14 +221,12 @@ function formatLongDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 
-
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     });
 }
-
 
 function filterSchedules() {
     currentPage = 1; 
