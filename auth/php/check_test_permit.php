@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$testPermit = trim($_POST['test_permit'] ?? '');
+// Strip ALL whitespace and invisible control chars (handles copy-paste, Excel artifacts)
+$testPermit = preg_replace('/[\s\x00-\x1F\x7F]/u', '', trim($_POST['test_permit'] ?? ''));
 
 if (empty($testPermit)) {
     http_response_code(400);
@@ -30,20 +31,20 @@ try {
     $record = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$record) {
-        http_response_code(404);
+        // Use 200 so the browser doesn't log "Failed to load resource" —
+        // the JS reads data.success to determine outcome.
         echo json_encode([
             'success' => false,
-            'message' => 'Test permit not found in examinee masterlist'
+            'message' => 'Test permit not found. Please check the number and try again.'
         ]);
         exit;
     }
     
     // Check if permit has already been used
     if ($record['used'] == 1) {
-        http_response_code(400);
         echo json_encode([
             'success' => false,
-            'message' => 'This test permit has already been registered'
+            'message' => 'This test permit has already been used for registration.'
         ]);
         exit;
     }

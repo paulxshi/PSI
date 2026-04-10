@@ -44,14 +44,8 @@ if (empty($firstName)) {
     exit;
 }
 
-if (empty($email)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Email is required']);
-    exit;
-}
-
-// Validate email format
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+// Validate email format only if provided
+if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Invalid email format']);
     exit;
@@ -80,26 +74,28 @@ try {
         exit;
     }
 
-    // Check if email already exists
-    $checkEmailStmt = $pdo->prepare("SELECT id, test_permit, last_name, first_name, middle_name, email FROM examinee_masterlist WHERE email = :email LIMIT 1");
-    $checkEmailStmt->execute([':email' => $email]);
-    
-    if ($checkEmailStmt->rowCount() > 0) {
-        $existingRecord = $checkEmailStmt->fetch(PDO::FETCH_ASSOC);
-        $fullName = trim($existingRecord['first_name'] . ' ' . ($existingRecord['middle_name'] ? $existingRecord['middle_name'] . ' ' : '') . $existingRecord['last_name']);
-        
-        http_response_code(400);
-        echo json_encode([
-            'success' => false, 
-            'message' => 'Email already exists',
-            'duplicate_type' => 'email',
-            'existing_data' => [
-                'test_permit' => $existingRecord['test_permit'],
-                'full_name' => $fullName,
-                'email' => $existingRecord['email']
-            ]
-        ]);
-        exit;
+    // Check if email already exists (only when email provided)
+    if (!empty($email)) {
+        $checkEmailStmt = $pdo->prepare("SELECT id, test_permit, last_name, first_name, middle_name, email FROM examinee_masterlist WHERE email = :email LIMIT 1");
+        $checkEmailStmt->execute([':email' => $email]);
+
+        if ($checkEmailStmt->rowCount() > 0) {
+            $existingRecord = $checkEmailStmt->fetch(PDO::FETCH_ASSOC);
+            $fullName = trim($existingRecord['first_name'] . ' ' . ($existingRecord['middle_name'] ? $existingRecord['middle_name'] . ' ' : '') . $existingRecord['last_name']);
+
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email already exists',
+                'duplicate_type' => 'email',
+                'existing_data' => [
+                    'test_permit' => $existingRecord['test_permit'],
+                    'full_name' => $fullName,
+                    'email' => $existingRecord['email']
+                ]
+            ]);
+            exit;
+        }
     }
 
     // Check if first_name + last_name combination already exists
@@ -137,8 +133,8 @@ try {
         ':test_permit' => $testPermit,
         ':last_name' => $lastName,
         ':first_name' => $firstName,
-        ':middle_name' => $middleName,
-        ':email' => $email
+        ':middle_name' => $middleName !== '' ? $middleName : null,
+        ':email' => $email !== '' ? $email : null
     ]);
 
     $newId = $pdo->lastInsertId();

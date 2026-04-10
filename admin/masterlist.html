@@ -643,13 +643,12 @@
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">
-                            Email <span class="text-danger">*</span>
+                            Email <span class="text-secondary">(Optional)</span>
                         </label>
                         <input type="email"
                                class="form-control form-control-lg"
                                id="emailInput"
-                               name="email"
-                               required>
+                               name="email">
                         <small id="emailError" class="text-danger d-none"></small>
                     </div>
 
@@ -814,6 +813,25 @@
                             <div class="fw-bold fs-5 text-danger" id="csvErrorCount">0</div>
                         </div>
                     </div>
+                    <!-- Warning row shown only when suspicious permits are detected -->
+                    <div class="row g-2 mt-1 pt-2 border-top" id="csvWarningRow" style="display:none;">
+                        <div class="col-12">
+                            <div class="d-flex align-items-start gap-2 text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-2 p-2">
+                                <i class="bx bx-error fs-5 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <div class="fw-semibold small">
+                                        <span id="csvWarningCount">0</span> test permit(s) have a suspicious format
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        Excel may have corrupted these values by evaluating them as arithmetic.<br>
+                                        See the table below for affected rows. To fix: open your source file in a
+                                        <strong>text editor</strong> (not Excel), verify the test permit values,
+                                        then re-upload.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Email Notification Stats -->
@@ -968,9 +986,9 @@
                     <!-- Email -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
-                            Email Address <span class="text-danger">*</span>
+                            Email Address <span class="text-secondary">(Optional)</span>
                         </label>
-                        <input type="email" class="form-control" id="editEmail" required>
+                        <input type="email" class="form-control" id="editEmail">
                         <div class="invalid-feedback">Please enter a valid email</div>
                     </div>
 

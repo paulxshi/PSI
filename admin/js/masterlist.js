@@ -317,15 +317,15 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                       </button>`
                 : '';
 
+            const emailCell = record.email
+                ? `<a href="mailto:${escapeHtml(record.email)}" class="text-decoration-none">${escapeHtml(record.email)}</a>`
+                : `<span class="text-muted fst-italic">—</span>`;
+
             let row = `
                 <tr class="border-bottom">
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
                     <td>${fullName}</td>
-                    <td>
-                        <a href="mailto:${escapeHtml(record.email)}" class="text-decoration-none">
-                            ${escapeHtml(record.email)}
-                        </a>
-                    </td>
+                    <td>${emailCell}</td>
                     <td>${statusBadge}</td>
                     <td>${uploadedDate}</td>`;
             
@@ -555,6 +555,17 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     // Update modal with upload results
                     document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
                     document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
+
+                    // Show warning count if any permits looked suspicious
+                    const csvWarningRow = document.getElementById('csvWarningRow');
+                    if (csvWarningRow) {
+                        if (data.warningCount > 0) {
+                            document.getElementById('csvWarningCount').textContent = data.warningCount;
+                            csvWarningRow.style.display = '';
+                        } else {
+                            csvWarningRow.style.display = 'none';
+                        }
+                    }
                     
                     // Update email notification stats
                     const emailStatsContainer = document.getElementById('emailStatsContainer');
@@ -641,25 +652,34 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         tbody.innerHTML = '';
         
         results.forEach(result => {
-            const statusBadge = result.status === 'success'
-                ? '<span class="badge bg-success">Success</span>'
-                : '<span class="badge bg-danger">Error</span>';
+            let statusBadge;
+            if (result.status === 'error') {
+                statusBadge = '<span class="badge bg-danger">Error</span>';
+            } else if (result.warning) {
+                statusBadge = '<span class="badge bg-warning text-dark">Warning</span>';
+            } else {
+                statusBadge = '<span class="badge bg-success">Success</span>';
+            }
             
             const fullName = `${result.first_name} ${result.last_name}`;
             
             const errorTooltip = result.error 
                 ? `<div class="text-danger small mt-1"><i class="bx bx-error-circle"></i> ${escapeHtml(result.error)}</div>`
                 : '';
+
+            const warningTooltip = result.warning
+                ? `<div class="text-warning small mt-1"><i class="bx bx-error"></i> ${escapeHtml(result.warning)}</div>`
+                : '';
             
-            const rowClass = result.status === 'error' ? 'table-danger' : '';
+            const rowClass = result.status === 'error' ? 'table-danger' : (result.warning ? 'table-warning' : '');
             
             const row = `
                 <tr class="${rowClass}">
                     <td>${result.row}</td>
-                    <td>${escapeHtml(result.test_permit)}</td>
+                    <td>${escapeHtml(result.test_permit)}${warningTooltip}</td>
                     <td>${escapeHtml(fullName)}</td>
                     <td>
-                        ${escapeHtml(result.email)}
+                        ${result.email ? escapeHtml(result.email) : '<span class="text-muted">—</span>'}
                         ${errorTooltip}
                     </td>
                     <td>${statusBadge}</td>

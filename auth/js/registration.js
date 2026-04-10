@@ -693,7 +693,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 lastNameInput.value = examineeData.last_name || '';
                 firstNameInput.value = examineeData.first_name || '';
                 document.getElementById('middleName').value = examineeData.middle_name || '';
-                emailInput.value = examineeData.email;
+                // Only pre-fill email if the masterlist record has one
+                emailInput.value = examineeData.email || '';
 
                 // ENABLE all personal info fields (NOT readonly - user can edit)
                 document.getElementById('firstName').disabled = false;
