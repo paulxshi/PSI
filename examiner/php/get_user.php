@@ -67,6 +67,17 @@ try {
     $user['upload_attempts_used'] = $upload_attempts;
     $user['upload_attempts_remaining'] = $attempts_remaining;
 
+    // Fetch selected meals for this user
+    $mealsStmt = $pdo->prepare("
+        SELECT m.meal_id, m.name AS meal_name, m.price AS meal_price
+        FROM examinee_meals em
+        JOIN meals m ON em.meal_id = m.meal_id
+        WHERE em.user_id = ?
+        ORDER BY em.selected_at ASC
+    ");
+    $mealsStmt->execute([$user_id]);
+    $user['meals'] = $mealsStmt->fetchAll(PDO::FETCH_ASSOC);
+
     echo json_encode(["success" => true, "user" => $user]);
 
 } catch (PDOException $e) {

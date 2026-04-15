@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
             loadTestPermitData();
         }
     });
-});
+}); 
 
 function loadTestPermitData() {
     // Fetch user data
@@ -235,11 +235,7 @@ function populateTestPermit(user) {
                 const item = document.createElement('div');
                 item.className = 'meal-item';
 
-                const priceText = meal.price !== null && meal.price !== ''
-                    ? ` (${formatMealPrice(meal.price)})`
-                    : '';
-
-                item.textContent = `${meal.name}${priceText}`;
+                item.textContent = meal.name;
                 mealOptionEl.appendChild(item);
             });
         }

@@ -852,33 +852,6 @@
         });
     });
 });
-  const sidebar  = document.getElementById('sidebar');
-  const hamburger = document.getElementById('hamburgerBtn');
-
-  // Restore user preference
-  if (localStorage.getItem('sidebarCollapsed') === 'true') {
-    sidebar.classList.add('hide');
-    hamburger.classList.add('collapsed');
-  }
-
-  hamburger.addEventListener('click', () => {
-    sidebar.classList.toggle('hide');
-    hamburger.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
-  });
-
-  // Close sidebar when clicking on content area (mobile only)
-  const content = document.getElementById('content');
-  if (content) {
-    content.addEventListener('click', (e) => {
-      if (window.innerWidth < 768 && !sidebar.classList.contains('hide')) {
-        sidebar.classList.add('hide');
-        hamburger.classList.add('collapsed');
-        localStorage.setItem('sidebarCollapsed', 'true');
-      }
-    });
-  }
-
 </script>
 <script src="js/examinee-management.js"></script>
 

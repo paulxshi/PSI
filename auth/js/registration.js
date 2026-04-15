@@ -121,6 +121,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Show/hide Send OTP button based on email validation and form state
     emailInput.addEventListener('input', function() {
+        // If the user edits the email after OTP was already verified, reset verification
+        // so they must re-verify the new address before proceeding.
+        if (isOtpVerified && emailInput.value.trim() !== currentEmail) {
+            isOtpVerified = false;
+            currentEmail = '';
+
+            otpVerifiedBadge.style.display = 'none';
+
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.style.opacity = '1';
+            sendOtpBtn.style.cursor = '';
+            sendOtpBtn.style.display = 'inline';
+
+            otpContainer.style.display = 'none';
+            otpInput.value = '';
+            otpInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+            passwordSection.style.display = 'none';
+            passwordInput.disabled = true;
+            confirmPasswordInput.disabled = true;
+            passwordInput.value = '';
+            confirmPasswordInput.value = '';
+
+            showOtpStatus('Email changed — please verify your new email address.', 'warning');
+        }
         updateSendOtpButtonState();
         validateForm();
     });
@@ -696,10 +721,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Only pre-fill email if the masterlist record has one
                 emailInput.value = examineeData.email || '';
 
-                // ENABLE all personal info fields (NOT readonly - user can edit)
+                // Name fields are enabled for form submission but locked from editing
                 document.getElementById('firstName').disabled = false;
+                document.getElementById('firstName').readOnly = true;
+                document.getElementById('firstName').classList.add('name-locked');
                 document.getElementById('lastName').disabled = false;
+                document.getElementById('lastName').readOnly = true;
+                document.getElementById('lastName').classList.add('name-locked');
                 document.getElementById('middleName').disabled = false;
+                document.getElementById('middleName').readOnly = true;
+                document.getElementById('middleName').classList.add('name-locked');
                 document.getElementById('dateOfBirth').disabled = false;
                 document.getElementById('age').disabled = false;
                 // Re-initialize flatpickr now that the field is enabled
@@ -721,9 +752,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 examineeData = null;
                 
                 // DISABLE all personal info fields
-                document.getElementById('firstName').disabled = true;
-                document.getElementById('lastName').disabled = true;
-                document.getElementById('middleName').disabled = true;
+                ['firstName', 'lastName', 'middleName'].forEach(function(id) {
+                    var el = document.getElementById(id);
+                    el.disabled = true;
+                    el.readOnly = false;
+                    el.classList.remove('name-locked');
+                });
                 document.getElementById('dateOfBirth').disabled = true;
                 document.getElementById('age').disabled = true;
                 document.getElementById('gender').disabled = true;
@@ -752,9 +786,12 @@ document.addEventListener('DOMContentLoaded', function() {
             examineeData = null;
 
             // DISABLE all personal info fields
-            document.getElementById('firstName').disabled = true;
-            document.getElementById('lastName').disabled = true;
-            document.getElementById('middleName').disabled = true;
+            ['firstName', 'lastName', 'middleName'].forEach(function(id) {
+                var el = document.getElementById(id);
+                el.disabled = true;
+                el.readOnly = false;
+                el.classList.remove('name-locked');
+            });
             document.getElementById('dateOfBirth').disabled = true;
             document.getElementById('age').disabled = true;
             document.getElementById('gender').disabled = true;

@@ -238,20 +238,8 @@
   const sidebar  = document.getElementById('sidebar');
   const hamburger = document.getElementById('hamburgerBtn');
 
-<<<<<<< HEAD
   // Restore user preference
   if (localStorage.getItem('sidebarCollapsed') === 'true') {
-=======
-  // Check if mobile view and set collapsed by default
-  const isMobile = window.innerWidth <= 768;
-  
-  // Restore user preference - only on desktop
-  if (!isMobile && localStorage.getItem('sidebarCollapsed') === 'true') {
-    sidebar.classList.add('hide');
-    hamburger.classList.add('collapsed');
-  } else if (isMobile) {
-    // Default to collapsed on mobile
->>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
     sidebar.classList.add('hide');
     hamburger.classList.add('collapsed');
   }
@@ -259,29 +247,9 @@
   hamburger.addEventListener('click', () => {
     sidebar.classList.toggle('hide');
     hamburger.classList.toggle('collapsed');
-<<<<<<< HEAD
     localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
   });
 
-=======
-    // Only save preference on desktop
-    if (window.innerWidth > 768) {
-      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
-    }
-  });
-
-  // Handle window resize to restore desktop preference when switching to desktop
-  window.addEventListener('resize', () => {
-    const nowMobile = window.innerWidth <= 768;
-    if (!nowMobile && localStorage.getItem('sidebarCollapsed') === 'true') {
-      sidebar.classList.add('hide');
-      hamburger.classList.add('collapsed');
-    } else if (!nowMobile) {
-      sidebar.classList.remove('hide');
-      hamburger.classList.remove('collapsed');
-    }
-  });
->>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
 </script>
 
 </body>

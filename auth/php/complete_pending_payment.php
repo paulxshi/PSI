@@ -22,6 +22,8 @@ require_once('../../config/payment_config.php');
 $user_id = $_SESSION['user_id'];
 
 try {
+    
+    
     // 1. Get the pending payment for this user
     $query = "SELECT payment_id, xendit_invoice_id, external_id, examinee_id, amount 
               FROM payments 
@@ -79,7 +81,6 @@ try {
 
     // If the invoice is not PAID on Xendit's side, reject
     if ($xenditStatus !== 'PAID') {
-        // Update local status to match Xendit (e.g. EXPIRED)
         if (in_array($xenditStatus, ['EXPIRED', 'CANCELLED'])) {
             $updateStmt = $pdo->prepare("UPDATE payments SET status = :status, updated_at = NOW() WHERE payment_id = :pid");
             $updateStmt->execute([':status' => $xenditStatus, ':pid' => $payment['payment_id']]);
@@ -158,6 +159,7 @@ try {
     $stmt = $pdo->prepare($updateExamineeQuery);
     $stmt->bindParam(':examinee_id', $examineeId, PDO::PARAM_INT);
     $stmt->execute();
+    error_log("[EXAMINEES UPDATE] examinee_id: $examineeId | Rows affected: " . $stmt->rowCount());
 
     // 4c. Update users table
     $updateUserQuery = "UPDATE users 
@@ -169,18 +171,9 @@ try {
     $stmt = $pdo->prepare($updateUserQuery);
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
+    error_log("[USERS UPDATE] user_id: $user_id | Rows affected: " . $stmt->rowCount());
 
-    // 4d. Update examinee_meals payment status to 'paid'
-    $updateMealsQuery = "
-        UPDATE examinee_meals 
-        SET payment_status = 'paid'
-        WHERE user_id = :user_id
-        AND payment_status = 'unpaid'
-    ";
 
-    $stmt = $pdo->prepare($updateMealsQuery);
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $stmt->execute();
 
     // Commit transaction
     $pdo->commit();
