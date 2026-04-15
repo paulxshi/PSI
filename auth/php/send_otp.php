@@ -5,9 +5,10 @@ header('Content-Type: application/json');
 require_once '../../config/db.php';
 
 error_log("=== SEND OTP DEBUG ===");
-error_log("Input: " . file_get_contents('php://input'));
+$rawInput = file_get_contents('php://input');
+error_log("Input: " . $rawInput);
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode($rawInput, true);
 $email = trim($input['email'] ?? '');
 $purpose = $input['purpose'] ?? 'registration';
 

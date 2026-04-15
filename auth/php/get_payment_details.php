@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo json_encode([
         'success' => false,
@@ -16,28 +15,56 @@ require_once('../../config/db.php');
 $user_id = $_SESSION['user_id'];
 
 try {
-    // Fetch exam details for the user
+
     $query = "
-        SELECT 
+        SELECT
             u.test_permit,
-            CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS full_name,
+            CONCAT_WS(' ', u.first_name, NULLIF(u.middle_name, ''), u.last_name) AS full_name,
             e.status AS examinee_status,
+            s.schedule_id,
+            s.scheduled_date,
+            s.price AS exam_price,
+            v.venue_name,
+            COALESCE(SUM(m.price), 0) AS meal_total
+
+        FROM users u
+
+        INNER JOIN examinees e
+            ON e.user_id = u.user_id
+
+        INNER JOIN schedules s
+            ON s.schedule_id = e.schedule_id
+
+        INNER JOIN venue v
+            ON v.venue_id = s.venue_id
+
+        LEFT JOIN examinee_meals em
+            ON em.user_id = u.user_id
+
+        LEFT JOIN meals m
+            ON m.meal_id = em.meal_id
+            AND m.schedule_id = s.schedule_id
+
+        WHERE u.user_id = :user_id
+
+        GROUP BY
+            u.test_permit,
+            u.first_name,
+            u.middle_name,
+            u.last_name,
+            e.status,
+            s.schedule_id,
             s.scheduled_date,
             s.price,
             v.venue_name
-        FROM users u
-        INNER JOIN examinees e ON u.user_id = e.user_id
-        INNER JOIN schedules s ON e.schedule_id = s.schedule_id
-        INNER JOIN venue v ON s.venue_id = v.venue_id
-        WHERE u.user_id = :user_id
     ";
-    
+
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->execute();
-    
+
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$result) {
         echo json_encode([
             'success' => false,
@@ -45,8 +72,7 @@ try {
         ]);
         exit;
     }
-    
-    // Check if user has already passed payment stage
+
     if ($result['examinee_status'] === 'Scheduled') {
         echo json_encode([
             'success' => false,
@@ -54,8 +80,7 @@ try {
         ]);
         exit;
     }
-    
-    // Check if user is in correct stage
+
     if ($result['examinee_status'] !== 'Awaiting Payment') {
         echo json_encode([
             'success' => false,
@@ -63,23 +88,29 @@ try {
         ]);
         exit;
     }
-    
+
+    $examPrice = (float)$result['exam_price'];
+    $mealTotal = (float)$result['meal_total'];
+    $totalPrice = $examPrice + $mealTotal;
+
     echo json_encode([
         'success' => true,
         'data' => [
             'test_permit' => $result['test_permit'],
             'full_name' => $result['full_name'],
             'scheduled_date' => $result['scheduled_date'],
-            'price' => $result['price'],
-            'venue_name' => $result['venue_name']
+            'venue_name' => $result['venue_name'],
+            'exam_price' => $examPrice,
+            'meal_total' => $mealTotal,
+            'price' => $totalPrice
         ]
     ]);
-    
+
 } catch (PDOException $e) {
-    error_log("Database Error in get_payment_details.php: " . $e->getMessage());
+
     echo json_encode([
         'success' => false,
-        'message' => 'Database error occurred. Please try again.'
+        'message' => $e->getMessage()
     ]);
 }
 ?>

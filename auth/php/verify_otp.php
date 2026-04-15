@@ -6,9 +6,10 @@ require_once '../../config/db.php';
 require_once 'log_activity.php';
 
 error_log("=== VERIFY OTP DEBUG ===");
-error_log("Input: " . file_get_contents('php://input'));
+$rawInput = file_get_contents('php://input');
+error_log("Input: " . $rawInput);
 
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode($rawInput, true);
 $email = trim($input['email'] ?? '');
 $otp = trim($input['otp'] ?? '');
 $purpose = $input['purpose'] ?? 'registration';

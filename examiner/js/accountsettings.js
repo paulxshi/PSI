@@ -81,9 +81,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('contact').textContent = user.contact_number || '—';
         
         // Also set values in input fields for edit mode
-        document.getElementById('input-lname').value = user.last_name || '';
-        document.getElementById('input-fname').value = user.first_name || '';
-        document.getElementById('input-mname').value = user.middle_name || '';
         document.getElementById('input-contact').value = user.contact_number || '';
         document.getElementById('input-school').value = user.school || '';
         
@@ -321,9 +318,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Enable edit mode - show and enable input fields
     function enableEditMode() {
         const editableFields = [
-            { id: 'lname', inputId: 'input-lname', key: 'last_name' },
-            { id: 'fname', inputId: 'input-fname', key: 'first_name' },
-            { id: 'mname', inputId: 'input-mname', key: 'middle_name' },
             { id: 'contact', inputId: 'input-contact', key: 'contact_number' },
             { id: 'birthday', inputId: 'input-birthday', key: 'date_of_birth' },
             { id: 'school', inputId: 'input-school', key: 'school' }
@@ -351,9 +345,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function disableEditMode() {
         const editableFields = [
-            { id: 'lname', inputId: 'input-lname', key: 'last_name' },
-            { id: 'fname', inputId: 'input-fname', key: 'first_name' },
-            { id: 'mname', inputId: 'input-mname', key: 'middle_name' },
             { id: 'contact', inputId: 'input-contact', key: 'contact_number' },
             { id: 'birthday', inputId: 'input-birthday', key: 'date_of_birth' },
             { id: 'school', inputId: 'input-school', key: 'school' }
@@ -374,9 +365,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         
-        document.getElementById('lname').textContent = originalData.last_name || '—';
-        document.getElementById('fname').textContent = originalData.first_name || '—';
-        document.getElementById('mname').textContent = originalData.middle_name || '—';
         document.getElementById('contact').textContent = originalData.contact_number || '—';
         
         if (originalData.date_of_birth) {

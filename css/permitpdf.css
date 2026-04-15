@@ -1,3 +1,6 @@
+/* ══════════════════════════════════════
+   BASE PERMIT STYLES
+   ══════════════════════════════════════ */
 #permitPDF {
   color: #000;
   padding: 30px 36px;
@@ -6,6 +9,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ── BACK BUTTON ── */
 .back-btn {
   position: relative;
   margin-left: 15%;
@@ -80,14 +84,12 @@
   color: #555;
 }
 
-/* Label */
 .back-btn__label {
   position: relative;
   z-index: 1;
   transition: letter-spacing 0.22s ease;
 }
 
-/* ── HOVER STATE ── */
 .back-btn:hover {
   color: #1a1a1a;
   border-color: rgba(192, 57, 43, 0.25);
@@ -118,7 +120,6 @@
   letter-spacing: 0.5px;
 }
 
-/* ── ACTIVE / CLICK STATE ── */
 .back-btn:active {
   transform: translateX(-1px) scale(0.97);
   box-shadow:
@@ -128,7 +129,6 @@
   transition-duration: 0.1s;
 }
 
-/* ── FOCUS (accessibility) ── */
 .back-btn:focus-visible {
   outline: none;
   box-shadow:
@@ -162,8 +162,8 @@
 
 /* QR container */
 .qr-code-square-container {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
@@ -195,24 +195,22 @@
 
 .qr-logo {
   position: absolute;
-  width: 35px !important;
-  height: 35px !important;
+  width: 28px !important;
+  height: 28px !important;
   object-fit: contain;
   pointer-events: none;
 }
 
-/* PSI logo in header */
 .permit-header .center-col img.psi-logo {
   max-height: 90px;
   margin-bottom: 6px;
 }
 
 .permit-header .center-col h5 {
-  font-family:Georgia, 'Times New Roman', Times, serif;
+  font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: bold;
   color: #c0392b;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 5px;
 }
@@ -226,10 +224,103 @@
   margin: 0;
 }
 
+.payment-details-row {
+  gap: 0.45rem !important;
+  align-items: flex-start;
+}
+
+.payment-details-row > div {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.payment-details-row .field-label {
+  font-size: 10px;
+  line-height: 1.05;
+  margin-bottom: 1px;
+}
+
+.payment-details-row .field-value {
+  font-size: 10px;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.meal-option-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  line-height: 1.05;
+  white-space: normal;
+}
+
+.meal-option-list .meal-item {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Make the payment block denser in PDF / print so stacked meals still fit */
+body.print-mode .payment-details-row {
+  gap: 0.35rem !important;
+}
+
+body.print-mode .payment-details-row .field-label {
+  font-size: 8px;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+body.print-mode .payment-details-row .field-value {
+  font-size: 8.5px;
+  line-height: 1.05;
+}
+
+body.print-mode .meal-option-list {
+  gap: 0;
+  line-height: 1;
+}
+
+body.print-mode .meal-option-list .meal-item {
+  font-size: 8px;
+  line-height: 1;
+}
+
+/* Browser print */
+@media print {
+  .payment-details-row {
+    gap: 0.3rem !important;
+    align-items: flex-start;
+  }
+
+  .payment-details-row .field-label {
+    font-size: 7px;
+    line-height: 1;
+    margin-bottom: 1px;
+  }
+
+  .payment-details-row .field-value {
+    font-size: 8px;
+    line-height: 1.02;
+  }
+
+  .meal-option-list {
+    gap: 0;
+    line-height: 1;
+  }
+
+  .meal-option-list .meal-item {
+    font-size: 7.5px;
+    line-height: 1;
+    margin: 0;
+  }
+}
+
 /* Examinee photo */
 .photo-box {
-  width: 120px;
-  height: 125px;
+  width: 124px;
+  height: 124px;
   overflow: hidden;
   border: 2px solid #555;
 }
@@ -273,6 +364,7 @@
   display: inline-block;
   width: 100%;
   border-right: 7.5px solid #ffffff;
+  box-sizing: border-box;
 }
 
 /* Field styles */
@@ -288,10 +380,26 @@
   color: #222;
 }
 
-/* Reduce gap between contact and email fields */
+/* Keep two-column layout at all sizes */
 .permit-content .d-flex {
   gap: 1rem !important;
   justify-content: flex-start;
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+}
+
+/* Force Bootstrap cols to stay side by side */
+.permit-content .row.g-0,
+.content-headers .row.g-0 {
+  flex-wrap: nowrap !important;
+  flex-direction: row !important;
+}
+
+.permit-content .row.g-0 > .col-6,
+.content-headers .row.g-0 > .col-6 {
+  width: 50% !important;
+  flex: 0 0 50% !important;
+  max-width: 50% !important;
 }
 
 /* ── GUIDELINES ── */
@@ -328,6 +436,7 @@
   text-align: center;
   width: 220px;
   margin-top: 90px;
+  flex-shrink: 0;
 }
 
 .signature-block .sig-line {
@@ -342,9 +451,16 @@
 }
 
 .signature-block .sig-sub {
+  margin-top: 5px;
   font-size: 10px;
   font-style: italic;
   color: #555;
+}
+
+/* Guidelines + signature row stays horizontal */
+.d-flex.gap-4.mt-3 {
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
 }
 
 /* ── Logout modal button ── */
@@ -353,6 +469,251 @@
   outline: none;
   box-shadow: none;
 }
+.items-footer-section {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.items-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.items-panel {
+  min-width: 0;
+}
+
+.items-panel + .items-panel {
+  border-left: 1px solid #d8d8d8; /* soft partition */
+  padding-left: 16px;
+}
+
+.items-panel h6 {
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+  line-height: 1.1;
+}
+
+.allowed-panel h6 {
+  color: #1f5f2d;
+}
+
+.prohibited-panel h6 {
+  color: #b02a2a;
+}
+
+.items-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.items-panel li {
+  position: relative;
+  padding-left: 10px;
+  margin-bottom: 3px;
+  font-size: 11px;
+  line-height: 1.28;
+  color: #222;
+}
+
+.items-panel li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #666;
+}
+
+.items-warning {
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #b02a2a;
+}
+
+.signature-row-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px !important;   
+  width: 100%;
+}
+
+.signature-block {
+  width: 220px;
+  text-align: center;
+  margin-top: 20px !important;  
+  flex-shrink: 0;
+}
+
+.signature-left {
+  margin-left: 0;
+}
+
+.signature-right {
+  margin-left: auto;
+}
+.signature-block .sig-line {
+  border-bottom: 1.2px solid #000;
+  height: 14px;  
+  margin-bottom: 3px;
+}
+
+.signature-block .sig-label {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.signature-block .sig-sub {
+  font-size: 8x;
+  font-style: italic;
+  color: #666;
+  line-height: 1.1;
+}
+
+
+/* remove old side-by-side footer behavior */
+.d-flex.gap-4.mt-3 {
+  display: block !important;
+}
+
+/* PDF / print sizing */
+body.print-mode .signature-row-bottom {
+   margin-top: 2px;
+}
+
+body.print-mode .signature-block {
+  width: 210px;
+}
+
+body.print-mode .items-panel h6 {
+  font-size: 9px;
+}
+
+body.print-mode .items-panel li {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+body.print-mode .items-warning {
+  font-size: 9px;
+}
+
+body.print-mode .signature-block.signature-below {
+  width: 210px;
+  margin: 10px 0 0 auto;
+}
+
+body.print-mode .signature-block .sig-label {
+  font-size: 9px;
+}
+
+body.print-mode .signature-block .sig-sub {
+  font-size: 8px;
+}
+
+@media (max-width: 768px) {
+
+  /* Page chrome */
+  .back-btn {
+    margin-left: 0;
+    font-size: 12px;
+    padding: 5px 16px 5px 12px;
+  }
+
+  main.container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* 
+   * Permit card: scale it down to fit mobile screen
+   * while keeping the exact printed layout intact.
+   * The wrapper clips overflow cleanly.
+   */
+  .permit-scale-wrapper {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
+  #permitPDF {
+    /* Permit is designed for ~860px. On mobile (~390px) we scale it down. */
+    transform-origin: top center;
+    transform: scale(0.42);
+    width: 860px !important;
+    max-width: 860px !important;
+
+    /* 
+     * After scaling by 0.42, the element still occupies its original 
+     * height in the DOM. Compensate with a negative margin so the page
+     * doesn't have a huge blank gap below.
+     * Approximate: 860px permit height ~ 900px → 900 * (1 - 0.42) = ~522px gap
+     */
+    margin-bottom: calc((100% * (1 - 0.42) / 0.42) * -1);
+
+    box-shadow: 0 4px 24px rgba(0,0,0,0.14) !important;
+    border-radius: 4px;
+  }
+
+  /* Tighter generate button */
+  #generatePDF {
+    font-size: 14px;
+    padding: 10px 28px;
+  }
+
+  /* Mobile info banner above the scaled permit */
+  .mobile-permit-banner {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: #fff8f8;
+    border: 1px solid #fad7d7;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: #7a2020;
+    font-weight: 500;
+  }
+
+  .mobile-permit-banner i {
+    font-size: 18px;
+    color: #c0392b;
+    flex-shrink: 0;
+  }
+}
+
+/* Hide banner on desktop */
+.mobile-permit-banner {
+  display: none;
+}
+
+/* Responsive scale for very small screens (≤360px) */
+@media (max-width: 390px) {
+  #permitPDF {
+    transform: scale(0.37);
+    margin-bottom: calc((100% * (1 - 0.37) / 0.37) * -1);
+  }
+}
+
+@media (max-width: 340px) {
+  #permitPDF {
+    transform: scale(0.33);
+    margin-bottom: calc((100% * (1 - 0.33) / 0.33) * -1);
+  }
+}
+
 
 /* ══════════════════════════════════════
    PRINT MODE (html2pdf)
@@ -363,6 +724,10 @@ body.print-mode #permitPDF {
   font-size: 10px;
   line-height: 1.25;
   box-shadow: none !important;
+  /* Reset any mobile transform */
+  transform: none !important;
+  width: auto !important;
+  margin-bottom: 0 !important;
 }
 
 body.print-mode .permit-header .center-col img.psi-logo {
@@ -370,6 +735,8 @@ body.print-mode .permit-header .center-col img.psi-logo {
 }
 
 body.print-mode .permit-header .center-col h5 {
+  font-family: 'Matura MT Script Capitals', 'Brush Script MT', cursive;
+  font-size: medium;
   font-size: 14px;
 }
 
@@ -378,8 +745,8 @@ body.print-mode .permit-header .center-col h6 {
 }
 
 body.print-mode .photo-box {
-  width: 95px;
-  height: 90px;
+  width: 124px;
+  height: 124px;
 }
 
 body.print-mode .permit-note {
@@ -415,16 +782,37 @@ body.print-mode .signature-block .sig-sub {
   font-size: 8.5px;
 }
 
+@font-face {
+  font-family: 'MaturaWeb';
+  src: url('../fonts/MaturaMTScriptCapitals.woff2') format('woff2'),
+       url('../fonts/MaturaMTScriptCapitals.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.permit-header .center-col h5 {
+  font-family: 'MaturaWeb', 'Brush Script MT', cursive;
+  font-size: 20px;
+  font-weight: normal;
+  color: #c0392b;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+body.print-mode .permit-header .center-col h5 {
+  font-family: 'MaturaWeb', 'Brush Script MT', cursive;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+
 /* ══════════════════════════════════════
    @MEDIA PRINT (browser print)
    ══════════════════════════════════════ */
-@media print {
-  #sidebar,
-  nav,
-  .btn {
-    display: none !important;
-  }
 
+@media print {
+  /* Reset some styles for printing */
   html,
   body {
     margin: 0 !important;
@@ -441,29 +829,24 @@ body.print-mode .signature-block .sig-sub {
 
   @page {
     size: letter portrait;
-    margin: 5mm;
+    margin: 0;
   }
 
   #permitPDF {
-    width: 100%;
-    padding: 4mm;
+    width: 50% !important; 
+    padding: 4mm; 
     font-size: 9px;
     line-height: 1.2;
     box-shadow: none !important;
+    transform: none !important;
+    margin-bottom: 0 !important;
+    margin-left: auto;
+    margin-right: auto;  
   }
 
   .qr-code-square-container {
-    width: 80px;
-    height: 80px;
-  }
-
-  .photo-box {
-    width: 80px;
-    height: 95px;
-  }
-
-  .permit-header {
-    grid-template-columns: 90px 1fr 90px;
+    width: 60px;
+    height: 60px;
   }
 
   .permit-header .center-col img.psi-logo {
@@ -478,8 +861,17 @@ body.print-mode .signature-block .sig-sub {
     font-size: 11px;
   }
 
+  .photo-box {
+    width: 100px;
+    height: 100px;
+  }
+
   .permit-note {
     font-size: 9px;
+  }
+
+  .section-title {
+    font-size: 8px;
   }
 
   .field-label {
@@ -490,94 +882,36 @@ body.print-mode .signature-block .sig-sub {
     font-size: 9px;
   }
 
-  .section-title {
-    font-size: 8px;
+  .signature-block .sig-label {
+    font-size: 9px;
+  }
+
+  .signature-block .sig-sub {
+    font-size: 8.5px;
   }
 
   .guidelines-section ol li {
     font-size: 8.5px;
   }
-}
 
-/* ══════════════════════════════════════
-    MOBILE RESPONSIVE
-    ══════════════════════════════════════ */
-@media (max-width: 768px) {
-  #permitPDF {
-    padding: 15px 20px;
+  .signature-row-bottom {
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }
+    .signature-block {
+    width: 180px;
+    margin-top: 0 !important;
   }
 
-  .permit-header {
-    grid-template-columns: 80px 1fr 80px;
-    gap: 5px;
+  .signature-block .sig-line {
+    height: 12px;
   }
 
-  .qr-code-square-container {
-    width: 70px;
-    height: 70px;
+  .signature-block .sig-label {
+    font-size: 10px; /* Reduce font size */
   }
 
-  .permit-header .center-col img.psi-logo {
-    max-height: 50px;
-  }
-
-  .permit-header .center-col h5 {
-    font-size: 12px;
-  }
-
-  .permit-header .center-col h6 {
-    font-size: 10px;
-  }
-
-  .photo-box {
-    width: 70px;
-    height: 75px;
-  }
-
-  .permit-content .row {
-    flex-direction: column;
-  }
-
-  .permit-content .col-6 {
-    width: 100%;
-    margin-bottom: 12px;
-  }
-
-  .d-flex.gap-2, .d-flex.gap-3 {
-    flex-wrap: wrap;
-    gap: 8px !important;
-  }
-
-  .d-flex.gap-4 {
-    flex-direction: column;
-    gap: 15px !important;
-  }
-
-  .guidelines-section, .signature-block {
-    width: 100%;
-  }
-
-  .signature-block {
-    margin-top: 20px;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .section-title {
-    font-size: 10px;
-    padding: 3px 6px;
-  }
-
-  .field-label {
-    font-size: 9px;
-  }
-
-  .field-value {
-    font-size: 10px;
-  }
-
-  .guidelines-section ol li {
-    font-size: 10px;
+  .signature-block .sig-sub {
+    font-size: 8px; 
   }
 }

@@ -92,43 +92,20 @@ function completePendingPayment() {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     
     statusBox.className = 'status-box bg-info text-white text-center';
-    statusText.textContent = 'Finding your pending payment...';
+    statusText.textContent = 'Verifying your payment with Xendit...';
     statusDetail.textContent = '';
     
-    // First, get the pending payment details
-    fetch('php/get_pending_payment_for_webhook.php')
-    .then(response => response.json())
-    .then(data => {
-        if (!data.success || !data.payment) {
-            throw new Error(data.message || 'No pending payment found');
+    // Call the server-side endpoint that verifies payment with Xendit API
+    fetch('php/complete_pending_payment.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
         }
-        
-        const payment = data.payment;
-        statusText.textContent = 'Payment found! Completing it now...';
-        statusDetail.textContent = 'Invoice: ' + payment.external_id;
-        
-        // Now trigger the webhook
-        const webhookPayload = {
-            id: payment.xendit_invoice_id,
-            external_id: payment.external_id,
-            status: 'PAID',
-            amount: parseFloat(payment.amount),
-            paid_at: new Date().toISOString(),
-            created: new Date().toISOString(),
-            updated: new Date().toISOString()
-        };
-        
-        return fetch('webhook.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(webhookPayload)
-        });
     })
     .then(response => response.json())
-    .then(webhookResult => {
-        if (webhookResult.success) {
+    .then(result => {
+        if (result.success) {
             statusBox.className = 'status-box bg-success text-white text-center';
             statusText.innerHTML = '<i class="bi bi-check-circle-fill"></i> Payment Completed Successfully!';
             statusDetail.textContent = 'Redirecting you to success page...';
@@ -138,7 +115,7 @@ function completePendingPayment() {
                 window.location.href = 'payment_success.html';
             }, 2000);
         } else {
-            throw new Error(webhookResult.message || 'Webhook failed');
+            throw new Error(result.message || 'Payment verification failed');
         }
     })
     .catch(error => {

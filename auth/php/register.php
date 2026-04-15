@@ -141,11 +141,22 @@ try {
         respond(false, 'This test permit has already been registered.', 409);
     }
     
-    // Verify email matches the masterlist record (security check)
-    if (strtolower($permitRecord['email']) !== strtolower($email)) {
-        respond(false, 'Email does not match the test permit record.', 422);
+    // Verify the submitted email was OTP-verified server-side (within last 30 minutes).
+    // This replaces the rigid masterlist-email check so users can register with any
+    // email they own — OTP proof is the authoritative verification.
+    $otpCheckStmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM otp_verifications
+         WHERE email = :email
+           AND purpose = 'registration'
+           AND is_used = 1
+           AND verified_at IS NOT NULL
+           AND verified_at > DATE_SUB(NOW(), INTERVAL 30 MINUTE)"
+    );
+    $otpCheckStmt->execute([':email' => $email]);
+    if ((int)$otpCheckStmt->fetchColumn() === 0) {
+        respond(false, 'Email address is not verified. Please complete OTP verification for the email you entered.', 422);
     }
-    
+
     // Verify name matches the masterlist record for consistency (allow flexibility)
     $masterlistFullName = trim($permitRecord['first_name'] . ' ' . $permitRecord['last_name']);
     $submittedFullName = trim($first_name . ' ' . $last_name);
@@ -209,14 +220,17 @@ try {
     ");
     $examineeStmt->execute([$userId, $test_permit]);
 
-    // Mark test permit as used in examinee_masterlist
+    // Mark test permit as used in examinee_masterlist and back-fill email if it was missing
     $markUsedStmt = $pdo->prepare("
         UPDATE examinee_masterlist
-        SET used = 1, used_by = :user_id
+        SET used = 1,
+            used_by = :user_id,
+            email = COALESCE(NULLIF(email, ''), :email)
         WHERE test_permit = :test_permit
     ");
     $markUsedStmt->execute([
-        ':user_id' => $userId,
+        ':user_id'    => $userId,
+        ':email'      => $email,
         ':test_permit' => $test_permit
     ]);
 

@@ -10,6 +10,71 @@
   <link rel="icon" href="imgs/PSI.png">
 
   <style>
+  #faqPanel,
+  #contactPanel {
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+      0 14px 32px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+    #faqPanel::-webkit-scrollbar,
+    #contactPanel::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    #faqPanel::-webkit-scrollbar-track,
+    #contactPanel::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.08);
+      margin: 10px 0;
+    }
+
+    #faqPanel::-webkit-scrollbar-thumb,
+    #contactPanel::-webkit-scrollbar-thumb {
+      background: linear-gradient(
+        180deg,
+        rgba(120, 120, 120, 0.85),
+        rgba(85, 85, 85, 0.95)
+      );
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    #faqPanel::-webkit-scrollbar-thumb:hover,
+    #contactPanel::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(
+        180deg,
+        rgba(95, 95, 95, 0.95),
+        rgba(60, 60, 60, 1)
+      );
+    }
+
+    #faqPanel::-webkit-scrollbar-thumb:active,
+    #contactPanel::-webkit-scrollbar-thumb:active {
+      background: linear-gradient(
+        180deg,
+        rgba(75, 75, 75, 1),
+        rgba(45, 45, 45, 1)
+      );
+    }
+
+    #faqPanel::-webkit-scrollbar-corner,
+    #contactPanel::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    @media (max-width: 991.98px) {
+      #faqPanel::-webkit-scrollbar,
+      #contactPanel::-webkit-scrollbar {
+        width: 8px;
+      }
+    }
     .glass-card {
     background: rgba(255, 255, 255, 0.28);
     backdrop-filter: blur(16px);
@@ -29,7 +94,7 @@
 
     .glass-card p,
     .glass-card li {
-      color: rgba(255, 255, 255, 0.85) !important;
+      color: #000 !important;
     }
 
     .accordion-button {
@@ -38,7 +103,7 @@
       border-radius: 8px !important;
       margin-bottom: 0.5rem;
       padding: 0.75rem 1rem;
-      color: rgba(255, 255, 255, 0.95) !important;
+      color: #000 !important;
       font-weight: 500;
       transition: all 0.3s ease;
     }
@@ -51,13 +116,14 @@
     .accordion-button:not(.collapsed) {
       background: rgba(255, 255, 255, 0.3) !important;
       box-shadow: none !important;
-      color: rgba(255, 255, 255, 1) !important;
+      color: #000 !important;
     }
 
     .accordion-button::after {
-      filter: brightness(0) invert(1);
+      filter: brightness(0);
       opacity: 0.85;
     }
+
 
     .accordion-button:focus {
       outline: none !important;
@@ -72,7 +138,7 @@
     .accordion-body {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      color: rgba(255, 255, 255, 0.85) !important;
+      color: #000 !important;
       padding: 1rem;
       margin-bottom: 0.5rem;
     }
@@ -156,22 +222,22 @@
     letter-spacing: -0.6px;
   }
 
-  .pmma-main {
-    display: inline-block;
-
-    font-size: clamp(2.5rem, 5vw, 3.6rem);
-    font-weight: 800;
-    color: #ffb703;
-    text-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.65),
-      0 0 18px rgba(0, 0, 0, 0.45);
-  }
+ .pmma-main {
+  display: inline-block; 
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: #ffb703;
+  white-space: nowrap; /* prevents line break */
+  text-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(0, 0, 0, 0.45);
+}
 
 .pmma-sub {
   display: inline-block;
   margin-top: 6px;
 
-  font-size: clamp(2.3rem, 4.5vw, 3.2rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: #ffffff;
 
@@ -180,19 +246,19 @@
     0 0 18px rgba(255, 183, 3, 0.65);
 }
 
-/* Subtle underline accent (optional, clean) */
 .pmma-sub::after {
   content: "";
   display: block;
   width: 70px;
-  height: 3px;
-  margin-top: 6px;
+  height: 3.2px;
+
+  margin-top: 13px; 
 
   background: linear-gradient(90deg, #ffb703, #ef8809);
-  border-radius: 2px;
-
+  border-radius: 1px;
   box-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
 }
+
 .pmma-title {
   animation: titleReveal 0.9s ease-out both;
 }
@@ -327,8 +393,21 @@
       .glass-card p, .glass-card li {
         font-size: 0.9rem;
       }
-    }
 
+      .navbar-toggler {
+        padding: 0.25rem 0.5rem;
+      }
+
+      .navbar-toggler-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: none;
+        outline: none;
+      }
+    }
   </style>
 </head>
 
@@ -397,9 +476,7 @@
     <div class="p-4">
         <h5 class="fw-bold mb-3">Frequently Asked Questions</h5>
 
-        <p class="mb-3" style="color: rgba(255, 255, 255, 0.85) !important;">
-            Find answers to common questions below:
-        </p>
+        <p class="mb-3">Find answers to common questions below:</p>
 
         <div class="accordion" id="faqAccordion">
             <!-- FAQs will be loaded here dynamically -->
@@ -412,12 +489,10 @@
             <div class="p-4">
             <h5 class="fw-bold mb-3">Contact Us</h5>
 
-            <p class="mb-3" style="color: rgba(255, 255, 255, 0.85) !important;">
-                For inquiries or technical assistance, please contact:
-            </p>
+        <p class="mb-3">For inquiries or technical assistance, please contact:</p>
 
-            <ul class="list-unstyled" style="color: rgba(255, 255, 255, 0.85) !important;">
-                <li class="mb-2"><i class="bi bi-envelope me-2"></i> psi.clientcare@gmail.com</li>
+            <ul class="list-unstyled" style="color: #000 !important;">
+                  <li class="mb-2"><i class="bi bi-envelope me-2"></i> psi.clientcare@gmail.com</li>
                 <li class="mb-2"><i class="bi bi-messenger me-2"></i> Psy Systems and Innovations, OPC</li>
                 <li class="mb-2"><i class="bi bi-envelope me-2"></i> support@pmma.edu.ph</li>
                 <li class="mb-2"><i class="bi bi-telephone me-2"></i> (02) 8-123-4567</li>
@@ -444,15 +519,15 @@
             Welcome to the
           </h6>
 
-            <h1 class="pmma-title mb-3">
-            <span class="pmma-main">PMMA Examination</span><br>
-            <span class="pmma-sub">Portal</span>
+             <h1 class="pmma-title mb-3">
+            <span class="pmma-main">PMMA</span><br>
+            <span class="pmma-main">Psychological Assessment</span><br>
+            <span class="pmma-sub">Registration Portal</span>
             </h1>
 
           <!-- DESCRIPTION -->
           <p class="fs-6 text-white opacity-80 mb-4">
-            Secure access for examination applicants. Please proceed using your
-            official test permit and registered email address.
+            For qualified PMMAEE applicants, please register for the psychological assessment.
           </p>
 
           <!-- CTA -->

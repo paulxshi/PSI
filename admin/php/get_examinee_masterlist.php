@@ -9,7 +9,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     exit;
 }
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../../config/db.php';
 
 // Check if requesting a single record by ID
 if (isset($_GET['id'])) {
@@ -102,13 +102,13 @@ try {
             last_name, 
             first_name, 
             middle_name,
-            CONCAT(first_name, ' ', last_name) as full_name,
+            CONCAT(last_name, ', ', first_name) as full_name,
             email, 
             used, 
             uploaded_at
         FROM examinee_masterlist
         $whereClause
-        ORDER BY uploaded_at DESC
+        ORDER BY last_name ASC, first_name ASC, middle_name ASC
         LIMIT :limit OFFSET :offset
     ";
     

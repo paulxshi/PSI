@@ -15,9 +15,14 @@
 </head>
   
 <body>
+	<button id="hamburgerBtn" aria-label="Toggle sidebar" title="Toggle sidebar" style="position: fixed; top: 18px; left: 18px; z-index: 9999;">
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	  <span class="bar"></span>
+	</button>
 
 	<!-- Sidebar Section -->
-		<section id="sidebar">
+	<section id="sidebar">
 		<a href="#" class="brand" style="display: flex; align-items: center;">
 			<img src="../imgs/PSI.png" alt="PSILogo" class="logo">
 			<span class="text">PSI-PMMA Portal</span>
@@ -39,271 +44,313 @@
 		</ul>
 
 		<ul class="side-menu">
-<li>
-  <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-    <i class="bx bxs-log-out-circle"></i>
-    <span class="text">Logout</span>
-  </a>
-</li>
-</ul>
+      <li>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+          <i class="bx bxs-log-out-circle"></i>
+          <span class="text">Logout</span>
+        </a>
+      </li>
+    </ul>
 		
 	</section>
 
 	<section id="content">
 		<nav>
-      			<div class="greeting">
-                
-            </div>
+      <div class="greeting"></div>
 		</nav>
 
 <!-- MAIN CONTENT -->
 <main class="container py-3">
 
-      <div class="mb-4">
-        <a href="dashboard.html" class="back-btn" aria-label="Go back">
-          <span class="back-btn__track"></span>
-          <span class="back-btn__arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
-              viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-          </span>
-          <span class="back-btn__label">Go Back</span>
-          <span class="back-btn__shine"></span>
-        </a>
+  <div class="mb-4">
+    <a href="dashboard.html" class="back-btn" aria-label="Go back">
+      <span class="back-btn__track"></span>
+      <span class="back-btn__arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </span>
+      <span class="back-btn__label">Go Back</span>
+      <span class="back-btn__shine"></span>
+    </a>
+  </div>
+
+  <!-- Mobile hint banner (hidden on desktop via CSS) -->
+  <div class="mobile-permit-banner">
+    <i class="bx bx-info-circle"></i>
+    <span>This is a preview of your test permit. Tap <strong>Generate PDF</strong> below to download the full document.</span>
+  </div>
+
+  <!-- Scale wrapper ensures the permit stays at its printed dimensions
+       while being visually shrunk on mobile screens -->
+  <div class="permit-scale-wrapper">
+    <div id="permitPDF" class="bg-white p-4 shadow-sm">
+      <div class="permit-header">
+
+        <!-- QR Code (left) -->
+        <div class="qr-col">
+          <div class="qr-code-square-container">
+            <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
+            <img src="../imgs/PSI.png" alt="PSI Logo" class="qr-logo">
+          </div>
+        </div>
+
+        <!-- Center: Logo + Title -->
+        <div class="center-col">
+          <img src="../imgs/PSI.png" class="psi-logo" alt="PSI Logo">
+          <h5>Psy Systems and Innovations, OPC</h5>
+        </div>
+
+        <!-- Examinee Photo (right) -->
+        <div class="photo-col">
+          <div class="photo-box">
+            <img src="../imgs/avatar.png" alt="Examinee Photo">
+          </div>
+        </div>
+
       </div>
 
-      <div id="permitPDF" class="bg-white p-4 shadow-sm">
-        <div class="permit-header">
+      <hr style="margin: 8px 0; border-color:#aaa;">
 
-          <!-- QR Code (left) -->
-          <div class="qr-col">
-            <div class="qr-code-square-container">
-              <img id="qrCode" src="../imgs/QR.png" alt="QR Code">
-              <img src="../imgs/PSI.png" alt="PSI Logo" class="qr-logo">
-            </div>
-          </div>
+      <!-- Exam Type -->
+      <div class="text-center mb-2">
+        <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 1px;">
+          Philippine Merchant Marine Academy<br>
+          NEURO PSYCHOLOGICAL EVALUATION TEST PERMIT
+        </span>
+      </div>
 
-          <!-- Center: Logo + Title -->
-          <div class="center-col">
-            <img src="../imgs/PSI.png" class="psi-logo" alt="PSI Logo">
-            <h5>PSY Systems and Innovations, OPC</h5>
-          </div>
-
-          <!-- Examinee Photo (right) -->
-          <div class="photo-col">
-            <div class="photo-box">
-              <img src="../imgs/avatar.png" alt="Examinee Photo">
-            </div>
-          </div>
-
-        </div><!-- /permit-header -->
-
-        <hr style="margin: 8px 0; border-color:#aaa;">
-
-        <!-- Exam Type -->
-        <div class="text-center mb-2">
-          <span class="text-muted text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 1px;">
-            Philippine Marine Merchant Academy<br>
-            PSYCHOLOGICAL EVALUATION TEST PERMIT
-          </span>
-        </div>
-
-        <!-- RED NOTE -->
-        <div class="permit-note">
-          Please bring this test permit on your examination day.
-        </div>
+      <!-- RED NOTE -->
+      <div class="permit-note">
+        Please bring this test permit on your examination day.
+      </div>
+      
+      <div class="permit-content">
         
-        <div class="permit-content">
-          
-          <!-- Section Headers -->
-          <div class="content-headers mb-2">
-            <div class="row g-0">
-              <div class="col-6">
-                <h6 class="section-title">Personal Information</h6>
-              </div>
-              <div class="col-6">
-                <h6 class="section-title">Schedule of Examination</h6>
-              </div>
-            </div>
-          </div>
-
-          <!-- Row 1: Personal Info + Schedule -->
-          <div class="row g-0 mb-2">
-            <div class="col-6 pe-3">
-              <div class="d-flex gap-2">
-                <div>
-                  <div class="field-label">Test Permit</div>
-                  <div class="field-value fw-semibold" id="testPermit">050-2018</div>
-                </div>
-                <div>
-                  <div class="field-label">Name of Examinee</div>
-                  <div class="field-value fw-semibold" id="fullName">User</div>
-                </div>
-                <div>
-                  <div class="field-label">Date of Birth</div>
-                  <div class="field-value fw-semibold" id="dob">02/11/2026</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="d-flex gap-3">
-                <div>
-                  <div class="field-label">Date of Examination</div>
-                  <div class="field-value fw-semibold" id="dateOfTest">05/27/2025</div>
-                </div>
-                <div>
-                  <div class="field-label">Venue</div>
-                  <div class="field-value fw-semibold" id="venue">Manila</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section Header: Contact + Payment -->
-          <div class="content-headers mb-2 mt-3">
-            <div class="row g-0">
-              <div class="col-6">
-                <h6 class="section-title">Contact Details</h6>
-              </div>
-              <div class="col-6">
-                <h6 class="section-title">Payment Details</h6>
-              </div>
-            </div>
-          </div>
-
-          <!-- Row 2: Contact + Payment -->
+        <!-- Section Headers -->
+        <div class="content-headers mb-2">
           <div class="row g-0">
-            <div class="col-6 pe-3">
-              <div class="d-flex gap-2">
-                <div>
-                  <div class="field-label">Contact Number</div>
-                  <div class="field-value fw-semibold" id="contact">09123456789</div>
-                </div>
-                <div>
-                  <div class="field-label">Email Address</div>
-                  <div class="field-value fw-semibold" id="email">example@gmail.com</div>
-                </div>
-              </div>
-            </div>
-            
             <div class="col-6">
-              <div class="d-flex gap-2">
-                <div>
-                  <div class="field-label">Transaction No.</div>
-                  <div class="field-value fw-semibold" id="transactionNo">123456789</div>
-                </div>
-                <div>
-                  <div class="field-label">Payment Date</div>
-                  <div class="field-value fw-semibold" id="paymentDate">02/11/2026</div>
-                </div>
-                <div>
-                  <div class="field-label">Payment Method</div>
-                  <div class="field-value fw-semibold" id="paymentMethod"></div>
-                </div>
+              <h6 class="section-title">Personal Information</h6>
+            </div>
+            <div class="col-6">
+              <h6 class="section-title">Schedule of Examination</h6>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 1: Personal Info + Schedule -->
+        <div class="row g-0 mb-2">
+          <div class="col-6 pe-3">
+            <div class="d-flex gap-2">
+              <div>
+                <div class="field-label">Test Permit</div>
+                <div class="field-value fw-semibold" id="testPermit">050-2018</div>
+              </div>
+              <div>
+                <div class="field-label">Name of Examinee</div>
+                <div class="field-value fw-semibold" id="fullName">User</div>
+              </div>
+              <div>
+                <div class="field-label">Date of Birth</div>
+                <div class="field-value fw-semibold" id="dob">02/11/2026</div>
               </div>
             </div>
           </div>
-
+          <div class="col-6">
+            <div class="d-flex gap-3">
+              <div>
+                <div class="field-label">Date of Examination</div>
+                <div class="field-value fw-semibold" id="dateOfTest">05/27/2025</div>
+              </div>
+              <div>
+                <div class="field-label">Venue</div>
+                <div class="field-value fw-semibold" id="venue">Manila</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ─────────────────────────────────
-             GUIDELINES + SIGNATURE
-        ───────────────────────────────── -->
-        <div class="d-flex gap-4 mt-3 align-items-start">
-
-          <!-- Guidelines -->
-          <div class="guidelines-section flex-grow-1">
-            <h6>Guidelines</h6>
-            <ol>
-              <li><strong>Examination fees are non-refundable under any circumstances.</strong></li>
-              <li>Wear white shirt, Denim pants, and rubber shoes on examination day.</li>
-              <li>Bring a valid or Student ID for verification purposes.</li>
-              <li>Bring 2 pencils, eraser, sharpener.</li>
-              <li>Bring snacks (to be consumed outside the testing room).</li>
-              <li>Mobile phones, smartwatches, and other electronic devices are strictly prohibited within the testing room.</li>
-            </ol>
+        <!-- Section Header: Contact + Payment -->
+        <div class="content-headers mb-2 mt-3">
+          <div class="row g-0">
+            <div class="col-6">
+              <h6 class="section-title">Contact Details</h6>
+            </div>
+            <div class="col-6">
+              <h6 class="section-title">Payment Details</h6>
+            </div>
           </div>
-
-          <!-- Signature block -->
-          <div class="signature-block flex-shrink-0">
-            <div class="sig-line"></div>
-            <div class="sig-label">Signature of verifier</div>
-            <div class="sig-sub">(to be filled by assigned psi officials)</div>
-          </div>
-
         </div>
 
+        <!-- Row 2: Contact + Payment -->
+        <div class="row g-0">
+          <div class="col-6 pe-3">
+            <div class="d-flex gap-2">
+              <div>
+                <div class="field-label">Contact Number</div>
+                <div class="field-value fw-semibold" id="contact">09123456789</div>
+              </div>
+              <div>
+                <div class="field-label">Email Address</div>
+                <div class="field-value fw-semibold" id="email">example@gmail.com</div>
+              </div>
+            </div>
+          </div>
+          
+        <div class="col-6">
+          <div class="d-flex gap-2 payment-details-row">
+            <div>
+              <div class="field-label">Transaction No.</div>
+              <div class="field-value fw-semibold" id="transactionNo">123456789</div>
+            </div>
+
+            <div>
+              <div class="field-label">Selected Meal/s</div>
+              <div class="field-value fw-semibold meal-option-list" id="mealOption">N/A</div>
+            </div>
+
+            <div>
+              <div class="field-label">Payment Date</div>
+              <div class="field-value fw-semibold" id="paymentDate">02/11/2026</div>
+            </div>
+
+            <div>
+              <div class="field-label">Payment Method</div>
+              <div class="field-value fw-semibold" id="paymentMethod"></div>
+            </div>
+          </div>
+        </div>
         </div>
 
       </div>
 
-      <div class="d-flex justify-content-center mt-4">
-        <button id="generatePDF" class="btn btn-danger px-4 py-2">
-          <i class="bx bx-download me-2"></i>
-          Generate PDF
-        </button>
+<!-- ─────────────────────────────────
+     GUIDELINES + SIGNATURE
+───────────────────────────────── -->
+<div class="d-flex gap-4 mt-3 align-items-start">
+
+  <div class="items-footer-section flex-grow-1">
+    <div class="items-grid">
+
+      <div class="items-panel allowed-panel">
+        <h6>Bring the Following</h6>
+        <ul>
+          <li>Valid ID or Student ID</li>
+          <li>Printed test permit</li>
+          <li>2 pencils, eraser, and sharpener</li>
+          <li>Transparent Bag or Plastic</li>
+          <li>Small clear envelope for valuables</li>
+        </ul>
+        <div class="items-warning">
+          Exam results of an examinee shall be <strong>WITHHELD INDEFINITELY</strong> if he/she fails to present any of the above required documents
+        </div>
       </div>
+
+      <div class="items-panel prohibited-panel">
+        <h6>Prohibited Items Inside the Testing Venue</h6>
+        <ul>
+          <li>Smart watches, tablets, phones during testing, etc.</li>
+          <li>Recording or photographic devices</li>
+          <li>Earphones, headsets, and media players</li>
+          <li>Calculators and other unauthorized materials</li>
+          <li>Foods and Water Bottles</li>
+          <li>Caps, Hats and Backbacks</li>
+        </ul>
+        <div class="items-warning">
+          Any examinee found in possesion of or using any of the above prohibited items shall be DISMISSED from the testing room.
+          He/She will be subjected to <strong>DISQUALIFICATION</strong>
+        </div>
+      </div>
+
+    </div>
+
+<div class="signature-row-bottom">
+  <div class="signature-block signature-left">
+    <div class="sig-line"></div>
+    <div class="sig-label">Signature of examinee</div>
+  </div>
+
+  <div class="signature-block signature-right">
+    <div class="sig-line"></div>
+    <div class="sig-label">Signature of verifier</div>
+    <div class="sig-sub">(to be filled by assigned PSI, OPC officials)</div>
+  </div>
+</div>
+  </div>
+
+</div>
+
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-4">
+    <button id="generatePDF" class="btn btn-danger px-4 py-2">
+      <i class="bx bx-download me-2"></i>
+      Generate PDF
+    </button>
+  </div>
 
 </main>
 
-      <!-- Logout Confirmation Modal -->
-      <div
-        class="modal fade"
-        id="logoutModal"
-        tabindex="-1"
-        aria-labelledby="logoutModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered logout-modal">
-          <div class="modal-content border-0 rounded-4 shadow">
+<!-- Logout Confirmation Modal -->
+<div
+  class="modal fade"
+  id="logoutModal"
+  tabindex="-1"
+  aria-labelledby="logoutModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered logout-modal">
+    <div class="modal-content border-0 rounded-4 shadow">
 
-            <!-- Header -->
-            <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
-              <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
-                Confirm Logout
-              </h5>
-              <button
-                type="button"
-                class="btn-close no-focus"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-
-            <!-- Divider -->
-            <div class="px-4">
-              <hr class="my-0">
-            </div>
-
-            <!-- Body -->
-            <div class="modal-body px-4 py-4 text-center">
-              <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
-              <p class="mb-0 text-muted">
-                Are you sure you want to log out of your account?
-              </p>
-            </div>
-
-            <!-- Footer -->
-            <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-              <button
-                type="button"
-                class="btn btn-outline-secondary rounded-pill px-4"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
-              <a
-                href="../php/logout.php"
-                class="btn btn-danger rounded-pill px-4"
-              >
-                Logout
-              </a>
-            </div>
-
-          </div>
-        </div>
+      <!-- Header -->
+      <div class="modal-header bg-light border-0 rounded-top-4 px-4 py-3">
+        <h5 class="modal-title fw-bold mb-0" id="logoutModalLabel">
+          Confirm Logout
+        </h5>
+        <button
+          type="button"
+          class="btn-close no-focus"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
+
+      <!-- Divider -->
+      <div class="px-4">
+        <hr class="my-0">
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body px-4 py-4 text-center">
+        <i class="bx bx-log-out-circle fs-1 text-muted mb-3"></i>
+        <p class="mb-0 text-muted">
+          Are you sure you want to log out of your account?
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
+        <button
+          type="button"
+          class="btn btn-outline-secondary rounded-pill px-4"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <a
+          href="../php/logout.php"
+          class="btn btn-danger rounded-pill px-4"
+        >
+          Logout
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
 <!-- SCRIPTS -->
@@ -311,48 +358,99 @@
 <script src="js/testPermit.js"></script>
 
 <script>
-    document.getElementById('generatePDF').addEventListener('click', async () => {
-      const permit = document.getElementById('permitPDF');
-      const btn = document.getElementById('generatePDF');
+  document.getElementById('generatePDF').addEventListener('click', async () => {
+    const permit = document.getElementById('permitPDF');
+    const btn = document.getElementById('generatePDF');
 
-      btn.disabled = true;
-      btn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-2"></i>Generating...';
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bx bx-loader-alt bx-spin me-2"></i>Generating...';
 
-      document.body.classList.add('print-mode');
+    // Temporarily reset mobile transform so html2pdf captures full-res layout
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      permit.style.transform = 'none';
+      permit.style.width = 'auto';
+      permit.style.marginBottom = '0';
+    }
 
-      await html2pdf().set({
-        margin: 0,
-        filename: 'PMMA_Test_Permit.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      }).from(permit).save();
+    document.body.classList.add('print-mode');
 
-      document.body.classList.remove('print-mode');
+    await html2pdf().set({
+      margin: 0,
+      filename: 'PMMA_Test_Permit.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    }).from(permit).save();
 
-      btn.disabled = false;
-      btn.innerHTML = '<i class="bx bx-download me-2"></i>Generate PDF';
-    });
-  </script>
+    document.body.classList.remove('print-mode');
 
-  <script>
-    // Check user session on page load
-    (function() {
-      fetch('php/check_session.php', { method: 'GET', credentials: 'same-origin' })
-        .then(response => response.json())
-        .then(data => {
-          if (!data.authenticated) {
-            window.location.href = '../auth/login.html';
-          }
-        })
-        .catch(error => {
-          console.error('Session check failed:', error);
+    // Restore mobile transform
+    if (isMobile) {
+      permit.style.transform = '';
+      permit.style.width = '';
+      permit.style.marginBottom = '';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bx bx-download me-2"></i>Generate PDF';
+  });
+</script>
+
+<script>
+  // Check user session on page load
+  (function() {
+    fetch('php/check_session.php', { method: 'GET', credentials: 'same-origin' })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.authenticated) {
           window.location.href = '../auth/login.html';
-        });
-    })();
-  </script>
+        }
+      })
+      .catch(error => {
+        console.error('Session check failed:', error);
+        window.location.href = '../auth/login.html';
+      });
+  })();
+
+  const sidebar   = document.getElementById('sidebar');
+  const hamburger = document.getElementById('hamburgerBtn');
+
+  // Check if mobile view and set collapsed by default
+  const isMobile = window.innerWidth <= 768;
+  
+  // Restore user preference - only on desktop
+  if (!isMobile && localStorage.getItem('sidebarCollapsed') === 'true') {
+    sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
+  } else if (isMobile) {
+    // Default to collapsed on mobile
+    sidebar.classList.add('hide');
+    hamburger.classList.add('collapsed');
+  }
+
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('hide');
+    hamburger.classList.toggle('collapsed');
+    // Only save preference on desktop
+    if (window.innerWidth > 768) {
+      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('hide'));
+    }
+  });
+
+  // Handle window resize to restore desktop preference when switching to desktop
+  window.addEventListener('resize', () => {
+    const nowMobile = window.innerWidth <= 768;
+    if (!nowMobile && localStorage.getItem('sidebarCollapsed') === 'true') {
+      sidebar.classList.add('hide');
+      hamburger.classList.add('collapsed');
+    } else if (!nowMobile) {
+      sidebar.classList.remove('hide');
+      hamburger.classList.remove('collapsed');
+    }
+  });
+</script>
 
 </body>
 </html>
-

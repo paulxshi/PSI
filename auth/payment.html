@@ -70,7 +70,27 @@
       border-color: #b56401;
       color: #ffffff;
     }
-  </style>
+    .step span {
+       display: inline;
+     }
+    
+     /* Hide step labels on mobile */
+     @media (max-width: 575.98px) {
+       .step span {
+         display: none;
+       }
+     
+       .step-circle {
+         width: 36px;
+         height: 36px;
+         font-size: 1rem;
+       }
+     
+       .step-line {
+         margin-top: 17px;
+       }
+     }
+      </style>
 </head>
 
 <body class="min-vh-100 d-flex align-items-center justify-content-center">
@@ -306,13 +326,30 @@ function displayExamDetails(data) {
     document.getElementById('examDate').textContent = formatted;
   }
   
-  // Format price
-  if (data.price) {
-    document.getElementById('examFee').textContent = '₱' + parseFloat(data.price).toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
+const examPrice = parseFloat(data.exam_price || 0);
+const mealTotal = parseFloat(data.meal_total || 0);
+const totalPrice = parseFloat(data.price || 0);
+
+let paymentText = '₱' + totalPrice.toLocaleString('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
+
+if (mealTotal > 0) {
+  paymentText += `
+(Exam Fee: ₱${examPrice.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} + Meals: ₱${mealTotal.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })})`;
+}
+
+const examFeeElement = document.getElementById('examFee');
+examFeeElement.style.whiteSpace = 'pre-line';
+examFeeElement.textContent = paymentText;
+
 }
 
 // Show error state
