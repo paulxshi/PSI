@@ -37,9 +37,10 @@ try {
     ]);
     
 } catch (PDOException $e) {
+    error_log('Accountant get_venues error: ' . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'An error occurred while fetching venues. Please try again later.'
     ]);
 }
 ?>

@@ -16,6 +16,42 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'accountant') {
 require_once('../../config/db.php');
 
 try {
+    // Get filter parameters
+    $region = isset($_GET['region']) ? $_GET['region'] : '';
+    $venue = isset($_GET['venue']) ? $_GET['venue'] : '';
+    $dateFrom = isset($_GET['dateFrom']) ? $_GET['dateFrom'] : '';
+    $dateTo = isset($_GET['dateTo']) ? $_GET['dateTo'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+    
+    // Validate date formats
+    if (!empty($dateFrom) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+        $dateFrom = '';
+    }
+    if (!empty($dateTo) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+        $dateTo = '';
+    }
+    
+    // Build shared WHERE clause for filters
+    $filterWhere = "";
+    $filterParams = [];
+    
+    if (!empty($venue)) {
+        $filterWhere .= " AND v.venue_name = :venue";
+        $filterParams[':venue'] = $venue;
+    }
+    if (!empty($dateFrom)) {
+        $filterWhere .= " AND DATE(p.paid_at) >= :dateFrom";
+        $filterParams[':dateFrom'] = $dateFrom;
+    }
+    if (!empty($dateTo)) {
+        $filterWhere .= " AND DATE(p.paid_at) <= :dateTo";
+        $filterParams[':dateTo'] = $dateTo;
+    }
+    if (!empty($search)) {
+        $filterWhere .= " AND (u.test_permit LIKE :search OR u.first_name LIKE :search OR u.last_name LIKE :search OR u.email LIKE :search)";
+        $filterParams[':search'] = "%$search%";
+    }
+
     // Get total revenue by region
     $regionQuery = "SELECT 
                         v.region,
@@ -26,19 +62,20 @@ try {
                     INNER JOIN examinees e ON p.examinee_id = e.examinee_id
                     INNER JOIN schedules s ON e.schedule_id = s.schedule_id
                     INNER JOIN venue v ON s.venue_id = v.venue_id
-                    WHERE p.status = 'PAID'
+                    INNER JOIN users u ON p.user_id = u.user_id
+                    WHERE p.status = 'PAID'" . $filterWhere . "
                     GROUP BY v.region
                     ORDER BY v.region";
     
     $stmt = $pdo->prepare($regionQuery);
-    $stmt->execute();
+    $stmt->execute($filterParams);
     $regionStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Format region data
     $regions = [
-        'Luzon' => ['revenue' => 0, 'examinees' => 0, 'payments' => 0],
-        'Visayas' => ['revenue' => 0, 'examinees' => 0, 'payments' => 0],
-        'Mindanao' => ['revenue' => 0, 'examinees' => 0, 'payments' => 0]
+        'Luzon' => ['revenue' => '0.00', 'examinees' => 0, 'payments' => 0],
+        'Visayas' => ['revenue' => '0.00', 'examinees' => 0, 'payments' => 0],
+        'Mindanao' => ['revenue' => '0.00', 'examinees' => 0, 'payments' => 0]
     ];
     
     foreach ($regionStats as $stat) {
@@ -50,7 +87,7 @@ try {
         ];
     }
     
-    // Get venue statistics
+    // Get venue statistics (with filters)
     $venueQuery = "SELECT 
                         v.venue_name,
                         v.region,
@@ -61,12 +98,14 @@ try {
                     LEFT JOIN schedules s ON v.venue_id = s.venue_id
                     LEFT JOIN examinees e ON s.schedule_id = e.schedule_id
                     LEFT JOIN payments p ON e.examinee_id = p.examinee_id
+                    LEFT JOIN users u ON p.user_id = u.user_id
+                    WHERE 1=1" . $filterWhere . "
                     GROUP BY v.venue_id, v.venue_name, v.region
                     HAVING total_revenue > 0
                     ORDER BY total_revenue DESC";
     
     $stmt = $pdo->prepare($venueQuery);
-    $stmt->execute();
+    $stmt->execute($filterParams);
     $venueStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // Group venue stats by region
@@ -86,7 +125,7 @@ try {
         ];
     }
     
-    // Get overall statistics
+    // Get overall statistics (with filters)
     $overallQuery = "SELECT 
                         COUNT(DISTINCT p.payment_id) as total_payments,
                         SUM(p.amount) as total_revenue,
@@ -95,10 +134,12 @@ try {
                      FROM payments p
                      INNER JOIN examinees e ON p.examinee_id = e.examinee_id
                      INNER JOIN schedules s ON e.schedule_id = s.schedule_id
-                     WHERE p.status = 'PAID'";
+                     INNER JOIN venue v ON s.venue_id = v.venue_id
+                     INNER JOIN users u ON p.user_id = u.user_id
+                     WHERE p.status = 'PAID'" . $filterWhere;
     
     $stmt = $pdo->prepare($overallQuery);
-    $stmt->execute();
+    $stmt->execute($filterParams);
     $overall = $stmt->fetch(PDO::FETCH_ASSOC);
     
     echo json_encode([
@@ -115,8 +156,9 @@ try {
     ]);
     
 } catch (PDOException $e) {
+    error_log('Accountant get_payment_statistics error: ' . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'An error occurred while fetching payment statistics. Please try again later.'
     ]);
 }
