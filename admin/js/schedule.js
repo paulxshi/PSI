@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+﻿document.addEventListener("DOMContentLoaded", function () {
 
     // ── Element References ────────────────────────────────────────────────────
     const form         = document.getElementById("scheduleForm");

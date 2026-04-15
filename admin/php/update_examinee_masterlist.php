@@ -41,7 +41,7 @@ if (empty($lastName)) {
 }
 
 if (empty($email)) {
-    $errors[] = 'Email is required';
+    // email is optional; leave as null
 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $errors[] = 'Invalid email format';
 }
@@ -105,27 +105,29 @@ try {
         exit;
     }
 
-    // Check for duplicate email (excluding current record)
-    $checkEmailStmt = $pdo->prepare("
-        SELECT id, test_permit 
-        FROM examinee_masterlist 
-        WHERE email = :email 
-        AND id != :current_id 
-        LIMIT 1
-    ");
-    $checkEmailStmt->execute([
-        ':email' => $email,
-        ':current_id' => $id
-    ]);
-
-    if ($checkEmailStmt->rowCount() > 0) {
-        $existing = $checkEmailStmt->fetch(PDO::FETCH_ASSOC);
-        http_response_code(409);
-        echo json_encode([
-            'success' => false,
-            'message' => "Email already exists with test permit: {$existing['test_permit']}"
+    // Check for duplicate email (excluding current record, only if provided)
+    if (!empty($email)) {
+        $checkEmailStmt = $pdo->prepare("
+            SELECT id, test_permit 
+            FROM examinee_masterlist 
+            WHERE email = :email 
+            AND id != :current_id 
+            LIMIT 1
+        ");
+        $checkEmailStmt->execute([
+            ':email' => $email,
+            ':current_id' => $id
         ]);
-        exit;
+
+        if ($checkEmailStmt->rowCount() > 0) {
+            $existing = $checkEmailStmt->fetch(PDO::FETCH_ASSOC);
+            http_response_code(409);
+            echo json_encode([
+                'success' => false,
+                'message' => "Email already exists with test permit: {$existing['test_permit']}"
+            ]);
+            exit;
+        }
     }
 
     // Update record
@@ -141,8 +143,8 @@ try {
     $updateStmt->execute([
         ':first_name' => $firstName,
         ':last_name' => $lastName,
-        ':middle_name' => $middleName,
-        ':email' => $email,
+        ':middle_name' => $middleName !== '' ? $middleName : null,
+        ':email' => $email !== '' ? $email : null,
         ':id' => $id
     ]);
 
