@@ -1,0 +1,46 @@
+# =============================================
+# auth/.htaccess - Security rules for auth folder
+# =============================================
+
+# Disable directory listing
+Options -Indexes
+
+# Block access to sensitive file types
+<FilesMatch "\.(env|sql|log|bak|old|ini|conf|sh|git)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to composer files
+<FilesMatch "^(composer\.json|composer\.lock|composer\.phar)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Note: PHP files in php/ subfolder have their own session/permission checks
+# No need for additional .htaccess blocking since they return JSON (not sensitive HTML)
+# Security is handled within each PHP file through session validation
+
+# Block access to config.php (sensitive credentials)
+<Files "config.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Prevent PHP files from being accessed as downloads
+<FilesMatch "\.phps$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Turn off PHP error display
+php_flag display_errors off
+php_flag log_errors on

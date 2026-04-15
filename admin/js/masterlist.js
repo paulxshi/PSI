@@ -39,8 +39,28 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                showStatus('Examinee record deleted successfully', 'success');
-                loadMasterlistData();
+                // Hide delete modal
+                bootstrap.Modal.getInstance(
+                    document.getElementById('deleteExamineeModal')
+                ).hide();
+
+                // Show success modal
+                setTimeout(() => {
+                    document.getElementById('deleteSuccessMessage').textContent = 
+                        'The examinee record has been successfully deleted.';
+                    document.getElementById('deleteSuccessDetails').textContent = 
+                        data.data.test_permit || 'Record ID: ' + deleteTargetId;
+                    
+                    const successModal = new bootstrap.Modal(
+                        document.getElementById('deleteSuccessModal')
+                    );
+                    successModal.show();
+                }, 300);
+
+                // Reload data after modal is dismissed
+                document.getElementById('deleteSuccessModal').addEventListener('hidden.bs.modal', function() {
+                    loadMasterlistData();
+                }, { once: true });
             } else {
                 showStatus(data.message || 'Failed to delete record', 'danger');
             }
@@ -52,12 +72,59 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
             this.disabled = false;
             this.textContent = 'Delete Examinee';
             deleteTargetId = null;
-
-            bootstrap.Modal.getInstance(
-                document.getElementById('deleteExamineeModal')
-            ).hide();
         });
 });
+
+    // Delete All Records handler
+    document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+
+        const formData = new FormData();
+        formData.append('deleteAll', 'true');
+
+        fetch('php/bulk_delete_examinee_masterlist.php', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success || data.deletedCount > 0) {
+                    // Hide bulk delete modal
+                    bootstrap.Modal.getInstance(
+                        document.getElementById('bulkDeleteModal')
+                    ).hide();
+
+                    // Show success modal
+                    setTimeout(() => {
+                        document.getElementById('deleteSuccessMessage').textContent = 
+                            data.deletedCount + ' record(s) have been successfully deleted.';
+                        document.getElementById('deleteSuccessDetails').textContent = 
+                            'Total Deleted: ' + data.deletedCount;
+                        
+                        const successModal = new bootstrap.Modal(
+                            document.getElementById('deleteSuccessModal')
+                        );
+                        successModal.show();
+                    }, 300);
+
+                    // Reload data after modal is dismissed
+                    document.getElementById('deleteSuccessModal').addEventListener('hidden.bs.modal', function() {
+                        loadMasterlistData();
+                    }, { once: true });
+                } else {
+                    showStatus(data.message || 'Failed to delete records', 'danger');
+                }
+            })
+            .catch(() => {
+                showStatus('Network error deleting records', 'danger');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = '<i class="bx bx-trash me-1"></i> Delete All';
+            });
+    });
 
     updateCardHighlights(); 
     loadMasterlistData();
@@ -163,6 +230,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
 
         fetch(`php/get_examinee_masterlist.php?${params.toString()}`, {
             method: 'GET',
+            cache: 'no-store',
             credentials: 'same-origin'
         })
             .then(response => response.json())
@@ -239,7 +307,9 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                 minute: '2-digit'
             });
 
-            const fullName = record.full_name || escapeHtml(record.first_name + ' ' + record.last_name);
+            const fullName = record.full_name
+                ? escapeHtml(record.last_name.toUpperCase() + ', ' + record.first_name)
+                : escapeHtml(record.last_name.toUpperCase() + ', ' + record.first_name);
 
             const actionButtons = record.used == 0
                 ? `<button class="btn fw-bold" style="color: #111827;" onclick="editRecord(${record.id})" title="Edit">
@@ -250,15 +320,15 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                       </button>`
                 : '';
 
+            const emailCell = record.email
+                ? `<a href="mailto:${escapeHtml(record.email)}" class="text-decoration-none">${escapeHtml(record.email)}</a>`
+                : `<span class="text-muted fst-italic">—</span>`;
+
             let row = `
                 <tr class="border-bottom">
                     <td class="fw-semibold">${escapeHtml(record.test_permit)}</td>
                     <td>${fullName}</td>
-                    <td>
-                        <a href="mailto:${escapeHtml(record.email)}" class="text-decoration-none">
-                            ${escapeHtml(record.email)}
-                        </a>
-                    </td>
+                    <td>${emailCell}</td>
                     <td>${statusBadge}</td>
                     <td>${uploadedDate}</td>`;
             
@@ -488,6 +558,38 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
                     // Update modal with upload results
                     document.getElementById('csvSuccessCount').textContent = data.successCount || 0;
                     document.getElementById('csvErrorCount').textContent = data.errorCount || 0;
+
+                    // Show warning count if any permits looked suspicious
+                    const csvWarningRow = document.getElementById('csvWarningRow');
+                    if (csvWarningRow) {
+                        if (data.warningCount > 0) {
+                            document.getElementById('csvWarningCount').textContent = data.warningCount;
+                            csvWarningRow.style.display = '';
+                        } else {
+                            csvWarningRow.style.display = 'none';
+                        }
+                    }
+
+                    // Show duplicate overwrite count
+                    const csvDuplicateRow = document.getElementById('csvDuplicateRow');
+                    if (csvDuplicateRow) {
+                        if (data.duplicateCount > 0) {
+                            document.getElementById('csvDuplicateCount').textContent = data.duplicateCount;
+                            csvDuplicateRow.style.display = '';
+                        } else {
+                            csvDuplicateRow.style.display = 'none';
+                        }
+                    }
+                    
+                    // Update email notification stats
+                    const emailStatsContainer = document.getElementById('emailStatsContainer');
+                    if (typeof data.emailsSent !== 'undefined' && typeof data.emailsFailed !== 'undefined') {
+                        document.getElementById('csvEmailsSent').textContent = data.emailsSent || 0;
+                        document.getElementById('csvEmailsFailed').textContent = data.emailsFailed || 0;
+                        emailStatsContainer.style.display = 'block';
+                    } else {
+                        emailStatsContainer.style.display = 'none';
+                    }
                     
                     // Show detailed results if available
                     if (data.detailedResults && data.detailedResults.length > 0) {
@@ -564,25 +666,34 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function (
         tbody.innerHTML = '';
         
         results.forEach(result => {
-            const statusBadge = result.status === 'success'
-                ? '<span class="badge bg-success">Success</span>'
-                : '<span class="badge bg-danger">Error</span>';
+            let statusBadge;
+            if (result.status === 'error') {
+                statusBadge = '<span class="badge bg-danger">Error</span>';
+            } else if (result.warning) {
+                statusBadge = '<span class="badge bg-warning text-dark">Warning</span>';
+            } else {
+                statusBadge = '<span class="badge bg-success">Success</span>';
+            }
             
             const fullName = `${result.first_name} ${result.last_name}`;
             
             const errorTooltip = result.error 
                 ? `<div class="text-danger small mt-1"><i class="bx bx-error-circle"></i> ${escapeHtml(result.error)}</div>`
                 : '';
+
+            const warningTooltip = result.warning
+                ? `<div class="text-warning small mt-1"><i class="bx bx-error"></i> ${escapeHtml(result.warning)}</div>`
+                : '';
             
-            const rowClass = result.status === 'error' ? 'table-danger' : '';
+            const rowClass = result.status === 'error' ? 'table-danger' : (result.warning ? 'table-warning' : '');
             
             const row = `
                 <tr class="${rowClass}">
                     <td>${result.row}</td>
-                    <td>${escapeHtml(result.test_permit)}</td>
+                    <td>${escapeHtml(result.test_permit)}${warningTooltip}</td>
                     <td>${escapeHtml(fullName)}</td>
                     <td>
-                        ${escapeHtml(result.email)}
+                        ${result.email ? escapeHtml(result.email) : '<span class="text-muted">—</span>'}
                         ${errorTooltip}
                     </td>
                     <td>${statusBadge}</td>

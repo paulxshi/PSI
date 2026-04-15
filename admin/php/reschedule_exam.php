@@ -9,8 +9,8 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     exit;
 }
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/log_activity.php';
+require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../php/log_activity.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

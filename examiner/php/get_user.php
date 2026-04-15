@@ -1,35 +1,38 @@
 <?php
+
 session_start();
 header("Content-Type: application/json");
-
-error_log("get_user.php called - Session ID: " . session_id());
-error_log("Session user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
-
 require_once "../../config/db.php";
 
 try {
-    // Check if user is logged in
-    if (!isset($_SESSION['user_id'])) {
-        error_log("No user_id in session");
-        echo json_encode(["success" => false, "message" => "Not logged in"]);
-        exit;
+    // Allow fetching by user_id in GET for examiner use
+    $user_id = null;
+    if (isset($_GET['user_id']) && is_numeric($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+        error_log("Fetching user data for user_id from GET: $user_id");
+    } else if (isset($_SESSION['user_id'])) {
+        $user_id = $_SESSION['user_id'];
+        error_log("Fetching user data for user_id from SESSION: $user_id");
+        // Check if registration is incomplete
+        if (isset($_SESSION['incomplete_registration']) && $_SESSION['incomplete_registration'] === true) {
+            error_log("User has incomplete registration");
+            echo json_encode([
+                "success" => false, 
+                "message" => "Please complete your registration and payment first.",
+                "redirect" => "../auth/login.html"
+            ]);
+            exit;
+        }
     }
 
-    // Check if registration is incomplete
-    if (isset($_SESSION['incomplete_registration']) && $_SESSION['incomplete_registration'] === true) {
-        error_log("User has incomplete registration");
-        echo json_encode([
-            "success" => false, 
-            "message" => "Please complete your registration and payment first.",
-            "redirect" => "../auth/login.html"
-        ]);
+    if (!$user_id) {
+        error_log("No user_id provided");
+        echo json_encode(["success" => false, "message" => "No user_id provided"]);
         exit;
     }
-
-    $user_id = $_SESSION['user_id'];
-    error_log("Fetching user data for user_id: $user_id");
 
     // Get user data directly from users table
+
     $stmt = $pdo->prepare("
         SELECT u.user_id, u.first_name, u.middle_name, u.last_name, u.email, u.contact_number, 
                u.date_of_birth, u.age, u.test_permit, u.role, u.status, u.school,

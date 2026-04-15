@@ -14,8 +14,42 @@
       --primary: #ef8809;
     }
 
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+    }
+
     body {
       background: url('../imgs/bg.jpg') center center / cover no-repeat fixed;
+      padding: 20px 0;
+    }
+
+    /* Thinner scrollbars */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(108, 117, 125, 0.55) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: rgba(108, 117, 125, 0.45);
+      border-radius: 999px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: rgba(108, 117, 125, 0.65);
+    }
+
+    .main-card {
+      overflow: hidden;
     }
 
     .step {
@@ -24,6 +58,7 @@
       color: #6c757d;
       font-weight: 600;
       font-size: 0.8rem;
+      min-width: 72px;
     }
 
     .step-circle {
@@ -43,6 +78,7 @@
       height: 2px;
       background: #dee2e6;
       margin-top: 20px;
+      min-width: 18px;
     }
 
     .step.completed .step-circle {
@@ -58,19 +94,155 @@
       box-shadow: 0 6px 18px rgba(247, 222, 34, 0.45);
     }
 
- .btn-primary {
-   background-color: var(--primary);
-   border-color: var(--primary);
-   color: #000;
-   font-weight: 600;
- }
+    .btn-primary {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #000;
+      font-weight: 600;
+    }
 
- .btn-primary:hover {
-   background-color:#b56401;
-   border-color: #b56401;
-   color: #ffffff;
- }
+    .btn-primary:hover {
+      background-color: #b56401;
+      border-color: #b56401;
+      color: #ffffff;
+    }
 
+    .step span {
+      display: inline;
+    }
+
+    .optional-note {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
+
+    .stepper-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+
+    .stepper-inner {
+      min-width: 540px;
+    }
+
+    .schedule-field-col .form-label {
+      min-height: 24px;
+    }
+
+    .meal-dropdown-menu {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .meal-check-item {
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      width: 100%;
+      user-select: none;
+    }
+
+    .meal-check-item:hover {
+      background: #f8f9fa;
+    }
+
+    .meal-check-item input {
+      flex-shrink: 0;
+    }
+
+    #mealDropdownBtn {
+      min-height: calc(1.5em + 0.75rem + 2px);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    #mealDropdownLabel {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+
+    #mealDropdownBtn:disabled {
+      background-color: #e9ecef;
+      color: #6c757d;
+      border-color: #ced4da;
+    }
+
+    .form-text {
+      line-height: 1.35;
+    }
+
+    .logo-img {
+      max-width: 80px;
+      height: auto;
+    }
+
+    .action-buttons {
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 767.98px) {
+      body {
+        padding: 12px 0;
+      }
+
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .card-body {
+        padding: 1rem !important;
+      }
+
+      .logo-img {
+        max-width: 64px;
+      }
+
+      .action-buttons {
+        flex-direction: column-reverse;
+        align-items: stretch !important;
+      }
+
+      .action-buttons .btn {
+        width: 100%;
+      }
+
+      .meal-dropdown-menu {
+        max-height: 200px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .step span {
+        display: none;
+      }
+
+      .step-circle {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
+
+      .step-line {
+        margin-top: 17px;
+      }
+
+      .stepper-inner {
+        min-width: 420px;
+      }
+
+      .form-text {
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 
@@ -81,146 +253,176 @@
 
 <div class="container position-relative" style="z-index:1;">
   <div class="row justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-9">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-9">
 
-      <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75">
+      <div class="card shadow-lg border-0 rounded-4 bg-white bg-opacity-75 main-card">
         <div class="card-body p-4">
 
           <!-- LOGOS -->
           <div class="d-flex justify-content-center align-items-center mb-4">
-            <img src="../imgs/PSI.png" style="max-width:80px;">
+            <img src="../imgs/PSI.png" class="logo-img" alt="PSI Logo">
             <div class="mx-3" style="width:1px;height:40px;background:#8f8f8f;"></div>
-            <img src="../imgs/PMMA.png" style="max-width:80px;">
+            <img src="../imgs/PMMA.png" class="logo-img" alt="PMMA Logo">
           </div>
 
           <!-- STEPPER CARD -->
           <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body px-4 py-3">
-              <div class="d-flex justify-content-between align-items-center">
+              <div class="stepper-scroll">
+                <div class="stepper-inner d-flex justify-content-between align-items-center">
 
-                <div class="step completed">
-                  <div class="step-circle">
-                    <i class="bi bi-exclamation-circle"></i>
+                  <div class="step completed">
+                    <div class="step-circle">
+                      <i class="bi bi-exclamation-circle"></i>
+                    </div>
+                    <span>Reminders</span>
                   </div>
-                  <span>Reminders</span>
-                </div>
 
-                <div class="step-line"></div>
+                  <div class="step-line"></div>
 
-                <div class="step completed">
-                  <div class="step-circle">
-                    <i class="bi bi-person-lines-fill"></i>
+                  <div class="step completed">
+                    <div class="step-circle">
+                      <i class="bi bi-person-lines-fill"></i>
+                    </div>
+                    <span>Information</span>
                   </div>
-                  <span>Information</span>
-                </div>
 
-                <div class="step-line"></div>
+                  <div class="step-line"></div>
 
-                <div class="step active">
-                  <div class="step-circle">
-                    <i class="bi bi-calendar-check"></i>
+                  <div class="step active">
+                    <div class="step-circle">
+                      <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <span>Exam Schedule</span>
                   </div>
-                  <span>Exam Schedule</span>
-                </div>
 
-                <div class="step-line"></div>
+                  <div class="step-line"></div>
 
-                <div class="step">
-                  <div class="step-circle">
-                    <i class="bi bi-credit-card"></i>
+                  <div class="step">
+                    <div class="step-circle">
+                      <i class="bi bi-credit-card"></i>
+                    </div>
+                    <span>Payment</span>
                   </div>
-                  <span>Payment</span>
-                </div>
 
-                <div class="step-line"></div>
+                  <div class="step-line"></div>
 
-                <div class="step">
-                  <div class="step-circle">
-                    <i class="bi bi-check-circle"></i>
+                  <div class="step">
+                    <div class="step-circle">
+                      <i class="bi bi-check-circle"></i>
+                    </div>
+                    <span>Finish</span>
                   </div>
-                  <span>Finish</span>
-                </div>
 
+                </div>
               </div>
             </div>
           </div>
 
-<!-- EXAMINATION SCHEDULE CARD -->
-<div class="card border-0 shadow-sm rounded-4">
-  <div class="card-body p-4">
+          <!-- EXAMINATION SCHEDULE CARD -->
+          <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
 
-    <h6 class="fw-semibold mb-4">
-      <i class="bi bi-calendar-check text-primary me-2"></i>
-      Examination Schedule
-    </h6>
+              <h6 class="fw-semibold mb-4">
+                <i class="bi bi-calendar-check text-primary me-2"></i>
+                Examination Schedule
+              </h6>
 
-    <form id="scheduleForm" method="POST" action="php/save_examinee_schedule.php">
+              <form id="scheduleForm" method="POST" action="php/save_examinee_schedule.php">
 
-      <div class="row g-3 mb-3">
-        <div class="col-md-6">
-          <label class="form-label fw-semibold">Region</label>
-          <select id="region" class="form-select" required>
-            <option value="">Select Region</option>
-          </select>
-        </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label fw-semibold">Region</label>
+                    <select id="region" name="region" class="form-select" required>
+                      <option value="">Select Region</option>
+                    </select>
+                  </div>
 
-        <div class="col-md-6">
-          <label class="form-label fw-semibold">Examination Venue</label>
-          <select id="venue" name="venue_id" class="form-select" required>
-            <option value="">Select Venue</option>
-          </select>
-        </div>
-      </div>
+                  <div class="col-12 col-md-6">
+                    <label class="form-label fw-semibold">Examination Venue</label>
+                    <select id="venue" name="venue_id" class="form-select" required disabled>
+                      <option value="">Select Venue</option>
+                    </select>
+                  </div>
+                </div>
 
-      <div class="row g-3 mb-4 align-items-end">
+                <div class="row g-3 mb-4 align-items-start">
 
-        <!-- Examination Date -->
-        <div class="col-md-8">
-          <label class="form-label fw-semibold">Examination Date</label>
-          <select id="schedule" name="schedule_id" class="form-select" required>
-            <option value="">Select Date</option>
-          </select>
-        </div>
+                  <!-- Examination Date -->
+                  <div class="col-12 col-md-6 schedule-field-col">
+                    <label class="form-label fw-semibold mb-2">Examination Date</label>
+                    <select id="schedule" name="schedule_id" class="form-select" required disabled>
+                      <option value="">Select Date</option>
+                    </select>
+                  </div>
 
-        <!-- Examination Fee (smaller width) -->
-        <div class="col-md-4" hidden>
-          <label class="form-label fw-semibold">Examination Fee</label>
-          <input
-            type="text"
-            id="examFee"
-            class="form-control fw-semibold text-success"
-            placeholder="—"
-            readonly
-          >
-        </div>
+                  <!-- Meal Option -->
+                  <div class="col-12 col-md-6 schedule-field-col">
+                    <label class="form-label fw-semibold d-flex justify-content-between align-items-center mb-2">
+                      <span>Meal Option</span>
+                      <span class="optional-note">Optional</span>
+                    </label>
 
-      </div>
+                    <div class="dropdown" data-bs-auto-close="outside">
+                      <button
+                        class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center"
+                        type="button"
+                        id="mealDropdownBtn"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        disabled
+                      >
+                        <span id="mealDropdownLabel">No meal selected</span>
+                      </button>
 
+                      <div class="dropdown-menu w-100 p-2 meal-dropdown-menu" id="mealDropdownMenu">
+                        <div class="text-muted small px-2 py-1">No meals available</div>
+                      </div>
+                    </div>
 
+                    <div id="mealInputsContainer"></div>
 
-      <div class="alert alert-light border small text-muted mb-4">
-        <i class="bi bi-info-circle me-1"></i>
-        Examination schedules, venues, and regions are uploaded and assigned
-        by PSI officials. Please wait for official announcements.
-      </div>
+                    <div class="form-text mt-2">
+                      To all PMMA aspirants, please be informed that lunch orders are available on an optional basis. Food stubs will be issued during the final registration at the venue to those who have placed their orders.
+                    </div>
+                  </div>
 
-      <div class="d-flex justify-content-between align-items-center">
-        <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
-          <i class="bi bi-arrow-left me-1"></i>
-          Go Back
-        </a>
+                  <!-- Hidden Examination Fee -->
+                  <div class="col-md-4 d-none">
+                    <label class="form-label fw-semibold">Examination Fee</label>
+                    <input
+                      type="text"
+                      id="examFee"
+                      class="form-control fw-semibold text-success"
+                      placeholder="—"
+                      readonly
+                    >
+                  </div>
 
-        <button type="submit" id="proceedBtn" class="btn btn-primary px-4 rounded-pill" disabled>
-          Proceed
-          <i class="bi bi-arrow-right ms-1"></i>
-        </button>
-      </div>
+                </div>
 
-    </form>
+                <div class="alert alert-light border small text-muted mb-4">
+                  <i class="bi bi-info-circle me-1"></i>
+                  Examination schedules, venues, regions, and available meal options are uploaded and assigned
+                  by PSI officials. Please wait for official announcements.
+                </div>
 
-  </div>
-</div>
+                <div class="d-flex justify-content-between align-items-center action-buttons">
+                  <a href="registration.html" class="btn btn-outline-secondary px-4 rounded-pill">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Go Back
+                  </a>
 
+                  <button type="submit" id="proceedBtn" class="btn btn-primary px-4 rounded-pill" disabled>
+                    Proceed
+                    <i class="bi bi-arrow-right ms-1"></i>
+                  </button>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
 
         </div>
       </div>
@@ -234,63 +436,61 @@
      data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
-      
+
       <div class="modal-header border-0 justify-content-center pb-2">
         <h5 class="modal-title fw-semibold">Schedule Confirmed</h5>
       </div>
-      
+
       <div class="modal-body px-4 py-4 text-center">
         <div class="rounded-circle bg-success-subtle text-success mx-auto mb-3
                     d-flex align-items-center justify-content-center"
              style="width:64px;height:64px;">
           <i class="bi bi-calendar-check fs-1"></i>
         </div>
-        
+
         <p class="mb-0 text-muted">
           Your examination schedule has been saved! Redirecting to payment...
         </p>
-        
+
         <div class="mt-3">
           <div class="spinner-border spinner-border-sm text-success" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
       </div>
-      
+
     </div>
   </div>
 </div>
 
 <!-- SCHEDULE SAVE ERROR MODAL -->
 <div class="modal fade" id="scheduleErrorModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered modal-sm modal-md">
     <div class="modal-content border-0 shadow-lg rounded-4">
-      
+
       <div class="modal-header border-0 justify-content-center pb-2">
         <h5 class="modal-title fw-semibold">Schedule Save Failed</h5>
-        <button type="button" class="btn-close position-absolute end-0 me-3" 
+        <button type="button" class="btn-close position-absolute end-0 me-3"
                 data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
+
       <div class="modal-body px-4 py-4 text-center">
         <div class="rounded-circle bg-danger-subtle text-danger mx-auto mb-3
                     d-flex align-items-center justify-content-center"
              style="width:64px;height:64px;">
           <i class="bi bi-x-circle fs-1"></i>
         </div>
-        
-        <p class="mb-0 text-muted" id="scheduleErrorMessage">
-          <!-- Error message will be inserted here -->
-        </p>
+
+        <p class="mb-0 text-muted" id="scheduleErrorMessage"></p>
       </div>
-      
+
       <div class="modal-footer border-0 px-4 pb-4 pt-2 justify-content-center">
-        <button type="button" class="btn btn-primary rounded-pill px-4" 
+        <button type="button" class="btn btn-primary rounded-pill px-4"
                 data-bs-dismiss="modal">
           <i class="bi bi-arrow-left me-1"></i> Try Again
         </button>
       </div>
-      
+
     </div>
   </div>
 </div>
@@ -299,7 +499,6 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
     const regionSelect = document.getElementById("region");
     const venueSelect = document.getElementById("venue");
     const scheduleSelect = document.getElementById("schedule");
@@ -307,19 +506,147 @@ document.addEventListener("DOMContentLoaded", function () {
     const proceedBtn = document.getElementById("proceedBtn");
     const scheduleForm = document.getElementById("scheduleForm");
 
-    // Function to validate form and enable/disable proceed button
+    const mealDropdownBtn = document.getElementById("mealDropdownBtn");
+    const mealDropdownMenu = document.getElementById("mealDropdownMenu");
+    const mealDropdownLabel = document.getElementById("mealDropdownLabel");
+    const mealInputsContainer = document.getElementById("mealInputsContainer");
+
+    const scheduleMealsMap = {};
+
+<<<<<<< HEAD
+=======
+    // TEMPORARY: Change to false when your real meal database is ready
+    const USE_DUMMY_MEALS = true;
+
+    const DUMMY_MEALS = [
+        { meal_id: "DUMMY1", meal_name: "Lunch - Chicken Adobo", meal_price: 120 },
+        { meal_id: "DUMMY2", meal_name: "Lunch - Beef Tapa", meal_price: 135 },
+        { meal_id: "DUMMY3", meal_name: "Lunch - Fried Chicken", meal_price: 110 },
+        { meal_id: "DUMMY4", meal_name: "Snack Pack - Sandwich & Juice", meal_price: 85 },
+        { meal_id: "DUMMY5", meal_name: "Bottled Water", meal_price: 25 }
+    ];
+
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
+    function clearScheduleMealsMap() {
+        Object.keys(scheduleMealsMap).forEach(key => delete scheduleMealsMap[key]);
+    }
+
+    function syncMealHiddenInputs() {
+        mealInputsContainer.innerHTML = "";
+
+        const checkedMeals = mealDropdownMenu.querySelectorAll(".meal-checkbox:checked");
+        checkedMeals.forEach(cb => {
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "meal_ids[]";
+            hiddenInput.value = cb.value;
+            mealInputsContainer.appendChild(hiddenInput);
+        });
+    }
+
+    function updateMealDropdownLabel() {
+        const checkedMeals = Array.from(
+            mealDropdownMenu.querySelectorAll(".meal-checkbox:checked")
+        );
+
+        if (checkedMeals.length === 0) {
+            mealDropdownLabel.textContent = "No meal selected";
+        } else if (checkedMeals.length === 1) {
+            mealDropdownLabel.textContent = checkedMeals[0].dataset.label;
+        } else {
+            mealDropdownLabel.textContent = `${checkedMeals.length} meals selected`;
+        }
+
+        syncMealHiddenInputs();
+    }
+
+    function resetMealOptions() {
+        mealDropdownMenu.innerHTML = '<div class="text-muted small px-2 py-1">No meals available</div>';
+        mealDropdownBtn.disabled = true;
+        mealDropdownLabel.textContent = "No meal selected";
+        mealInputsContainer.innerHTML = "";
+    }
+
+    function populateMealOptions(meals) {
+        mealDropdownMenu.innerHTML = "";
+        mealInputsContainer.innerHTML = "";
+
+        if (!Array.isArray(meals) || meals.length === 0) {
+            resetMealOptions();
+            return;
+        }
+
+        meals.forEach((meal, index) => {
+            const mealId = meal.meal_id || "";
+            const mealName = meal.meal_name || "Unnamed Meal";
+            const mealPrice = meal.meal_price
+                ? ` - ₱${Number(meal.meal_price).toLocaleString()}`
+                : "";
+            const labelText = `${mealName}${mealPrice}`;
+
+            const wrapper = document.createElement("label");
+            wrapper.className = "meal-check-item mb-1";
+            wrapper.setAttribute("for", `mealCheck${index}`);
+
+            const input = document.createElement("input");
+            input.className = "form-check-input mt-1 meal-checkbox";
+            input.type = "checkbox";
+            input.value = mealId;
+            input.id = `mealCheck${index}`;
+            input.dataset.label = labelText;
+
+            const span = document.createElement("span");
+            span.className = "small";
+            span.textContent = labelText;
+
+            wrapper.appendChild(input);
+            wrapper.appendChild(span);
+            mealDropdownMenu.appendChild(wrapper);
+        });
+
+        mealDropdownBtn.disabled = false;
+        updateMealDropdownLabel();
+    }
+
     function validateForm() {
-        const isValid = regionSelect.value && 
-                       venueSelect.value && 
-                       scheduleSelect.value;
+        const isValid =
+            regionSelect.value &&
+            venueSelect.value &&
+            scheduleSelect.value;
+
         proceedBtn.disabled = !isValid;
     }
 
-    // 🔹 Load Regions on Page Load
-    fetch("php/get_schedules.php?type=regions")
-        .then(response => response.json())
+    function fetchJSON(url, options = {}) {
+        return fetch(url, options).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        });
+    }
+
+    // Keep the meal dropdown open while checking items
+    mealDropdownMenu.addEventListener("click", function (e) {
+        e.stopPropagation();
+    });
+
+    mealDropdownMenu.addEventListener("change", function (e) {
+        e.stopPropagation();
+
+        if (e.target.classList.contains("meal-checkbox")) {
+            updateMealDropdownLabel();
+            validateForm();
+        }
+    });
+
+    venueSelect.disabled = true;
+    scheduleSelect.disabled = true;
+    resetMealOptions();
+
+    fetchJSON("php/get_schedules.php?type=regions")
         .then(data => {
-            regionSelect.innerHTML = '<option value="">Select Region</option>';
+            regionSelect.innerHTML = '<option value="" disabled selected>Select Region</option>';
 
             data.forEach(region => {
                 const option = document.createElement("option");
@@ -328,28 +655,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 regionSelect.appendChild(option);
             });
         })
-        .catch(error => console.error("Error loading regions:", error));
+        .catch(error => {
+            console.error("Error loading regions:", error);
+        });
 
-
-    // 🔹 When Region Changes → Load Venues
     regionSelect.addEventListener("change", function () {
-
         const region = this.value;
 
-        // Reset lower dropdowns
-        venueSelect.innerHTML = '<option value="">Select Venue</option>';
-        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        venueSelect.innerHTML = '<option value="" disabled selected>Select Venue</option>';
+        scheduleSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
         venueSelect.disabled = true;
         scheduleSelect.disabled = true;
         examFeeInput.value = "";
+        resetMealOptions();
+        clearScheduleMealsMap();
         validateForm();
 
         if (region === "") return;
 
-        fetch("php/get_schedules.php?type=venues&region=" + encodeURIComponent(region))
-            .then(response => response.json())
+        fetchJSON("php/get_schedules.php?type=venues&region=" + encodeURIComponent(region))
             .then(data => {
-
                 if (data.length === 0) {
                     venueSelect.innerHTML = '<option value="">No venues available</option>';
                     return;
@@ -364,26 +689,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 venueSelect.disabled = false;
             })
-            .catch(error => console.error("Error loading venues:", error));
+            .catch(error => {
+                console.error("Error loading venues:", error);
+            });
     });
 
-
-    // 🔹 When Venue Changes → Load Schedules 
     venueSelect.addEventListener("change", function () {
-
         const venueId = this.value;
 
-        scheduleSelect.innerHTML = '<option value="">Select Date</option>';
+        scheduleSelect.innerHTML = '<option value="" disabled selected>Select Date</option>';
         scheduleSelect.disabled = true;
         examFeeInput.value = "";
+        resetMealOptions();
+        clearScheduleMealsMap();
         validateForm();
 
         if (venueId === "") return;
 
-        fetch("php/get_schedules.php?type=schedules&venue_id=" + venueId)
-            .then(response => response.json())
+        fetchJSON("php/get_schedules.php?type=schedules&venue_id=" + encodeURIComponent(venueId))
             .then(data => {
-
                 if (data.length === 0) {
                     scheduleSelect.innerHTML = '<option value="">No schedules available</option>';
                     return;
@@ -393,116 +717,166 @@ document.addEventListener("DOMContentLoaded", function () {
                     const option = document.createElement("option");
                     option.value = schedule.schedule_id;
 
-                    const date = new Date(schedule.scheduled_date + 'T00:00:00');
-
-                    const formattedDate = date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                    const date = new Date(schedule.scheduled_date + "T00:00:00");
+                    const formattedDate = date.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
                     });
 
                     const slots = schedule.available_slots || 0;
                     option.textContent = `${formattedDate} (${slots} slots available)`;
-
-                    // 🔹 Store exam price as data attribute
-                    option.dataset.fee = schedule.exam_price;
+                    option.dataset.fee = schedule.exam_price || "";
 
                     scheduleSelect.appendChild(option);
+
+<<<<<<< HEAD
+                   scheduleMealsMap[schedule.schedule_id] = [];
+=======
+                    const backendMeals =
+                        schedule.meals ||
+                        schedule.meal_options ||
+                        [];
+
+                    scheduleMealsMap[schedule.schedule_id] =
+                        Array.isArray(backendMeals) && backendMeals.length > 0
+                            ? backendMeals
+                            : (USE_DUMMY_MEALS ? DUMMY_MEALS : []);
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
                 });
 
                 scheduleSelect.disabled = false;
             })
-            .catch(error => console.error("Error loading schedules:", error));
+            .catch(error => {
+                console.error("Error loading schedules:", error);
+            });
     });
 
-    // 🔹 When Schedule Changes → Update Fee and Validate
-    scheduleSelect.addEventListener("change", function () {
+<<<<<<< HEAD
+scheduleSelect.addEventListener("change", function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const fee = selectedOption ? selectedOption.dataset.fee : "";
+    const selectedScheduleId = this.value;
 
+    if (!fee) {
+        examFeeInput.value = "";
+    } else {
+        examFeeInput.value = "₱" + Number(fee).toLocaleString();
+    }
+
+    resetMealOptions();
+
+    if (!selectedScheduleId) {
+        validateForm();
+        return;
+    }
+
+    fetchJSON(
+        "php/get_meals.php?schedule_id=" + encodeURIComponent(selectedScheduleId)
+    )
+    .then(meals => {
+        const formattedMeals = Array.isArray(meals)
+            ? meals.map(meal => ({
+                  meal_id: meal.meal_id,
+                  meal_name: meal.name,
+                  meal_price: meal.price
+              }))
+            : [];
+
+        scheduleMealsMap[selectedScheduleId] = formattedMeals;
+        populateMealOptions(formattedMeals);
+        validateForm();
+    })
+    .catch(error => {
+        console.error("Error loading meals:", error);
+        resetMealOptions();
+=======
+    scheduleSelect.addEventListener("change", function () {
         const selectedOption = this.options[this.selectedIndex];
-        const fee = selectedOption.dataset.fee;
+        const fee = selectedOption ? selectedOption.dataset.fee : "";
+        const selectedScheduleId = this.value;
 
         if (!fee) {
             examFeeInput.value = "";
         } else {
             examFeeInput.value = "₱" + Number(fee).toLocaleString();
         }
-        
+
+        const meals = scheduleMealsMap[selectedScheduleId] || (USE_DUMMY_MEALS ? DUMMY_MEALS : []);
+        populateMealOptions(meals);
+
+>>>>>>> c2e8593a1ad4020f5eae02badf0b05bef60e8cf1
         validateForm();
     });
+});
 
-    // 🔹 Handle Form Submission
-    scheduleForm.addEventListener("submit", function(e) {
+    scheduleForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        
-        // Disable button and show loading
+
+        syncMealHiddenInputs();
+
         proceedBtn.disabled = true;
         proceedBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
-        
+
         const formData = new FormData(this);
-        
-        fetch('php/save_examinee_schedule.php', {
-            method: 'POST',
+
+        fetchJSON("php/save_examinee_schedule.php", {
+            method: "POST",
             body: formData,
-            credentials: 'same-origin'
+            credentials: "same-origin"
         })
-        .then(response => response.json())
         .then(data => {
-            console.log('Schedule Save Response:', data);
-            
+            console.log("Schedule Save Response:", data);
+
             if (data.success) {
-                // Show success modal
-                const successModal = new bootstrap.Modal(document.getElementById('scheduleSuccessModal'));
+                const successModal = new bootstrap.Modal(document.getElementById("scheduleSuccessModal"));
                 successModal.show();
-                
-                // Redirect to payment page after short delay
+
                 setTimeout(() => {
-                    window.location.href = 'payment.html';
+                    window.location.href = "payment.html";
                 }, 1500);
             } else {
-                // Show error modal
-                document.getElementById('scheduleErrorMessage').textContent = data.message || 'Failed to save schedule. Please try again.';
-                const errorModal = new bootstrap.Modal(document.getElementById('scheduleErrorModal'));
+                document.getElementById("scheduleErrorMessage").textContent =
+                    data.message || "Failed to save schedule. Please try again.";
+
+                const errorModal = new bootstrap.Modal(document.getElementById("scheduleErrorModal"));
                 errorModal.show();
-                
-                // Reset button
+
                 proceedBtn.disabled = false;
                 proceedBtn.innerHTML = 'Proceed <i class="bi bi-arrow-right ms-1"></i>';
             }
         })
         .catch(error => {
-            console.error('Error saving schedule:', error);
-            
-            // Show error modal
-            document.getElementById('scheduleErrorMessage').textContent = 'Network error. Please try again.';
-            const errorModal = new bootstrap.Modal(document.getElementById('scheduleErrorModal'));
+            console.error("Error saving schedule:", error);
+
+            document.getElementById("scheduleErrorMessage").textContent =
+                "Network error. Please try again.";
+
+            const errorModal = new bootstrap.Modal(document.getElementById("scheduleErrorModal"));
             errorModal.show();
-            
-            // Reset button
+
             proceedBtn.disabled = false;
             proceedBtn.innerHTML = 'Proceed <i class="bi bi-arrow-right ms-1"></i>';
         });
     });
-
 });
 </script>
 
 <script>
-// Check user session on page load
 (function() {
-    fetch('php/check_session.php', {
-        method: 'GET',
-        credentials: 'same-origin'
+    fetch("php/check_session.php", {
+        method: "GET",
+        credentials: "same-origin"
     })
     .then(response => response.json())
     .then(data => {
         if (!data.authenticated) {
-            // Redirect to login if not authenticated
-            window.location.href = 'login.html';
+            window.location.href = "login.html";
         }
     })
     .catch(error => {
-        console.error('Session check failed:', error);
-        window.location.href = 'login.html';
+        console.error("Session check failed:", error);
+        window.location.href = "login.html";
     });
 })();
 </script>

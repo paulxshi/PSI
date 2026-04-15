@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 
 try {
 
+
     $sql = "SELECT 
     s.schedule_id,
     s.scheduled_date,
@@ -29,6 +30,7 @@ LEFT JOIN examinees e
     ON (e.schedule_id = s.schedule_id 
         OR e.attended_schedule_id = s.schedule_id)
 
+WHERE s.archived = 0 OR s.archived IS NULL
 GROUP BY s.schedule_id, s.scheduled_date, v.venue_name, v.region
 ORDER BY s.scheduled_date ASC;";
 

@@ -18,10 +18,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'accountant') {
 require_once('../../config/db.php');
 
 try {
-    // Get all venues ordered by region and venue name
-    $query = "SELECT DISTINCT venue_name, region 
-              FROM venue 
-              ORDER BY region, venue_name";
+    // Get only venues that have at least one paid examinee
+    $query = "SELECT DISTINCT v.venue_name, v.region 
+              FROM venue v
+              INNER JOIN schedules s ON v.venue_id = s.venue_id
+              INNER JOIN examinees e ON s.schedule_id = e.schedule_id
+              INNER JOIN payments p ON e.examinee_id = p.examinee_id
+              WHERE p.status = 'PAID'
+              ORDER BY v.region, v.venue_name";
     
     $stmt = $pdo->prepare($query);
     $stmt->execute();

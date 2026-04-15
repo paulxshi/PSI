@@ -141,8 +141,8 @@ try {
         respond(false, 'This test permit has already been registered.', 409);
     }
     
-    // Verify email matches the masterlist record (security check)
-    if (strtolower($permitRecord['email']) !== strtolower($email)) {
+    // Verify email matches the masterlist record only when the masterlist has one (security check)
+    if (!empty($permitRecord['email']) && strtolower($permitRecord['email']) !== strtolower($email)) {
         respond(false, 'Email does not match the test permit record.', 422);
     }
     

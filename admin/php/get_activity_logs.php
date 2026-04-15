@@ -18,7 +18,7 @@ $role = isset($_GET['role']) ? trim($_GET['role']) : '';
 $severity = isset($_GET['severity']) ? trim($_GET['severity']) : '';
 $dateFilter = isset($_GET['date_filter']) ? trim($_GET['date_filter']) : 'week';
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$limit = 20; // Records per page
+$limit = isset($_GET['limit']) ? max(1, min(100, (int)$_GET['limit'])) : 10; // Records per page (default 10, max 100)
 $offset = ($page - 1) * $limit;
 
 try {

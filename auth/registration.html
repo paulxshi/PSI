@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
-  <script src="js/registration.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="icon" href="../imgs/PSI.png">
@@ -58,8 +57,35 @@
    opacity: 1;
    cursor: not-allowed;
  }
+ 
+#termsContainer {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 6px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;              
+  scrollbar-color: #c7cbd1 #eef1f4;   
+}
 
- /* Small auto-generated age field */
+#termsContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+#termsContainer::-webkit-scrollbar-track {
+  background: #eef1f4;
+  border-radius: 999px;
+}
+
+#termsContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d6d9de, #b8bec7);
+  border-radius: 999px;
+  border: 2px solid #eef1f4;
+}
+
+#termsContainer::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #bfc5cd, #9ea6b1);
+}
+
 #age {
   background-color: #f8f9fa;
   font-weight: 600;
@@ -72,7 +98,29 @@
   color: #adb5bd;
 }
 
+#personalInfoCard {
+  max-height: 500px; /* Adjust as needed */
+  overflow-y: auto;
+  padding-right: 10px; /* For smooth scrolling */
+  scrollbar-width: thin;
+  scrollbar-color: #c7cbd1 #eef1f4; /* Custom scrollbar color */
+}
 
+#personalInfoCard::-webkit-scrollbar {
+  width: 8px;
+}
+
+#personalInfoCard::-webkit-scrollbar-track {
+  background: #eef1f4;
+}
+
+#personalInfoCard::-webkit-scrollbar-thumb {
+  background: #c7cbd1;
+}
+
+#personalInfoCard::-webkit-scrollbar-thumb:hover {
+  background: #9ea6b1;
+}
 .btn-send-otp {
   background: linear-gradient(135deg, #ffb347, #ef8809);
   border: none;
@@ -268,9 +316,9 @@
    color: #ffffff;
  }
 
- .overflow-auto::-webkit-scrollbar {
-     display: none;
-  } 
+    #registrationForm::-webkit-scrollbar {
+      display: none;
+    }
 
  .otp-verified-badge {
        background-color: #198754;
@@ -308,6 +356,64 @@
     .permit-input {
       max-width: 260px;
     }
+
+    /* Filled-field indicator */
+    .form-control.field-filled,
+    .form-select.field-filled {
+      border-color: #198754 !important;
+      border-left: 3px solid #198754 !important;
+      background-color: #f0fdf4 !important;
+      transition: border-color 0.3s ease, background-color 0.3s ease, border-left 0.3s ease;
+    }
+
+    .form-control.field-filled:focus,
+    .form-select.field-filled:focus {
+      border-color: #198754 !important;
+      box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.15) !important;
+    }
+.step span {
+   display: inline;
+ }
+
+@media (max-width: 767.98px) {
+  #termsContainer {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #a8afb8 #eef1f4;
+  }
+
+  #termsContainer::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #termsContainer::-webkit-scrollbar-track {
+    background: #eef1f4;
+    border-radius: 999px;
+  }
+
+  #termsContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #c7ccd3, #9fa7b2);
+    border-radius: 999px;
+    border: 2px solid #eef1f4;
+  }
+}
+
+ @media (max-width: 575.98px) {
+   .step span {
+     display: none;
+   }
+ 
+   .step-circle {
+     width: 36px;
+     height: 36px;
+     font-size: 1rem;
+   }
+ 
+   .step-line {
+     margin-top: 17px;
+   }
+ }
   </style>
 
  </head>
@@ -404,10 +510,11 @@
                 </div>
 
                   <div
-                    id="termsContainer"
-                    class="p-3 rounded-3 mb-4 overflow-auto"
-                    style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
-                  >
+                    <div
+                      id="termsContainer"
+                      class="p-3 rounded-3 mb-4"
+                      style="background:#f8f9fa; line-height:1.7; max-height: 220px;"
+                    >
                     <p class="small text-muted">
                       By proceeding with this registration, you acknowledge and agree that all
                       information, statements, and documents you submit through the PSI Examination
@@ -534,7 +641,7 @@
                         name="test_permit_no"
                         id="testPermitNo"
                         required
-                        placeholder="Enter Test Permit Number"
+                        placeholder="Enter Test Permit No."
                       >
                       <button
                         type="button"
@@ -563,7 +670,7 @@
                   </div>
 
                   <div class="col-md-4">
-                    <label class="form-label fw-semibold">Middle Name</label>
+                    <label class="form-label fw-semibold">Middle </label>
                     <input type="text" class="form-control" name="middle_name" id="middleName" disabled>
                   </div>
                 </div>
@@ -615,7 +722,6 @@
                       </option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
-                      <option value="Prefer not to say">Prefer not to say</option>
                     </select>
 
                     <div class="invalid-feedback">
@@ -765,7 +871,7 @@
                       </div>
 
                    <div class="small text-muted mt-1">
-                      Must contain uppercase, lowercase, and number. Ex: <strong>Example123</strong>
+                      Must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
                    </div>
 
                     </div>
@@ -782,6 +888,7 @@
               id="confirmPassword"
               placeholder="Re-enter password"
               required
+              disabled
             >
             <button
               class="btn btn-outline-secondary"
@@ -848,6 +955,45 @@
     </div>
   </div>
 </div>
+
+
+  <script src="js/registration.js"></script>
+<script>
+  // Auto-detect filled fields and apply visual indicator
+  (function() {
+    const trackedIds = [
+      'lastName','firstName','middleName','dateOfBirth',
+      'gender','contactNumber','school','email',
+      'password','confirmPassword'
+    ];
+
+    function updateFieldState(el) {
+      if (!el) return;
+      const val = el.value && el.value.trim();
+      if (el.tagName === 'SELECT') {
+        el.classList.toggle('field-filled', val !== '' && !el.selectedOptions[0]?.disabled);
+      } else {
+        el.classList.toggle('field-filled', val !== '');
+      }
+    }
+
+    function scanAll() {
+      trackedIds.forEach(id => updateFieldState(document.getElementById(id)));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      trackedIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', () => updateFieldState(el));
+        el.addEventListener('change', () => updateFieldState(el));
+      });
+
+      // Observe programmatic value changes via MutationObserver + polling
+      setInterval(scanAll, 400);
+    });
+  })();
+</script>
 <script>
   function goToPersonalInfo() {
     document.getElementById('reminderCard').classList.add('d-none');
@@ -923,78 +1069,7 @@
   }
 </script>
 
-<script>
-    // Submit registration data when clicking "Proceed to Examination Schedule"
-  document.getElementById('registerBtn').addEventListener('click', () => {
-    submitRegistration();
-  });
 
-  // Submit registration function
-  function submitRegistration() {
-    const registerBtn = document.getElementById('registerBtn');
-    const formData = new FormData();
-    
-    // Add all form fields
-    formData.append('test_permit', document.getElementById('testPermitNo').value.trim());
-    formData.append('last_name', document.getElementById('lastName').value.trim());
-    formData.append('first_name', document.getElementById('firstName').value.trim());
-    formData.append('middle_name', document.getElementById('middleName').value.trim());
-    formData.append('email', document.getElementById('email').value.trim());
-    formData.append('date_of_birth', document.getElementById('dateOfBirth').value.trim());
-    formData.append('contact_number', document.getElementById('contactNumber').value.trim());
-    formData.append('gender', document.getElementById('gender').value);
-    formData.append('school', document.getElementById('school').value.trim());
-    formData.append('address', document.getElementById('address')?.value.trim() || '');
-    formData.append('nationality', document.getElementById('nationality')?.value.trim() || '');
-    formData.append('password', document.getElementById('password').value);
-    formData.append('confirm_password', document.getElementById('confirmPassword').value);
-
-    // Disable button and show loading state
-    registerBtn.disabled = true;
-    registerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
-
-    fetch('php/register.php', {
-      method: 'POST',
-      body: formData,
-      credentials: 'same-origin'
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Registration Response:', data);
-      
-      if (data.success) {
-        // Show success modal
-        const successModal = new bootstrap.Modal(document.getElementById('registrationSuccessModal'));
-        successModal.show();
-        
-        // Redirect to exam schedule after short delay
-        setTimeout(() => {
-          window.location.href = 'examsched.html';
-        }, 1500);
-      } else {
-        // Show error modal
-        document.getElementById('registrationErrorMessage').textContent = data.message || 'Registration failed. Please try again.';
-        const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-        errorModal.show();
-        
-        registerBtn.disabled = false;
-        registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-      }
-    })
-    .catch(error => {
-      console.error('Registration Error:', error);
-      
-      // Show error modal
-      document.getElementById('registrationErrorMessage').textContent = 'Network error. Please try again.';
-      const errorModal = new bootstrap.Modal(document.getElementById('registrationErrorModal'));
-      errorModal.show();
-      
-      registerBtn.disabled = false;
-      registerBtn.innerHTML = 'Proceed to Examination Schedule <i class="bi bi-arrow-right-short"></i>';
-    });
-  }
-
-</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {

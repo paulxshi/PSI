@@ -106,7 +106,22 @@ try {
         $status,
         $schedule_id
     ]);
-    
+
+    // Sync meals: delete existing and re-insert
+    $mealsRaw = $_POST['meals'] ?? '[]';
+    $meals = json_decode($mealsRaw, true);
+    $pdo->prepare("DELETE FROM meals WHERE schedule_id = ?")->execute([$schedule_id]);
+    if (is_array($meals) && count($meals) > 0) {
+        $stmtMeal = $pdo->prepare("INSERT INTO meals (name, price, schedule_id) VALUES (?, ?, ?)");
+        foreach ($meals as $meal) {
+            $mealName  = trim($meal['name'] ?? $meal['type'] ?? '');
+            $mealPrice = (float)($meal['price'] ?? 0);
+            if ($mealName !== '') {
+                $stmtMeal->execute([$mealName, $mealPrice, $schedule_id]);
+            }
+        }
+    }
+
     $pdo->commit();
     
     // Log activity

@@ -38,22 +38,22 @@ try {
     
     // Check if schedule exists and get info
     $stmtCheck = $pdo->prepare("
-        SELECT num_registered 
-        FROM schedules 
+        SELECT num_registered, status
+        FROM schedules
         WHERE schedule_id = ?
     ");
     $stmtCheck->execute([$schedule_id]);
     $schedule = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-    
+
     if (!$schedule) {
         throw new Exception('Schedule not found');
     }
-    
-    // Check if there are registered examinees
-    if ($schedule['num_registered'] > 0) {
+
+    // Only block deletion if status is 'Incoming' and there are registered examinees
+    if (strtolower($schedule['status']) === 'incoming' && $schedule['num_registered'] > 0) {
         echo json_encode([
             'success' => false,
-            'message' => 'Cannot delete schedule with registered examinees. Please reassign them first or mark schedule as Completed.'
+            'message' => 'Cannot delete schedule with registered examinees while status is Incoming. Please reassign them first or mark schedule as Completed.'
         ]);
         $pdo->rollBack();
         exit();

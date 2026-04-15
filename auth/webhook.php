@@ -1,6 +1,20 @@
 <?php
 // Xendit Webhook Handler for Payment Confirmation
 // This script receives payment notifications from Xendit and updates the database
+// IMPORTANT: Must ALWAYS return 200 to Xendit to acknowledge receipt (except 403 for bad token)
+
+// Register shutdown function to catch fatal errors and still return 200
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if (!headers_sent()) {
+            http_response_code(200);
+            header('Content-Type: application/json');
+        }
+        error_log('[WEBHOOK FATAL] ' . $error['message'] . ' in ' . $error['file'] . ':' . $error['line']);
+        echo json_encode(['success' => false, 'message' => 'Internal error acknowledged']);
+    }
+});
 
 header('Content-Type: application/json');
 
@@ -18,66 +32,108 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $rawPayload = file_get_contents('php://input');
 $data = json_decode($rawPayload, true);
 
-// Log request method
-error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
-
 // Check if JSON decoding failed
 if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
     $jsonError = json_last_error_msg();
     error_log('[WEBHOOK ERROR] Invalid JSON payload: ' . $jsonError . ' | Raw: ' . substr($rawPayload, 0, 500));
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid JSON payload', 'details' => $jsonError]);
+    // Return 200 to stop Xendit retries on bad payload
+    http_response_code(200);
+    echo json_encode(['error' => 'Invalid JSON payload', 'acknowledged' => true]);
     exit;
 }
 
-// Enhanced logging for debugging
+// Log webhook receipt
 error_log("====== XENDIT WEBHOOK RECEIVED ======");
 error_log("Mode: " . getPaymentModeDisplay());
 error_log("Timestamp: " . date('Y-m-d H:i:s'));
 error_log("Raw Payload: " . $rawPayload);
-error_log("Parsed Data: " . print_r($data, true));
-error_log("Headers: " . print_r(getallheaders(), true));
 error_log("=====================================");
 
-// Verify webhook authenticity
-// ⚠️ IMPORTANT: This is automatically enabled in production mode for security
+// Verify webhook authenticity via X-Callback-Token header
 $callbackToken = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
 
-// In production mode, ALWAYS verify the webhook token
 if (PAYMENT_MODE === 'production') {
     if (empty($callbackToken) || $callbackToken !== XENDIT_WEBHOOK_TOKEN) {
-        error_log('[WEBHOOK SECURITY] Invalid callback token in production mode');
+        error_log('[WEBHOOK SECURITY] Invalid callback token in production mode. Received: ' . substr($callbackToken, 0, 10) . '...');
+        // 403 is correct for token mismatch — Xendit will NOT retry on 403
         http_response_code(403);
         echo json_encode(['error' => 'Invalid callback token']);
         exit;
     }
 }
 
-// In test mode, log if token doesn't match (but still allow for testing)
+// In test mode, log if token doesn't match
 if (PAYMENT_MODE === 'test' && !empty($callbackToken)) {
     if ($callbackToken !== XENDIT_WEBHOOK_TOKEN) {
-        error_log('[WEBHOOK WARNING] Callback token mismatch in test mode (Token: ' . $callbackToken . ')');
+        error_log('[WEBHOOK WARNING] Callback token mismatch in test mode');
     }
 }
 
 // Validate required fields
 if (!isset($data['id']) || !isset($data['status']) || !isset($data['external_id'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Invalid webhook data']);
+    // Return 200 to acknowledge — bad data won't get better on retry
+    http_response_code(200);
+    echo json_encode(['error' => 'Missing required fields', 'acknowledged' => true]);
     exit;
 }
-$paymentMethod = null;
-if (isset($data['payments']) && is_array($data['payments']) && !empty($data['payments'])) {
-    $paymentMethod = $data['payments'][0]['payment_method'] ?? null;
-}
-$invoiceId = $data['id'];
-$status = strtoupper($data['status']);
+
+$invoiceId  = $data['id'];
+$status     = strtoupper($data['status']);
 $externalId = $data['external_id'];
 
+// Extract payment method directly from the webhook payload (no extra API call needed)
+$paymentMethod = 'UNKNOWN';
+$paymentChannel = '';
+$paymentSource = '';
+
+// Get top-level payment_method and payment_channel
+if (!empty($data['payment_method'])) {
+    $paymentMethod = strtoupper($data['payment_method']);
+}
+if (!empty($data['payment_channel'])) {
+    $paymentChannel = strtoupper($data['payment_channel']);
+}
+
+// Get payment_details.source (e.g., "PayMaya/ Maya Wallet", "GCash", etc.)
+if (!empty($data['payment_details']['source'])) {
+    $paymentSource = $data['payment_details']['source'];
+}
+
+// Build a descriptive payment method string
+if (!empty($paymentSource)) {
+    // Use the source as the primary label since it's the most human-readable
+    // e.g., "QRPH - PayMaya/ Maya Wallet" or "EWALLET - GCash"
+    $paymentMethod = !empty($paymentChannel) 
+        ? $paymentChannel . ' - ' . $paymentSource 
+        : $paymentMethod . ' - ' . $paymentSource;
+} elseif (!empty($paymentChannel)) {
+    $paymentMethod = $paymentChannel;
+}
+
+// If the webhook includes a payments array, extract richer details (older webhook format)
+if (isset($data['payments']) && is_array($data['payments']) && !empty($data['payments'])) {
+    $pmt         = $data['payments'][0];
+    $method      = $pmt['payment_method'] ?? null;
+    $ewalletType = $pmt['ewallet_type'] ?? null;
+    $channelCode = $pmt['channel_code'] ?? null;
+    $cardBrand   = $pmt['card_brand'] ?? null;
+
+    if (!empty($ewalletType)) {
+        $paymentMethod = strtoupper($method) . ' - ' . strtoupper($ewalletType);
+    } elseif (!empty($channelCode)) {
+        $paymentMethod = strtoupper($method) . ' - ' . strtoupper($channelCode);
+    } elseif (!empty($cardBrand)) {
+        $paymentMethod = strtoupper($method) . ' - ' . strtoupper($cardBrand);
+    } elseif (!empty($method)) {
+        $paymentMethod = strtoupper($method);
+    }
+}
+
+error_log("[WEBHOOK] Invoice: $invoiceId | Status: $status | Method: $paymentMethod");
+
 try {
-    // Only process PAID status
+    // Handle non-PAID statuses (EXPIRED, CANCELLED, etc.)
     if ($status !== 'PAID') {
-        // Update payment status for other statuses (EXPIRED, CANCELLED, etc.)
         $updateQuery = "UPDATE payments SET status = :status, updated_at = NOW(), channel = :payment_method 
                         WHERE xendit_invoice_id = :invoice_id";
         $stmt = $pdo->prepare($updateQuery);
@@ -91,102 +147,29 @@ try {
         exit;
     }
     
-    // Begin transaction for atomicity
+    // ===== Process PAID status =====
     $pdo->beginTransaction();
-
-
-
-/* =====================================================
-   STEP 2: FETCH FULL INVOICE FROM XENDIT API
-===================================================== */
-
-// Fetch full invoice details from Xendit
-$invoiceUrl = XENDIT_INVOICE_URL . '/' . $invoiceId;
-
-$ch = curl_init($invoiceUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Authorization: Basic ' . base64_encode(XENDIT_API_KEY . ':')
-]);
-
-$invoiceResponse = curl_exec($ch);
-$invoiceHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-$invoiceData = json_decode($invoiceResponse, true);
-
-$paymentMethod = 'UNKNOWN';
-
-if ($invoiceHttpCode === 200 && is_array($invoiceData)) {
-
-    $payment = $invoiceData['payments'][0] ?? null;
-
-    if ($payment) {
-
-        // Waited invoice retrieval should contain the richest data
-        $method          = $payment['payment_method'] ?? null;
-        $methodId        = $payment['payment_method_id'] ?? null;
-        $ewalletType     = $payment['ewallet_type'] ?? null;
-        $channelCode     = $payment['channel_code'] ?? null;
-        $cardBrand       = $payment['card_brand'] ?? null;
-
-        /*
-         * PRIORITY ORDER (Most Specific → Least Specific)
-         */
-
-        // 1️⃣ payment_method_id (Most reliable in Xendit)
-        if (!empty($methodId)) {
-            $paymentMethod = strtoupper($methodId);
-        }
-
-        // 2️⃣ Ewallet subtype (GCASH, OVO, DANA, etc.)
-        elseif (!empty($ewalletType)) {
-            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($ewalletType);
-        }
-
-        // 3️⃣ Channel code (BCA, BNI, etc.)
-        elseif (!empty($channelCode)) {
-            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($channelCode);
-        }
-
-        // 4️⃣ Card brand (VISA, MASTERCARD)
-        elseif (!empty($cardBrand)) {
-            $paymentMethod = strtoupper($method) . ' - ' . strtoupper($cardBrand);
-        }
-
-        // 5️⃣ Fallback to base method
-        elseif (!empty($method)) {
-            $paymentMethod = strtoupper($method);
-        }
-    }
-
-    // Root-level fallback
-    if ($paymentMethod === 'UNKNOWN' && !empty($invoiceData['payment_method'])) {
-        $paymentMethod = strtoupper($invoiceData['payment_method']);
-    }
-}
-
-error_log("Final Payment Method: " . $paymentMethod);
     
     // 1. Update payments table
-$updatePaymentQuery = "UPDATE payments 
-                       SET status = 'PAID', 
-                           paid_at = NOW(), 
-                           updated_at = NOW(),
-                           xendit_response = :xendit_response,
-                           channel = :payment_method
-                       WHERE xendit_invoice_id = :invoice_id";
-
-$stmt = $pdo->prepare($updatePaymentQuery);
-$stmt->bindParam(':xendit_response', $rawPayload, PDO::PARAM_STR);
-$stmt->bindParam(':payment_method', $paymentMethod, PDO::PARAM_STR);  // Add this line
-$stmt->bindParam(':invoice_id', $invoiceId, PDO::PARAM_STR);
-$stmt->execute();
+    $updatePaymentQuery = "UPDATE payments 
+                           SET status = 'PAID', 
+                               paid_at = NOW(), 
+                               updated_at = NOW(),
+                               xendit_response = :xendit_response,
+                               channel = :payment_method
+                           WHERE xendit_invoice_id = :invoice_id
+                           AND status != 'PAID'";
+    
+    $stmt = $pdo->prepare($updatePaymentQuery);
+    $stmt->bindParam(':xendit_response', $rawPayload, PDO::PARAM_STR);
+    $stmt->bindParam(':payment_method', $paymentMethod, PDO::PARAM_STR);
+    $stmt->bindParam(':invoice_id', $invoiceId, PDO::PARAM_STR);
+    $stmt->execute();
     
     $rowsAffected = $stmt->rowCount();
     
     if ($rowsAffected === 0) {
-        // Payment already processed or not found
+        // Payment already processed or not found — acknowledge to stop retries
         $pdo->rollBack();
         http_response_code(200);
         echo json_encode(['message' => 'Payment already processed or not found']);
@@ -202,15 +185,17 @@ $stmt->execute();
     
     if (!$payment) {
         $pdo->rollBack();
-        http_response_code(404);
-        echo json_encode(['error' => 'Payment record not found']);
+        // Return 200 even on not found — Xendit retrying won't help
+        http_response_code(200);
+        error_log("[WEBHOOK ERROR] Payment record not found for invoice: $invoiceId");
+        echo json_encode(['message' => 'Payment record not found', 'acknowledged' => true]);
         exit;
     }
     
-    $userId = $payment['user_id'];
+    $userId     = $payment['user_id'];
     $examineeId = $payment['examinee_id'];
     
-    // 3. Update examinees table status to 'Scheduled' and examinee_status to 'Registered'
+    // 3. Update examinees table
     $updateExamineeQuery = "UPDATE examinees 
                             SET status = 'Scheduled', 
                                 examinee_status = 'Registered',
@@ -222,7 +207,7 @@ $stmt->execute();
     $stmt->bindParam(':examinee_id', $examineeId, PDO::PARAM_INT);
     $stmt->execute();
     
-    // 4. Update users table status to 'active'
+    // 4. Update users table
     $updateUserQuery = "UPDATE users 
                         SET status = 'active', 
                             updated_at = NOW() 
@@ -236,21 +221,33 @@ $stmt->execute();
     // Commit transaction
     $pdo->commit();
     
-    // Log success
-    error_log("Payment processed successfully for user_id: $userId, invoice_id: $invoiceId");
+    error_log("[WEBHOOK] Payment processed successfully for user_id: $userId, invoice: $invoiceId");
     
-    // Send payment confirmation email with schedule details
+    // ===== Return 200 IMMEDIATELY to Xendit before sending email =====
+    http_response_code(200);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Payment processed successfully',
+        'user_id' => $userId,
+        'invoice_id' => $invoiceId
+    ]);
+    
+    // Flush the response to Xendit so it gets 200 right away
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        // For Apache mod_php: flush output buffers
+        if (ob_get_level() > 0) ob_end_flush();
+        flush();
+    }
+    
+    // ===== Send email AFTER returning 200 (non-blocking) =====
     try {
-        // Fetch user details and schedule information
         $emailQuery = "
             SELECT 
-                u.email,
-                u.first_name,
-                u.last_name,
-                u.test_permit,
+                u.email, u.first_name, u.last_name, u.test_permit,
                 s.scheduled_date,
-                v.venue_name,
-                v.region
+                v.venue_name, v.region
             FROM users u
             INNER JOIN examinees e ON u.user_id = e.user_id
             INNER JOIN schedules s ON e.schedule_id = s.schedule_id
@@ -264,25 +261,19 @@ $stmt->execute();
         $userDetails = $emailStmt->fetch(PDO::FETCH_ASSOC);
         
         if ($userDetails && !empty($userDetails['email'])) {
-            // Format the date
             $dateObj = new DateTime($userDetails['scheduled_date']);
-            $formattedDate = $dateObj->format('F j, Y'); // e.g., "March 15, 2026"
+            $formattedDate = $dateObj->format('F j, Y');
             
-            // Prepare email data
             $emailData = [
-                'email' => $userDetails['email'],
-                'first_name' => $userDetails['first_name'],
-                'last_name' => $userDetails['last_name'],
-                'test_permit' => $userDetails['test_permit'],
+                'email'          => $userDetails['email'],
+                'first_name'     => $userDetails['first_name'],
+                'last_name'      => $userDetails['last_name'],
+                'test_permit'    => $userDetails['test_permit'],
                 'scheduled_date' => $formattedDate,
-                'venue_name' => $userDetails['venue_name'],
-                'region' => $userDetails['region']
+                'venue_name'     => $userDetails['venue_name'],
+                'region'         => $userDetails['region']
             ];
             
-            // Log the data being sent for debugging
-            error_log("Sending email data to n8n: " . json_encode($emailData));
-            
-            // Send email via n8n webhook
             $n8nWebhookUrl = 'https://n8n.srv1069938.hstgr.cloud/webhook/payment-confirmation';
             
             $ch = curl_init($n8nWebhookUrl);
@@ -290,52 +281,41 @@ $stmt->execute();
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
             curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
             
             $emailResponse = curl_exec($ch);
             $emailHttpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             
             if ($emailHttpCode === 200) {
-                error_log("Payment confirmation email sent successfully to: {$userDetails['email']}");
+                error_log("[WEBHOOK] Email sent to: {$userDetails['email']}");
             } else {
-                error_log("Failed to send payment confirmation email to: {$userDetails['email']} (HTTP: $emailHttpCode)");
+                error_log("[WEBHOOK] Email failed for: {$userDetails['email']} (HTTP: $emailHttpCode)");
             }
         }
     } catch (Exception $emailError) {
-        // Don't fail the webhook if email fails - just log it
-        error_log("Error sending payment confirmation email: " . $emailError->getMessage());
+        error_log("[WEBHOOK] Email error: " . $emailError->getMessage());
     }
-    
-    // Send success response to Xendit
-    http_response_code(200);
-    echo json_encode([
-        'success' => true,
-        'message' => 'Payment processed successfully',
-        'user_id' => $userId,
-        'invoice_id' => $invoiceId
-    ]);
     
 } catch (PDOException $e) {
-    // Rollback on error
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
+    error_log("[WEBHOOK DB ERROR] " . $e->getMessage());
     
-    error_log("Database Error in webhook.php: " . $e->getMessage());
-    
-    http_response_code(500);
-    echo json_encode(['error' => 'Database error occurred']);
+    // ALWAYS return 200 to Xendit — DB errors won't be fixed by retrying
+    http_response_code(200);
+    echo json_encode(['error' => 'Database error acknowledged', 'acknowledged' => true]);
     
 } catch (Exception $e) {
-    // Rollback on error
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
     }
+    error_log("[WEBHOOK ERROR] " . $e->getMessage());
     
-    error_log("Error in webhook.php: " . $e->getMessage());
-    
-    http_response_code(500);
-    echo json_encode(['error' => 'An error occurred']);
+    // ALWAYS return 200 to Xendit
+    http_response_code(200);
+    echo json_encode(['error' => 'Error acknowledged', 'acknowledged' => true]);
 }
 ?>

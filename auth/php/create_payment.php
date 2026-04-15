@@ -157,8 +157,8 @@ try {
         exit;
     }
     
-    // Check if there's already a pending payment
-    $checkQuery = "SELECT payment_id, xendit_invoice_id FROM payments 
+    // Check if there's already a pending or paid payment
+    $checkQuery = "SELECT payment_id, xendit_invoice_id, status, created_at FROM payments 
                    WHERE user_id = :user_id 
                    AND examinee_id = :examinee_id 
                    AND status IN ('PENDING', 'PAID') 
@@ -176,6 +176,14 @@ try {
             'message' => 'Payment already completed.'
         ]);
         exit;
+    }
+    
+    // If there's an existing PENDING payment, expire it before creating a new one
+    if ($existingPayment && $existingPayment['status'] === 'PENDING') {
+        $expireStmt = $pdo->prepare("UPDATE payments SET status = 'EXPIRED', updated_at = NOW() WHERE payment_id = :pid AND status = 'PENDING'");
+        $expireStmt->bindParam(':pid', $existingPayment['payment_id'], PDO::PARAM_INT);
+        $expireStmt->execute();
+        error_log('[CREATE PAYMENT] Expired old PENDING payment_id: ' . $existingPayment['payment_id'] . ' for user_id: ' . $user_id);
     }
     
     // Log current payment mode for tracking

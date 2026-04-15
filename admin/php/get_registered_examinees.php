@@ -8,7 +8,7 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     exit;
 }
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../../config/db.php';
 
 // Get parameters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -61,6 +61,7 @@ try {
     // Get data with schedule information
     $dataQuery = "
         SELECT 
+            e.examinee_id,
             u.user_id,
             u.test_permit,
             u.first_name,
